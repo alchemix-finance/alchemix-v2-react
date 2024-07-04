@@ -138,6 +138,7 @@ export const Deposit = ({
         setAmount={setDepositAmount}
         tokenAddress={syntheticToken.address}
         tokenSymbol={syntheticToken.symbol}
+        tokenDecimals={syntheticToken.decimals}
       />
       <Button
         variant="outline"

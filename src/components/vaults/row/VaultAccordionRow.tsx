@@ -74,7 +74,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
 
   return (
     <AccordionItem value={vault.address}>
-      <AccordionTrigger className="bg-grey10inverse border-grey3inverse flex w-full flex-col flex-wrap justify-between gap-5 rounded border p-2 hover:cursor-pointer hover:no-underline lg:grid lg:grid-cols-12 lg:gap-2">
+      <AccordionTrigger className="flex w-full flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 hover:cursor-pointer hover:no-underline lg:grid lg:grid-cols-12 lg:gap-2">
         <div className="col-span-3 flex flex-row space-x-8">
           <div className="relative">
             {vault.metadata.beta && (
@@ -105,16 +105,16 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           </div>
           <div>
             <p className="font-bold">{vault.metadata.label}</p>
-            <p className="text-lightgrey10 text-sm">
+            <p className="text-sm text-lightgrey10">
               {vaultYieldTokenData?.symbol ?? "..."}
               {vaultUnderlyingTokenData?.symbol ?? "..."}
             </p>
-            <p className="text-lightgrey10 text-sm">LTV: {vaultLtv}%</p>
+            <p className="text-sm text-lightgrey10">LTV: {vaultLtv}%</p>
           </div>
         </div>
         <div className="flex lg:hidden">
           <div className="flex-2 w-full lg:w-1/6">
-            <p className="text-lightgrey10 text-center text-sm">Deposit</p>
+            <p className="text-center text-sm text-lightgrey10">Deposit</p>
             <CurrencyCell
               tokenAmount={vaultStats.sharesBalance}
               tokenAddress={vault.underlyingToken}
@@ -123,7 +123,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             />
           </div>
           <div className="flex-2 w-full">
-            <p className="text-lightgrey10 text-center text-sm">TVL</p>
+            <p className="text-center text-sm text-lightgrey10">TVL</p>
             <CurrencyCell
               tokenAmount={vaultStats.tvl}
               tokenAddress={vault.underlyingToken ?? vault.yieldToken}
@@ -133,7 +133,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           </div>
         </div>
         <div className="flex-2 col-span-2 hidden w-full lg:block">
-          <p className="text-lightgrey10 text-center text-sm">Deposit</p>
+          <p className="text-center text-sm text-lightgrey10">Deposit</p>
           <CurrencyCell
             tokenAmount={vaultStats.sharesBalance}
             tokenAddress={vault.underlyingToken}
@@ -142,7 +142,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           />
         </div>
         <div className="flex-2 col-span-4 flex flex-col px-8">
-          <p className="text-lightgrey10 text-center text-sm">TVL / Cap</p>
+          <p className="text-center text-sm text-lightgrey10">TVL / Cap</p>
           <VaultCapacityCell
             vault={vault}
             tokenDecimals={vaultUnderlyingTokenData?.decimals}
@@ -150,17 +150,17 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           />
         </div>
         <div className="hidden w-full flex-1 self-start lg:block">
-          <p className="text-lightgrey10 text-center text-sm">
+          <p className="text-center text-sm text-lightgrey10">
             {vault.metadata.api.yieldType}
           </p>
           <VaultYieldCell vault={vault} />
         </div>
         <div className="hidden w-full flex-1 self-start lg:block">
-          <p className="text-lightgrey10 text-center text-sm">Bonus</p>
+          <p className="text-center text-sm text-lightgrey10">Bonus</p>
           <BonusCell vault={vault} />
         </div>
       </AccordionTrigger>
-      <AccordionContent className="border-grey10inverse bg-grey15inverse space-y-5 border p-4">
+      <AccordionContent className="space-y-5 border border-grey10inverse bg-grey15inverse p-4">
         <div className="flex w-full flex-col gap-4">
           {vault.metadata.messages.length > 0 &&
             vault.metadata.messages.map((message) => (
@@ -173,7 +173,9 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             <TabsList>
               <TabsTrigger value="deposit">Deposit</TabsTrigger>
               <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
-              <TabsTrigger value="migrate">Migrate</TabsTrigger>
+              {(chain.id === mainnet.id || chain.id === optimism.id) && (
+                <TabsTrigger value="migrate">Migrate</TabsTrigger>
+              )}
               <TabsTrigger value="info">Info</TabsTrigger>
             </TabsList>
             <TabsContent value="deposit">
@@ -199,6 +201,12 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               !!selectionForMigration?.length && (
                 <TabsContent value="migrate">
                   <Migrate vault={vault} selection={selectionForMigration} />
+                </TabsContent>
+              )}
+            {(chain.id === mainnet.id || chain.id === optimism.id) &&
+              !selectionForMigration?.length && (
+                <TabsContent value="migrate">
+                  <p>Migration not available for this vault.</p>
                 </TabsContent>
               )}
             <TabsContent value="info">
@@ -234,7 +242,7 @@ export const CurrencyCell = ({
         {tokenSymbol}
       </p>
       {tokenPrice && (
-        <p className="text-lightgrey10 text-sm">${formatNumber(amount)}</p>
+        <p className="text-sm text-lightgrey10">${formatNumber(amount)}</p>
       )}
     </div>
   );
@@ -269,10 +277,10 @@ const VaultCapacityCell = ({
     <>
       <div className="w-full self-start pt-2">
         <div className="relative">
-          <div className="bg-bronze4inverse border-bronze1inverse flex h-2 overflow-hidden rounded border text-xs">
+          <div className="flex h-2 overflow-hidden rounded border border-bronze1inverse bg-bronze4inverse text-xs">
             <div
               className={cn(
-                "bg-bronze1inverse flex flex-col justify-center whitespace-nowrap text-left text-white shadow-none",
+                "flex flex-col justify-center whitespace-nowrap bg-bronze1inverse text-left text-white shadow-none",
               )}
               style={{
                 width: capacity.isFull
@@ -284,7 +292,7 @@ const VaultCapacityCell = ({
         </div>
       </div>
       <div className="mt-2 flex flex-col items-center">
-        <p className="text-lightgrey10 text-sm">
+        <p className="text-sm text-lightgrey10">
           {capacity.isFull
             ? "VaultFull"
             : `${formatNumber(capacity.currentValue)}/${formatNumber(limitValue)} ${tokenSymbol}`}
@@ -352,7 +360,7 @@ const BonusCell = ({ vault }: { vault: Vault }) => {
           : "-"}
       </p>
       {bonusData?.bonusTimeLimit && (
-        <p className="text-lightgrey10 text-center text-sm">
+        <p className="text-center text-sm text-lightgrey10">
           {bonusData.distributionTimeAmount}
           {bonusData.distributionTimeUnit} left
         </p>

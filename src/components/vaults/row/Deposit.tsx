@@ -102,6 +102,7 @@ export const Deposit = ({
         setAmount={setAmount}
         tokenAddress={token.address}
         tokenSymbol={token.symbol}
+        tokenDecimals={token.decimals}
       />
       <div className="flex items-center">
         <p>Slippage</p>

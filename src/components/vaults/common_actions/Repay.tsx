@@ -285,6 +285,7 @@ export const Repay = () => {
             setAmount={setAmount}
             tokenAddress={repaymentToken.address}
             tokenSymbol={repaymentToken.symbol}
+            tokenDecimals={repaymentToken.decimals}
           />
           <Button
             variant="outline"

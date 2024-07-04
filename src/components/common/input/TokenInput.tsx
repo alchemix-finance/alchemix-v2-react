@@ -1,4 +1,4 @@
-import { erc20Abi, formatEther } from "viem";
+import { erc20Abi, formatEther, formatUnits } from "viem";
 import { useAccount, useBalance, useBlockNumber, useReadContract } from "wagmi";
 import { Input } from "@/components/ui/input";
 import { formatNumber } from "@/utils/number";
@@ -17,6 +17,7 @@ export const TokenInput = ({
   setAmount,
   tokenAddress,
   tokenSymbol,
+  tokenDecimals,
   showAmountOptions = false,
   showPercentOptions = false,
 }: {
@@ -24,6 +25,7 @@ export const TokenInput = ({
   setAmount: (amount: string) => void;
   tokenAddress: `0x${string}`;
   tokenSymbol: string;
+  tokenDecimals: number;
   showAmountOptions?: boolean;
   showPercentOptions?: boolean;
 }) => {
@@ -53,7 +55,7 @@ export const TokenInput = ({
       args: [address!],
       query: {
         enabled: !!address,
-        select: (balance) => formatEther(balance),
+        select: (balance) => formatUnits(balance, tokenDecimals),
       },
     });
 
