@@ -1,0 +1,499 @@
+import { aaveTokenGatewayAbi } from "@/abi/aaveTokenGateway";
+import { alchemistV2Abi } from "@/abi/alchemistV2";
+import { wethGatewayAbi } from "@/abi/wethGateway";
+import { useAllowance } from "@/hooks/useAllowance";
+import { useChain } from "@/hooks/useChain";
+import { Token, Vault } from "@/lib/types";
+import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo } from "react";
+import { toast } from "sonner";
+import { WaitForTransactionReceiptTimeoutError, parseUnits } from "viem";
+import {
+  useAccount,
+  usePublicClient,
+  useSimulateContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+import { GAS_ADDRESS } from "@/lib/constants";
+import { wagmiConfig } from "@/components/providers/Web3Provider";
+import { calculateMinimumOut } from "@/lib/helpers/vaultHelper";
+import { QueryKeys } from "../queries/queriesSchema";
+
+// TODO: isApprovalNeeded doesn't invalidate when the user approves the transaction ?
+// TODO: isApprovalNeeded keep cached data when selected token changes.
+
+export const useDeposit = ({
+  vault,
+  amount,
+  selectedToken,
+  slippage,
+  yieldToken,
+  setAmount,
+}: {
+  amount: string;
+  slippage: string;
+  vault: Vault;
+  selectedToken: Token;
+  yieldToken: Token;
+  setAmount: (amount: string) => void;
+}) => {
+  const chain = useChain();
+  const publicClient = usePublicClient<typeof wagmiConfig>({
+    chainId: chain.id,
+  });
+  const queryClient = useQueryClient();
+  const onDepositReceiptCallback = useCallback(() => {
+    setAmount("");
+    queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
+    queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
+  }, [queryClient, setAmount]);
+
+  const { address } = useAccount();
+  const addRecentTransaction = useAddRecentTransaction();
+
+  const minimumOut = calculateMinimumOut(
+    parseUnits(amount, selectedToken.decimals),
+    parseUnits(slippage, 6),
+  );
+
+  const spender =
+    selectedToken.address.toLowerCase() === yieldToken.address.toLowerCase() &&
+    !!vault.metadata.gateway &&
+    !!vault.metadata.yieldTokenOverride
+      ? vault.metadata.gateway
+      : vault.alchemist.address;
+
+  const { approve, approveConfig, isApprovalNeeded } = useAllowance({
+    amount,
+    spender,
+    tokenAddress: selectedToken.address,
+    decimals: selectedToken.decimals,
+  });
+
+  const {
+    data: depositGatewayConfig,
+    error: depositGatewayError,
+    isFetching: isDepositGatewayConfigFetching,
+  } = useSimulateContract({
+    address: vault.metadata.gateway,
+    abi: aaveTokenGatewayAbi,
+    functionName: "deposit",
+    // TODO: double check if we need override token here or just yield token
+    // uiv2 updated has it as just yieldToken
+    args: [
+      vault.yieldToken,
+      parseUnits(amount, selectedToken.decimals),
+      address!,
+    ],
+    query: {
+      enabled:
+        !!address &&
+        isApprovalNeeded !== true &&
+        selectedToken.address.toLowerCase() ===
+          yieldToken.address.toLowerCase() &&
+        !!vault.metadata.gateway &&
+        !!vault.metadata.yieldTokenOverride,
+    },
+  });
+
+  const { writeContract: depositGateway, data: depositGatewayHash } =
+    useWriteContract({
+      mutation: {
+        onSuccess: (hash) => {
+          addRecentTransaction({
+            hash,
+            description: "Deposit",
+          });
+          const miningPromise = publicClient.waitForTransactionReceipt({
+            hash,
+          });
+          toast.promise(miningPromise, {
+            loading: "Depositing...",
+            success: "Deposit confirmed",
+            error: (e) => {
+              return e instanceof WaitForTransactionReceiptTimeoutError
+                ? "We could not confirm your deposit. Please check your wallet."
+                : "Deposit failed";
+            },
+          });
+        },
+        onError: (error) => {
+          toast.error("Deposit failed", {
+            description: error.message,
+          });
+        },
+      },
+    });
+
+  const { data: depositGatewayReceipt } = useWaitForTransactionReceipt({
+    chainId: chain.id,
+    hash: depositGatewayHash,
+  });
+
+  useEffect(() => {
+    if (depositGatewayReceipt) {
+      onDepositReceiptCallback();
+    }
+  }, [depositGatewayReceipt, onDepositReceiptCallback]);
+
+  const {
+    data: depositAlchemistConfig,
+    error: depositAlchemistError,
+    isFetching: isDepositAlchemistConfigFetching,
+  } = useSimulateContract({
+    address: vault.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "deposit",
+    args: [vault.address, parseUnits(amount, selectedToken.decimals), address!],
+    query: {
+      enabled:
+        !!address &&
+        isApprovalNeeded !== true &&
+        selectedToken.address.toLowerCase() ===
+          yieldToken.address.toLowerCase() &&
+        !vault.metadata.gateway &&
+        !vault.metadata.yieldTokenOverride,
+    },
+  });
+
+  const { writeContract: depositAlchemist, data: depositAlchemistHash } =
+    useWriteContract({
+      mutation: {
+        onSuccess: (hash) => {
+          addRecentTransaction({
+            hash,
+            description: "Deposit",
+          });
+          const miningPromise = publicClient.waitForTransactionReceipt({
+            hash,
+          });
+          toast.promise(miningPromise, {
+            loading: "Depositing...",
+            success: "Deposit confirmed",
+            error: (e) => {
+              return e instanceof WaitForTransactionReceiptTimeoutError
+                ? "We could not confirm your deposit. Please check your wallet."
+                : "Deposit failed";
+            },
+          });
+        },
+        onError: (error) => {
+          toast.error("Deposit failed", {
+            description: error.message,
+          });
+        },
+      },
+    });
+
+  const { data: depositAlchemistReceipt } = useWaitForTransactionReceipt({
+    chainId: chain.id,
+    hash: depositAlchemistHash,
+  });
+
+  useEffect(() => {
+    if (depositAlchemistReceipt) {
+      onDepositReceiptCallback();
+    }
+  }, [depositAlchemistReceipt, onDepositReceiptCallback]);
+
+  const {
+    data: depositGasConfig,
+    error: depositGasError,
+    isFetching: isDepositGasConfigFetching,
+  } = useSimulateContract({
+    address: vault.metadata.wethGateway,
+    abi: wethGatewayAbi,
+    functionName: "depositUnderlying",
+    args: [
+      vault.alchemist.address,
+      vault.address,
+      parseUnits(amount, selectedToken.decimals),
+      address!,
+      minimumOut,
+    ],
+    value: parseUnits(amount, selectedToken.decimals),
+    query: {
+      enabled:
+        !!address &&
+        selectedToken.address === GAS_ADDRESS &&
+        !!vault.metadata.wethGateway,
+    },
+  });
+
+  const { writeContract: depositGas, data: depositGasHash } = useWriteContract({
+    mutation: {
+      onSuccess: (hash) => {
+        addRecentTransaction({
+          hash,
+          description: "Deposit",
+        });
+        const miningPromise = publicClient.waitForTransactionReceipt({
+          hash,
+        });
+        toast.promise(miningPromise, {
+          loading: "Depositing...",
+          success: "Deposit confirmed",
+          error: (e) => {
+            return e instanceof WaitForTransactionReceiptTimeoutError
+              ? "We could not confirm your deposit. Please check your wallet."
+              : "Deposit failed";
+          },
+        });
+      },
+      onError: (error) => {
+        toast.error("Deposit failed", {
+          description: error.message,
+        });
+      },
+    },
+  });
+
+  const { data: depositGasReceipt } = useWaitForTransactionReceipt({
+    chainId: chain.id,
+    hash: depositGasHash,
+  });
+
+  useEffect(() => {
+    if (depositGasReceipt) {
+      onDepositReceiptCallback();
+    }
+  }, [depositGasReceipt, onDepositReceiptCallback]);
+
+  const {
+    data: depositUnderlyingConfig,
+    error: depositUnderlyingError,
+    isFetching: isDepositUnderlyingConfigFetching,
+  } = useSimulateContract({
+    address: vault.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "depositUnderlying",
+    args: [
+      vault.address,
+      parseUnits(amount, selectedToken.decimals),
+      address!,
+      minimumOut,
+    ],
+    query: {
+      enabled:
+        !!address &&
+        isApprovalNeeded !== true &&
+        selectedToken.address !== GAS_ADDRESS &&
+        selectedToken.address.toLowerCase() !==
+          yieldToken.address.toLowerCase(),
+    },
+  });
+
+  const { writeContract: depositUnderlying, data: depositUnderlyingHash } =
+    useWriteContract({
+      mutation: {
+        onSuccess: (hash) => {
+          addRecentTransaction({
+            hash,
+            description: "Deposit",
+          });
+          const miningPromise = publicClient.waitForTransactionReceipt({
+            hash,
+          });
+          toast.promise(miningPromise, {
+            loading: "Depositing...",
+            success: "Deposit confirmed",
+            error: (e) => {
+              return e instanceof WaitForTransactionReceiptTimeoutError
+                ? "We could not confirm your deposit. Please check your wallet."
+                : "Deposit failed";
+            },
+          });
+        },
+        onError: (error) => {
+          toast.error("Deposit failed", {
+            description: error.message,
+          });
+        },
+      },
+    });
+
+  const { data: depositUnderlyingReceipt } = useWaitForTransactionReceipt({
+    chainId: chain.id,
+    hash: depositUnderlyingHash,
+  });
+
+  useEffect(() => {
+    if (depositUnderlyingReceipt) {
+      onDepositReceiptCallback();
+    }
+  }, [depositUnderlyingReceipt, onDepositReceiptCallback]);
+
+  const writeDeposit = useCallback(() => {
+    // deposit gateway
+    if (
+      selectedToken.address.toLowerCase() ===
+        yieldToken.address.toLowerCase() &&
+      !!vault.metadata.gateway &&
+      !!vault.metadata.yieldTokenOverride
+    ) {
+      if (depositGatewayError) {
+        toast.error("Deposit failed", {
+          description:
+            depositGatewayError.name === "ContractFunctionExecutionError"
+              ? depositGatewayError.cause.message
+              : depositGatewayError.message,
+        });
+        return;
+      }
+      if (depositGatewayConfig) {
+        depositGateway(depositGatewayConfig.request);
+      } else {
+        toast.error("Deposit failed", {
+          description:
+            "Deposit gateway unknown error. Please notify Alchemix team.",
+        });
+      }
+      return;
+    }
+
+    // deposit alchemist
+    if (
+      selectedToken.address.toLowerCase() ===
+        yieldToken.address.toLowerCase() &&
+      !vault.metadata.gateway &&
+      !vault.metadata.yieldTokenOverride
+    ) {
+      if (depositAlchemistError) {
+        toast.error("Deposit failed", {
+          description:
+            depositAlchemistError.name === "ContractFunctionExecutionError"
+              ? depositAlchemistError.cause.message
+              : depositAlchemistError.message,
+        });
+        return;
+      }
+      if (depositAlchemistConfig) {
+        depositAlchemist(depositAlchemistConfig.request);
+      } else {
+        toast.error("Deposit failed", {
+          description:
+            "Deposit gateway unknown error. Please notify Alchemix team.",
+        });
+      }
+      return;
+    }
+
+    // deposit gas
+    if (selectedToken.address === GAS_ADDRESS) {
+      if (depositGasError) {
+        toast.error("Deposit failed", {
+          description:
+            depositGasError.name === "ContractFunctionExecutionError"
+              ? depositGasError.cause.message
+              : depositGasError.message,
+        });
+        return;
+      }
+      if (depositGasConfig) {
+        depositGas(depositGasConfig.request);
+      } else {
+        toast.error("Deposit failed", {
+          description:
+            "Deposit gateway unknown error. Please notify Alchemix team.",
+        });
+      }
+      return;
+    }
+
+    // if depositUnderlyingConfig is available, deposit using alchemist
+    if (
+      selectedToken.address !== GAS_ADDRESS &&
+      selectedToken.address.toLowerCase() !== yieldToken.address.toLowerCase()
+    ) {
+      if (depositUnderlyingError) {
+        toast.error("Deposit failed", {
+          description:
+            depositUnderlyingError.name === "ContractFunctionExecutionError"
+              ? depositUnderlyingError.cause.message
+              : depositUnderlyingError.message,
+        });
+        return;
+      }
+      if (depositUnderlyingConfig) {
+        depositUnderlying(depositUnderlyingConfig.request);
+      } else {
+        toast.error("Deposit failed", {
+          description:
+            "Deposit gateway unknown error. Please notify Alchemix team.",
+        });
+      }
+      return;
+    }
+  }, [
+    depositAlchemist,
+    depositAlchemistConfig,
+    depositAlchemistError,
+    depositGas,
+    depositGasConfig,
+    depositGasError,
+    depositGateway,
+    depositGatewayConfig,
+    depositGatewayError,
+    depositUnderlying,
+    depositUnderlyingConfig,
+    depositUnderlyingError,
+    selectedToken.address,
+    vault.metadata.gateway,
+    vault.metadata.yieldTokenOverride,
+    yieldToken.address,
+  ]);
+
+  const writeApprove = useCallback(() => {
+    approveConfig?.request && approve(approveConfig.request);
+  }, [approve, approveConfig]);
+
+  const isFetching = useMemo(() => {
+    if (!amount) return;
+    // deposit gateway
+    if (
+      selectedToken.address.toLowerCase() ===
+        yieldToken.address.toLowerCase() &&
+      !!vault.metadata.gateway &&
+      !!vault.metadata.yieldTokenOverride
+    ) {
+      return isDepositGatewayConfigFetching;
+    }
+
+    // deposit alchemist
+    if (
+      selectedToken.address.toLowerCase() ===
+        yieldToken.address.toLowerCase() &&
+      !vault.metadata.gateway &&
+      !vault.metadata.yieldTokenOverride
+    ) {
+      return isDepositAlchemistConfigFetching;
+    }
+
+    // deposit gas
+    if (selectedToken.address === GAS_ADDRESS) {
+      return isDepositGasConfigFetching;
+    }
+
+    // if depositUnderlyingConfig is available, deposit using alchemist
+    if (
+      selectedToken.address !== GAS_ADDRESS &&
+      selectedToken.address.toLowerCase() !== yieldToken.address.toLowerCase()
+    ) {
+      return isDepositUnderlyingConfigFetching;
+    }
+  }, [
+    amount,
+    isDepositAlchemistConfigFetching,
+    isDepositGasConfigFetching,
+    isDepositGatewayConfigFetching,
+    isDepositUnderlyingConfigFetching,
+    selectedToken.address,
+    vault.metadata.gateway,
+    vault.metadata.yieldTokenOverride,
+    yieldToken.address,
+  ]);
+
+  return { writeDeposit, writeApprove, isApprovalNeeded, isFetching };
+};

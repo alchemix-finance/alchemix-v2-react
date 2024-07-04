@@ -1,0 +1,11 @@
+@import "JosefinSans.css";
+@import "Montserrat.css";
+@import "ReemKufi.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gradientMain;
+}

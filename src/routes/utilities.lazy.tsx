@@ -1,0 +1,63 @@
+import { Page } from "@/components/common/Page";
+import { Button } from "@/components/ui/button";
+import { createLazyFileRoute } from "@tanstack/react-router";
+
+const utilities = [
+  {
+    label: "Alchemix Stats",
+    author: "Barree",
+    url: "https://alchemix-stats.com/",
+    image: "alchemix_stats.png",
+  },
+  {
+    label: "Self-Repaying-ENS",
+    author: "Wary",
+    url: "https://ens.alchemix.fi/",
+    image: "srens.png",
+  },
+];
+
+export const Route = createLazyFileRoute("/utilities")({
+  component: Utilities,
+});
+
+function Utilities() {
+  return (
+    <Page title="Utilities" description="A collection of useful tools">
+      <p className="mb-6 text-center text-xs opacity-50">
+        These tools are developed and maintained by our awesome community
+        members.
+      </p>
+      <div className="flex w-full flex-row flex-wrap gap-4">
+        {utilities.map((utility) => (
+          <div
+            key={utility.label}
+            className="border-grey10inverse bg-grey15inverse w-1/4 rounded border"
+          >
+            <p className="border-grey10inverse border-b px-4 py-2">
+              {utility.label}
+            </p>
+            <div
+              className="h-48 bg-cover bg-center"
+              style={{
+                backgroundImage: `url('../images/screenshots/${utility.image}')`,
+              }}
+            ></div>
+            <div className="border-grey10inverse flex flex-row items-center justify-between border-t px-4 py-2">
+              <div className="flex flex-row space-x-4">
+                <p>{utility.author}</p>
+              </div>
+              <Button
+                variant="ghost"
+                className="border-bronze1 h-8 w-full border text-base lg:w-max"
+                onClick={() => window.open(utility.url, "_blank")}
+              >
+                Open
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Page>
+  );
+}
