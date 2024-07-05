@@ -1,28 +1,17 @@
-import { fantom, optimism } from "viem/chains";
+import { fantom, mainnet, optimism } from "viem/chains";
 import { getTokenPriceInEth } from "@/lib/queries/useTokenPrice";
 import { formatEther, formatUnits } from "viem";
 import { rewardRouterAbi } from "@/abi/rewardRouter";
-import { rewardRouterAddresses } from "@/lib/config/rewardRouterAddresses";
+import {
+  rewardRouterAddresses,
+  rewardTokens,
+} from "@/lib/config/rewardRouterAddresses";
 import { BonusFn } from "@/lib/config/metadataTypes";
 import { getAaveReserves } from "./aave";
 import { getVesperReserves } from "./vesper";
 import { VaultHelper } from "@/lib/helpers/vaultHelper";
 
 const SPY = 31536000;
-
-// aaveReserve = getAaveReserveOpt(strategy?.col3.token.address);
-//         bonusYieldValue = await getTokenPriceInEth('optimism', '0x4200000000000000000000000000000000000042');
-//         bonusYieldToken = 'OP';
-//         tokenPriceInEth = await getTokenPriceInEth('optimism', strategy?.col3.token.address);
-//         CHAIN_DEC = aaveReserve.decimals;
-//         bonusYieldRate =
-//           100 *
-//           ((aaveReserve.aToken.rewards[0].emissionsPerSecond * SPY * WEI_DEC * bonusYieldValue) /
-//             (aaveReserve.totalATokenSupply * tokenPriceInEth * WEI_DEC));
-//         if (CHAIN_DEC === 6) bonusYieldRate = bonusYieldRate / 10 ** 12;
-//         bonusYield = true;
-//         bonusInPercentage = true;
-//         break;
 
 export const getAaveBonusData: BonusFn = async ({ chainId, vault }) => {
   if (chainId !== optimism.id)
@@ -95,8 +84,10 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
   tokens,
   publicClient,
 }) => {
-  if (chainId === fantom.id)
+  if (chainId === fantom.id || chainId === mainnet.id)
     throw new Error("Melted Rewards not supported on Fantom");
+
+  if (!tokens) throw new Error("Tokens not ready");
 
   const meltedRewardParams = await publicClient.readContract({
     address: rewardRouterAddresses[chainId],
@@ -105,7 +96,7 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
     args: [vault.address],
   });
 
-  const bonusYieldTokenSymbol = "OP";
+  const bonusYieldTokenSymbol = rewardTokens[chainId].rewardTokenSymbol;
   const bonusTimeLimit = true;
 
   const distributionTimeAmount = (
@@ -119,7 +110,7 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
 
   const bonusYieldValue = await getTokenPriceInEth({
     chainId,
-    tokenAddress: "0x4200000000000000000000000000000000000042",
+    tokenAddress: rewardTokens[chainId].rewardTokenAddress,
   });
   const tokenPriceInEth = await getTokenPriceInEth({
     chainId,
@@ -128,11 +119,11 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
 
   let bonusYieldRate = 0;
 
-  if (meltedRewardParams[2] > BigInt(0)) {
-    const vaultUnderlyingTokenData = tokens?.find(
+  if (meltedRewardParams[2] > 0n) {
+    const vaultUnderlyingTokenData = tokens.find(
       (token) =>
         token.address.toLowerCase() === vault.underlyingToken.toLowerCase(),
-    );
+    )!;
 
     const vaultHelper = new VaultHelper(vault);
     const tvl = vaultHelper.convertSharesToUnderlyingTokens(
@@ -140,14 +131,12 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
     );
 
     bonusYieldRate =
-      ((parseFloat(formatEther(meltedRewardParams[2])) *
+      (parseFloat(formatEther(meltedRewardParams[2])) *
         bonusYieldValue *
         31556952) /
-        parseFloat(meltedRewardParams[3].toString()) /
-        parseFloat(
-          formatUnits(tvl, vaultUnderlyingTokenData?.decimals ?? 18),
-        )) *
-      tokenPriceInEth;
+      parseFloat(meltedRewardParams[3].toString()) /
+      (parseFloat(formatUnits(tvl, vaultUnderlyingTokenData.decimals)) *
+        tokenPriceInEth);
 
     return {
       hasBonus: true,

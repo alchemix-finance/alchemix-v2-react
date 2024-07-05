@@ -322,7 +322,7 @@ export const VAULTS: VaultsConfig = {
         apr: getAaveApr,
         yieldType: "APR",
         cacheKey: "aave",
-        bonus: getAaveBonusData,
+        bonus: getNoBonus,
       },
     },
 
@@ -337,7 +337,7 @@ export const VAULTS: VaultsConfig = {
         apr: getAaveApr,
         yieldType: "APR",
         cacheKey: "aave",
-        bonus: getAaveBonusData,
+        bonus: getMeltedRewardsBonusData,
       },
     },
     "0x2680b58945A31602E4B6122C965c2849Eb76Dd3B": {
@@ -351,7 +351,7 @@ export const VAULTS: VaultsConfig = {
         apr: getAaveApr,
         yieldType: "APR",
         cacheKey: "aave",
-        bonus: getAaveBonusData,
+        bonus: getNoBonus,
       },
     },
     "0x059Eaa296B18E0d954632c8242dDb4a271175EeD": {
@@ -395,7 +395,7 @@ export const VAULTS: VaultsConfig = {
         apr: getAaveApr,
         yieldType: "APR",
         cacheKey: "aave",
-        bonus: getAaveBonusData,
+        bonus: getNoBonus,
       },
     },
     "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": {
@@ -441,7 +441,7 @@ export const VAULTS: VaultsConfig = {
         apr: getAaveApr,
         yieldType: "APR",
         cacheKey: "aave",
-        bonus: getAaveBonusData,
+        bonus: getMeltedRewardsBonusData,
       },
     },
     //alETH
@@ -455,7 +455,7 @@ export const VAULTS: VaultsConfig = {
         apr: getLidoApy,
         yieldType: "APR",
         cacheKey: "lido",
-        bonus: getNoBonus,
+        bonus: getMeltedRewardsBonusData,
       },
     },
   },
