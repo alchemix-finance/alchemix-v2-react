@@ -18,6 +18,10 @@ const widgetConfig: WidgetConfig = {
         default: "#E8E4DB",
         paper: "#DEDBD3",
       },
+      text: {
+        primary: "#000000",
+        secondary: "#979BA2",
+      },
     },
   },
 
