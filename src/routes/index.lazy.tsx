@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { Link, createLazyFileRoute } from "@tanstack/react-router";
 import { Page } from "@/components/common/Page";
 
 export const Route = createLazyFileRoute("/")({
@@ -60,8 +60,8 @@ function Index() {
       </p>
 
       <div className="flex justify-center">
-        <a
-          href="/vaults"
+        <Link
+          to="/vaults"
           className="glow h-max w-max rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider transition-all"
         >
           <span className="flex h-max flex-row content-center space-x-4 self-center text-orange4">
@@ -83,7 +83,7 @@ function Index() {
               ></path>
             </svg>
           </span>
-        </a>
+        </Link>
       </div>
 
       <div
@@ -245,8 +245,8 @@ function Index() {
       </div>
 
       <div className="flex justify-center text-bronze4inverse">
-        <a
-          href="/vaults"
+        <Link
+          to="/vaults"
           className="glow h-max w-max rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider transition-all"
         >
           <span className="flex h-max flex-row content-center space-x-4 self-center text-orange4">
@@ -268,7 +268,7 @@ function Index() {
               ></path>
             </svg>
           </span>
-        </a>
+        </Link>
       </div>
     </Page>
   );

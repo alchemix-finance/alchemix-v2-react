@@ -1,4 +1,5 @@
 import { dayjs } from "@/lib/dayjs";
+import { Link } from "@tanstack/react-router";
 
 const copyrightYear = () => {
   return `2024-${dayjs().format("YYYY")}`;
@@ -28,7 +29,7 @@ export const Footer = () => {
           <p className="alcxTitle mb-5 text-sm uppercase">NAVIGATION</p>
           <ul className="space-y-3 text-sm">
             <li className="opacity-50 hover:opacity-100">
-              <a href="/">Introduction</a>
+              <Link to="/">Introduction</Link>
             </li>
             <li className="opacity-50 hover:opacity-100">
               <a
@@ -49,9 +50,9 @@ export const Footer = () => {
               </a>
             </li>
             <li className="opacity-50 hover:opacity-100">
-              <a className="flex space-x-4" href="/governance">
+              <Link className="flex space-x-4" to="/governance">
                 <span>Snapshot</span>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

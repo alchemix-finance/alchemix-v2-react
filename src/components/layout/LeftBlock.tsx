@@ -9,7 +9,7 @@ export function LeftBlock() {
       <footer className="flex items-center justify-between px-4 py-5 md:px-20">
         <a
           className="block rounded border border-white p-1 text-white transition-colors duration-300 hover:border-lime-100 hover:text-lime-100"
-          href="#"
+          href="https://alchemix-finance.gitbook.io/v2/"
           target="_blank"
           rel="noreferrer noopener"
         >
@@ -17,7 +17,7 @@ export function LeftBlock() {
         </a>
         <a
           className="block rounded border border-white p-1 text-white transition-colors duration-300 hover:border-lime-100 hover:text-lime-100"
-          href="#"
+          href="https://twitter.com/AlchemixFi"
           target="_blank"
           rel="noreferrer noopener"
         >
