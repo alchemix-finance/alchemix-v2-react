@@ -1,4 +1,5 @@
 import { Page } from "@/components/common/Page";
+import { Farms } from "@/components/farms/Farms";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/farms")({
@@ -8,7 +9,7 @@ export const Route = createLazyFileRoute("/farms")({
 function FarmsRoute() {
   return (
     <Page title="Farms" description="Earn yield on your deposits">
-      <p>WIP.</p>
+      <Farms />
     </Page>
   );
 }
