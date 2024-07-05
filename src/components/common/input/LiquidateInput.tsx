@@ -59,7 +59,7 @@ export const LiquidateTokenInput = ({
         )}
         onClick={setMax}
       >
-        Balance: {formatNumber(sharesBalance)} {tokenSymbol}
+        Available: {formatNumber(sharesBalance)} {tokenSymbol}
       </p>
       <Input
         type="number"
