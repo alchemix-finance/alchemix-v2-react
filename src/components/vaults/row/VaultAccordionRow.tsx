@@ -356,7 +356,7 @@ const BonusCell = ({ vault }: { vault: Vault }) => {
     <>
       <p className="text-center">
         {bonusData?.hasBonus
-          ? `+${formatNumber(bonusData.bonusYieldRate, 4)}% ${bonusData.bonusYieldTokenSymbol}`
+          ? `+${formatNumber(bonusData.bonusYieldRate)}% ${bonusData.bonusYieldTokenSymbol}`
           : "-"}
       </p>
       {bonusData?.bonusTimeLimit && (
