@@ -53,7 +53,7 @@ export const Vaults = () => {
   return (
     <>
       {isPending ? (
-        <div className="border-grey10inverse bg-grey15inverse rounded">
+        <div className="rounded border border-grey10inverse bg-grey15inverse">
           <div slot="header" className="flex space-x-4 px-6 py-4">
             <p className="inline-block self-center">Fetching data</p>
           </div>
@@ -64,7 +64,7 @@ export const Vaults = () => {
           </div>
         </div>
       ) : null}
-      {isError && <div>Error</div>}
+      {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
       {isSuccess && (
         <div className="space-y-5">
           <Tabs value={synthTab} onValueChange={onSynthTabChange}>

@@ -26,16 +26,16 @@ export const Info = ({ vault }: { vault: Vault }) => {
   } as const;
   return (
     <div className="flex flex-col space-y-4">
-      <p className="text-lightgrey10 w-full self-center text-sm">
+      <p className="w-full self-center text-sm text-lightgrey10">
         List of contracts associated with this vault:
       </p>
-      <div className="border-grey5inverse bg-grey1inverse text-white2inverse flex flex-col flex-wrap items-center justify-center gap-2 break-all rounded p-4">
+      <div className="flex flex-col flex-wrap items-center justify-center gap-2 break-all rounded border border-grey5inverse bg-grey1inverse p-4 text-white2inverse">
         {Object.values(info).map(({ label, address }) => {
           if (!address) return null;
           return (
             <div
               key={address + label}
-              className="hover:bg-black2 flex w-full flex-col items-center justify-center gap-4 rounded px-2 lg:flex-row"
+              className="flex w-full flex-col items-center justify-center gap-4 rounded px-2 hover:bg-black2 lg:flex-row"
             >
               <p className="flex-1">{label}:</p>
               <p className="flex-2 font-alcxMono">

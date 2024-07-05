@@ -1,6 +1,7 @@
 import { Address } from "viem";
 import { useVaults } from "./queries/useVaults";
 import { useTransmuters } from "./queries/useTransmuters";
+import { useProposals } from "./queries/useProposals";
 
 export type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -52,4 +53,7 @@ export interface UnderlyingTokensParams {
 export type Vault = NonNullable<ReturnType<typeof useVaults>["data"]>[number];
 export type Transmuter = NonNullable<
   ReturnType<typeof useTransmuters>["data"]
+>[number];
+export type Proposal = NonNullable<
+  ReturnType<typeof useProposals>["data"]
 >[number];

@@ -5,6 +5,13 @@ import { usePublicClient } from "wagmi";
 import { useChain } from "./useChain";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
 
+/**
+ * Hook that wraps Vault Helper class.
+ * @param vault Vault to process
+ * @returns Helper functions for the vault maths
+ * @description This hook provides more reactive way to calculate vault related maths.
+ * Or really the right way to calculate it in reactive context.
+ */
 export const useVaultHelper = (vault: Vault | undefined) => {
   const chain = useChain();
   const publicClient = usePublicClient<typeof wagmiConfig>({

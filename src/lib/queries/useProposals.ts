@@ -77,23 +77,8 @@ interface Proposal {
   end: string;
   snapshot: string;
   state: string;
-}
-
-const ACTIVE_PROPOSALS = gql`
-  {
-    proposals(
-      skip: 0
-      where: { space_in: ["alchemixstakers.eth"], state: "active" }
-      orderBy: "created"
-      orderDirection: desc
-    ) {
-      id
-    }
-  }
-`;
-
-interface ActiveProposal {
-  id: string;
+  type: string;
+  discussion: string;
 }
 
 export const useVotesForAddress = () => {
@@ -131,57 +116,58 @@ export const useProposals = () => {
   });
 };
 
-export const useActiveProposals = () => {
-  return useQuery({
-    queryKey: [QueryKeys.ActiveProposals],
-    queryFn: async () => {
-      const response = await request<{ proposals: ActiveProposal[] }>(
-        SNAPSHOT_HUB_URL,
-        ACTIVE_PROPOSALS,
-      );
-      return response.proposals;
-    },
-  });
-};
-
-const querySetup = {
-  from: ["delegator", "delegate"],
-  to: ["delegate", "delegator"],
-};
-
-export const useUserDelegations = (direction: "from" | "to") => {
+export const useUserDelegations = () => {
   const { address } = useAccount();
   return useQuery({
-    queryKey: [QueryKeys.Delegate, address, direction],
+    queryKey: [QueryKeys.Delegate, address],
     queryFn: async () => {
       if (!address) throw new Error("Not connected");
 
-      const query = gql`
+      const queryFrom = gql`
         query userDelegations($userAddress: String!) {
-          delegations(where: { space_in: ["alchemixstakers.eth"], ${querySetup[direction][0]}: $userAddress }) {
-            ${querySetup[direction][1]}
+          delegations(
+            where: {
+              space_in: ["alchemixstakers.eth"]
+              delegator: $userAddress
+            }
+          ) {
+            delegate
           }
         }
       `;
 
-      const response = await request<
+      const queryTo = gql`
+        query userDelegations($userAddress: String!) {
+          delegations(
+            where: { space_in: ["alchemixstakers.eth"], delegate: $userAddress }
+          ) {
+            delegator
+          }
+        }
+      `;
+
+      const responseFrom = await request<
+        { delegations: { delegate: string }[] },
+        { userAddress: string }
+      >(SNAPSHOT_SUBGRAPH_URL, queryFrom, { userAddress: address });
+
+      const responseTo = await request<
         {
-          delegations:
-            | {
-                delegator: string;
-              }
-            | {
-                delegate: string;
-              };
+          delegations: {
+            delegator: string;
+          }[];
         },
         {
           userAddress: string;
         }
-      >(SNAPSHOT_SUBGRAPH_URL, query, {
+      >(SNAPSHOT_SUBGRAPH_URL, queryTo, {
         userAddress: address,
       });
 
-      return response.delegations;
+      return {
+        delegating: responseFrom.delegations,
+        delegations: responseTo.delegations,
+      };
     },
     enabled: !!address,
   });

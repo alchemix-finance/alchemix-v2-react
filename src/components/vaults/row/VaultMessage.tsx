@@ -16,10 +16,10 @@ export const VaultMessage = ({
   return (
     <div
       className={cn(
-        "text-grey15 text-l flex w-full flex-row items-center space-x-4 rounded border p-2 pl-4",
-        level === 0 && "bg-blue1 border-blue2",
-        level === 1 && "bg-orange1 border-orange2",
-        level === 2 && "bg-red1 border-red3",
+        "text-l flex w-full flex-row items-center space-x-4 rounded border p-2 pl-4 text-grey15",
+        level === 0 && "border-blue2 bg-blue1",
+        level === 1 && "border-orange2 bg-orange1",
+        level === 2 && "border-red3 bg-red1",
       )}
     >
       <svg

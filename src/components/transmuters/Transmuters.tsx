@@ -32,7 +32,7 @@ export const Transmuters = () => {
   return (
     <>
       {isPending ? (
-        <div className="border-grey10inverse bg-grey15inverse rounded">
+        <div className="rounded border border-grey10inverse bg-grey15inverse">
           <div slot="header" className="flex space-x-4 px-6 py-4">
             <p className="inline-block self-center">Fetching data</p>
           </div>

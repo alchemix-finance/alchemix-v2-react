@@ -160,7 +160,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <BonusCell vault={vault} />
         </div>
       </AccordionTrigger>
-      <AccordionContent className="space-y-5 border border-grey10inverse bg-grey15inverse p-4">
+      <AccordionContent className="border border-grey10inverse bg-grey15inverse p-4">
         <div className="flex w-full flex-col gap-4">
           {vault.metadata.messages.length > 0 &&
             vault.metadata.messages.map((message) => (

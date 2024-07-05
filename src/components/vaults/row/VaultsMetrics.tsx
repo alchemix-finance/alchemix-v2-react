@@ -46,12 +46,12 @@ export const VaultsMetrics = () => {
   );
 
   return (
-    <div className="border-grey10inverse bg-grey15inverse relative w-full rounded border">
-      <div className="bg-grey10inverse w-full">
+    <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse">
+      <div className="w-full bg-grey10inverse">
         <div className="px-6 py-4">
           <div className="flex flex-col justify-between gap-2 font-alcxTitles text-lg tracking-wide md:flex-row">
             <div className="flex-col">
-              <div className="text-bronze3 mr-2 whitespace-nowrap text-sm uppercase">
+              <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
                 Total Deposits
               </div>
               <div className="flex">
@@ -59,7 +59,7 @@ export const VaultsMetrics = () => {
               </div>
             </div>
             <div className="flex-col">
-              <div className="text-bronze3 mr-2 whitespace-nowrap text-sm uppercase">
+              <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
                 Current Debt
               </div>
               <div className="flex">
@@ -67,7 +67,7 @@ export const VaultsMetrics = () => {
               </div>
             </div>
             <div className="flex-col">
-              <div className="text-bronze3 mr-2 whitespace-nowrap text-sm uppercase">
+              <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
                 Available Credit
               </div>
               <div className="flex">
@@ -76,8 +76,8 @@ export const VaultsMetrics = () => {
                 </div>
               </div>
             </div>
-            <div className="border-bronze3 flex-col border-t border-dashed md:border-l md:border-t-0 md:pl-6 md:pt-0">
-              <div className="text-bronze3 mr-2 whitespace-nowrap text-sm uppercase">
+            <div className="flex-col border-t border-dashed border-bronze3 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+              <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
                 Global TVL
               </div>
               <div className="flex">

@@ -20,10 +20,10 @@ export const AmountQuickOptions = ({ value, setValue }: QuickOptionsProps) => {
           key={option}
           onClick={() => setValue(option)}
           className={cn(
-            "w-full rounded-md border border-sankoBlue/50 transition-colors hover:ring-1 hover:ring-sankoBlue focus:outline-none focus:ring-1 focus:ring-sankoBlue",
+            "w-full rounded-md border border-blue-50 transition-colors hover:ring-1 hover:ring-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100",
             value === option
-              ? "bg-sankoBlue/50 ring-1 ring-sankoBlue"
-              : "bg-sankoBlue/10",
+              ? "ring-sankoBlue border-blue-200 bg-blue-100 ring-1"
+              : "bg-blue-200",
           )}
         >
           {option}
@@ -51,9 +51,9 @@ export const PercentQuickOptions = ({
           key={option}
           onClick={() => handleClick(option)}
           className={cn(
-            "w-full rounded-md border border-sankoBlue/50 transition-colors hover:ring-1 hover:ring-sankoBlue focus:outline-none focus:ring-1 focus:ring-sankoBlue",
+            "border-sankoBlue/50 hover:ring-sankoBlue focus:ring-sankoBlue w-full rounded-md border transition-colors hover:ring-1 focus:outline-none focus:ring-1",
             value === option
-              ? "bg-sankoBlue/50 ring-1 ring-sankoBlue"
+              ? "bg-sankoBlue/50 ring-sankoBlue ring-1"
               : "bg-sankoBlue/10",
           )}
         >

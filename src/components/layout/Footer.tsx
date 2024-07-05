@@ -6,7 +6,7 @@ const copyrightYear = () => {
 
 export const Footer = () => {
   return (
-    <footer className="border-grey5inverse flex flex-col border-t py-12 pl-8">
+    <footer className="flex flex-col border-t border-grey5inverse py-12 pl-8">
       <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-11">
         <div className="w-60">
           <img

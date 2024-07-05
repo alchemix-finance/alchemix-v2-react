@@ -32,9 +32,9 @@ function Utilities() {
         {utilities.map((utility) => (
           <div
             key={utility.label}
-            className="border-grey10inverse bg-grey15inverse w-1/4 rounded border"
+            className="w-1/4 rounded border border-grey10inverse bg-grey15inverse"
           >
-            <p className="border-grey10inverse border-b px-4 py-2">
+            <p className="border-b border-grey10inverse px-4 py-2">
               {utility.label}
             </p>
             <div
@@ -43,13 +43,13 @@ function Utilities() {
                 backgroundImage: `url('../images/screenshots/${utility.image}')`,
               }}
             ></div>
-            <div className="border-grey10inverse flex flex-row items-center justify-between border-t px-4 py-2">
+            <div className="flex flex-row items-center justify-between border-t border-grey10inverse px-4 py-2">
               <div className="flex flex-row space-x-4">
                 <p>{utility.author}</p>
               </div>
               <Button
                 variant="ghost"
-                className="border-bronze1 h-8 w-full border text-base lg:w-max"
+                className="h-8 w-full border border-bronze1 text-base lg:w-max"
                 onClick={() => window.open(utility.url, "_blank")}
               >
                 Open
