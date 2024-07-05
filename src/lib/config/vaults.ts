@@ -25,13 +25,15 @@ export const IGNORED_VAULTS = [
   "0x082B50BeC5E85D82b52264dA7Ad24187a235DBC4",
   "0x1d2bE809EE3a0eeACb02d3d234b3eD479e1c4962",
   "0xDC8Eb117A9987cF2ED45E9082Adc13C03922Fa0a",
-];
+] as const;
 
-export const VAULTS: {
+export type VaultsConfig = {
   [chainId in SupportedChainId]: {
     [yieldToken: `0x${string}`]: VaultMetadata;
   };
-} = {
+};
+
+export const VAULTS: VaultsConfig = {
   [mainnet.id]: {
     //alUSD
     "0xdA816459F1AB5631232FE5e97a05BBBb94970c95": {
@@ -457,4 +459,4 @@ export const VAULTS: {
       },
     },
   },
-} as const;
+};

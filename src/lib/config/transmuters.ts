@@ -2,7 +2,7 @@ import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 import type { TransmutersMetadata } from "@/lib/config/metadataTypes";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
 
-export const TRANSMUTERS: TransmutersMetadata = {
+export const TRANSMUTERS = {
   [mainnet.id]: [
     //DAI
     {
@@ -107,4 +107,4 @@ export const TRANSMUTERS: TransmutersMetadata = {
       label: "Van Helmont",
     },
   ],
-};
+} as const satisfies TransmutersMetadata;

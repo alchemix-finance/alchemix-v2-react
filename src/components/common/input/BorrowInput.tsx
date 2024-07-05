@@ -53,7 +53,10 @@ export const BorrowInput = ({
     const debtFormatted = formatUnits(debt, debtToken.decimals);
     const amountAvailableToBorrow = depositForDebtToken / ltv - +debtFormatted;
     if (amountAvailableToBorrow < 0) return "0";
-    return amountAvailableToBorrow.toFixed(debtToken.decimals);
+    // Adjusting for floating point errors
+    // TODO: This is a wacky way to fix floating point errors. We should find a better way.
+    const adjusted = +amountAvailableToBorrow.toFixed(6) - 0.000001;
+    return adjusted.toString();
   }, [debtToken, vaults]);
 
   const setMax = () => {

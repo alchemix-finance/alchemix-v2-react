@@ -3,13 +3,16 @@ import { Link, useMatchRoute, useLocation } from "@tanstack/react-router";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { cn } from "@/utils/cn";
+import { ToOptions } from "@tanstack/react-router";
 
 export const routeTitleToPathMapping = {
   Vaults: "/vaults",
   Transmuter: "/transmuters",
+  Bridge: "/bridge",
+  Farms: "/farms",
   Governance: "/governance",
   Utilities: "/utilities",
-} as const;
+} as const satisfies Record<string, ToOptions["to"]>;
 
 export function Header() {
   const { pathname } = useLocation();

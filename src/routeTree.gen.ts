@@ -20,6 +20,8 @@ import { Route as TransmutersImport } from './routes/transmuters'
 
 const UtilitiesLazyImport = createFileRoute('/utilities')()
 const GovernanceLazyImport = createFileRoute('/governance')()
+const FarmsLazyImport = createFileRoute('/farms')()
+const BridgeLazyImport = createFileRoute('/bridge')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
@@ -33,6 +35,16 @@ const GovernanceLazyRoute = GovernanceLazyImport.update({
   path: '/governance',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/governance.lazy').then((d) => d.Route))
+
+const FarmsLazyRoute = FarmsLazyImport.update({
+  path: '/farms',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/farms.lazy').then((d) => d.Route))
+
+const BridgeLazyRoute = BridgeLazyImport.update({
+  path: '/bridge',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/bridge.lazy').then((d) => d.Route))
 
 const VaultsRoute = VaultsImport.update({
   path: '/vaults',
@@ -74,6 +86,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VaultsImport
       parentRoute: typeof rootRoute
     }
+    '/bridge': {
+      id: '/bridge'
+      path: '/bridge'
+      fullPath: '/bridge'
+      preLoaderRoute: typeof BridgeLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/farms': {
+      id: '/farms'
+      path: '/farms'
+      fullPath: '/farms'
+      preLoaderRoute: typeof FarmsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/governance': {
       id: '/governance'
       path: '/governance'
@@ -97,6 +123,8 @@ export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   TransmutersRoute,
   VaultsRoute,
+  BridgeLazyRoute,
+  FarmsLazyRoute,
   GovernanceLazyRoute,
   UtilitiesLazyRoute,
 })
@@ -112,6 +140,8 @@ export const routeTree = rootRoute.addChildren({
         "/",
         "/transmuters",
         "/vaults",
+        "/bridge",
+        "/farms",
         "/governance",
         "/utilities"
       ]
@@ -124,6 +154,12 @@ export const routeTree = rootRoute.addChildren({
     },
     "/vaults": {
       "filePath": "vaults.tsx"
+    },
+    "/bridge": {
+      "filePath": "bridge.lazy.tsx"
+    },
+    "/farms": {
+      "filePath": "farms.lazy.tsx"
     },
     "/governance": {
       "filePath": "governance.lazy.tsx"

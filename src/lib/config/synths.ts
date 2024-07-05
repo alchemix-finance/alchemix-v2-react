@@ -7,7 +7,7 @@ export const SYNTH_ASSETS = {
 
 export type SynthAsset = (typeof SYNTH_ASSETS)[keyof typeof SYNTH_ASSETS];
 
-export const SYNTH_ASSETS_METADATA: SynthAssetMetadata = {
+export const SYNTH_ASSETS_METADATA = {
   [SYNTH_ASSETS.ALUSD]: {
     label: "alUSD",
     icon: "./images/icons/alusd_med.svg",
@@ -16,4 +16,4 @@ export const SYNTH_ASSETS_METADATA: SynthAssetMetadata = {
     label: "alETH",
     icon: "./images/icons/aleth_med.svg",
   },
-};
+} as const satisfies SynthAssetMetadata;
