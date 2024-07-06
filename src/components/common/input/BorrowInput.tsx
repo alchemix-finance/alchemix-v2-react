@@ -56,6 +56,7 @@ export const BorrowInput = ({
     // Adjusting for floating point errors
     // TODO: This is a wacky way to fix floating point errors. We should find a better way.
     const adjusted = +amountAvailableToBorrow.toFixed(6) - 0.000001;
+    if (adjusted < 0) return "0";
     return adjusted.toString();
   }, [debtToken, vaults]);
 
