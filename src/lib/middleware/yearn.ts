@@ -8,8 +8,9 @@ export const getYearnApy: AprFn = async ({
   vaultAddress,
   chainId,
 }) => {
+  // NOTE: yearn doesn't have CORS set up. Using proxy in vite.config.ts
   const api = await fetch(
-    `https://ydaemon.yearn.fi/${chainId}/vaults/${yieldTokenOverride ?? vaultAddress}`,
+    `/yearn-vaults/${chainId}/vaults/${yieldTokenOverride ?? vaultAddress}`,
   );
   const vaultData = (await api.json()) as {
     apr: { netAPR: number | null; extra: { stakingRewardsAPR: number | null } };

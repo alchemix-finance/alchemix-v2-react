@@ -8,6 +8,7 @@ import {
   RainbowKitProvider,
   lightTheme,
   Theme,
+  Chain,
 } from "@rainbow-me/rainbowkit";
 import {
   injectedWallet,
@@ -38,9 +39,24 @@ const connectors = connectorsForWallets(
   },
 );
 
+// This overrides the default RPCs for the Optimism chain, thus we can just pass http() transport to the client,
+// as it will use the RPCs defined here with fallback transport.
+const optimismWithRpcs = {
+  ...optimism,
+  rpcUrls: {
+    default: {
+      http: [
+        "https://optimism.blockpi.network/v1/rpc/public",
+        "https://1rpc.io/op",
+        "https://optimism-rpc.publicnode.com",
+      ],
+    },
+  },
+} as const satisfies Chain;
+
 export const wagmiConfig = createConfig({
   connectors,
-  chains: [mainnet, optimism, arbitrum, fantom],
+  chains: [mainnet, optimismWithRpcs, arbitrum, fantom],
   client({ chain }) {
     return createClient({
       chain,
