@@ -9,9 +9,15 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { formatEther } from "viem";
-import { useAccount, useReadContracts, useReadContract } from "wagmi";
-import { useWatchQueryKey } from "@/hooks/useWatchQueryKey";
+import {
+  useAccount,
+  useBlockNumber,
+  useReadContracts,
+  useReadContract,
+} from "wagmi";
 
 export const DebtSelection = ({
   selectedSynthAsset,
@@ -22,8 +28,13 @@ export const DebtSelection = ({
   handleSynthAssetChange: (value: string) => void;
   availableSynthAssets: SynthAsset[];
 }) => {
+  const queryClient = useQueryClient();
   const chain = useChain();
   const { address } = useAccount();
+
+  const { data: blockNumber } = useBlockNumber({
+    chainId: chain.id,
+  });
 
   const { data: accounts } = useReadContracts({
     allowFailure: false,
@@ -52,8 +63,12 @@ export const DebtSelection = ({
       select: ([debt]) => (debt < 0 ? 0n : debt),
     },
   });
-
-  useWatchQueryKey(debtQueryKey);
+  console.log(debts);
+  useEffect(() => {
+    if (blockNumber) {
+      queryClient.invalidateQueries({ queryKey: debtQueryKey });
+    }
+  }, [blockNumber, queryClient, debtQueryKey]);
 
   return (
     <div className="flex items-center gap-2">

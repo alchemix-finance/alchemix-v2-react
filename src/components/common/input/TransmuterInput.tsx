@@ -1,11 +1,12 @@
 import { formatEther } from "viem";
-import { useAccount, useReadContracts } from "wagmi";
+import { useAccount, useBlockNumber, useReadContracts } from "wagmi";
 import { Input } from "@/components/ui/input";
 import { formatNumber } from "@/utils/number";
+import { useChain } from "@/hooks/useChain";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/utils/cn";
 import { transmuterV2Abi } from "@/abi/transmuterV2";
-import { useWatchQueryKey } from "@/hooks/useWatchQueryKey";
-import { useChain } from "@/hooks/useChain";
 
 export const TransmuterInput = ({
   amount,
@@ -23,6 +24,13 @@ export const TransmuterInput = ({
   const chain = useChain();
   const { address } = useAccount();
 
+  const queryClient = useQueryClient();
+
+  const { data: blockNumber } = useBlockNumber({
+    chainId: chain.id,
+    watch: true,
+  });
+
   const { data: transmuterBalance, queryKey: transmuterBalanceQueryKey } =
     useReadContracts({
       allowFailure: false,
@@ -32,14 +40,12 @@ export const TransmuterInput = ({
           abi: transmuterV2Abi,
           functionName: "getUnexchangedBalance",
           args: [address!],
-          chainId: chain.id,
         },
         {
           address: transmuterAddress,
           abi: transmuterV2Abi,
           functionName: "getClaimableBalance",
           args: [address!],
-          chainId: chain.id,
         },
       ],
       query: {
@@ -49,7 +55,11 @@ export const TransmuterInput = ({
     });
   const [unexchangedBalance, claimableBalance] = transmuterBalance ?? [];
 
-  useWatchQueryKey(transmuterBalanceQueryKey);
+  useEffect(() => {
+    if (blockNumber) {
+      queryClient.invalidateQueries({ queryKey: transmuterBalanceQueryKey });
+    }
+  }, [blockNumber, queryClient, transmuterBalanceQueryKey]);
 
   const setMax = () => {
     if (
