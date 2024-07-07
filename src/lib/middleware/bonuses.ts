@@ -10,6 +10,7 @@ import { BonusFn } from "@/lib/config/metadataTypes";
 import { getAaveReserves } from "./aave";
 import { getVesperReserves } from "./vesper";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
+import { dayjs } from "@/lib/dayjs";
 
 const SPY = 31536000;
 
@@ -89,24 +90,24 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
 
   if (!tokens) throw new Error("Tokens not ready");
 
-  const meltedRewardParams = await publicClient.readContract({
-    address: rewardRouterAddresses[chainId],
-    abi: rewardRouterAbi,
-    functionName: "getRewardCollector",
-    args: [vault.address],
-  });
+  // [rewardCollectorAddress, rewardToken, rewardAmount, rewardTimeframe, lastRewardTimestamp]
+  const [, , rewardAmount, rewardTimeframe, lastRewardTimestamp] =
+    await publicClient.readContract({
+      address: rewardRouterAddresses[chainId],
+      abi: rewardRouterAbi,
+      functionName: "getRewardCollector",
+      args: [vault.address],
+    });
 
   const bonusYieldTokenSymbol = rewardTokens[chainId].rewardTokenSymbol;
   const bonusTimeLimit = true;
 
-  const distributionTimeAmount = (
-    Number(meltedRewardParams[3]) /
-    60 /
-    60 /
-    24
-  ).toFixed();
-  const distributionTimeUnit =
-    parseFloat(distributionTimeAmount) > 1 ? "days" : "day";
+  const rewardEnd = dayjs.unix(
+    Number(lastRewardTimestamp) + Number(rewardTimeframe),
+  );
+  const distributionTimeAmount = rewardEnd.diff(dayjs(), "days");
+
+  const distributionTimeUnit = distributionTimeAmount > 1 ? "days" : "day";
 
   const bonusYieldValue = await getTokenPriceInEth({
     chainId,
@@ -119,7 +120,7 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
 
   let bonusYieldRate = 0;
 
-  if (meltedRewardParams[2] > 0n) {
+  if (rewardAmount > 0n) {
     const vaultUnderlyingTokenData = tokens.find(
       (token) =>
         token.address.toLowerCase() === vault.underlyingToken.toLowerCase(),
@@ -133,17 +134,15 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
     });
 
     bonusYieldRate =
-      (parseFloat(formatEther(meltedRewardParams[2])) *
-        bonusYieldValue *
-        31556952) /
-      parseFloat(meltedRewardParams[3].toString()) /
+      (parseFloat(formatEther(rewardAmount)) * bonusYieldValue * 31556952) /
+      parseFloat(rewardTimeframe.toString()) /
       (parseFloat(formatUnits(tvl, vaultUnderlyingTokenData.decimals)) *
         tokenPriceInEth);
 
     return {
       hasBonus: true,
       bonusTimeLimit,
-      distributionTimeAmount,
+      distributionTimeAmount: distributionTimeAmount.toString(),
       distributionTimeUnit,
       bonusYieldRate: bonusYieldRate * 100,
       bonusYieldTokenSymbol,

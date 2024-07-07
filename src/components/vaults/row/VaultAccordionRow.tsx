@@ -384,8 +384,8 @@ const BonusCell = ({ vault }: { vault: Vault }) => {
       </p>
       {bonusData?.bonusTimeLimit && (
         <p className="text-center text-sm text-lightgrey10">
-          {bonusData.distributionTimeAmount}
-          {bonusData.distributionTimeUnit} left
+          {bonusData.distributionTimeAmount} {bonusData.distributionTimeUnit}{" "}
+          left
         </p>
       )}
     </>
