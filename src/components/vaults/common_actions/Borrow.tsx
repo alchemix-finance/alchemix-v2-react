@@ -121,6 +121,11 @@ export const Borrow = () => {
     }
   }, [borrowReceipt, queryClient]);
 
+  const handleDebtTokenSelect = (value: string) => {
+    setAmount("");
+    setTokenAddress(value as `0x${string}`);
+  };
+
   const onCtaClick = useCallback(() => {
     if (borrowError) {
       toast.error("Borrow failed", {
@@ -145,10 +150,7 @@ export const Borrow = () => {
       {!availableSynthAssets || (!debtToken && <p>Loading...</p>)}
       {!!availableSynthAssets && !!debtToken && (
         <>
-          <Select
-            value={tokenAddress}
-            onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
-          >
+          <Select value={tokenAddress} onValueChange={handleDebtTokenSelect}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Debt Token">
                 {debtToken.symbol}
