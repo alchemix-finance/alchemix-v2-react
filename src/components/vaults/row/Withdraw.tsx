@@ -14,6 +14,8 @@ import { GAS_ADDRESS } from "@/lib/constants";
 import { useWithdraw } from "@/lib/mutations/useWithdraw";
 import { VaultWithdrawTokenInput } from "@/components/common/input/VaultWithdrawTokenInput";
 import { isInputZero } from "@/utils/inputNotZero";
+import { formatNumber } from "@/utils/number";
+import { formatEther } from "viem";
 
 export const Withdraw = ({
   vault,
@@ -83,6 +85,10 @@ export const Withdraw = ({
           ))}
         </SelectContent>
       </Select>
+      <div>
+        Current debt: {formatNumber(formatEther(vault.alchemist.position.debt))}{" "}
+        {vault.alchemist.synthType}
+      </div>
       <VaultWithdrawTokenInput
         amount={amount}
         setAmount={setAmount}

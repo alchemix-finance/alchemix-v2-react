@@ -12,6 +12,7 @@ import { formatEther } from "viem";
 import { useAccount, useReadContracts, useReadContract } from "wagmi";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useChain } from "@/hooks/useChain";
+import { formatNumber } from "@/utils/number";
 
 export const DebtSelection = ({
   selectedSynthAsset,
@@ -63,14 +64,14 @@ export const DebtSelection = ({
       <Select value={selectedSynthAsset} onValueChange={handleSynthAssetChange}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Synth">
-            {formatEther(debt ?? 0n)} {selectedSynthAsset}
+            {formatNumber(formatEther(debt ?? 0n))} {selectedSynthAsset}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {availableSynthAssets &&
             availableSynthAssets.map((synthAsset, i) => (
               <SelectItem key={synthAsset} value={synthAsset}>
-                {formatEther(debts?.[i] ?? 0n)} {synthAsset}
+                {formatNumber(formatEther(debts?.[i] ?? 0n))} {synthAsset}
               </SelectItem>
             ))}
         </SelectContent>
