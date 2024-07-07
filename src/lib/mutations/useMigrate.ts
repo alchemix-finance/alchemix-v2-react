@@ -3,7 +3,6 @@ import { MIGRATORS } from "../config/migrators";
 import { useChain } from "@/hooks/useChain";
 import { arbitrum, fantom } from "viem/chains";
 import {
-  serialize,
   useAccount,
   usePublicClient,
   useReadContract,
@@ -14,14 +13,14 @@ import {
 import { vaultMigrationToolAbi } from "@/abi/vaultMigrationTool";
 import { WaitForTransactionReceiptTimeoutError, parseUnits } from "viem";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { useVaultHelper } from "@/hooks/useVaultHelper";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { SYNTH_ASSETS } from "../config/synths";
 import { QueryKeys } from "../queries/queriesSchema";
+import { isInputZero } from "@/utils/inputNotZero";
 
 export const useMigrate = ({
   currentVault,
@@ -44,21 +43,28 @@ export const useMigrate = ({
   if (chain.id === fantom.id || chain.id === arbitrum.id) {
     throw new Error("Migrate is not supported on Fantom or Arbitrum");
   }
-  const { normalizeUnderlyingToDebt, convertSharesToUnderlyingTokens } =
-    useVaultHelper(currentVault);
 
-  const { data: underlyingInDebt } = useQuery({
-    queryKey: [
-      QueryKeys.Migration("underlyingInDebt"),
-      serialize(currentVault),
-      amount,
+  const { data: underlyingTokens } = useReadContract({
+    address: currentVault.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "convertSharesToUnderlyingTokens",
+    args: [
+      currentVault.yieldToken,
+      parseUnits(amount, currentVault.yieldTokenParams.decimals),
     ],
-    queryFn: async () =>
-      normalizeUnderlyingToDebt(
-        convertSharesToUnderlyingTokens(
-          parseUnits(amount, currentVault.yieldTokenParams.decimals),
-        ),
-      ),
+    query: {
+      enabled: !isInputZero(amount),
+    },
+  });
+
+  const { data: underlyingInDebt } = useReadContract({
+    address: currentVault.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "normalizeUnderlyingTokensToDebt",
+    args: [currentVault.underlyingToken, underlyingTokens ?? 0n],
+    query: {
+      enabled: underlyingTokens !== undefined,
+    },
   });
 
   const { address } = useAccount();

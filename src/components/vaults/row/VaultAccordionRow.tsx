@@ -9,23 +9,27 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { VaultHelper } from "@/lib/helpers/vaultHelper";
 import { useGetTokenPrice } from "@/lib/queries/useTokenPrice";
 import { formatNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { serialize, usePublicClient } from "wagmi";
+import {
+  serialize,
+  usePublicClient,
+  useReadContract,
+  useReadContracts,
+} from "wagmi";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { VaultMessage } from "@/components/vaults/row/VaultMessage";
 import { Info } from "@/components/vaults/row/Info";
 import { Deposit } from "@/components/vaults/row/Deposit";
 import { Withdraw } from "@/components/vaults/row/Withdraw";
 import { Migrate } from "@/components/vaults/row/Migrate";
-import { useVaultHelper } from "@/hooks/useVaultHelper";
 import { mainnet, optimism } from "viem/chains";
 import { useVaults } from "@/lib/queries/useVaults";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { alchemistV2Abi } from "@/abi/alchemistV2";
 
 export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
   const chain = useChain();
@@ -58,16 +62,25 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
       );
     }
   }, [tokens, vault]);
-  const { convertSharesToUnderlyingTokens } = useVaultHelper(vault);
-  const vaultStats = useMemo(() => {
-    const tvl = convertSharesToUnderlyingTokens(
-      vault.yieldTokenParams.totalShares,
-    );
-    const sharesBalance = convertSharesToUnderlyingTokens(
-      vault.position.shares,
-    );
-    return { tvl, sharesBalance };
-  }, [convertSharesToUnderlyingTokens, vault]);
+
+  const { data: vaultStats } = useReadContracts({
+    allowFailure: false,
+    contracts: [
+      {
+        address: vault.alchemist.address,
+        abi: alchemistV2Abi,
+        functionName: "convertSharesToUnderlyingTokens",
+        args: [vault.yieldToken, vault.yieldTokenParams.totalShares],
+      },
+      {
+        address: vault.alchemist.address,
+        abi: alchemistV2Abi,
+        functionName: "convertSharesToUnderlyingTokens",
+        args: [vault.yieldToken, vault.position.shares],
+      },
+    ] as const,
+  });
+  const [tvl, sharesBalance] = vaultStats ?? [0n, 0n];
 
   const vaultLtv =
     100 / parseFloat(formatEther(vault.alchemist.minimumCollateralization));
@@ -116,7 +129,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <div className="flex-2 w-full lg:w-1/6">
             <p className="text-center text-sm text-lightgrey10">Deposit</p>
             <CurrencyCell
-              tokenAmount={vaultStats.sharesBalance}
+              tokenAmount={sharesBalance}
               tokenAddress={vault.underlyingToken}
               tokenSymbol={vaultUnderlyingTokenData?.symbol}
               tokenDecimals={vaultUnderlyingTokenData?.decimals}
@@ -125,7 +138,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <div className="flex-2 w-full">
             <p className="text-center text-sm text-lightgrey10">TVL</p>
             <CurrencyCell
-              tokenAmount={vaultStats.tvl}
+              tokenAmount={tvl}
               tokenAddress={vault.underlyingToken ?? vault.yieldToken}
               tokenSymbol={vaultUnderlyingTokenData?.symbol}
               tokenDecimals={vaultUnderlyingTokenData?.decimals}
@@ -135,7 +148,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
         <div className="flex-2 col-span-2 hidden w-full lg:block">
           <p className="text-center text-sm text-lightgrey10">Deposit</p>
           <CurrencyCell
-            tokenAmount={vaultStats.sharesBalance}
+            tokenAmount={sharesBalance}
             tokenAddress={vault.underlyingToken}
             tokenSymbol={vaultUnderlyingTokenData?.symbol}
             tokenDecimals={vaultUnderlyingTokenData?.decimals}
@@ -262,16 +275,21 @@ const VaultCapacityCell = ({
     tokenDecimals,
   );
 
-  const capacity = useMemo(() => {
-    const vaultHelper = new VaultHelper(vault);
-    const currentValueBN = vaultHelper.convertSharesToUnderlyingTokens(
-      vault.yieldTokenParams.totalShares,
-    );
-    const currentValue = formatUnits(currentValueBN, tokenDecimals);
-    const isFull =
-      (parseFloat(currentValue) / parseFloat(limitValue)) * 100 >= 99;
-    return { currentValue, isFull };
-  }, [limitValue, tokenDecimals, vault]);
+  const { data: capacity, isPending } = useReadContract({
+    address: vault.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "convertSharesToUnderlyingTokens",
+    args: [vault.yieldToken, vault.yieldTokenParams.totalShares],
+    query: {
+      select: (currentValueBn) => {
+        const currentValue = formatUnits(currentValueBn, tokenDecimals);
+        const isFull =
+          (parseFloat(currentValue) / parseFloat(limitValue)) * 100 >= 99;
+        return { currentValue, isFull };
+      },
+      placeholderData: keepPreviousData,
+    },
+  });
 
   return (
     <>
@@ -283,19 +301,24 @@ const VaultCapacityCell = ({
                 "flex flex-col justify-center whitespace-nowrap bg-bronze1inverse text-left text-white shadow-none",
               )}
               style={{
-                width: capacity.isFull
+                width: capacity?.isFull
                   ? "100%"
-                  : `${(parseFloat(capacity.currentValue) / parseFloat(limitValue)) * 100}%`,
+                  : `${(parseFloat(capacity?.currentValue ?? "0") / parseFloat(limitValue)) * 100}%`,
               }}
             ></div>
           </div>
         </div>
       </div>
       <div className="mt-2 flex flex-col items-center">
-        <p className="text-sm text-lightgrey10">
-          {capacity.isFull
+        <p
+          className={cn(
+            "text-sm text-lightgrey10",
+            isPending && "animate-pulse",
+          )}
+        >
+          {capacity?.isFull
             ? "VaultFull"
-            : `${formatNumber(capacity.currentValue)}/${formatNumber(limitValue)} ${tokenSymbol}`}
+            : `${formatNumber(capacity?.currentValue ?? "0")}/${formatNumber(limitValue)} ${tokenSymbol}`}
         </p>
       </div>
     </>

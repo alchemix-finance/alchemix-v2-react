@@ -10,12 +10,13 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useVaultHelper } from "@/hooks/useVaultHelper";
 import { formatUnits } from "viem";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { GAS_ADDRESS } from "@/lib/constants";
 import { useDeposit } from "@/lib/mutations/useDeposit";
 import { isInputZero } from "@/utils/inputNotZero";
+import { useReadContract } from "wagmi";
+import { alchemistV2Abi } from "@/abi/alchemistV2";
 
 export const Deposit = ({
   vault,
@@ -37,22 +38,23 @@ export const Deposit = ({
     return tokens?.find((token) => token.address === GAS_ADDRESS);
   }, [tokens]);
 
-  const { convertSharesToUnderlyingTokens } = useVaultHelper(vault);
+  const { data: currentValue } = useReadContract({
+    address: vault.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "convertSharesToUnderlyingTokens",
+    args: [vault.yieldToken, vault.yieldTokenParams.totalShares],
+    query: {
+      select: (value) => formatUnits(value, yieldTokenData.decimals),
+    },
+  });
 
-  const { currentValue, limitValue } = useMemo(() => {
-    const currentValue = formatUnits(
-      convertSharesToUnderlyingTokens(vault.yieldTokenParams.totalShares),
-      yieldTokenData.decimals,
-    );
+  const limitValue = formatUnits(
+    vault.yieldTokenParams.maximumExpectedValue,
+    yieldTokenData.decimals,
+  );
 
-    const limitValue = formatUnits(
-      vault.yieldTokenParams.maximumExpectedValue,
-      yieldTokenData.decimals,
-    );
-    return { currentValue, limitValue };
-  }, [convertSharesToUnderlyingTokens, vault, yieldTokenData.decimals]);
-
-  const isFull = (parseInt(currentValue) / parseInt(limitValue)) * 100 >= 99;
+  const isFull =
+    (parseInt(currentValue ?? "0") / parseInt(limitValue)) * 100 >= 99;
 
   const isETHCompatible =
     vault.metadata.wethGateway !== undefined && gasToken !== undefined;
@@ -120,7 +122,7 @@ export const Deposit = ({
         {isFull
           ? "Vault is full"
           : isFetching
-            ? "Wait"
+            ? "Preparing"
             : token.address !== GAS_ADDRESS && isApprovalNeeded === true
               ? "Approve"
               : "Deposit"}

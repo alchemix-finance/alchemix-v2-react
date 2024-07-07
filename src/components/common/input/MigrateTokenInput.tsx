@@ -1,13 +1,12 @@
 import { formatUnits } from "viem";
-import { useAccount, useBlockNumber, useReadContract } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { Input } from "@/components/ui/input";
 import { formatNumber } from "@/utils/number";
 import { useChain } from "@/hooks/useChain";
-import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/utils/cn";
 import { Vault } from "@/lib/types";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
+import { useWatchQuery } from "@/hooks/useWatchQuery";
 
 export const MigrateTokenInput = ({
   amount,
@@ -20,13 +19,6 @@ export const MigrateTokenInput = ({
 }) => {
   const chain = useChain();
   const { address } = useAccount();
-
-  const queryClient = useQueryClient();
-
-  const { data: blockNumber } = useBlockNumber({
-    chainId: chain.id,
-    watch: true,
-  });
 
   const { data: sharesBalance, queryKey: sharesBalanceQueryKey } =
     useReadContract({
@@ -42,11 +34,9 @@ export const MigrateTokenInput = ({
       },
     });
 
-  useEffect(() => {
-    if (blockNumber) {
-      queryClient.invalidateQueries({ queryKey: sharesBalanceQueryKey });
-    }
-  }, [blockNumber, queryClient, sharesBalanceQueryKey]);
+  useWatchQuery({
+    queryKey: sharesBalanceQueryKey,
+  });
 
   const setMax = () => {
     if (sharesBalance) {

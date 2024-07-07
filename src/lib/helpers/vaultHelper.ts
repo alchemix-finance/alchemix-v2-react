@@ -90,8 +90,3 @@ export class VaultHelper {
     return normalizedValue;
   }
 }
-
-export const calculateMinimumOut = (amount: bigint, maximumLoss: bigint) => {
-  const pow = 10n ** 7n;
-  return amount - (amount * maximumLoss) / pow;
-};

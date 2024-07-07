@@ -1,16 +1,15 @@
 import { erc20Abi, formatEther, formatUnits } from "viem";
-import { useAccount, useBalance, useBlockNumber, useReadContract } from "wagmi";
+import { useAccount, useBalance, useReadContract } from "wagmi";
 import { Input } from "@/components/ui/input";
 import { formatNumber } from "@/utils/number";
 import { useChain } from "@/hooks/useChain";
-import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/utils/cn";
 import {
   AmountQuickOptions,
   PercentQuickOptions,
 } from "@/components/common/input/InputQuickOptions";
 import { GAS_ADDRESS } from "@/lib/constants";
+import { useWatchQuery } from "@/hooks/useWatchQuery";
 
 export const TokenInput = ({
   amount,
@@ -32,13 +31,6 @@ export const TokenInput = ({
   const chain = useChain();
   const { address } = useAccount();
 
-  const queryClient = useQueryClient();
-
-  const { data: blockNumber } = useBlockNumber({
-    chainId: chain.id,
-    watch: true,
-  });
-
   const { data: gasBalance, queryKey: gasBalanceQueryKey } = useBalance({
     address,
     chainId: chain.id,
@@ -59,12 +51,9 @@ export const TokenInput = ({
       },
     });
 
-  useEffect(() => {
-    if (blockNumber) {
-      queryClient.invalidateQueries({ queryKey: gasBalanceQueryKey });
-      queryClient.invalidateQueries({ queryKey: tokenBalanceQueryKey });
-    }
-  }, [blockNumber, queryClient, gasBalanceQueryKey, tokenBalanceQueryKey]);
+  useWatchQuery({
+    queryKeys: [gasBalanceQueryKey, tokenBalanceQueryKey],
+  });
 
   const setMax = () => {
     if (tokenAddress === GAS_ADDRESS && gasBalance) {

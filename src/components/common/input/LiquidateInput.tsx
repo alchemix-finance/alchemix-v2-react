@@ -1,14 +1,12 @@
 import { formatUnits } from "viem";
-import { useAccount, useBlockNumber, useReadContract } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { Input } from "@/components/ui/input";
 import { formatNumber } from "@/utils/number";
 import { useChain } from "@/hooks/useChain";
-import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/utils/cn";
 import { Vault } from "@/lib/types";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { useVaultHelper } from "@/hooks/useVaultHelper";
+import { useWatchQuery } from "@/hooks/useWatchQuery";
 
 export const LiquidateTokenInput = ({
   amount,
@@ -24,40 +22,38 @@ export const LiquidateTokenInput = ({
   const chain = useChain();
   const { address } = useAccount();
 
-  const queryClient = useQueryClient();
-  const { convertSharesToYieldTokens } = useVaultHelper(vault);
-
-  const { data: blockNumber } = useBlockNumber({
+  const { data: shares, queryKey: sharesBalanceQueryKey } = useReadContract({
+    address: vault.alchemist.address,
     chainId: chain.id,
-    watch: true,
+    abi: alchemistV2Abi,
+    functionName: "positions",
+    args: [address!, vault.yieldToken],
+    query: {
+      enabled: !!address,
+      select: ([shares]) => shares,
+    },
   });
 
-  const { data: sharesBalance, queryKey: sharesBalanceQueryKey } =
-    useReadContract({
-      address: vault.alchemist.address,
-      chainId: chain.id,
-      abi: alchemistV2Abi,
-      functionName: "positions",
-      args: [address!, vault.yieldToken],
-      query: {
-        enabled: !!address,
-        select: ([shares]) =>
-          formatUnits(
-            convertSharesToYieldTokens(shares),
-            vault.yieldTokenParams.decimals,
-          ),
-      },
-    });
+  const { data: balance } = useReadContract({
+    address: vault.alchemist.address,
+    chainId: chain.id,
+    abi: alchemistV2Abi,
+    functionName: "convertSharesToYieldTokens",
+    args: [vault.yieldToken, shares ?? 0n],
+    query: {
+      enabled: shares !== undefined,
+      select: (balance) =>
+        formatUnits(balance, vault.yieldTokenParams.decimals),
+    },
+  });
 
-  useEffect(() => {
-    if (blockNumber) {
-      queryClient.invalidateQueries({ queryKey: sharesBalanceQueryKey });
-    }
-  }, [blockNumber, queryClient, sharesBalanceQueryKey]);
+  useWatchQuery({
+    queryKey: sharesBalanceQueryKey,
+  });
 
   const setMax = () => {
-    if (sharesBalance) {
-      setAmount(sharesBalance);
+    if (balance) {
+      setAmount(balance);
     }
   };
 
@@ -66,11 +62,11 @@ export const LiquidateTokenInput = ({
       <p
         className={cn(
           "inline-block self-end text-sm font-light",
-          sharesBalance !== "0" && "cursor-pointer",
+          balance !== "0" && "cursor-pointer",
         )}
         onClick={setMax}
       >
-        Available: {formatNumber(sharesBalance)} {tokenSymbol}
+        Available: {formatNumber(balance)} {tokenSymbol}
       </p>
       <Input
         type="number"
@@ -78,8 +74,8 @@ export const LiquidateTokenInput = ({
         onChange={(e) => setAmount(e.target.value)}
         className={cn(
           "mb-2",
-          sharesBalance !== undefined &&
-            +amount > +sharesBalance &&
+          balance !== undefined &&
+            +amount > +balance &&
             "text-red-500 ring-2 ring-red-500 focus-visible:ring-red-500",
         )}
       />

@@ -1,7 +1,6 @@
 import { aaveTokenGatewayAbi } from "@/abi/aaveTokenGateway";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useChain } from "@/hooks/useChain";
-import { useVaultHelper } from "@/hooks/useVaultHelper";
 import { Token, Vault } from "@/lib/types";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,11 +18,8 @@ import {
 import { GAS_ADDRESS } from "@/lib/constants";
 import { wethGatewayAbi } from "@/abi/wethGateway";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
-import { calculateMinimumOut } from "@/lib/helpers/vaultHelper";
-import { QueryKeys } from "../queries/queriesSchema";
-
-// TODO: isApprovalNeeded doesn't invalidate when the user approves the transaction ?
-// TODO: isApprovalNeeded keep cached data when selected token changes.
+import { calculateMinimumOut } from "@/lib/helpers/minAmountWithSlippage";
+import { QueryKeys } from "@/lib/queries/queriesSchema";
 
 export const useWithdraw = ({
   vault,
@@ -54,16 +50,33 @@ export const useWithdraw = ({
   const { address } = useAccount();
   const addRecentTransaction = useAddRecentTransaction();
 
-  const { convertUnderlyingTokensToShares, convertYieldTokensToShares } =
-    useVaultHelper(vault);
-
   const isSelecedTokenYieldToken =
     selectedToken.address.toLowerCase() === yieldToken.address.toLowerCase();
+
+  const { data: sharesFromYieldToken } = useReadContract({
+    address: vault.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "convertYieldTokensToShares",
+    args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
+    query: {
+      enabled: isSelecedTokenYieldToken,
+    },
+  });
+
+  const { data: sharesFromUnderlyingToken } = useReadContract({
+    address: vault.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "convertUnderlyingTokensToShares",
+    args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
+    query: {
+      enabled: !isSelecedTokenYieldToken,
+    },
+  });
+
   const shares = isSelecedTokenYieldToken
-    ? convertYieldTokensToShares(parseUnits(amount, selectedToken.decimals))
-    : convertUnderlyingTokensToShares(
-        parseUnits(amount, selectedToken.decimals),
-      );
+    ? sharesFromYieldToken
+    : sharesFromUnderlyingToken;
+
   const minimumOut = calculateMinimumOut(shares, parseUnits(slippage, 6));
 
   const {
@@ -76,12 +89,13 @@ export const useWithdraw = ({
     args: [address!, vault.metadata.gateway!, vault.yieldToken],
     query: {
       enabled:
+        shares !== undefined &&
         !!address &&
         selectedToken.address.toLowerCase() ===
           yieldToken.address.toLowerCase() &&
         !!vault.metadata.gateway &&
         !!vault.metadata.yieldTokenOverride,
-      select: (allowance) => allowance < shares,
+      select: (allowance) => shares !== undefined && allowance < shares,
     },
   });
   const {
@@ -94,10 +108,11 @@ export const useWithdraw = ({
     args: [address!, vault.metadata.wethGateway!, vault.address],
     query: {
       enabled:
+        shares !== undefined &&
         !!address &&
         !!vault.metadata.wethGateway &&
         selectedToken.address === GAS_ADDRESS,
-      select: (allowance) => allowance < shares,
+      select: (allowance) => shares !== undefined && allowance < shares,
     },
   });
 
@@ -105,9 +120,10 @@ export const useWithdraw = ({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
     functionName: "approveWithdraw",
-    args: [vault.metadata.gateway!, vault.yieldToken, shares],
+    args: [vault.metadata.gateway!, vault.yieldToken, shares ?? 0n],
     query: {
       enabled:
+        shares !== undefined &&
         isApprovalNeededAaveGateway === true &&
         !!vault.metadata.gateway &&
         !!vault.metadata.yieldTokenOverride,
@@ -117,9 +133,10 @@ export const useWithdraw = ({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
     functionName: "approveWithdraw",
-    args: [vault.metadata.wethGateway!, vault.address, shares],
+    args: [vault.metadata.wethGateway!, vault.address, shares ?? 0n],
     query: {
       enabled:
+        shares !== undefined &&
         isApprovalNeededWethGateway === true &&
         !!vault.metadata.wethGateway &&
         selectedToken.address === GAS_ADDRESS,
@@ -181,9 +198,10 @@ export const useWithdraw = ({
     address: vault.metadata.gateway,
     abi: aaveTokenGatewayAbi,
     functionName: "withdraw",
-    args: [vault.yieldToken!, shares, address!],
+    args: [vault.yieldToken, shares ?? 0n, address!],
     query: {
       enabled:
+        shares !== undefined &&
         !!address &&
         isApprovalNeededAaveGateway !== true &&
         selectedToken.address.toLowerCase() ===
@@ -241,9 +259,10 @@ export const useWithdraw = ({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
     functionName: "withdraw",
-    args: [vault.address, shares, address!],
+    args: [vault.address, shares ?? 0n, address!],
     query: {
       enabled:
+        shares !== undefined &&
         !!address &&
         selectedToken.address.toLowerCase() ===
           yieldToken.address.toLowerCase() &&
@@ -303,12 +322,13 @@ export const useWithdraw = ({
     args: [
       vault.alchemist.address,
       vault.address,
-      shares,
+      shares ?? 0n,
       address!,
       minimumOut,
     ],
     query: {
       enabled:
+        shares !== undefined &&
         !!address &&
         isApprovalNeededWethGateway !== true &&
         selectedToken.address === GAS_ADDRESS &&
@@ -364,9 +384,10 @@ export const useWithdraw = ({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
     functionName: "withdrawUnderlying",
-    args: [vault.address, shares, address!, minimumOut],
+    args: [vault.address, shares ?? 0n, address!, minimumOut],
     query: {
       enabled:
+        shares !== undefined &&
         !!address &&
         selectedToken.address !== GAS_ADDRESS &&
         selectedToken.address.toLowerCase() !==
@@ -449,7 +470,7 @@ export const useWithdraw = ({
       } else {
         toast.error("Withdraw failed", {
           description:
-            "Withdraw failed. Unkonwn error. Please notify Alchemix team.",
+            "Withdraw failed. Unknown error. Please notify Alchemix team.",
         });
       }
     }
@@ -468,13 +489,14 @@ export const useWithdraw = ({
               ? withdrawAlchemistError.cause.message
               : withdrawAlchemistError.message,
         });
+        return;
       }
       if (withdrawAlchemistConfig) {
         withdrawAlchemist(withdrawAlchemistConfig.request);
       } else {
         toast.error("Withdraw failed", {
           description:
-            "Withdraw failed. Unkonwn error. Please notify Alchemix team.",
+            "Withdraw failed. Unknown error. Please notify Alchemix team.",
         });
       }
       return;
@@ -496,7 +518,7 @@ export const useWithdraw = ({
       } else {
         toast.error("Withdraw failed", {
           description:
-            "Withdraw failed. Unkonwn error. Please notify Alchemix team.",
+            "Withdraw failed. Unknown error. Please notify Alchemix team.",
         });
       }
       return;
@@ -521,7 +543,7 @@ export const useWithdraw = ({
       } else {
         toast.error("Withdraw failed", {
           description:
-            "Withdraw failed. Unkonwn error. Please notify Alchemix team.",
+            "Withdraw failed. Unknown error. Please notify Alchemix team.",
         });
       }
       return;

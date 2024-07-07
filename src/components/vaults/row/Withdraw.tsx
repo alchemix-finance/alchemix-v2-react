@@ -104,7 +104,7 @@ export const Withdraw = ({
         onClick={onCtaClick}
       >
         {isFetching
-          ? "Wait"
+          ? "Preparing"
           : isApprovalNeeded === true
             ? "Approve"
             : "Withdraw"}

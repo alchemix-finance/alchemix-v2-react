@@ -10,6 +10,7 @@ import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { Button } from "@/components/ui/button";
 import {
   usePublicClient,
+  useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -29,8 +30,7 @@ import { SynthAsset } from "@/lib/config/synths";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection";
 import { Input } from "@/components/ui/input";
-import { calculateMinimumOut } from "@/lib/helpers/vaultHelper";
-import { useVaultHelper } from "@/hooks/useVaultHelper";
+import { calculateMinimumOut } from "@/lib/helpers/minAmountWithSlippage";
 import { useVaults } from "@/lib/queries/useVaults";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
@@ -93,10 +93,20 @@ export const Liquidate = () => {
         liquidationTokenAddress?.toLowerCase() ||
       v.yieldToken.toLowerCase() === liquidationTokenAddress?.toLowerCase(),
   );
-  const { convertYieldTokensToShares } = useVaultHelper(vault);
-  const shares = convertYieldTokensToShares(
-    parseUnits(amount, liquidationToken?.decimals ?? 18),
-  );
+
+  const { data: shares } = useReadContract({
+    address: vault?.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "convertYieldTokensToShares",
+    args: [
+      liquidationToken?.address ?? zeroAddress,
+      parseUnits(amount, liquidationToken?.decimals ?? 18),
+    ],
+    query: {
+      enabled: !!liquidationToken && !isInputZero(amount),
+    },
+  });
+
   const minimumOut = calculateMinimumOut(shares, parseUnits(slippage, 6));
 
   const {
@@ -107,9 +117,10 @@ export const Liquidate = () => {
     address: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
     abi: alchemistV2Abi,
     functionName: "liquidate",
-    args: [liquidationToken?.address ?? zeroAddress, shares, minimumOut],
+    args: [liquidationToken?.address ?? zeroAddress, shares ?? 0n, minimumOut],
     query: {
-      enabled: !isInputZero(amount) && !!liquidationToken,
+      enabled:
+        !isInputZero(amount) && !!liquidationToken && shares !== undefined,
     },
   });
 

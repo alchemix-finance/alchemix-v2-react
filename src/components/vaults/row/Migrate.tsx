@@ -92,7 +92,7 @@ export const Migrate = ({
         onClick={onCtaClick}
       >
         {isFetching
-          ? "Wait"
+          ? "Preparing"
           : isApprovalNeededWithdraw === true
             ? "Approve Withdrawal"
             : isApprovalNeededMint === true

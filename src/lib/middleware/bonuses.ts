@@ -9,7 +9,7 @@ import {
 import { BonusFn } from "@/lib/config/metadataTypes";
 import { getAaveReserves } from "./aave";
 import { getVesperReserves } from "./vesper";
-import { VaultHelper } from "@/lib/helpers/vaultHelper";
+import { alchemistV2Abi } from "@/abi/alchemistV2";
 
 const SPY = 31536000;
 
@@ -125,10 +125,12 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
         token.address.toLowerCase() === vault.underlyingToken.toLowerCase(),
     )!;
 
-    const vaultHelper = new VaultHelper(vault);
-    const tvl = vaultHelper.convertSharesToUnderlyingTokens(
-      vault.yieldTokenParams.totalShares,
-    );
+    const tvl = await publicClient.readContract({
+      address: vault.alchemist.address,
+      abi: alchemistV2Abi,
+      functionName: "convertSharesToUnderlyingTokens",
+      args: [vault.yieldToken, vault.yieldTokenParams.totalShares],
+    });
 
     bonusYieldRate =
       (parseFloat(formatEther(meltedRewardParams[2])) *

@@ -18,11 +18,8 @@ import {
 } from "wagmi";
 import { GAS_ADDRESS } from "@/lib/constants";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
-import { calculateMinimumOut } from "@/lib/helpers/vaultHelper";
+import { calculateMinimumOut } from "@/lib/helpers/minAmountWithSlippage";
 import { QueryKeys } from "../queries/queriesSchema";
-
-// TODO: isApprovalNeeded doesn't invalidate when the user approves the transaction ?
-// TODO: isApprovalNeeded keep cached data when selected token changes.
 
 export const useDeposit = ({
   vault,
@@ -80,8 +77,6 @@ export const useDeposit = ({
     address: vault.metadata.gateway,
     abi: aaveTokenGatewayAbi,
     functionName: "deposit",
-    // TODO: double check if we need override token here or just yield token
-    // uiv2 updated has it as just yieldToken
     args: [
       vault.yieldToken,
       parseUnits(amount, selectedToken.decimals),
