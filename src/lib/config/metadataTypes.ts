@@ -42,11 +42,13 @@ export interface SynthAssetMetadata {
   };
 }
 
+export type MessageType = "info" | "warning" | "error";
+
 export interface VaultMetadata {
   label: string;
   synthAssetType: SynthAsset;
   underlying: string;
-  messages: { content: string; level: number }[];
+  messages: { message: string; type: MessageType }[];
   wethGateway?: Address;
   gateway?: Address;
   migrator?: Address;

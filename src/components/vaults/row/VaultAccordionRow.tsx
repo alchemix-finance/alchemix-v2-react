@@ -177,10 +177,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
         <div className="flex w-full flex-col gap-4">
           {vault.metadata.messages.length > 0 &&
             vault.metadata.messages.map((message) => (
-              <VaultMessage
-                message={message.content}
-                level={message.level as 0 | 1 | 2}
-              />
+              <VaultMessage message={message.message} type={message.type} />
             ))}
           <Tabs defaultValue="deposit">
             <TabsList>

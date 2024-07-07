@@ -358,7 +358,12 @@ export const VAULTS: VaultsConfig = {
       label: "Yearn yvUSDC",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "USDC",
-      messages: [],
+      messages: [
+        {
+          message: "Yearn yvUSDC is currently disabled for deposits.",
+          type: "warning",
+        },
+      ],
       gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
       yieldTokenOverride: "0xaD17A225074191d5c8a37B50FdA1AE278a2EE6A2",
       api: {
@@ -372,7 +377,12 @@ export const VAULTS: VaultsConfig = {
       label: "Yearn yvDAI",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "DAI",
-      messages: [],
+      messages: [
+        {
+          message: "Yearn yvDAI is currently disabled for deposits.",
+          type: "warning",
+        },
+      ],
       gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
       yieldTokenOverride: "0x65343F414FFD6c97b0f6add33d16F6845Ac22BAc",
       api: {
@@ -416,7 +426,12 @@ export const VAULTS: VaultsConfig = {
       label: "Yearn yvWETH",
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlying: "WETH",
-      messages: [],
+      messages: [
+        {
+          message: "Yearn yvWETH is currently disabled for deposits.",
+          type: "warning",
+        },
+      ],
       gateway: "0xedE36d3F423EF198abE82D2463E0a18bcF2d9397",
       migrator: "0x00E33722ba54545667E76a18CE9D544130eEAbcC",
       yieldTokenOverride: "0x5B977577Eb8a480f63e11FC615D6753adB8652Ae",
