@@ -97,6 +97,7 @@ export const Liquidate = () => {
   const { data: shares } = useReadContract({
     address: vault?.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "convertYieldTokensToShares",
     args: [
       liquidationToken?.address ?? zeroAddress,

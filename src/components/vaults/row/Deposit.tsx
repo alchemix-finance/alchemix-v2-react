@@ -17,6 +17,7 @@ import { useDeposit } from "@/lib/mutations/useDeposit";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useReadContract } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
+import { useChain } from "@/hooks/useChain";
 
 export const Deposit = ({
   vault,
@@ -27,6 +28,8 @@ export const Deposit = ({
   underlyingTokenData: Token;
   yieldTokenData: Token;
 }) => {
+  const chain = useChain();
+
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("2");
   const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
@@ -41,6 +44,7 @@ export const Deposit = ({
   const { data: currentValue } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "convertSharesToUnderlyingTokens",
     args: [vault.yieldToken, vault.yieldTokenParams.totalShares],
     query: {

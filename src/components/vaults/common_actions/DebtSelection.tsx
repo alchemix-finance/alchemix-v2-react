@@ -33,6 +33,7 @@ export const DebtSelection = ({
         ({
           address: ALCHEMISTS_METADATA[chain.id][synthAsset],
           abi: alchemistV2Abi,
+          chainId: chain.id,
           functionName: "accounts",
           args: [address!],
           query: {
@@ -46,6 +47,7 @@ export const DebtSelection = ({
   const { data: debt, queryKey: debtQueryKey } = useReadContract({
     address: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "accounts",
     args: [address!],
     query: {

@@ -69,12 +69,14 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
       {
         address: vault.alchemist.address,
         abi: alchemistV2Abi,
+        chainId: chain.id,
         functionName: "convertSharesToUnderlyingTokens",
         args: [vault.yieldToken, vault.yieldTokenParams.totalShares],
       },
       {
         address: vault.alchemist.address,
         abi: alchemistV2Abi,
+        chainId: chain.id,
         functionName: "convertSharesToUnderlyingTokens",
         args: [vault.yieldToken, vault.position.shares],
       },
@@ -267,6 +269,8 @@ const VaultCapacityCell = ({
   tokenDecimals: number | undefined;
   tokenSymbol: string | undefined;
 }) => {
+  const chain = useChain();
+
   const limitValue = formatUnits(
     vault.yieldTokenParams.maximumExpectedValue,
     tokenDecimals,
@@ -275,6 +279,7 @@ const VaultCapacityCell = ({
   const { data: capacity, isPending } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "convertSharesToUnderlyingTokens",
     args: [vault.yieldToken, vault.yieldTokenParams.totalShares],
     query: {
@@ -314,7 +319,7 @@ const VaultCapacityCell = ({
           )}
         >
           {capacity?.isFull
-            ? "VaultFull"
+            ? "Full"
             : `${formatNumber(capacity?.currentValue ?? "0")}/${formatNumber(limitValue)} ${tokenSymbol}`}
         </p>
       </div>
