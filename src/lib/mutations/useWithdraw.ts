@@ -56,6 +56,7 @@ export const useWithdraw = ({
   const { data: sharesFromYieldToken } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "convertYieldTokensToShares",
     args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
     query: {
@@ -66,6 +67,7 @@ export const useWithdraw = ({
   const { data: sharesFromUnderlyingToken } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "convertUnderlyingTokensToShares",
     args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
     query: {
@@ -85,6 +87,7 @@ export const useWithdraw = ({
   } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "withdrawAllowance",
     args: [address!, vault.metadata.gateway!, vault.yieldToken],
     query: {
@@ -104,6 +107,7 @@ export const useWithdraw = ({
   } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "withdrawAllowance",
     args: [address!, vault.metadata.wethGateway!, vault.address],
     query: {

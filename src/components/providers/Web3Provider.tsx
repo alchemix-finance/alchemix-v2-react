@@ -54,9 +54,34 @@ const optimismWithRpcs = {
   },
 } as const satisfies Chain;
 
+const mainnetWithRpcs = {
+  ...mainnet,
+  rpcUrls: {
+    default: {
+      http: [
+        "https://1rpc.io/eth",
+        "https://ethereum.blockpi.network/v1/rpc/public",
+      ],
+    },
+  },
+} as const satisfies Chain;
+
+const arbitrumWithRpcs = {
+  ...arbitrum,
+  rpcUrls: {
+    default: {
+      http: [
+        "https://arb1.arbitrum.io/rpc",
+        "https://1rpc.io/arb",
+        "https://arbitrum-one.publicnode.com",
+      ],
+    },
+  },
+} as const satisfies Chain;
+
 export const wagmiConfig = createConfig({
   connectors,
-  chains: [mainnet, optimismWithRpcs, arbitrum, fantom],
+  chains: [mainnetWithRpcs, optimismWithRpcs, arbitrumWithRpcs, fantom],
   client({ chain }) {
     return createClient({
       chain,

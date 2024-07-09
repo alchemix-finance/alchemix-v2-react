@@ -47,6 +47,7 @@ export const useMigrate = ({
   const { data: underlyingTokens } = useReadContract({
     address: currentVault.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "convertSharesToUnderlyingTokens",
     args: [
       currentVault.yieldToken,
@@ -60,6 +61,7 @@ export const useMigrate = ({
   const { data: underlyingInDebt } = useReadContract({
     address: currentVault.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "normalizeUnderlyingTokensToDebt",
     args: [currentVault.underlyingToken, underlyingTokens ?? 0n],
     query: {
@@ -77,6 +79,7 @@ export const useMigrate = ({
   const { data: migrationParams } = useReadContract({
     address: migratorToolAddress,
     abi: vaultMigrationToolAbi,
+    chainId: chain.id,
     functionName: "previewMigration",
     args: [
       address!,
@@ -98,6 +101,7 @@ export const useMigrate = ({
   } = useReadContract({
     address: currentVault.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "withdrawAllowance",
     args: [address!, migratorToolAddress, currentVault.address],
     query: {
@@ -111,6 +115,7 @@ export const useMigrate = ({
     useReadContract({
       address: currentVault.alchemist.address,
       abi: alchemistV2Abi,
+      chainId: chain.id,
       functionName: "mintAllowance",
       args: [address!, migratorToolAddress],
       query: {

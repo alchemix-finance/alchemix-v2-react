@@ -5,6 +5,7 @@ import { formatNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
 import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
+import { useChain } from "@/hooks/useChain";
 
 export const TransmuterInput = ({
   amount,
@@ -19,6 +20,7 @@ export const TransmuterInput = ({
   type: "Available" | "Claimable";
   tokenSymbol: string;
 }) => {
+  const chain = useChain();
   const { address } = useAccount();
 
   const { data: transmuterBalance, queryKey: transmuterBalanceQueryKey } =
@@ -30,12 +32,14 @@ export const TransmuterInput = ({
           abi: transmuterV2Abi,
           functionName: "getUnexchangedBalance",
           args: [address!],
+          chainId: chain.id,
         },
         {
           address: transmuterAddress,
           abi: transmuterV2Abi,
           functionName: "getClaimableBalance",
           args: [address!],
+          chainId: chain.id,
         },
       ],
       query: {
