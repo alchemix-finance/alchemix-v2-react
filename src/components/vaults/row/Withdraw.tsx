@@ -86,7 +86,14 @@ export const Withdraw = ({
         </SelectContent>
       </Select>
       <div>
-        Current debt: {formatNumber(formatEther(vault.alchemist.position.debt))}{" "}
+        Current debt:{" "}
+        {formatNumber(
+          formatEther(
+            vault.alchemist.position.debt < 0n
+              ? 0n
+              : vault.alchemist.position.debt,
+          ),
+        )}{" "}
         {vault.alchemist.synthType}
       </div>
       <VaultWithdrawTokenInput
