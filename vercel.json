@@ -1,3 +1,13 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/vesper-pools",
+      "destination": "https://api.vesper.finance/pools"
+    },
+    {
+      "source": "/yearn-vaults/:path*",
+      "destination": "https://ydaemon.yearn.fi/:path*"
+    },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
