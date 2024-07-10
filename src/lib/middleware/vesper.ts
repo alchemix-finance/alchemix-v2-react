@@ -8,7 +8,7 @@ interface VesperReserve {
 
 export const getVesperReserves = async () => {
   // NOTE: see vite.config.ts
-  const url = "/vesper-pools";
+  const url = "/proxy/vesper-pools";
   const response = await fetch(url);
   const data = (await response.json()) as VesperReserve[];
   return data;

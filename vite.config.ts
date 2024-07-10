@@ -14,15 +14,15 @@ export default defineConfig({
   // NOTE: vesper pools endpoint and yearn doesn't have CORS set up ?
   server: {
     proxy: {
-      "/vesper-pools": {
+      "/proxy/vesper-pools": {
         target: "https://api.vesper.finance/pools",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/vesper-pools/, ""),
+        rewrite: (path) => path.replace("/proxy/vesper-pools", ""),
       },
-      "/yearn-vaults": {
+      "/proxy/yearn-vaults": {
         target: "https://ydaemon.yearn.fi/",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/yearn-vaults/, ""),
+        rewrite: (path) => path.replace("/proxy/yearn-vaults", ""),
       },
     },
   },
