@@ -2,12 +2,12 @@
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" },
     {
-      "source": "/vesper-pools/:match*",
-      "destination": "https://api.vesper.finance/pools/:match*"
+      "source": "/vesper-pools/:path*",
+      "destination": "https://api.vesper.finance/pools/:path*"
     },
     {
-      "source": "/yearn-vaults/:match*",
-      "destination": "https://ydaemon.yearn.fi/:match*"
+      "source": "/yearn-vaults/:path*",
+      "destination": "https://ydaemon.yearn.fi/:path*"
     }
   ]
 }
