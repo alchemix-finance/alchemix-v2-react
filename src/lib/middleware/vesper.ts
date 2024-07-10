@@ -8,10 +8,7 @@ interface VesperReserve {
 
 export const getVesperReserves = async () => {
   // NOTE: see vite.config.ts
-  const url =
-    process.env.NODE_ENV === "development"
-      ? "/vesper-pools"
-      : "https://api.vesper.finance/pools";
+  const url = "/vesper-pools";
   const response = await fetch(url);
   const data = (await response.json()) as VesperReserve[];
   return data;
