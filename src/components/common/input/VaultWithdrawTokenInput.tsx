@@ -95,7 +95,10 @@ export const VaultWithdrawTokenInput = ({
     chainId: chain.id,
     abi: alchemistV2Abi,
     functionName: "normalizeDebtTokensToUnderlying",
-    args: [vault.underlyingToken, vault.alchemist.position.debt],
+    args: [
+      vault.underlyingToken,
+      vault.alchemist.position.debt < 0n ? 0n : vault.alchemist.position.debt,
+    ],
     query: {
       select: (requiredCover) => {
         const ltv = BigInt(
