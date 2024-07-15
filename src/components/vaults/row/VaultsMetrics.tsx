@@ -1,4 +1,4 @@
-import { VaultHelper } from "@/lib/helpers/vaultHelper";
+import { VaultHelper } from "@/utils/helpers/vaultHelper";
 import { useAlchemists } from "@/lib/queries/useAlchemists";
 import { useGetMultipleTokenPrices } from "@/lib/queries/useTokenPrice";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";

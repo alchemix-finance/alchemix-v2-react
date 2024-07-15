@@ -36,6 +36,7 @@ export const Footer = () => {
                 href="https://github.com/orgs/alchemix-finance/"
                 className="flex space-x-4"
                 target="_blank"
+                rel="noreferrer"
               >
                 <span>Github</span>
               </a>
@@ -45,6 +46,7 @@ export const Footer = () => {
                 href="https://alchemix-finance.gitbook.io/user-docs/"
                 className="flex space-x-4"
                 target="_blank"
+                rel="noreferrer"
               >
                 <span>Documentation</span>
               </a>
@@ -64,6 +66,7 @@ export const Footer = () => {
                 href="https://alchemixfi.medium.com/"
                 className="flex space-x-4"
                 target="_blank"
+                rel="noreferrer"
               >
                 <svg
                   className="h-5 w-5"
@@ -83,6 +86,7 @@ export const Footer = () => {
                 href="https://discord.com/invite/alchemix"
                 className="flex space-x-4"
                 target="_blank"
+                rel="noreferrer"
               >
                 <svg
                   className="h-5 w-5"
@@ -101,6 +105,7 @@ export const Footer = () => {
                 href="https://forum.alchemix.fi/public/"
                 className="flex space-x-4"
                 target="_blank"
+                rel="noreferrer"
               >
                 <svg
                   className="h-5 w-5"
@@ -120,6 +125,7 @@ export const Footer = () => {
                 href="https://twitter.com/AlchemixFi"
                 className="flex space-x-4"
                 target="_blank"
+                rel="noreferrer"
               >
                 <svg
                   className="h-5 w-5"
@@ -140,6 +146,7 @@ export const Footer = () => {
                 href="https://alchemixfi.substack.com/"
                 className="flex space-x-4"
                 target="_blank"
+                rel="noreferrer"
               >
                 <svg
                   className="h-5 w-5"
@@ -160,7 +167,7 @@ export const Footer = () => {
           <p className="alcxTitle mb-5 text-sm uppercase">PROUDLY USING</p>
           <ul className="space-y-3 text-sm">
             <li className="opacity-50 hover:opacity-100">
-              <a href="https://defillama.com/" target="_blank">
+              <a href="https://defillama.com/" target="_blank" rel="noreferrer">
                 <img
                   src="./images/integrations/defillama.svg"
                   className="w-32"
@@ -169,7 +176,7 @@ export const Footer = () => {
               </a>
             </li>
             <li className="opacity-50 hover:opacity-100">
-              <a href="https://li.fi/" target="_blank">
+              <a href="https://li.fi/" target="_blank" rel="noreferrer">
                 <img
                   src="./images/integrations/lifi.svg"
                   className="w-32"
@@ -178,7 +185,7 @@ export const Footer = () => {
               </a>
             </li>
             <li className="opacity-50 hover:opacity-100">
-              <a href="https://snapshot.org/" target="_blank">
+              <a href="https://snapshot.org/" target="_blank" rel="noreferrer">
                 <img
                   src="./images/integrations/snapshot.svg"
                   className="w-32"
@@ -195,6 +202,7 @@ export const Footer = () => {
               <a
                 href="https://www.klimadao.finance/pledge/0xffaa3cda4f169d33291dd9ddbea8578d1398430e"
                 target="_blank"
+                rel="noreferrer"
               >
                 <img
                   src="./images/integrations/klima.svg"

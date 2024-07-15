@@ -18,7 +18,7 @@ import {
 } from "wagmi";
 import { GAS_ADDRESS } from "@/lib/constants";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
-import { calculateMinimumOut } from "@/lib/helpers/minAmountWithSlippage";
+import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "../queries/queriesSchema";
 
 export const useDeposit = ({

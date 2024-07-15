@@ -18,7 +18,7 @@ import {
 import { GAS_ADDRESS } from "@/lib/constants";
 import { wethGatewayAbi } from "@/abi/wethGateway";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
-import { calculateMinimumOut } from "@/lib/helpers/minAmountWithSlippage";
+import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 
 export const useWithdraw = ({

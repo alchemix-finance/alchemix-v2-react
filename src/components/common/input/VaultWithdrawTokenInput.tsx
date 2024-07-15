@@ -9,7 +9,7 @@ import { formatEther, formatUnits, parseUnits } from "viem";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useMemo } from "react";
 import { useVaults } from "@/lib/queries/useVaults";
-import { VaultHelper } from "@/lib/helpers/vaultHelper";
+import { VaultHelper } from "@/utils/helpers/vaultHelper";
 
 export const VaultWithdrawTokenInput = ({
   amount,
@@ -169,7 +169,7 @@ export const VaultWithdrawTokenInput = ({
     <div className="flex flex-col">
       <p
         className={cn(
-          "inline-block self-end text-sm font-light",
+          "inline-block self-end text-sm font-light text-lightgrey10",
           balance !== "0" && "cursor-pointer",
         )}
         onClick={setMax}

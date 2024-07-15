@@ -6,6 +6,7 @@ import { useAccount, usePublicClient } from "wagmi";
 import { Address, zeroAddress } from "viem";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { QueryKeys } from "./queriesSchema";
+import { ONE_MINUTE_IN_MS } from "@/lib/constants";
 
 export const useTransmuters = () => {
   const chain = useChain();
@@ -112,5 +113,6 @@ export const useTransmuters = () => {
 
       return transmuters;
     },
+    staleTime: ONE_MINUTE_IN_MS,
   });
 };

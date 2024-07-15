@@ -13,12 +13,7 @@ import { useGetTokenPrice } from "@/lib/queries/useTokenPrice";
 import { formatNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import {
-  serialize,
-  usePublicClient,
-  useReadContract,
-  useReadContracts,
-} from "wagmi";
+import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { VaultMessage } from "@/components/vaults/row/VaultMessage";
 import { Info } from "@/components/vaults/row/Info";
@@ -179,7 +174,11 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
         <div className="flex w-full flex-col gap-4">
           {vault.metadata.messages.length > 0 &&
             vault.metadata.messages.map((message) => (
-              <VaultMessage message={message.message} type={message.type} />
+              <VaultMessage
+                key={message.type + message.message.slice(0, 10)}
+                message={message.message}
+                type={message.type}
+              />
             ))}
           <Tabs defaultValue="deposit">
             <TabsList>
@@ -360,13 +359,7 @@ const BonusCell = ({ vault }: { vault: Vault }) => {
   });
   const { data: tokens } = useTokensQuery();
   const { data: bonusData } = useQuery({
-    queryKey: [
-      QueryKeys.Bonus,
-      chain.id,
-      publicClient,
-      tokens,
-      serialize(vault),
-    ],
+    queryKey: [QueryKeys.Bonus, chain.id, publicClient, tokens, vault],
     queryFn: () =>
       vault.metadata.api.bonus({
         vault,
