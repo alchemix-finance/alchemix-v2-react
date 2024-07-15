@@ -42,7 +42,7 @@
     "wagmi": "^2.10.9"
   },
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "^5.50.0",
+    "@tanstack/eslint-plugin-query": "^5.51.1",
     "@tanstack/router-devtools": "^1.43.10",
     "@tanstack/router-plugin": "^1.43.9",
     "@types/react": "^18.3.3",
