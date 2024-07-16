@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      wagmi:
+        patterns:
+          - "wagmi"
+          - "viem"
+          - "@wagmi/core"
+          - "@rainbow-me/rainbowkit"
+      radix:
+        patterns:
+          - "@radix-ui/*"
