@@ -11,6 +11,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion } from "@/components/ui/accordion";
 import { FarmsAccordionRow } from "./row/FarmsAccordionRow";
 import { staticExternalFarms } from "@/lib/config/farms";
+import { LiquidityMigration } from "./LiquidityMigration";
+import { GAlcsWrapper } from "./GAlcxWrapper";
 
 type Filter = "active" | "retired" | "external";
 
@@ -64,8 +66,8 @@ export const Farms = () => {
     <>
       {chain.id === mainnet.id && (
         <div className="space-y-5">
-          <p>Liquidity Migration here</p>
-          <p>gALCX Wrapper here</p>
+          <LiquidityMigration />
+          <GAlcsWrapper />
           <div>
             {isPending ? (
               <div className="rounded border border-grey10inverse bg-grey15inverse">
