@@ -36,6 +36,7 @@ import { useChain } from "@/hooks/useChain";
 import { wagmiConfig } from "../providers/Web3Provider";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
+import { TokenInput } from "../common/input/TokenInput";
 
 const TOKENS_FROM = ["SLP"] as const;
 const TOKENS_TO = ["AURA", "BALANCER"] as const;
@@ -151,7 +152,7 @@ export const LiquidityMigration = () => {
       <div className="w-full bg-grey10inverse">
         <p className="text-sm">Liquidity Migration</p>
       </div>
-      <div className="flex flex-col space-y-4 p-4">
+      <div className="flex flex-col gap-8 p-4">
         <div className="flex items-center">
           <p>From:</p>{" "}
           <Select
@@ -192,14 +193,16 @@ export const LiquidityMigration = () => {
             </SelectContent>
           </Select>
         </div>
-        <Input
-          type="number"
-          value={migrationAmount}
-          onChange={(e) => setMigrationAmount(e.target.value)}
-          placeholder="0.00 Sushi LP"
+        <TokenInput
+          amount={migrationAmount}
+          setAmount={setMigrationAmount}
+          tokenDecimals={18}
+          tokenAddress={SUSHI_LP}
+          tokenSymbol="Sushi LP"
         />
         <Input
           readOnly
+          aria-readonly
           type="number"
           value={
             projectedAmount === undefined ? "" : formatEther(projectedAmount)

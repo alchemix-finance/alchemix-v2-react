@@ -38,7 +38,9 @@ export const mutationCallback = ({
     },
     onError: (error) => {
       toast.error(`${action} failed`, {
-        description: error.message,
+        description: error.message.includes("User rejected the request")
+          ? "Transaction rejected by user"
+          : error.message,
       });
     },
   }) as const;
