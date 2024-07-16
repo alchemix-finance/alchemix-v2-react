@@ -86,18 +86,12 @@ importers:
       recharts:
         specifier: ^2.12.7
         version: 2.12.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      relativeTime:
-        specifier: link:dayjs/plugin/relativeTime
-        version: link:dayjs/plugin/relativeTime
       sonner:
         specifier: ^1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwind-merge:
         specifier: ^2.4.0
         version: 2.4.0
-      updateLocale:
-        specifier: link:dayjs/plugin/updateLocale
-        version: link:dayjs/plugin/updateLocale
       viem:
         specifier: ^2.17.4
         version: 2.17.4(bufferutil@4.0.8)(typescript@5.5.3)(utf-8-validate@5.0.10)(zod@3.23.8)

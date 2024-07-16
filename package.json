@@ -37,10 +37,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "recharts": "^2.12.7",
-    "relativeTime": "link:dayjs/plugin/relativeTime",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
-    "updateLocale": "link:dayjs/plugin/updateLocale",
     "viem": "^2.17.4",
     "wagmi": "^2.10.11"
   },
