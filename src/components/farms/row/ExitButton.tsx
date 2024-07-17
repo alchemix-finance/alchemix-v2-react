@@ -1,24 +1,19 @@
-//     if (farmType === FarmTypes.INTERNAL) {
-//       const castedFarm = castToInternalFarmType(farm);
-
 import { curveGaugeAbi } from "@/abi/curveGauge";
 import { stakingPoolsAbi } from "@/abi/stakingPools";
 import { sushiMasterchefAbi } from "@/abi/sushiMasterchef";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { curve, stakingPoolsAddresses, sushi } from "@/lib/config/farms";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError, parseEther } from "viem";
+import { parseEther } from "viem";
 import { mainnet } from "viem/chains";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -26,11 +21,8 @@ import {
 
 export const ExitButton = ({ farm }: { farm: Farm }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const queryClient = useQueryClient();
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const { address } = useAccount();
 
@@ -39,6 +31,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     useSimulateContract({
       address: stakingPoolsAddresses[mainnet.id],
       abi: stakingPoolsAbi,
+      chainId: chain.id,
       functionName: "exit",
       args: [BigInt(farm.poolId)],
       query: {
@@ -47,31 +40,9 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     });
   const { writeContract: exitInternal, data: internalExitHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Exit pool",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Exiting...",
-            success: "Exit confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your exit. Please check your wallet."
-                : "Exit failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Exit failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Exit",
+      }),
     });
   const { data: internalExitReceipt } = useWaitForTransactionReceipt({
     hash: internalExitHash,
@@ -88,6 +59,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
   const { data: sushiExitConfig, error: sushiError } = useSimulateContract({
     address: sushi.masterchef,
     abi: sushiMasterchefAbi,
+    chainId: chain.id,
     functionName: "emergencyWithdraw",
     args: [0n, address!],
     query: {
@@ -95,31 +67,9 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     },
   });
   const { writeContract: exitSushi, data: sushiExitHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Exit pool",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Exiting...",
-          success: "Exit confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your exit. Please check your wallet."
-              : "Exit failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Exit failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Exit",
+    }),
   });
   const { data: sushiExitReceipt } = useWaitForTransactionReceipt({
     hash: sushiExitHash,
@@ -136,6 +86,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
   const { data: curveExitConfig, error: curveError } = useSimulateContract({
     address: curve.gauge,
     abi: curveGaugeAbi,
+    chainId: chain.id,
     functionName: "withdraw",
     args: [parseEther(farm.staked.amount)],
     query: {
@@ -143,31 +94,9 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     },
   });
   const { writeContract: exitCurve, data: curveExitHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Exit pool",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Exiting...",
-          success: "Exit confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your exit. Please check your wallet."
-              : "Exit failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Exit failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Exit",
+    }),
   });
   const { data: curveExitReceipt } = useWaitForTransactionReceipt({
     hash: curveExitHash,

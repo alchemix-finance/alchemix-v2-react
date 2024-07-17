@@ -1,19 +1,17 @@
 import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { TransmuterInput } from "@/components/common/input/TransmuterInput";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError, parseEther } from "viem";
+import { parseEther } from "viem";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -27,11 +25,8 @@ export const Claim = ({
   syntheticToken: Token;
 }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const queryClient = useQueryClient();
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const { address } = useAccount();
 
@@ -44,6 +39,7 @@ export const Claim = ({
   } = useSimulateContract({
     address: transmuter.address,
     abi: transmuterV2Abi,
+    chainId: chain.id,
     functionName: "claim",
     args: [parseEther(amount), address!],
     query: {
@@ -52,31 +48,9 @@ export const Claim = ({
   });
 
   const { writeContract: claim, data: claimHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Claim from transmuter",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Claiming...",
-          success: "Claim confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your claim. Please check your wallet."
-              : "Claim failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Claim failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Claim from transmuter",
+    }),
   });
 
   const { data: claimReceipt } = useWaitForTransactionReceipt({

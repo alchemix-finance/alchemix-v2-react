@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Switch } from "../ui/switch";
 import { Button } from "../ui/button";
 import {
-  usePublicClient,
   useReadContracts,
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -19,18 +18,13 @@ import { formatNumber } from "@/utils/number";
 import { useChain } from "@/hooks/useChain";
 import { gAlcxAbi } from "@/abi/gAlcx";
 import { isInputZero } from "@/utils/inputNotZero";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
-import { wagmiConfig } from "../providers/Web3Provider";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useAllowance } from "@/hooks/useAllowance";
 import { toast } from "sonner";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const GAlcsWrapper = () => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const [amount, setAmount] = useState("");
   const [isUnwrap, setIsUnwrap] = useState(false);
@@ -87,8 +81,6 @@ export const GAlcsWrapper = () => {
   const { writeContract: wrap, data: wrapHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Wrap",
-      addRecentTransaction,
-      publicClient,
     }),
   });
   const { data: wrapReceipt } = useWaitForTransactionReceipt({
@@ -113,8 +105,6 @@ export const GAlcsWrapper = () => {
   const { writeContract: unwrap, data: unwrapHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Unwrap",
-      addRecentTransaction,
-      publicClient,
     }),
   });
   const { data: unwrapReceipt } = useWaitForTransactionReceipt({

@@ -4,22 +4,20 @@ import { wethGatewayAbi } from "@/abi/wethGateway";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { Token, Vault } from "@/lib/types";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError, parseUnits } from "viem";
+import { parseUnits } from "viem";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { GAS_ADDRESS } from "@/lib/constants";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "../queries/queriesSchema";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const useDeposit = ({
   vault,
@@ -37,9 +35,6 @@ export const useDeposit = ({
   setAmount: (amount: string) => void;
 }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const queryClient = useQueryClient();
   const onDepositReceiptCallback = useCallback(() => {
     setAmount("");
@@ -48,7 +43,7 @@ export const useDeposit = ({
   }, [queryClient, setAmount]);
 
   const { address } = useAccount();
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const minimumOut = calculateMinimumOut(
     parseUnits(amount, selectedToken.decimals),
@@ -95,31 +90,9 @@ export const useDeposit = ({
 
   const { writeContract: depositGateway, data: depositGatewayHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Deposit",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Depositing...",
-            success: "Deposit confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your deposit. Please check your wallet."
-                : "Deposit failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Deposit failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Deposit",
+      }),
     });
 
   const { data: depositGatewayReceipt } = useWaitForTransactionReceipt({
@@ -155,31 +128,9 @@ export const useDeposit = ({
 
   const { writeContract: depositAlchemist, data: depositAlchemistHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Deposit",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Depositing...",
-            success: "Deposit confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your deposit. Please check your wallet."
-                : "Deposit failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Deposit failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Deposit",
+      }),
     });
 
   const { data: depositAlchemistReceipt } = useWaitForTransactionReceipt({
@@ -218,31 +169,9 @@ export const useDeposit = ({
   });
 
   const { writeContract: depositGas, data: depositGasHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Deposit",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Depositing...",
-          success: "Deposit confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your deposit. Please check your wallet."
-              : "Deposit failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Deposit failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Deposit",
+    }),
   });
 
   const { data: depositGasReceipt } = useWaitForTransactionReceipt({
@@ -282,31 +211,9 @@ export const useDeposit = ({
 
   const { writeContract: depositUnderlying, data: depositUnderlyingHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Deposit",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Depositing...",
-            success: "Deposit confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your deposit. Please check your wallet."
-                : "Deposit failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Deposit failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Deposit",
+      }),
     });
 
   const { data: depositUnderlyingReceipt } = useWaitForTransactionReceipt({

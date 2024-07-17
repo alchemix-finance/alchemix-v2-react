@@ -1,20 +1,18 @@
 import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { TokenInput } from "@/components/common/input/TokenInput";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { Button } from "@/components/ui/button";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError, parseEther } from "viem";
+import { parseEther } from "viem";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -28,11 +26,8 @@ export const Deposit = ({
   syntheticToken: Token;
 }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const queryClient = useQueryClient();
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const { address } = useAccount();
 
@@ -52,6 +47,7 @@ export const Deposit = ({
   } = useSimulateContract({
     address: transmuter.address,
     abi: transmuterV2Abi,
+    chainId: chain.id,
     functionName: "deposit",
     args: [parseEther(depositAmount), address!],
     query: {
@@ -61,31 +57,9 @@ export const Deposit = ({
   });
 
   const { writeContract: deposit, data: depositHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Deposit into transmuter",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Depositing...",
-          success: "Deposit confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your deposit. Please check your wallet."
-              : "Deposit failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Deposit failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Deposit into transmuter",
+    }),
   });
 
   const { data: depositReceipt } = useWaitForTransactionReceipt({

@@ -1,12 +1,7 @@
 import { Input } from "../ui/input";
-import {
-  WaitForTransactionReceiptTimeoutError,
-  isAddress,
-  stringToHex,
-  zeroAddress,
-} from "viem";
+import { isAddress, stringToHex, zeroAddress } from "viem";
 import { shortenAddress } from "@/utils/shortenAddress";
-import { usePublicClient, useSimulateContract, useWriteContract } from "wagmi";
+import { useSimulateContract, useWriteContract } from "wagmi";
 import { delegateRegistryAbi } from "@/abi/delegateRegistry";
 import { DELEGATE_REGISTRY_ADDRESS } from "@/lib/constants";
 import { useCallback, useState } from "react";
@@ -14,15 +9,11 @@ import { useUserDelegations } from "@/lib/queries/useProposals";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
-import { wagmiConfig } from "../providers/Web3Provider";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const Delegation = () => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const [delegateAddress, setDelegateAddress] = useState("");
 
@@ -32,6 +23,7 @@ export const Delegation = () => {
     useSimulateContract({
       address: DELEGATE_REGISTRY_ADDRESS,
       abi: delegateRegistryAbi,
+      chainId: chain.id,
       functionName: "setDelegate",
       args: [
         stringToHex("alchemixstakers.eth", { size: 32 }),
@@ -43,66 +35,23 @@ export const Delegation = () => {
     });
 
   const { writeContract: delegate } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Delegate voting power",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Delegating...",
-          success: "Delegation confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your delegation. Please check your wallet."
-              : "Delegation failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Delegation failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Delegate voting power",
+    }),
   });
 
   const { data: revokeConfig, error: revokeConfigError } = useSimulateContract({
     address: DELEGATE_REGISTRY_ADDRESS,
     abi: delegateRegistryAbi,
+    chainId: chain.id,
     functionName: "clearDelegate",
     args: [stringToHex("alchemixstakers.eth", { size: 32 })],
   });
 
   const { writeContract: revoke } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Revoke delegation",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Revoking...",
-          success: "Revoke confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your revoke. Please check your wallet."
-              : "Revoke failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Revoke failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Revoke delegation",
+    }),
   });
 
   const onDelegateClick = useCallback(() => {

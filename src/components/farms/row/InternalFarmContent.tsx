@@ -1,38 +1,32 @@
 import { stakingPoolsAbi } from "@/abi/stakingPools";
 import { TokenInput } from "@/components/common/input/TokenInput";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { stakingPoolsAddresses } from "@/lib/config/farms";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
 import { cn } from "@/utils/cn";
 import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { formatEther, parseEther, zeroAddress } from "viem";
 import { mainnet } from "viem/chains";
 import {
   useAccount,
-  usePublicClient,
   useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
   const queryClient = useQueryClient();
   const receiptCallback = useCallback(() => {
     queryClient.invalidateQueries({
@@ -48,6 +42,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const { data: withdrawBalance, queryKey: balanceQueryKey } = useReadContract({
     address: stakingPoolsAddresses[mainnet.id],
     abi: stakingPoolsAbi,
+    chainId: chain.id,
     functionName: "getStakeTotalDeposited",
     args: [address, BigInt(farm.poolId)],
     query: {
@@ -69,6 +64,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const { data: depositConfig } = useSimulateContract({
     address: stakingPoolsAddresses[mainnet.id],
     abi: stakingPoolsAbi,
+    chainId: chain.id,
     functionName: "deposit",
     args: [BigInt(farm.poolId), parseEther(depositAmount)],
     query: {
@@ -79,8 +75,6 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const { writeContract: deposit, data: depositHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Deposit",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
@@ -106,6 +100,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const { data: withdrawConfig } = useSimulateContract({
     address: stakingPoolsAddresses[mainnet.id],
     abi: stakingPoolsAbi,
+    chainId: chain.id,
     functionName: "withdraw",
     args: [BigInt(farm.poolId), parseEther(withdrawAmount)],
     query: {
@@ -116,8 +111,6 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const { writeContract: withdraw, data: withdrawHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Withdraw",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
@@ -139,6 +132,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const { data: claimConfig } = useSimulateContract({
     address: stakingPoolsAddresses[mainnet.id],
     abi: stakingPoolsAbi,
+    chainId: chain.id,
     functionName: "claim",
     args: [BigInt(farm.poolId)],
   });
@@ -146,8 +140,6 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const { writeContract: claim, data: claimHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Claim",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
