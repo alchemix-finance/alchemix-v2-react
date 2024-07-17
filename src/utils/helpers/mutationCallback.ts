@@ -30,8 +30,11 @@ export const mutationCallback = ({
         loading: `Pending ${action}...`,
         success: `${action} confirmed`,
         error: (e) => {
+          const actionWithFirstLetterLowercased =
+            action.charAt(0).toLowerCase() + action.slice(1);
+
           return e instanceof WaitForTransactionReceiptTimeoutError
-            ? `We could not confirm your ${action.toLowerCase()}. Please check your wallet.`
+            ? `We could not confirm your ${actionWithFirstLetterLowercased}. Please check your wallet.`
             : `${action} failed`;
         },
       });

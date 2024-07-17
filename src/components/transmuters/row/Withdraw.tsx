@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError, parseEther } from "viem";
+import { parseEther } from "viem";
 import {
   useAccount,
   usePublicClient,
@@ -52,31 +53,11 @@ export const Withdraw = ({
   });
 
   const { writeContract: withdraw, data: withdrawHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Withdraw from transmuter",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Withdrawing...",
-          success: "Withdraw confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your withdraw. Please check your wallet."
-              : "Withdraw failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Withdraw failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Withdraw from transmuter",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
 
   const { data: withdrawReceipt } = useWaitForTransactionReceipt({

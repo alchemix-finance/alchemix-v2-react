@@ -16,11 +16,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import {
-  WaitForTransactionReceiptTimeoutError,
-  parseUnits,
-  zeroAddress,
-} from "viem";
+import { parseUnits, zeroAddress } from "viem";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
@@ -35,6 +31,7 @@ import { useVaults } from "@/lib/queries/useVaults";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { LiquidateTokenInput } from "@/components/common/input/LiquidateInput";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 
 export const Liquidate = () => {
   const queryClient = useQueryClient();
@@ -126,31 +123,11 @@ export const Liquidate = () => {
   });
 
   const { writeContract: liquidate, data: liquidateHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Liquidate",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Liquidating...",
-          success: "Liquidate confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your liquidation. Please check your wallet."
-              : "Liquidation failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Liquidate failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Liquidate",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
 
   const { data: liquidateReceipt } = useWaitForTransactionReceipt({

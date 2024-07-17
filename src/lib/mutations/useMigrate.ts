@@ -11,7 +11,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { vaultMigrationToolAbi } from "@/abi/vaultMigrationTool";
-import { WaitForTransactionReceiptTimeoutError, parseUnits } from "viem";
+import { parseUnits } from "viem";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
@@ -21,6 +21,7 @@ import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { SYNTH_ASSETS } from "../config/synths";
 import { QueryKeys } from "../queries/queriesSchema";
 import { isInputZero } from "@/utils/inputNotZero";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 
 export const useMigrate = ({
   currentVault,
@@ -144,31 +145,11 @@ export const useMigrate = ({
     writeContract: writeWithdrawApprovePrepared,
     data: approveWithdrawHash,
   } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Approve token",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Approving...",
-          success: "Approval confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your approval. Please check your wallet."
-              : "Approval failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Approval failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Approve withdraw",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
 
   const { data: approveWithdrawReceipt } = useWaitForTransactionReceipt({
@@ -195,31 +176,11 @@ export const useMigrate = ({
 
   const { writeContract: writeMintApprovePrepared, data: approveMintHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Approve token",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Approving...",
-            success: "Approval confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your approval. Please check your wallet."
-                : "Approval failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Approval failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Approve mint",
+        addRecentTransaction,
+        publicClient,
+      }),
     });
 
   const { data: approveMintReceipt } = useWaitForTransactionReceipt({
@@ -260,31 +221,11 @@ export const useMigrate = ({
 
   const { writeContract: writeMigratePrepared, data: migrateHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Migrate",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Migrating...",
-            success: "Migration confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your migration. Please check your wallet."
-                : "Migration failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Migration failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Migrate",
+        addRecentTransaction,
+        publicClient,
+      }),
     });
 
   const { data: migrateReceipt } = useWaitForTransactionReceipt({

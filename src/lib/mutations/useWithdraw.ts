@@ -6,7 +6,7 @@ import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError, parseUnits } from "viem";
+import { parseUnits } from "viem";
 import {
   usePublicClient,
   useAccount,
@@ -20,6 +20,7 @@ import { wethGatewayAbi } from "@/abi/wethGateway";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 
 export const useWithdraw = ({
   vault,
@@ -148,31 +149,11 @@ export const useWithdraw = ({
   });
 
   const { writeContract: approve, data: approveHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Approve",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Approving...",
-          success: "Approve confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your approval. Please check your wallet."
-              : "Approval failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Approve failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Approve",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
   const { data: approvalReceipt } = useWaitForTransactionReceipt({
     chainId: chain.id,
@@ -217,31 +198,11 @@ export const useWithdraw = ({
 
   const { writeContract: withdrawGateway, data: withdrawGatewayHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Withdraw",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Withdrawing...",
-            success: "Withdraw confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your withdrawal. Please check your wallet."
-                : "Withdrawal failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Withdraw failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Withdraw",
+        addRecentTransaction,
+        publicClient,
+      }),
     });
 
   const { data: withdrawGatewayReceipt } = useWaitForTransactionReceipt({
@@ -277,31 +238,11 @@ export const useWithdraw = ({
 
   const { writeContract: withdrawAlchemist, data: withdrawAlchemistHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Withdraw",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Withdrawing...",
-            success: "Withdraw confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your withdrawal. Please check your wallet."
-                : "Withdrawal failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Withdraw failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Withdraw",
+        addRecentTransaction,
+        publicClient,
+      }),
     });
 
   const { data: withdrawAlchemistReceipt } = useWaitForTransactionReceipt({
@@ -342,31 +283,11 @@ export const useWithdraw = ({
 
   const { writeContract: withdrawGas, data: withdrawGasHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Withdraw",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Withdrawing...",
-            success: "Withdraw confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your withdrawal. Please check your wallet."
-                : "Withdrawal failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Withdraw failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Withdraw",
+        addRecentTransaction,
+        publicClient,
+      }),
     });
 
   const { data: withdrawGasReceipt } = useWaitForTransactionReceipt({
@@ -401,31 +322,11 @@ export const useWithdraw = ({
 
   const { writeContract: withdrawUnderlying, data: withdrawUnderlyingHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Withdraw",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Withdrawing...",
-            success: "Withdraw confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your withdrawal. Please check your wallet."
-                : "Withdrawal failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Withdraw failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Withdraw",
+        addRecentTransaction,
+        publicClient,
+      }),
     });
 
   const { data: withdrawUnderlyingReceipt } = useWaitForTransactionReceipt({

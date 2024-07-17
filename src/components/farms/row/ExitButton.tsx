@@ -10,11 +10,12 @@ import { useChain } from "@/hooks/useChain";
 import { curve, stakingPoolsAddresses, sushi } from "@/lib/config/farms";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError, parseEther } from "viem";
+import { parseEther } from "viem";
 import { mainnet } from "viem/chains";
 import {
   useAccount,
@@ -47,31 +48,11 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     });
   const { writeContract: exitInternal, data: internalExitHash } =
     useWriteContract({
-      mutation: {
-        onSuccess: (hash) => {
-          addRecentTransaction({
-            hash,
-            description: "Exit pool",
-          });
-          const miningPromise = publicClient.waitForTransactionReceipt({
-            hash,
-          });
-          toast.promise(miningPromise, {
-            loading: "Exiting...",
-            success: "Exit confirmed",
-            error: (e) => {
-              return e instanceof WaitForTransactionReceiptTimeoutError
-                ? "We could not confirm your exit. Please check your wallet."
-                : "Exit failed";
-            },
-          });
-        },
-        onError: (error) => {
-          toast.error("Exit failed", {
-            description: error.message,
-          });
-        },
-      },
+      mutation: mutationCallback({
+        action: "Exit",
+        addRecentTransaction,
+        publicClient,
+      }),
     });
   const { data: internalExitReceipt } = useWaitForTransactionReceipt({
     hash: internalExitHash,
@@ -95,31 +76,11 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     },
   });
   const { writeContract: exitSushi, data: sushiExitHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Exit pool",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Exiting...",
-          success: "Exit confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your exit. Please check your wallet."
-              : "Exit failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Exit failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Exit",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
   const { data: sushiExitReceipt } = useWaitForTransactionReceipt({
     hash: sushiExitHash,
@@ -143,31 +104,11 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     },
   });
   const { writeContract: exitCurve, data: curveExitHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Exit pool",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Exiting...",
-          success: "Exit confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your exit. Please check your wallet."
-              : "Exit failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Exit failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Exit",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
   const { data: curveExitReceipt } = useWaitForTransactionReceipt({
     hash: curveExitHash,

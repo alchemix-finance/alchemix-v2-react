@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError, parseEther } from "viem";
+import { parseEther } from "viem";
 import {
   useAccount,
   usePublicClient,
@@ -52,31 +53,11 @@ export const Claim = ({
   });
 
   const { writeContract: claim, data: claimHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Claim from transmuter",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Claiming...",
-          success: "Claim confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your claim. Please check your wallet."
-              : "Claim failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Claim failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Claim from transmuter",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
 
   const { data: claimReceipt } = useWaitForTransactionReceipt({

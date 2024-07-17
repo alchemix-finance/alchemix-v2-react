@@ -16,11 +16,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import {
-  WaitForTransactionReceiptTimeoutError,
-  parseUnits,
-  zeroAddress,
-} from "viem";
+import { parseUnits, zeroAddress } from "viem";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
@@ -34,6 +30,7 @@ import { useAllowance } from "@/hooks/useAllowance";
 import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 
 export const Repay = () => {
   const queryClient = useQueryClient();
@@ -134,26 +131,11 @@ export const Repay = () => {
   });
 
   const { writeContract: repay, data: repayTxHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Repay",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Repaying...",
-          success: "Repay confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your repayment. Please check your wallet."
-              : "Repay failed";
-          },
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Repay",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
 
   const { data: repayReceipt } = useWaitForTransactionReceipt({

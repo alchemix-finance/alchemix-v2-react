@@ -18,7 +18,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { WaitForTransactionReceiptTimeoutError, parseUnits } from "viem";
+import { parseUnits } from "viem";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
@@ -27,6 +27,7 @@ import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { ALCHEMISTS_METADATA, SYNTH_ASSETS } from "@/lib/config/alchemists";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 
 export const Borrow = () => {
   const queryClient = useQueryClient();
@@ -82,31 +83,11 @@ export const Borrow = () => {
   });
 
   const { writeContract: borrow, data: borrowHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Borrow",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Borrowing...",
-          success: "Borrow confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your borrow. Please check your wallet."
-              : "Borrow failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Borrow failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: `Borrow ${debtToken?.symbol}`,
+      addRecentTransaction,
+      publicClient,
+    }),
   });
 
   const { data: borrowReceipt } = useWaitForTransactionReceipt({

@@ -6,12 +6,13 @@ import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError, parseEther } from "viem";
+import { parseEther } from "viem";
 import {
   useAccount,
   usePublicClient,
@@ -61,31 +62,11 @@ export const Deposit = ({
   });
 
   const { writeContract: deposit, data: depositHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Deposit into transmuter",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Depositing...",
-          success: "Deposit confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your deposit. Please check your wallet."
-              : "Deposit failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Deposit failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Deposit into transmuter",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
 
   const { data: depositReceipt } = useWaitForTransactionReceipt({
