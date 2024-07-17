@@ -5,10 +5,9 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../ui/select";
-import { Input } from "../ui/input";
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import {
-  usePublicClient,
   useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -31,12 +30,10 @@ import { Button } from "../ui/button";
 import { LoadingBar } from "../common/LoadingBar";
 import { migratorAbi } from "@/abi/migrator";
 import { useAllowance } from "@/hooks/useAllowance";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
-import { useChain } from "@/hooks/useChain";
-import { wagmiConfig } from "../providers/Web3Provider";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 import { TokenInput } from "../common/input/TokenInput";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { useChain } from "@/hooks/useChain";
 
 const TOKENS_FROM = ["SLP"] as const;
 const TOKENS_TO = ["AURA", "BALANCER"] as const;
@@ -46,10 +43,7 @@ type Target = (typeof TOKENS_TO)[number];
 
 export const LiquidityMigration = () => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const [migrationAmount, setMigrationAmount] = useState("");
   const [selectedFrom, setSelectedFrom] = useState<From>(TOKENS_FROM[0]);
@@ -59,6 +53,7 @@ export const LiquidityMigration = () => {
     useReadContract({
       address: MIGRATION_CALCS_ADDRESS,
       abi: migrationCalcsAbi,
+      chainId: chain.id,
       functionName: "getMigrationParams",
       args: [
         {
@@ -101,8 +96,6 @@ export const LiquidityMigration = () => {
   const { writeContract: migrate, data: migrationHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Migrate",
-      addRecentTransaction,
-      publicClient,
     }),
   });
   const { data: migrationReceipt } = useWaitForTransactionReceipt({

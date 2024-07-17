@@ -2,13 +2,11 @@ import { aaveTokenGatewayAbi } from "@/abi/aaveTokenGateway";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useChain } from "@/hooks/useChain";
 import { Token, Vault } from "@/lib/types";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { parseUnits } from "viem";
 import {
-  usePublicClient,
   useAccount,
   useReadContract,
   useSimulateContract,
@@ -17,10 +15,9 @@ import {
 } from "wagmi";
 import { GAS_ADDRESS } from "@/lib/constants";
 import { wethGatewayAbi } from "@/abi/wethGateway";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const useWithdraw = ({
   vault,
@@ -38,18 +35,15 @@ export const useWithdraw = ({
   setAmount: (amount: string) => void;
 }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const queryClient = useQueryClient();
   const onWithdrawReceiptCallback = useCallback(() => {
     setAmount("");
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
   }, [queryClient, setAmount]);
+  const mutationCallback = useWriteContractMutationCallback();
 
   const { address } = useAccount();
-  const addRecentTransaction = useAddRecentTransaction();
 
   const isSelecedTokenYieldToken =
     selectedToken.address.toLowerCase() === yieldToken.address.toLowerCase();
@@ -151,8 +145,6 @@ export const useWithdraw = ({
   const { writeContract: approve, data: approveHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Approve",
-      addRecentTransaction,
-      publicClient,
     }),
   });
   const { data: approvalReceipt } = useWaitForTransactionReceipt({
@@ -200,8 +192,6 @@ export const useWithdraw = ({
     useWriteContract({
       mutation: mutationCallback({
         action: "Withdraw",
-        addRecentTransaction,
-        publicClient,
       }),
     });
 
@@ -240,8 +230,6 @@ export const useWithdraw = ({
     useWriteContract({
       mutation: mutationCallback({
         action: "Withdraw",
-        addRecentTransaction,
-        publicClient,
       }),
     });
 
@@ -285,8 +273,6 @@ export const useWithdraw = ({
     useWriteContract({
       mutation: mutationCallback({
         action: "Withdraw",
-        addRecentTransaction,
-        publicClient,
       }),
     });
 
@@ -324,8 +310,6 @@ export const useWithdraw = ({
     useWriteContract({
       mutation: mutationCallback({
         action: "Withdraw",
-        addRecentTransaction,
-        publicClient,
       }),
     });
 

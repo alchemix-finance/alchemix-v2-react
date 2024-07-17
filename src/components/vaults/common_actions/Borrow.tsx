@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { useAlchemists } from "@/lib/queries/useAlchemists";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -21,21 +20,17 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { parseUnits } from "viem";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { ALCHEMISTS_METADATA, SYNTH_ASSETS } from "@/lib/config/alchemists";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const Borrow = () => {
   const queryClient = useQueryClient();
-  const addRecentTransaction = useAddRecentTransaction();
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
+  const mutationCallback = useWriteContractMutationCallback();
+
   const { address } = useAccount();
 
   const [amount, setAmount] = useState("");
@@ -75,6 +70,7 @@ export const Borrow = () => {
   } = useSimulateContract({
     address: alchemistForDebtTokenAddress,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "mint",
     args: [parseUnits(amount, debtToken?.decimals ?? 18), address!],
     query: {
@@ -85,8 +81,6 @@ export const Borrow = () => {
   const { writeContract: borrow, data: borrowHash } = useWriteContract({
     mutation: mutationCallback({
       action: `Borrow ${debtToken?.symbol}`,
-      addRecentTransaction,
-      publicClient,
     }),
   });
 

@@ -1,38 +1,32 @@
 import { TokenInput } from "@/components/common/input/TokenInput";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAllowance } from "@/hooks/useAllowance";
-import { useChain } from "@/hooks/useChain";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { curve } from "@/lib/config/farms";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
 import { cn } from "@/utils/cn";
 import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { formatEther, parseEther, zeroAddress } from "viem";
 import {
   useAccount,
-  usePublicClient,
   useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { curveGaugeAbi } from "@/abi/curveGauge";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { useChain } from "@/hooks/useChain";
 
 export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
-  const addRecentTransaction = useAddRecentTransaction();
   const queryClient = useQueryClient();
+  const mutationCallback = useWriteContractMutationCallback();
   const receiptCallback = useCallback(() => {
     queryClient.invalidateQueries({
       queryKey: [QueryKeys.Farms("curve")],
@@ -47,6 +41,7 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const { data: withdrawBalance, queryKey: balanceQueryKey } = useReadContract({
     address: curve.gauge,
     abi: curveGaugeAbi,
+    chainId: chain.id,
     functionName: "balanceOf",
     args: [address],
     query: {
@@ -68,6 +63,7 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const { data: depositConfig } = useSimulateContract({
     address: curve.gauge,
     abi: curveGaugeAbi,
+    chainId: chain.id,
     functionName: "deposit",
     args: [parseEther(depositAmount)],
     query: {
@@ -78,8 +74,6 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const { writeContract: deposit, data: depositHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Deposit",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
@@ -105,6 +99,7 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const { data: withdrawConfig } = useSimulateContract({
     address: curve.gauge,
     abi: curveGaugeAbi,
+    chainId: chain.id,
     functionName: "withdraw",
     args: [parseEther(withdrawAmount)],
     query: {
@@ -115,8 +110,6 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const { writeContract: withdraw, data: withdrawHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Withdraw",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
@@ -138,6 +131,7 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const { data: claimConfig } = useSimulateContract({
     address: curve.gauge,
     abi: curveGaugeAbi,
+    chainId: chain.id,
     functionName: "claim_rewards",
     // NOTE: This funcion is overloaded in contract. We use the simple one.
     args: [],
@@ -146,8 +140,6 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const { writeContract: claim, data: claimHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Claim",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 

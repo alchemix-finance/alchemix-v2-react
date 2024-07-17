@@ -4,23 +4,20 @@ import { wethGatewayAbi } from "@/abi/wethGateway";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { Token, Vault } from "@/lib/types";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { parseUnits } from "viem";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { GAS_ADDRESS } from "@/lib/constants";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "../queries/queriesSchema";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const useDeposit = ({
   vault,
@@ -38,9 +35,6 @@ export const useDeposit = ({
   setAmount: (amount: string) => void;
 }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const queryClient = useQueryClient();
   const onDepositReceiptCallback = useCallback(() => {
     setAmount("");
@@ -49,7 +43,7 @@ export const useDeposit = ({
   }, [queryClient, setAmount]);
 
   const { address } = useAccount();
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const minimumOut = calculateMinimumOut(
     parseUnits(amount, selectedToken.decimals),
@@ -98,8 +92,6 @@ export const useDeposit = ({
     useWriteContract({
       mutation: mutationCallback({
         action: "Deposit",
-        addRecentTransaction,
-        publicClient,
       }),
     });
 
@@ -138,8 +130,6 @@ export const useDeposit = ({
     useWriteContract({
       mutation: mutationCallback({
         action: "Deposit",
-        addRecentTransaction,
-        publicClient,
       }),
     });
 
@@ -181,8 +171,6 @@ export const useDeposit = ({
   const { writeContract: depositGas, data: depositGasHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Deposit",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
@@ -225,8 +213,6 @@ export const useDeposit = ({
     useWriteContract({
       mutation: mutationCallback({
         action: "Deposit",
-        addRecentTransaction,
-        publicClient,
       }),
     });
 

@@ -1,20 +1,17 @@
 import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { TransmuterInput } from "@/components/common/input/TransmuterInput";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { parseEther } from "viem";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -28,11 +25,8 @@ export const Claim = ({
   syntheticToken: Token;
 }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const queryClient = useQueryClient();
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const { address } = useAccount();
 
@@ -45,6 +39,7 @@ export const Claim = ({
   } = useSimulateContract({
     address: transmuter.address,
     abi: transmuterV2Abi,
+    chainId: chain.id,
     functionName: "claim",
     args: [parseEther(amount), address!],
     query: {
@@ -55,8 +50,6 @@ export const Claim = ({
   const { writeContract: claim, data: claimHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Claim from transmuter",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 

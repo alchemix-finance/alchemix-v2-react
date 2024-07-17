@@ -10,7 +10,6 @@ import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { Button } from "@/components/ui/button";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -19,9 +18,7 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { parseUnits, zeroAddress } from "viem";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { TokenInput } from "@/components/common/input/TokenInput";
 import { SynthAsset } from "@/lib/config/synths";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
@@ -30,15 +27,13 @@ import { useAllowance } from "@/hooks/useAllowance";
 import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const Repay = () => {
   const queryClient = useQueryClient();
-  const addRecentTransaction = useAddRecentTransaction();
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
+  const mutationCallback = useWriteContractMutationCallback();
+
   const { address } = useAccount();
 
   const [amount, setAmount] = useState("");
@@ -93,6 +88,7 @@ export const Repay = () => {
   } = useSimulateContract({
     address: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "burn",
     args: [parseUnits(amount, repaymentToken?.decimals ?? 18), address!],
     query: {
@@ -113,6 +109,7 @@ export const Repay = () => {
   } = useSimulateContract({
     address: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "repay",
     args: [
       repaymentToken!.address,
@@ -133,8 +130,6 @@ export const Repay = () => {
   const { writeContract: repay, data: repayTxHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Repay",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 

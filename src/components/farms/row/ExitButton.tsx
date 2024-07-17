@@ -1,17 +1,12 @@
-//     if (farmType === FarmTypes.INTERNAL) {
-//       const castedFarm = castToInternalFarmType(farm);
-
 import { curveGaugeAbi } from "@/abi/curveGauge";
 import { stakingPoolsAbi } from "@/abi/stakingPools";
 import { sushiMasterchefAbi } from "@/abi/sushiMasterchef";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { curve, stakingPoolsAddresses, sushi } from "@/lib/config/farms";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
@@ -19,7 +14,6 @@ import { parseEther } from "viem";
 import { mainnet } from "viem/chains";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -27,11 +21,8 @@ import {
 
 export const ExitButton = ({ farm }: { farm: Farm }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const queryClient = useQueryClient();
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const { address } = useAccount();
 
@@ -40,6 +31,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     useSimulateContract({
       address: stakingPoolsAddresses[mainnet.id],
       abi: stakingPoolsAbi,
+      chainId: chain.id,
       functionName: "exit",
       args: [BigInt(farm.poolId)],
       query: {
@@ -50,8 +42,6 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     useWriteContract({
       mutation: mutationCallback({
         action: "Exit",
-        addRecentTransaction,
-        publicClient,
       }),
     });
   const { data: internalExitReceipt } = useWaitForTransactionReceipt({
@@ -69,6 +59,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
   const { data: sushiExitConfig, error: sushiError } = useSimulateContract({
     address: sushi.masterchef,
     abi: sushiMasterchefAbi,
+    chainId: chain.id,
     functionName: "emergencyWithdraw",
     args: [0n, address!],
     query: {
@@ -78,8 +69,6 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
   const { writeContract: exitSushi, data: sushiExitHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Exit",
-      addRecentTransaction,
-      publicClient,
     }),
   });
   const { data: sushiExitReceipt } = useWaitForTransactionReceipt({
@@ -97,6 +86,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
   const { data: curveExitConfig, error: curveError } = useSimulateContract({
     address: curve.gauge,
     abi: curveGaugeAbi,
+    chainId: chain.id,
     functionName: "withdraw",
     args: [parseEther(farm.staked.amount)],
     query: {
@@ -106,8 +96,6 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
   const { writeContract: exitCurve, data: curveExitHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Exit",
-      addRecentTransaction,
-      publicClient,
     }),
   });
   const { data: curveExitReceipt } = useWaitForTransactionReceipt({

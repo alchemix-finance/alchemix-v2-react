@@ -1,6 +1,5 @@
 import {
   useAccount,
-  usePublicClient,
   useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -10,11 +9,9 @@ import { useChain } from "@/hooks/useChain";
 import { erc20Abi, parseUnits } from "viem";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { GAS_ADDRESS } from "@/lib/constants";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { isInputZero } from "@/utils/inputNotZero";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
+import { useWriteContractMutationCallback } from "./useWriteContractMutationCallback";
 
 export const useAllowance = ({
   tokenAddress,
@@ -30,7 +27,7 @@ export const useAllowance = ({
   const chain = useChain();
   const { address } = useAccount();
   const queryClient = useQueryClient();
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const { data: isApprovalNeeded, queryKey: isApprovalNeededQueryKey } =
     useReadContract({
@@ -56,14 +53,9 @@ export const useAllowance = ({
     },
   });
 
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const { writeContract: approve, data: approveTxHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Approve",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 

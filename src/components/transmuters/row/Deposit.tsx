@@ -1,21 +1,18 @@
 import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { TokenInput } from "@/components/common/input/TokenInput";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { Button } from "@/components/ui/button";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { parseEther } from "viem";
 import {
   useAccount,
-  usePublicClient,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -29,11 +26,8 @@ export const Deposit = ({
   syntheticToken: Token;
 }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
   const queryClient = useQueryClient();
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const { address } = useAccount();
 
@@ -53,6 +47,7 @@ export const Deposit = ({
   } = useSimulateContract({
     address: transmuter.address,
     abi: transmuterV2Abi,
+    chainId: chain.id,
     functionName: "deposit",
     args: [parseEther(depositAmount), address!],
     query: {
@@ -64,8 +59,6 @@ export const Deposit = ({
   const { writeContract: deposit, data: depositHash } = useWriteContract({
     mutation: mutationCallback({
       action: "Deposit into transmuter",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 

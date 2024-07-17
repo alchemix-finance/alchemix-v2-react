@@ -1,7 +1,7 @@
 import { Input } from "../ui/input";
 import { isAddress, stringToHex, zeroAddress } from "viem";
 import { shortenAddress } from "@/utils/shortenAddress";
-import { usePublicClient, useSimulateContract, useWriteContract } from "wagmi";
+import { useSimulateContract, useWriteContract } from "wagmi";
 import { delegateRegistryAbi } from "@/abi/delegateRegistry";
 import { DELEGATE_REGISTRY_ADDRESS } from "@/lib/constants";
 import { useCallback, useState } from "react";
@@ -9,16 +9,11 @@ import { useUserDelegations } from "@/lib/queries/useProposals";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
-import { wagmiConfig } from "../providers/Web3Provider";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const Delegation = () => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const [delegateAddress, setDelegateAddress] = useState("");
 
@@ -28,6 +23,7 @@ export const Delegation = () => {
     useSimulateContract({
       address: DELEGATE_REGISTRY_ADDRESS,
       abi: delegateRegistryAbi,
+      chainId: chain.id,
       functionName: "setDelegate",
       args: [
         stringToHex("alchemixstakers.eth", { size: 32 }),
@@ -41,14 +37,13 @@ export const Delegation = () => {
   const { writeContract: delegate } = useWriteContract({
     mutation: mutationCallback({
       action: "Delegate voting power",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
   const { data: revokeConfig, error: revokeConfigError } = useSimulateContract({
     address: DELEGATE_REGISTRY_ADDRESS,
     abi: delegateRegistryAbi,
+    chainId: chain.id,
     functionName: "clearDelegate",
     args: [stringToHex("alchemixstakers.eth", { size: 32 })],
   });
@@ -56,8 +51,6 @@ export const Delegation = () => {
   const { writeContract: revoke } = useWriteContract({
     mutation: mutationCallback({
       action: "Revoke delegation",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 

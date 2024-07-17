@@ -4,7 +4,6 @@ import { useChain } from "@/hooks/useChain";
 import { arbitrum, fantom } from "viem/chains";
 import {
   useAccount,
-  usePublicClient,
   useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -16,12 +15,10 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { SYNTH_ASSETS } from "../config/synths";
 import { QueryKeys } from "../queries/queriesSchema";
 import { isInputZero } from "@/utils/inputNotZero";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
+import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 
 export const useMigrate = ({
   currentVault,
@@ -36,10 +33,7 @@ export const useMigrate = ({
 }) => {
   const queryClient = useQueryClient();
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   if (chain.id === fantom.id || chain.id === arbitrum.id) {
     throw new Error("Migrate is not supported on Fantom or Arbitrum");
@@ -147,8 +141,6 @@ export const useMigrate = ({
   } = useWriteContract({
     mutation: mutationCallback({
       action: "Approve withdraw",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
@@ -178,8 +170,6 @@ export const useMigrate = ({
     useWriteContract({
       mutation: mutationCallback({
         action: "Approve mint",
-        addRecentTransaction,
-        publicClient,
       }),
     });
 
@@ -223,8 +213,6 @@ export const useMigrate = ({
     useWriteContract({
       mutation: mutationCallback({
         action: "Migrate",
-        addRecentTransaction,
-        publicClient,
       }),
     });
 
