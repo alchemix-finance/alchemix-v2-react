@@ -1,9 +1,6 @@
 import { Address } from "viem";
 import { SYNTH_ASSETS, SynthAsset } from "./synths";
-import {
-  SupportedChainId,
-  wagmiConfig,
-} from "@/components/providers/Web3Provider";
+import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import React from "react";
 import { Token, Vault } from "@/lib/types";
 import { UsePublicClientReturnType } from "wagmi";

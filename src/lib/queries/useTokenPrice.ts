@@ -1,4 +1,4 @@
-import { SupportedChainId } from "@/components/providers/Web3Provider";
+import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 import { useChain } from "@/hooks/useChain";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";

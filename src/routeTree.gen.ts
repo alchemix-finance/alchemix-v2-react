@@ -21,6 +21,7 @@ import { Route as TransmutersImport } from './routes/transmuters'
 const UtilitiesLazyImport = createFileRoute('/utilities')()
 const GovernanceLazyImport = createFileRoute('/governance')()
 const FarmsLazyImport = createFileRoute('/farms')()
+const DebugLazyImport = createFileRoute('/debug')()
 const BridgeLazyImport = createFileRoute('/bridge')()
 const IndexLazyImport = createFileRoute('/')()
 
@@ -40,6 +41,11 @@ const FarmsLazyRoute = FarmsLazyImport.update({
   path: '/farms',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/farms.lazy').then((d) => d.Route))
+
+const DebugLazyRoute = DebugLazyImport.update({
+  path: '/debug',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/debug.lazy').then((d) => d.Route))
 
 const BridgeLazyRoute = BridgeLazyImport.update({
   path: '/bridge',
@@ -93,6 +99,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BridgeLazyImport
       parentRoute: typeof rootRoute
     }
+    '/debug': {
+      id: '/debug'
+      path: '/debug'
+      fullPath: '/debug'
+      preLoaderRoute: typeof DebugLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/farms': {
       id: '/farms'
       path: '/farms'
@@ -124,6 +137,7 @@ export const routeTree = rootRoute.addChildren({
   TransmutersRoute,
   VaultsRoute,
   BridgeLazyRoute,
+  DebugLazyRoute,
   FarmsLazyRoute,
   GovernanceLazyRoute,
   UtilitiesLazyRoute,
@@ -141,6 +155,7 @@ export const routeTree = rootRoute.addChildren({
         "/transmuters",
         "/vaults",
         "/bridge",
+        "/debug",
         "/farms",
         "/governance",
         "/utilities"
@@ -157,6 +172,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/bridge": {
       "filePath": "bridge.lazy.tsx"
+    },
+    "/debug": {
+      "filePath": "debug.lazy.tsx"
     },
     "/farms": {
       "filePath": "farms.lazy.tsx"

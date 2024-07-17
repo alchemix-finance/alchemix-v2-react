@@ -1,7 +1,7 @@
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { useChain } from "./useChain";
 import { usePublicClient } from "wagmi";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
+import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { useCallback } from "react";
 import { mutationCallback } from "@/utils/helpers/mutationCallback";
 

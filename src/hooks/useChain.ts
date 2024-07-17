@@ -2,7 +2,7 @@ import { useAccount } from "wagmi";
 import { mainnet } from "viem/chains";
 import { useMemo } from "react";
 
-import { wagmiConfig } from "@/components/providers/Web3Provider";
+import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 
 const defaultChain = mainnet;
 

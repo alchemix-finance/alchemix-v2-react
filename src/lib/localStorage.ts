@@ -2,6 +2,7 @@ import { Token } from "@/lib/types";
 
 interface LocalStorageSchema {
   tokenListCache: { tokens: Token[]; timestamp: number };
+  tenderlyForkRpc: string;
 }
 
 const localStorageVersion = "v1";

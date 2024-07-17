@@ -1,4 +1,4 @@
-import { wagmiConfig } from "@/components/providers/Web3Provider";
+import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { toast } from "sonner";
 import { WaitForTransactionReceiptTimeoutError } from "viem";
 import { UsePublicClientReturnType, UseWriteContractParameters } from "wagmi";

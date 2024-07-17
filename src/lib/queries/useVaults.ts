@@ -7,7 +7,7 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { YieldTokenParams } from "@/lib/types";
 import { tokenAdapterAbi } from "@/abi/tokenAdapter";
 import { VAULTS } from "@/lib/config/vaults";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
+import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { ONE_MINUTE_IN_MS } from "@/lib/constants";
 import { QueryKeys } from "./queriesSchema";
 

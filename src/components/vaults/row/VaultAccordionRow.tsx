@@ -22,7 +22,7 @@ import { Withdraw } from "@/components/vaults/row/Withdraw";
 import { Migrate } from "@/components/vaults/row/Migrate";
 import { mainnet, optimism } from "viem/chains";
 import { useVaults } from "@/lib/queries/useVaults";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
+import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 
