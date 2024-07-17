@@ -5,7 +5,7 @@ import { useAlchemists } from "./useAlchemists";
 import { VAULTS } from "@/lib/config/vaults";
 import { mainnet } from "viem/chains";
 import { erc20Abi, zeroAddress } from "viem";
-import { serialize, useAccount, usePublicClient } from "wagmi";
+import { useAccount, usePublicClient } from "wagmi";
 import { Token } from "@/lib/types";
 import { GAS_ADDRESS, ONE_DAY_IN_MS } from "@/lib/constants";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
@@ -25,7 +25,7 @@ export const useTokensQuery = () => {
       QueryKeys.Tokens,
       chain.id,
       publicClient,
-      serialize(alchemists),
+      alchemists,
       userAddress,
       chain.nativeCurrency.symbol,
       chain.nativeCurrency.name,

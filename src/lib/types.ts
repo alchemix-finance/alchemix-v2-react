@@ -57,3 +57,51 @@ export type Transmuter = NonNullable<
 export type Proposal = NonNullable<
   ReturnType<typeof useProposals>["data"]
 >[number];
+
+interface BaseFarm {
+  uuid: string;
+  poolTokenAddress: `0x${string}`;
+  poolTokenBalance: string;
+  tokenSymbol: string;
+  isActive: boolean;
+  poolId: number;
+  metadata: {
+    tokenIcon: string | undefined;
+    farmIcon: string;
+    title: string;
+    subtitle: string;
+    type: "internal" | "external-sushi" | "external-curve";
+  };
+  staked: {
+    amount: string;
+    tokenSymbol: string;
+  };
+  rewards: {
+    iconName: string;
+    tokenName: string;
+    tokenAddress: `0x${string}`;
+    symbol: string;
+    amount: string;
+  }[];
+  yield: {
+    rate: string;
+    type: "APY";
+  };
+}
+interface InternalFarm extends BaseFarm {
+  type: "internal";
+  reserve: string;
+}
+interface CurveFarm extends BaseFarm {
+  type: "external-curve";
+  tvl: string;
+  metapoolAddress: `0x${string}`;
+}
+interface SushiFarm extends BaseFarm {
+  type: "external-sushi";
+  underlyingAddresses: [`0x${string}`, `0x${string}`];
+  reserves: [string, string];
+  tvl: string;
+  masterChefAddress: `0x${string}`;
+}
+export type Farm = InternalFarm | SushiFarm | CurveFarm;

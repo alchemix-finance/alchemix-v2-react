@@ -6,6 +6,7 @@ import { ALCHEMISTS_METADATA, SYNTH_ASSETS } from "@/lib/config/alchemists";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { QueryKeys } from "./queriesSchema";
+import { ONE_MINUTE_IN_MS } from "@/lib/constants";
 
 export const useAlchemists = () => {
   const chain = useChain();
@@ -107,5 +108,6 @@ export const useAlchemists = () => {
 
       return alchemists;
     },
+    staleTime: ONE_MINUTE_IN_MS,
   });
 };

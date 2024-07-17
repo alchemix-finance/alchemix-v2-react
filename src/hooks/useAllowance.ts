@@ -7,18 +7,14 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useChain } from "@/hooks/useChain";
-import {
-  WaitForTransactionReceiptTimeoutError,
-  erc20Abi,
-  parseUnits,
-} from "viem";
+import { erc20Abi, parseUnits } from "viem";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { GAS_ADDRESS } from "@/lib/constants";
 import { wagmiConfig } from "@/components/providers/Web3Provider";
 import { isInputZero } from "@/utils/inputNotZero";
+import { mutationCallback } from "@/utils/helpers/mutationCallback";
 
 export const useAllowance = ({
   tokenAddress,
@@ -64,31 +60,11 @@ export const useAllowance = ({
     chainId: chain.id,
   });
   const { writeContract: approve, data: approveTxHash } = useWriteContract({
-    mutation: {
-      onSuccess: (hash) => {
-        addRecentTransaction({
-          hash,
-          description: "Approve token",
-        });
-        const miningPromise = publicClient.waitForTransactionReceipt({
-          hash,
-        });
-        toast.promise(miningPromise, {
-          loading: "Approving...",
-          success: "Approval confirmed",
-          error: (e) => {
-            return e instanceof WaitForTransactionReceiptTimeoutError
-              ? "We could not confirm your approval. Please check your wallet."
-              : "Approval failed";
-          },
-        });
-      },
-      onError: (error) => {
-        toast.error("Approval failed", {
-          description: error.message,
-        });
-      },
-    },
+    mutation: mutationCallback({
+      action: "Approve",
+      addRecentTransaction,
+      publicClient,
+    }),
   });
 
   const { data: approvalReceipt } = useWaitForTransactionReceipt({

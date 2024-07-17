@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { cn } from "@/utils/cn";
 import { Token } from "@/lib/types";
 import { useVaults } from "@/lib/queries/useVaults";
-import { VaultHelper } from "@/lib/helpers/vaultHelper";
+import { VaultHelper } from "@/utils/helpers/vaultHelper";
 import { formatEther, formatUnits } from "viem";
 
 export const BorrowInput = ({
@@ -70,7 +70,7 @@ export const BorrowInput = ({
     <div className="flex flex-col">
       <p
         className={cn(
-          "inline-block self-end text-sm font-light",
+          "inline-block self-end text-sm font-light text-lightgrey10",
           tokenBalance !== "0" && "cursor-pointer",
         )}
         onClick={setMax}

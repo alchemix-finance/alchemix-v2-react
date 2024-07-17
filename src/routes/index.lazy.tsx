@@ -113,8 +113,8 @@ function Index() {
 
       <div>
         <p className="mb-4 text-center text-lg opacity-75">
-          By borrowing a synthetic version of the asset you deposit you'll avoid
-          the risk of liquidation. Defi innovation on a whole new level,
+          By borrowing a synthetic version of the asset you deposit you&apos;ll
+          avoid the risk of liquidation. Defi innovation on a whole new level,
           Alchemix is the first same-asset loan product in DeFi.
         </p>
         <p className="text-center text-lg opacity-75">
@@ -215,8 +215,9 @@ function Index() {
               No liquidations
             </p>
             <p className="text-lg font-light opacity-75">
-              No matter what happens we'll never liquidate your deposit. You can
-              choose to self-liquidate your own loan at your own discretion.
+              No matter what happens we&apos;ll never liquidate your deposit.
+              You can choose to self-liquidate your own loan at your own
+              discretion.
             </p>
             <a
               href="https://alchemix-finance.gitbook.io/v2/"
@@ -230,9 +231,9 @@ function Index() {
               Completely flexible
             </p>
             <p className="text-lg font-light opacity-75">
-              Alchemix doesn't lock your deposit or charge you fees. Your funds
-              are accessible 100% of the time. You can also repay your debt
-              whenever you like.
+              Alchemix doesn&apos;t lock your deposit or charge you fees. Your
+              funds are accessible 100% of the time. You can also repay your
+              debt whenever you like.
             </p>
             <a
               href="https://alchemix-finance.gitbook.io/v2/"

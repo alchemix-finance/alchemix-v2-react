@@ -76,7 +76,7 @@ export const TransmuterInput = ({
     <div className="flex flex-col">
       <p
         className={cn(
-          "inline-block self-end text-sm font-light",
+          "inline-block self-end text-sm font-light text-lightgrey10",
           balance !== "0" && "cursor-pointer",
         )}
         onClick={setMax}

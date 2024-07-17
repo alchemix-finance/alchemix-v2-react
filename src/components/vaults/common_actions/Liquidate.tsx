@@ -30,7 +30,7 @@ import { SynthAsset } from "@/lib/config/synths";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection";
 import { Input } from "@/components/ui/input";
-import { calculateMinimumOut } from "@/lib/helpers/minAmountWithSlippage";
+import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { useVaults } from "@/lib/queries/useVaults";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";

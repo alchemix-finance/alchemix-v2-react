@@ -1,5 +1,4 @@
 import { Accordion } from "@/components/ui/accordion";
-
 import { useVaults } from "@/lib/queries/useVaults";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

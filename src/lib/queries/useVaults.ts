@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useChain } from "@/hooks/useChain";
-import { serialize, useAccount, usePublicClient } from "wagmi";
+import { useAccount, usePublicClient } from "wagmi";
 import { Address, zeroAddress } from "viem";
 import { useAlchemists } from "@/lib/queries/useAlchemists";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
@@ -21,7 +21,7 @@ export const useVaults = () => {
   const { data: alchemists } = useAlchemists();
 
   return useQuery({
-    queryKey: [QueryKeys.Vaults, chain.id, serialize(alchemists), address],
+    queryKey: [QueryKeys.Vaults, chain.id, alchemists, address],
     queryFn: async () => {
       if (!alchemists) throw new Error("Alchemists not loaded");
 

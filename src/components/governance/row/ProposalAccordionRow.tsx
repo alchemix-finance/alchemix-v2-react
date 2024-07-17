@@ -181,11 +181,11 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               fill="none"
               viewBox="0 0 24 24"
               stroke={vote ? "#42B792" : "#979BA2"}
-              stroke-width="2"
+              strokeWidth="2"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
               ></path>
             </svg>
@@ -260,7 +260,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                 )}
                 href={`https://etherscan.io/block/${proposal.snapshot}`}
                 target="_blank"
-                rel="noreferer noopener"
+                rel="noreferrer noopener"
               >
                 {proposal.snapshot}
                 <svg
@@ -271,9 +271,9 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                   stroke="currentColor"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                   ></path>
                 </svg>
@@ -284,7 +284,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               <a
                 href={`https://cloudflare-ipfs.com/ipfs/${proposal.ipfs}`}
                 target="_blank"
-                rel="noreferer noopener"
+                rel="noreferrer noopener"
                 className={cn(
                   buttonVariants({
                     variant: "link",
@@ -301,9 +301,9 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                   stroke="currentColor"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                   ></path>
                 </svg>

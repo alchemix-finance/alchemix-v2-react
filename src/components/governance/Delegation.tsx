@@ -165,7 +165,10 @@ export const Delegation = () => {
           <p>My Delegations:</p>
           <div className="flex w-full flex-col space-y-4">
             {userDelegations?.delegating.map(({ delegate }) => (
-              <div className="flex w-full flex-row space-x-2 rounded border border-grey3inverse bg-grey10inverse p-2">
+              <div
+                key={delegate}
+                className="flex w-full flex-row space-x-2 rounded border border-grey3inverse bg-grey10inverse p-2"
+              >
                 <p>{shortenAddress(delegate)}</p>
               </div>
             ))}
@@ -178,7 +181,10 @@ export const Delegation = () => {
           <p>Delegated to me:</p>
           <div className="flex w-full flex-col space-y-2">
             {userDelegations?.delegations.map(({ delegator }) => (
-              <div className="flex w-full flex-row space-x-2 rounded border border-grey3inverse bg-grey10inverse p-2">
+              <div
+                key={delegator}
+                className="flex w-full flex-row space-x-2 rounded border border-grey3inverse bg-grey10inverse p-2"
+              >
                 <p>{shortenAddress(delegator)}</p>
               </div>
             ))}

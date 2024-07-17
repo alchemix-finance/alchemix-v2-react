@@ -16,6 +16,7 @@ export const QueryKeys = {
   Apr: "apr",
   Migration: (v: string) => `migrate-${v}`,
   VotesForAddress: "votesForAddress",
+  Farms: (type: "internal" | "sushi" | "curve") => `farms-${type}`,
 } as const;
 
 // TODO: We can split alchemists, vaults, tokens, transmuters etc into separate queries
