@@ -19,6 +19,7 @@ import { Route as TransmutersImport } from './routes/transmuters'
 // Create Virtual Routes
 
 const UtilitiesLazyImport = createFileRoute('/utilities')()
+const SentinelLazyImport = createFileRoute('/sentinel')()
 const GovernanceLazyImport = createFileRoute('/governance')()
 const FarmsLazyImport = createFileRoute('/farms')()
 const DebugLazyImport = createFileRoute('/debug')()
@@ -31,6 +32,11 @@ const UtilitiesLazyRoute = UtilitiesLazyImport.update({
   path: '/utilities',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/utilities.lazy').then((d) => d.Route))
+
+const SentinelLazyRoute = SentinelLazyImport.update({
+  path: '/sentinel',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/sentinel.lazy').then((d) => d.Route))
 
 const GovernanceLazyRoute = GovernanceLazyImport.update({
   path: '/governance',
@@ -120,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GovernanceLazyImport
       parentRoute: typeof rootRoute
     }
+    '/sentinel': {
+      id: '/sentinel'
+      path: '/sentinel'
+      fullPath: '/sentinel'
+      preLoaderRoute: typeof SentinelLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/utilities': {
       id: '/utilities'
       path: '/utilities'
@@ -140,6 +153,7 @@ export const routeTree = rootRoute.addChildren({
   DebugLazyRoute,
   FarmsLazyRoute,
   GovernanceLazyRoute,
+  SentinelLazyRoute,
   UtilitiesLazyRoute,
 })
 
@@ -158,6 +172,7 @@ export const routeTree = rootRoute.addChildren({
         "/debug",
         "/farms",
         "/governance",
+        "/sentinel",
         "/utilities"
       ]
     },
@@ -181,6 +196,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/governance": {
       "filePath": "governance.lazy.tsx"
+    },
+    "/sentinel": {
+      "filePath": "sentinel.lazy.tsx"
     },
     "/utilities": {
       "filePath": "utilities.lazy.tsx"
