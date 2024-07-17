@@ -1,6 +1,6 @@
 import { AprFn } from "@/lib/config/metadataTypes";
 
-import { SupportedChainId } from "@/components/providers/Web3Provider";
+import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 import { gql, request } from "graphql-request";
 

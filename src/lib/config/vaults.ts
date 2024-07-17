@@ -1,6 +1,6 @@
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
-import { SupportedChainId } from "@/components/providers/Web3Provider";
+import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 import { VaultMetadata } from "@/lib/config/metadataTypes";
 import { getYearnApy } from "@/lib/middleware/yearn";
 import { getAaveApr } from "@/lib/middleware/aave";

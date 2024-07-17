@@ -1,4 +1,4 @@
-import { wagmiConfig } from "@/components/providers/Web3Provider";
+import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { useChain } from "@/hooks/useChain";
 import { useQuery } from "@tanstack/react-query";
 import { formatEther, zeroAddress } from "viem";

@@ -8,7 +8,7 @@ import { erc20Abi, zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 import { Token } from "@/lib/types";
 import { GAS_ADDRESS, ONE_DAY_IN_MS } from "@/lib/constants";
-import { wagmiConfig } from "@/components/providers/Web3Provider";
+import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "./queriesSchema";
 
 const gALCXAddress = "0x93Dede06AE3B5590aF1d4c111BC54C3f717E4b35";
