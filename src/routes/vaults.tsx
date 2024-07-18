@@ -11,6 +11,7 @@ function VaultsRoute() {
     <Page
       title="Vaults"
       description="Deposit collateral and borrow your future yield right away."
+      iconUri="/images/icons/yield_thin.svg"
     >
       <Vaults />
     </Page>

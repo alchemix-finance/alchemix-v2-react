@@ -46,7 +46,11 @@ const assets = [
 
 function Index() {
   return (
-    <Page title="Alchemix" description="About us">
+    <Page
+      title="Alchemix"
+      description="About Alchemix"
+      iconUri="/images/icons/alchemix.svg"
+    >
       <div className="mt-12 text-center font-alcxTitles text-5xl font-medium leading-tight">
         <span className="bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-transparent">
           Alchemix Self-Repaying Loans allow you to leverage a range of tokens
