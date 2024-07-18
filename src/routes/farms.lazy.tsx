@@ -8,7 +8,11 @@ export const Route = createLazyFileRoute("/farms")({
 
 function FarmsRoute() {
   return (
-    <Page title="Farms" description="Earn yield on your deposits">
+    <Page
+      title="Farms"
+      description="Earn yield on your deposits"
+      iconUri="/images/icons/farm_thin.svg"
+    >
       <Farms />
     </Page>
   );

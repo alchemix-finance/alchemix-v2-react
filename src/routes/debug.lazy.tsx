@@ -8,7 +8,11 @@ export const Route = createLazyFileRoute("/debug")({
 
 function DebugRoute() {
   return (
-    <Page title="Debug" description="Tenderly Fork debugging">
+    <Page
+      title="Debug"
+      description="Tenderly Fork debugging"
+      iconUri="/images/icons/alchemix.svg"
+    >
       <Debug />
     </Page>
   );
