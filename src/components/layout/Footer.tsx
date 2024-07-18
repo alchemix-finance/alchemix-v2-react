@@ -2,7 +2,7 @@ import { dayjs } from "@/lib/dayjs";
 import { Link } from "@tanstack/react-router";
 
 const copyrightYear = () => {
-  return `2024-${dayjs().format("YYYY")}`;
+  return `2020-${dayjs().format("YYYY")}`;
 };
 
 export const Footer = () => {
@@ -28,10 +28,10 @@ export const Footer = () => {
         <div>
           <p className="alcxTitle mb-5 text-sm uppercase">NAVIGATION</p>
           <ul className="space-y-3 text-sm">
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <Link to="/">Introduction</Link>
             </li>
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a
                 href="https://github.com/orgs/alchemix-finance/"
                 className="flex space-x-4"
@@ -41,7 +41,7 @@ export const Footer = () => {
                 <span>Github</span>
               </a>
             </li>
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a
                 href="https://alchemix-finance.gitbook.io/user-docs/"
                 className="flex space-x-4"
@@ -51,7 +51,7 @@ export const Footer = () => {
                 <span>Documentation</span>
               </a>
             </li>
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <Link className="flex space-x-4" to="/governance">
                 <span>Snapshot</span>
               </Link>
@@ -61,7 +61,7 @@ export const Footer = () => {
         <div className="mr-11">
           <p className="alcxTitle mb-5 text-sm uppercase">SOCIAL</p>
           <ul className="space-y-3 text-sm">
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a
                 href="https://alchemixfi.medium.com/"
                 className="flex space-x-4"
@@ -81,7 +81,7 @@ export const Footer = () => {
                 <span>Medium</span>
               </a>
             </li>
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a
                 href="https://discord.com/invite/alchemix"
                 className="flex space-x-4"
@@ -100,7 +100,7 @@ export const Footer = () => {
                 <span>Discord</span>
               </a>
             </li>
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a
                 href="https://forum.alchemix.fi/public/"
                 className="flex space-x-4"
@@ -120,7 +120,7 @@ export const Footer = () => {
                 <span>Forum</span>
               </a>
             </li>
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a
                 href="https://twitter.com/AlchemixFi"
                 className="flex space-x-4"
@@ -141,7 +141,7 @@ export const Footer = () => {
               </a>
             </li>
 
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a
                 href="https://alchemixfi.substack.com/"
                 className="flex space-x-4"
@@ -166,7 +166,7 @@ export const Footer = () => {
         <div>
           <p className="alcxTitle mb-5 text-sm uppercase">PROUDLY USING</p>
           <ul className="space-y-3 text-sm">
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a href="https://defillama.com/" target="_blank" rel="noreferrer">
                 <img
                   src="./images/integrations/defillama.svg"
@@ -175,7 +175,7 @@ export const Footer = () => {
                 />
               </a>
             </li>
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a href="https://li.fi/" target="_blank" rel="noreferrer">
                 <img
                   src="./images/integrations/lifi.svg"
@@ -184,7 +184,7 @@ export const Footer = () => {
                 />
               </a>
             </li>
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a href="https://snapshot.org/" target="_blank" rel="noreferrer">
                 <img
                   src="./images/integrations/snapshot.svg"
@@ -198,7 +198,7 @@ export const Footer = () => {
         <div>
           <p className="alcxTitle mb-5 text-sm uppercase">CARBON FOOTPRINT</p>
           <ul className="space-y-3 text-sm">
-            <li className="opacity-50 hover:opacity-100">
+            <li className="opacity-50 transition-opacity hover:opacity-100">
               <a
                 href="https://www.klimadao.finance/pledge/0xffaa3cda4f169d33291dd9ddbea8578d1398430e"
                 target="_blank"
