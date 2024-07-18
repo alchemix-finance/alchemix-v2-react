@@ -16,7 +16,7 @@ import {
 } from "@/lib/middleware/bonuses";
 
 // @dev some vaults are broken so we need to ignore them from processing
-export const IGNORED_VAULTS = [
+export const IGNORED_VAULTS: `0x${string}`[] = [
   "0x59417c1b2085e086f1EEB1AF0F40eE1dFD9c097f",
   "0xf350C6B7fbe5F6CB53c7D638Dfba9173A5722236",
   "0xC5c0D3e20DF4CA855281B4b5Bcf3bEf8D8068c75",
@@ -25,7 +25,7 @@ export const IGNORED_VAULTS = [
   "0x082B50BeC5E85D82b52264dA7Ad24187a235DBC4",
   "0x1d2bE809EE3a0eeACb02d3d234b3eD479e1c4962",
   "0xDC8Eb117A9987cF2ED45E9082Adc13C03922Fa0a",
-] as const;
+];
 
 export type VaultsConfig = {
   [chainId in SupportedChainId]: {
