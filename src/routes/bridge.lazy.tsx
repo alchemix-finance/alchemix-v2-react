@@ -8,7 +8,11 @@ export const Route = createLazyFileRoute("/bridge")({
 
 function BridgeRoute() {
   return (
-    <Page title="Bridge" description="Transfer your tokens to other chains">
+    <Page
+      title="Bridge"
+      description="Transfer your tokens to other chains"
+      iconUri="/images/icons/swap_thin.svg"
+    >
       <BridgeWidget />
     </Page>
   );

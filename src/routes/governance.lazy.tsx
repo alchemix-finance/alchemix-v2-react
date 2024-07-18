@@ -8,7 +8,11 @@ export const Route = createLazyFileRoute("/governance")({
 
 function GovernanceRoute() {
   return (
-    <Page title="Governance" description="Alchemix Improvement Proposals">
+    <Page
+      title="Governance"
+      description="Alchemix Improvement Proposals"
+      iconUri="/images/icons/alcx_thin.svg"
+    >
       <Governance />
     </Page>
   );

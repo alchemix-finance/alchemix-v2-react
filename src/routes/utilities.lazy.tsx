@@ -23,7 +23,11 @@ export const Route = createLazyFileRoute("/utilities")({
 
 function Utilities() {
   return (
-    <Page title="Utilities" description="A collection of useful tools">
+    <Page
+      title="Utilities"
+      description="A collection of useful tools"
+      iconUri="/images/icons/utilities_thin.svg"
+    >
       <p className="mb-6 text-center text-xs opacity-50">
         These tools are developed and maintained by our awesome community
         members.

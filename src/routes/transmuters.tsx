@@ -11,6 +11,7 @@ function TransmutersRoute() {
     <Page
       title="Transmuter"
       description="Convert your synthetic tokens to their counterpart at a 1:1 ratio"
+      iconUri="/images/icons/transmuter_thin.svg"
     >
       <Transmuters />
     </Page>
