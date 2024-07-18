@@ -51,7 +51,6 @@ module.exports = {
           "loading-bar 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal none running",
       },
       colors: {
-        backgroundLight: "#f1eee9",
         backgroundNav: "#E8E4DB",
         black1: "#0E251D",
         black2: "#10141A",

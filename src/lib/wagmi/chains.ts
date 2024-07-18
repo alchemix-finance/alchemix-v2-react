@@ -1,7 +1,8 @@
 // We overwrite the default RPCs for the Optimism chain, thus we can just pass http() transport to the client,
 // as it will use the RPCs defined here with fallback transport.
 
-import { Chain, arbitrum, mainnet, optimism, fantom } from "viem/chains";
+import { arbitrum, mainnet, optimism, fantom } from "viem/chains";
+import type { Chain } from "@rainbow-me/rainbowkit";
 
 const optimismWithRpcs = {
   ...optimism,
@@ -41,9 +42,24 @@ const arbitrumWithRpcs = {
   },
 } as const satisfies Chain;
 
+const fantomWithRpcsAndIcon = {
+  ...fantom,
+  rpcUrls: {
+    default: {
+      http: [
+        "https://rpc.ankr.com/fantom",
+        "https://fantom-rpc.publicnode.com",
+        "https://1rpc.io/ftm",
+        "https://fantom.blockpi.network/v1/rpc/public",
+      ],
+    },
+  },
+  iconUrl: "/images/icons/fantom_blue.svg",
+} as const satisfies Chain;
+
 export const chains = [
   optimismWithRpcs,
   mainnetWithRpcs,
   arbitrumWithRpcs,
-  fantom,
+  fantomWithRpcsAndIcon,
 ] as const;

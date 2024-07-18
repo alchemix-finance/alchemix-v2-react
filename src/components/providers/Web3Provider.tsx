@@ -4,8 +4,10 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider, lightTheme, Theme } from "@rainbow-me/rainbowkit";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 
-const rainbowTheme = {
-  ...lightTheme(),
+const rainbowLightTheme = {
+  ...lightTheme({
+    borderRadius: "none",
+  }),
   fonts: {
     body: "Montserrat",
   },
@@ -13,7 +15,7 @@ const rainbowTheme = {
 
 export const Web3Provider = ({ children }: { children: React.ReactNode }) => (
   <WagmiProvider config={wagmiConfig}>
-    <RainbowKitProvider theme={rainbowTheme} showRecentTransactions={true}>
+    <RainbowKitProvider theme={rainbowLightTheme} showRecentTransactions={true}>
       {children}
     </RainbowKitProvider>
   </WagmiProvider>

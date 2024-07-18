@@ -25,14 +25,15 @@ export function Header() {
   }, [pathname]);
 
   return (
-    <header className="flex items-center justify-between bg-backgroundLight p-4 md:px-12">
+    <header className="flex items-center justify-between border-b border-grey5inverse bg-grey30inverse p-4 md:pb-5 md:pl-8 md:pt-5">
       <div className="flex items-center justify-between gap-10">
         <div className="text-center">
-          <Link
-            to="/"
-            className="flex justify-center p-1 font-alcxLogo text-3xl"
-          >
-            Alchemix
+          <Link to="/" className="flex items-center justify-center">
+            <img
+              src="/images/icons/ALCX_Std_logo.svg"
+              className="h-11 invert"
+              alt="The Alchemix logo"
+            />
           </Link>
         </div>
         <input
@@ -76,7 +77,7 @@ export function Header() {
       </div>
       <ConnectButton
         accountStatus="address"
-        chainStatus="name"
+        chainStatus="icon"
         showBalance={{ smallScreen: false, largeScreen: true }}
       />
     </header>
