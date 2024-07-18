@@ -8,7 +8,11 @@ export const Route = createLazyFileRoute("/sentinel")({
 
 function SentinelRoute() {
   return (
-    <Page title="Sentinel" description="Senatus Populusque Romanus">
+    <Page
+      title="Sentinel"
+      description="Senatus Populusque Romanus"
+      iconUri="/images/icons/sentinel.svg"
+    >
       <Sentinel />
     </Page>
   );
