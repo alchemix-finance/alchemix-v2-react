@@ -1,28 +1,68 @@
-import { mainnet } from "viem/chains";
+import { Hex } from "viem";
 import { lsService } from "../localStorage";
+import { chains } from "./chains";
+import { UsePublicClientReturnType } from "wagmi";
+import { wagmiConfig } from "./wagmiConfig";
 
-type TenderlyForkChain = Omit<typeof mainnet, "rpcUrls"> & {
-  rpcUrls: {
-    readonly default: {
-      readonly http: readonly string[];
-    };
-  };
-};
+//-- TENDERLY FORK SET UP --//
 
-let tenderlyForkChain: TenderlyForkChain | undefined;
+export const TENDERLY_FORK_CHAIN_ID = lsService.getItem(
+  0,
+  "tenderlyForkChainId",
+);
+export const TENDERLY_FORK_RPC = lsService.getItem(0, "tenderlyForkRpc");
 
-const TENDERLY_FORK_RPC = lsService.getItem(mainnet.id, "tenderlyForkRpc");
-if (TENDERLY_FORK_RPC) {
-  tenderlyForkChain = {
-    ...mainnet,
-    rpcUrls: {
-      default: {
-        http: [TENDERLY_FORK_RPC],
-      },
-    } as const,
-  };
+const chain = chains.find((chain) => chain.id === TENDERLY_FORK_CHAIN_ID);
+
+export const tenderlyForkChain =
+  TENDERLY_FORK_CHAIN_ID && TENDERLY_FORK_RPC && chain
+    ? ({
+        ...chain,
+        rpcUrls: {
+          default: {
+            http: [TENDERLY_FORK_RPC],
+          },
+        },
+      } as const)
+    : undefined;
+
+export const IS_TENDERLY_FORK = !!tenderlyForkChain;
+
+//-- CUSTOM TENDERLY METHODS --//
+
+type TSetBalanceParams = [addresses: Hex[], value: Hex];
+type TSetErc20BalanceParams = [erc20: Hex, to: Hex, value: Hex];
+
+export async function tenderlySetBalance({
+  client,
+  params,
+}: {
+  client: UsePublicClientReturnType<typeof wagmiConfig>;
+  params: TSetBalanceParams;
+}) {
+  return client.request<{
+    method: "tenderly_setBalance";
+    Parameters: TSetBalanceParams;
+    ReturnType: Hex;
+  }>({
+    method: "tenderly_setBalance",
+    params: params,
+  });
 }
 
-const IS_TENDERLY_FORK = !!TENDERLY_FORK_RPC;
-
-export { tenderlyForkChain, IS_TENDERLY_FORK };
+export async function tenderlySetErc20Balance({
+  client,
+  params,
+}: {
+  client: UsePublicClientReturnType<typeof wagmiConfig>;
+  params: TSetErc20BalanceParams;
+}) {
+  return client.request<{
+    method: "tenderly_setErc20Balance";
+    Parameters: TSetErc20BalanceParams;
+    ReturnType: Hex;
+  }>({
+    method: "tenderly_setErc20Balance",
+    params: params,
+  });
+}
