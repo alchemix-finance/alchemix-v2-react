@@ -3,10 +3,9 @@ import { mainnet } from "viem/chains";
 import { useMemo } from "react";
 
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
-import { IS_TENDERLY_FORK, tenderlyForkChain } from "@/lib/wagmi/tenderly";
+import { tenderlyForkChain } from "@/lib/wagmi/tenderly";
 
-const defaultChain =
-  IS_TENDERLY_FORK && tenderlyForkChain ? tenderlyForkChain : mainnet;
+const defaultChain = tenderlyForkChain ?? mainnet;
 
 /**
  * Hook to get reading chain.

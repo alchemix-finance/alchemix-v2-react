@@ -4,12 +4,17 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ContractFunctionExecutionError } from "viem";
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (e, q) => {
       if (process.env.NODE_ENV === "production") return;
       console.log("Error in query", q.queryKey);
+      if (e instanceof ContractFunctionExecutionError) {
+        console.error(e.cause.message);
+        return;
+      }
       console.error(e);
     },
   }),
