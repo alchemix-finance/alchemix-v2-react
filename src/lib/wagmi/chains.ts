@@ -23,7 +23,9 @@ const mainnetWithRpcs = {
     default: {
       http: [
         "https://1rpc.io/eth",
+        "https://ethereum-rpc.publicnode.com",
         "https://ethereum.blockpi.network/v1/rpc/public",
+        "https://eth.drpc.org",
       ],
     },
   },
@@ -58,8 +60,8 @@ const fantomWithRpcsAndIcon = {
 } as const satisfies Chain;
 
 export const chains = [
-  optimismWithRpcs,
   mainnetWithRpcs,
+  optimismWithRpcs,
   arbitrumWithRpcs,
   fantomWithRpcsAndIcon,
 ] as const;

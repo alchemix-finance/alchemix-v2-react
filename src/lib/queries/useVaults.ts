@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useChain } from "@/hooks/useChain";
 import { useAccount, usePublicClient } from "wagmi";
 import { Address, zeroAddress } from "viem";
@@ -202,6 +202,9 @@ export const useVaults = () => {
     },
     enabled: !!alchemists,
     staleTime: ONE_MINUTE_IN_MS,
-    placeholderData: keepPreviousData,
+    // Keep previous data when the chain is the same
+    // Prevents the component from going into pending state when query is invalidated
+    placeholderData: (previousData, previousQuery) =>
+      chain.id === previousQuery?.queryKey[1] ? previousData : undefined,
   });
 };
