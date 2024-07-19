@@ -33,32 +33,35 @@ export const DebugTokens = () => {
     (t) => t.address.toLowerCase() === tokenAddress.toLowerCase(),
   );
 
-  const { mutate: setGasBalance } = useMutation({
-    mutationFn: async () => {
-      if (!address) return;
-      if (isInputZero(amount)) return;
-      await tenderlySetBalance({
-        client: publicClient,
-        params: [[address], toHex(parseEther(amount))],
-      });
+  const { mutate: setGasBalance, isPending: isPendingGasBalance } = useMutation(
+    {
+      mutationFn: async () => {
+        if (!address) return;
+        if (isInputZero(amount)) return;
+        await tenderlySetBalance({
+          client: publicClient,
+          params: [[address], toHex(parseEther(amount))],
+        });
+      },
     },
-  });
+  );
 
-  const { mutate: setTokenBalance } = useMutation({
-    mutationFn: async () => {
-      if (isInputZero(amount)) return;
-      if (!address) return;
-      if (!isAddress(tokenAddress)) return;
-      await tenderlySetErc20Balance({
-        client: publicClient,
-        params: [
-          tokenAddress,
-          address,
-          toHex(parseUnits(amount, selectedToken?.decimals ?? 18)),
-        ],
-      });
-    },
-  });
+  const { mutate: setTokenBalance, isPending: isPendingTokenBalance } =
+    useMutation({
+      mutationFn: async () => {
+        if (isInputZero(amount)) return;
+        if (!address) return;
+        if (!isAddress(tokenAddress)) return;
+        await tenderlySetErc20Balance({
+          client: publicClient,
+          params: [
+            tokenAddress,
+            address,
+            toHex(parseUnits(amount, selectedToken?.decimals ?? 18)),
+          ],
+        });
+      },
+    });
 
   const onRetire = () => {
     if (tokenAddress === GAS_ADDRESS) {
@@ -67,6 +70,8 @@ export const DebugTokens = () => {
     }
     setTokenBalance();
   };
+
+  const isPending = isPendingGasBalance || isPendingTokenBalance;
 
   return (
     <div className="space-y-4 border border-grey3inverse p-4">
@@ -108,8 +113,12 @@ export const DebugTokens = () => {
           placeholder="10000"
         />
       </div>
-      <Button disabled={!IS_TENDERLY_FORK} onClick={onRetire}>
-        {IS_TENDERLY_FORK ? "Retire" : "Tenderly fork not set"}
+      <Button disabled={!IS_TENDERLY_FORK || isPending} onClick={onRetire}>
+        {isPending
+          ? "Loading"
+          : IS_TENDERLY_FORK
+            ? "Retire"
+            : "Tenderly fork not set"}
       </Button>
     </div>
   );
