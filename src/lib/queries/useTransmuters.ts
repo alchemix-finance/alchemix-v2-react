@@ -114,5 +114,9 @@ export const useTransmuters = () => {
       return transmuters;
     },
     staleTime: ONE_MINUTE_IN_MS,
+    // Keep previous data when the chain is the same
+    // Prevents the component from going into pending state when query is invalidated
+    placeholderData: (previousData, previousQuery) =>
+      chain.id === previousQuery?.queryKey[1] ? previousData : undefined,
   });
 };

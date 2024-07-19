@@ -1,5 +1,5 @@
 import { createConfig, http } from "wagmi";
-import { createClient } from "viem";
+import { createClient, fallback } from "viem";
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
   injectedWallet,
@@ -39,7 +39,9 @@ export const wagmiConfig = createConfig({
   client({ chain }) {
     return createClient({
       chain,
-      transport: http(),
+      transport: fallback(
+        chain.rpcUrls.default.http.map((rpcUrl) => http(rpcUrl)),
+      ),
     });
   },
 });
