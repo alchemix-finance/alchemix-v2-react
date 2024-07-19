@@ -4,6 +4,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { cn } from "@/utils/cn";
 import { ToOptions } from "@tanstack/react-router";
+import { IS_TENDERLY_FORK } from "@/lib/wagmi/tenderly";
 
 export const routeTitleToPathMapping = {
   Vaults: "/vaults",
@@ -75,11 +76,18 @@ export function Header() {
           ))}
         </div>
       </div>
-      <ConnectButton
-        accountStatus="address"
-        chainStatus="icon"
-        showBalance={{ smallScreen: false, largeScreen: true }}
-      />
+      <div className="flex items-center gap-4">
+        {IS_TENDERLY_FORK && (
+          <Link to="/debug">
+            <div className="border border-red1 bg-grey5inverse p-2">FORK </div>
+          </Link>
+        )}
+        <ConnectButton
+          accountStatus="address"
+          chainStatus="icon"
+          showBalance={{ smallScreen: false, largeScreen: true }}
+        />
+      </div>
     </header>
   );
 }
