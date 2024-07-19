@@ -74,44 +74,49 @@ export const DebugTokens = () => {
   const isPending = isPendingGasBalance || isPendingTokenBalance;
 
   return (
-    <div className="space-y-4 border border-grey3inverse p-4">
-      <div className="flex flex-col gap-2">
-        <p>Alchemix tokens:</p>
-        <Select
-          value={tokenAddress}
-          onValueChange={(value) => setTokenAddress(value)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select token">
-              {selectedToken?.symbol ?? "Using custom"}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {tokens?.map((token) => (
-              <SelectItem key={token.address} value={token.address}>
-                {token.symbol}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-col gap-2">
-        <p>Custom token:</p>
-        <Input
-          type="text"
-          value={tokenAddress}
-          onChange={(e) => setTokenAddress(e.target.value)}
-          placeholder="0x..."
-        />
-      </div>
-      <div className="flex flex-col gap-2">
-        <p>Amount:</p>
-        <Input
-          type="text"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="10000"
-        />
+    <div className="flex flex-col justify-between gap-4 border border-grey3inverse p-4">
+      <div className="space-y-4">
+        <div className="flex flex-col gap-2">
+          <p>Alchemix tokens:</p>
+          <Select
+            value={tokenAddress}
+            onValueChange={(value) => setTokenAddress(value)}
+            disabled={!IS_TENDERLY_FORK}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select token">
+                {selectedToken?.symbol ?? "Using custom"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {tokens?.map((token) => (
+                <SelectItem key={token.address} value={token.address}>
+                  {token.symbol}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-2">
+          <p>Custom token:</p>
+          <Input
+            type="text"
+            value={tokenAddress}
+            onChange={(e) => setTokenAddress(e.target.value)}
+            placeholder="0x..."
+            disabled={!IS_TENDERLY_FORK}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p>Amount:</p>
+          <Input
+            type="text"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="10000"
+            disabled={!IS_TENDERLY_FORK}
+          />
+        </div>
       </div>
       <Button disabled={!IS_TENDERLY_FORK || isPending} onClick={onRetire}>
         {isPending

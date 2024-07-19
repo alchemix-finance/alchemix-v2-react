@@ -47,39 +47,47 @@ export const DebugTenderly = () => {
     );
   };
   return (
-    <div className="space-y-4 border border-grey3inverse p-4">
-      <div className="flex flex-col gap-2">
-        <p>Tenderly chain:</p>
-        <Select
-          value={tenderlyForkChainId}
-          onValueChange={(value) => setTenderlyForkChainId(value)}
-          disabled={IS_TENDERLY_FORK}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select fork chain id">
-              {forkChain?.name ?? "Error"}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {chains.map((chain) => (
-              <SelectItem key={chain.id} value={chain.id.toString()}>
-                {chain.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="flex flex-col justify-between gap-4 border border-grey3inverse p-4">
+      <div className="space-y-4">
+        <div className="flex flex-col gap-2">
+          <p>Tenderly chain:</p>
+          <Select
+            value={tenderlyForkChainId}
+            onValueChange={(value) => setTenderlyForkChainId(value)}
+            disabled={IS_TENDERLY_FORK}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select fork chain id">
+                {forkChain?.name ?? "Error"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {chains.map((chain) => (
+                <SelectItem key={chain.id} value={chain.id.toString()}>
+                  {chain.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="whitespace-nowrap">Tenderly RPC:</p>
+          <Input
+            type="text"
+            value={tenderlyForkRpc}
+            onChange={(e) => setTenderlyForkRpc(e.target.value)}
+            placeholder="https://rpc.tenderly.co/fork/..."
+            disabled={IS_TENDERLY_FORK}
+          />
+        </div>
+        <div>
+          <p className="font-bold">
+            Do not forget to override selected chain RPC to Tenderly RPC in your
+            wallet.
+          </p>
+        </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <p>Tenderly RPC:</p>
-        <Input
-          type="text"
-          value={tenderlyForkRpc}
-          onChange={(e) => setTenderlyForkRpc(e.target.value)}
-          placeholder="https://rpc.tenderly.co/fork/..."
-          disabled={IS_TENDERLY_FORK}
-        />
-      </div>
-      <Button onClick={handleTenderlyFork}>
+      <Button disabled={!tenderlyForkRpc} onClick={handleTenderlyFork}>
         {IS_TENDERLY_FORK ? "Reset" : "Set"}
       </Button>
     </div>
