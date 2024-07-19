@@ -18,7 +18,7 @@ export function LeftNav() {
             ]
           }
           className={cn(
-            "flex cursor-pointer justify-between rounded-xl bg-backgroundNav p-4 transition-opacity",
+            "flex cursor-pointer justify-between rounded-xl bg-grey10inverse p-4 transition-opacity",
             "hover:opacity-100",
             matchRoute({
               to: routeTitleToPathMapping[
@@ -37,7 +37,7 @@ export function LeftNav() {
         <Link
           to="/sentinel"
           className={cn(
-            "flex cursor-pointer justify-between rounded-xl bg-backgroundNav p-4 transition-opacity",
+            "flex cursor-pointer justify-between rounded-xl bg-grey10inverse p-4 transition-opacity",
             "hover:opacity-100",
             matchRoute({
               to: "/sentinel",
