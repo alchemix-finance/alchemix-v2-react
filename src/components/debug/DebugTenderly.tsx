@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { toast } from "sonner";
 
 export const DebugTenderly = () => {
   const [tenderlyForkRpc, setTenderlyForkRpc] = useState(
@@ -36,7 +37,14 @@ export const DebugTenderly = () => {
       lsService.setItem(0, "tenderlyForkRpc", tenderlyForkRpc);
       lsService.setItem(0, "tenderlyForkChainId", +tenderlyForkChainId);
     }
-    window.location.reload();
+    toast.promise(
+      new Promise((resolve) =>
+        setTimeout(() => resolve(window.location.reload()), 2000),
+      ),
+      {
+        loading: "Reloading...",
+      },
+    );
   };
   return (
     <div className="space-y-4 border border-grey3inverse p-4">
