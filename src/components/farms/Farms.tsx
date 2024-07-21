@@ -13,6 +13,7 @@ import { FarmsAccordionRow } from "./row/FarmsAccordionRow";
 import { staticExternalFarms } from "@/lib/config/farms";
 import { LiquidityMigration } from "./LiquidityMigration";
 import { GAlcsWrapper } from "./GAlcxWrapper";
+import { windowOpen } from "@/utils/windowOpen";
 
 type Filter = "active" | "retired" | "external";
 
@@ -110,7 +111,7 @@ export const Farms = () => {
                             <Button
                               key={action.url}
                               variant="link"
-                              onClick={() => window.open(action.url, "_blank")}
+                              onClick={() => windowOpen(action.url)}
                             >
                               {action.label}
                             </Button>

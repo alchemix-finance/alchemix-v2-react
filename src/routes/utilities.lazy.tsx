@@ -1,5 +1,6 @@
 import { Page } from "@/components/common/Page";
 import { Button } from "@/components/ui/button";
+import { windowOpen } from "@/utils/windowOpen";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 const utilities = [
@@ -54,7 +55,7 @@ function Utilities() {
               <Button
                 variant="ghost"
                 className="h-8 w-full border border-bronze1 text-base lg:w-max"
-                onClick={() => window.open(utility.url, "_blank")}
+                onClick={() => windowOpen(utility.url)}
               >
                 Open
               </Button>

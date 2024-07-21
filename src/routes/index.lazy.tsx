@@ -1,5 +1,6 @@
+import { windowOpen } from "@/utils/windowOpen";
 import { Link, createLazyFileRoute } from "@tanstack/react-router";
-import { Page } from "@/components/common/Page";
+import { useCallback, useEffect, useState } from "react";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -44,31 +45,42 @@ const assets = [
   },
 ];
 
-function Index() {
-  return (
-    <Page
-      title="Alchemix"
-      description="About Alchemix"
-      iconUri="/images/icons/alchemix.svg"
-    >
-      <div className="mt-12 text-center font-alcxTitles text-5xl font-medium leading-tight">
-        <span className="bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-transparent">
-          Alchemix Self-Repaying Loans allow you to leverage a range of tokens
-          without risk of liquidation.
-        </span>
-      </div>
+const subtitles = [
+  "Borrow up to 50% of your deposited collateral.",
+  "Spend and save at the same time.",
+  "Your only debt is time.",
+];
 
-      <p className="text-center text-3xl font-thin opacity-50 animate-in fade-in-50">
-        Borrow up to 50% of your deposited collateral. Spend and save at the
-        same time. Your only debt is time.
+function Index() {
+  const [subtitleIndex, setSubtitleIndex] = useState(0);
+  const shuffle = useCallback(() => {
+    setSubtitleIndex((prev) => (prev + 1 === subtitles.length ? 0 : prev + 1));
+  }, []);
+  useEffect(() => {
+    const intervalID = setInterval(shuffle, 5000);
+    return () => clearInterval(intervalID);
+  }, [shuffle]);
+
+  return (
+    <div className="flex flex-col space-y-14 px-4 pb-36 pt-4 md:px-8 md:pt-8">
+      <h1 className="mt-12 bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-center font-alcxTitles text-5xl font-medium leading-tight text-transparent">
+        Alchemix Self-Repaying Loans allow you to leverage a range of tokens
+        without risk of liquidation.
+      </h1>
+
+      <p
+        key={subtitleIndex}
+        className="text-center text-3xl font-thin opacity-50 duration-1000 animate-in fade-in"
+      >
+        {subtitles[subtitleIndex]}
       </p>
 
       <div className="flex justify-center">
         <Link
           to="/vaults"
-          className="glow h-max w-max rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider transition-all"
+          className="shadow-glow hover:shadow-hoveredGlow rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider transition-all"
         >
-          <span className="flex h-max flex-row content-center space-x-4 self-center text-orange4">
+          <span className="flex items-center space-x-4 self-center text-orange4">
             <span className="self-center text-white2inverse">
               Get your first Self-Repaying Loan
             </span>
@@ -93,10 +105,7 @@ function Index() {
       <div
         className="group relative flex h-auto w-full cursor-pointer justify-center overflow-hidden text-orange4"
         onClick={() =>
-          window.open(
-            "https://www.youtube.com/embed/FlWP9FC8C3c?autoplay=1",
-            "_blank",
-          )
+          windowOpen("https://www.youtube.com/embed/FlWP9FC8C3c?autoplay=1")
         }
       >
         <img
@@ -135,7 +144,7 @@ function Index() {
           A multi-functional account for all your financial needs
         </p>
         <img
-          className="w-3/4 self-center"
+          className="w-3/4 self-center invert"
           src="/images/landing-page/diagram.svg"
           alt="A diagram depicting the possibilities of Alchemix"
         />
@@ -147,11 +156,11 @@ function Index() {
         </a>
       </div>
 
-      <div className="flex w-full flex-col space-y-4 border-b border-t border-grey5inverse py-8">
+      <div className="flex flex-col space-y-4 border-b border-t border-grey5inverse py-8">
         <p className="text-center font-alcxTitles text-3xl opacity-75">
           Leverage your assets
         </p>
-        <div className="flex flex-col justify-center gap-2 lg:flex-row">
+        <div className="flex flex-col justify-center gap-2 lg:grid lg:grid-cols-5">
           {assets.map((asset) => (
             <div
               key={asset.address}
@@ -252,9 +261,9 @@ function Index() {
       <div className="flex justify-center text-bronze4inverse">
         <Link
           to="/vaults"
-          className="glow h-max w-max rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider transition-all"
+          className="shadow-glow hover:shadow-hoveredGlow rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider transition-all"
         >
-          <span className="flex h-max flex-row content-center space-x-4 self-center text-orange4">
+          <span className="flex items-center space-x-4 self-center text-orange4">
             <span className="self-center text-white2inverse">
               Get your first Self-Repaying Loan
             </span>
@@ -275,6 +284,6 @@ function Index() {
           </span>
         </Link>
       </div>
-    </Page>
+    </div>
   );
 }

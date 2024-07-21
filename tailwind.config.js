@@ -27,7 +27,7 @@ module.exports = {
     extend: {
       fontFamily: {
         alcxLogo: ["Reem Kufi", "sans-serif"],
-        alcxTitles: ["Josefin Sans", "sans-serif"],
+        alcxTitles: ["Neue Kabel", "Josefin Sans", "sans-serif"],
         alcxMono: ["monospace"],
       },
       keyframes: {
@@ -124,6 +124,10 @@ module.exports = {
       backgroundImage: {
         bodyGradient:
           "linear-gradient(171.08deg, #fefefe -11.16%, #ebe6de 6.1%, #f5f2ee 49.05%, #fff 93.22%)",
+      },
+      boxShadow: {
+        glow: "0 0 15px #f5c09a80",
+        hoveredGlow: "0 0 15px 9px #f5c09a99",
       },
     },
   },
