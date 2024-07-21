@@ -451,7 +451,7 @@ export const VAULTS: VaultsConfig = {
       underlying: "USDC",
       messages: [],
       gateway: "0x3e1ccc66c755Fdbc7fbf7D667aA843c062Daf304",
-      yieldTokenOverride: "0x625E7708f30cA75bfd92586e17077590C60eb4cD",
+      yieldTokenOverride: "0x724dc807b04555b71ed48a6896b6F41593b8C637",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
