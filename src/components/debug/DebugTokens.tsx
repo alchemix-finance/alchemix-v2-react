@@ -117,6 +117,12 @@ export const DebugTokens = () => {
             disabled={!IS_TENDERLY_FORK}
           />
         </div>
+        <div>
+          <p className="font-light">
+            If some token doesn't appear to work, try setting it manually in
+            tenderly dashboard.
+          </p>
+        </div>
       </div>
       <Button disabled={!IS_TENDERLY_FORK || isPending} onClick={onRetire}>
         {isPending
