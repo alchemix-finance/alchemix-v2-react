@@ -40,8 +40,18 @@ module.exports = {
           to: { height: "0" },
         },
         "loading-bar": {
-          from: { transform: "translateX(-100%)" },
-          to: { transform: "translateX(0%)" },
+          "0%": {
+            left: "-35%",
+            right: " 100%",
+          },
+          "60%": {
+            left: "100%",
+            right: "-90%",
+          },
+          "100%": {
+            left: "100%",
+            right: "-90%",
+          },
         },
       },
       animation: {

@@ -1,6 +1,5 @@
 import { Accordion } from "@/components/ui/accordion";
 import { useVaults } from "@/lib/queries/useVaults";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SYNTH_ASSETS, SynthAsset } from "@/lib/config/synths";
 import { useMemo, useState } from "react";
@@ -11,6 +10,7 @@ import { VaultAccordionRow } from "@/components/vaults/row/VaultAccordionRow";
 import { Borrow } from "@/components/vaults/common_actions/Borrow";
 import { Liquidate } from "@/components/vaults/common_actions/Liquidate";
 import { Repay } from "@/components/vaults/common_actions/Repay";
+import { LoadingBar } from "../common/LoadingBar";
 
 export const Vaults = () => {
   const chain = useChain();
@@ -53,13 +53,11 @@ export const Vaults = () => {
     <>
       {isPending ? (
         <div className="rounded border border-grey10inverse bg-grey15inverse">
-          <div slot="header" className="flex space-x-4 px-6 py-4">
+          <div className="flex space-x-4 bg-grey10inverse px-6 py-4">
             <p className="inline-block self-center">Fetching data</p>
           </div>
-          <div slot="body">
-            <div className="my-4 flex justify-center">
-              <Skeleton className="h-10 w-full" />
-            </div>
+          <div className="my-4 flex justify-center">
+            <LoadingBar />
           </div>
         </div>
       ) : null}
