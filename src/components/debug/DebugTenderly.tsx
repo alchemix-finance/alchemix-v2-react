@@ -87,7 +87,10 @@ export const DebugTenderly = () => {
           </p>
         </div>
       </div>
-      <Button disabled={!tenderlyForkRpc} onClick={handleTenderlyFork}>
+      <Button
+        disabled={!tenderlyForkRpc || !tenderlyForkChainId}
+        onClick={handleTenderlyFork}
+      >
         {IS_TENDERLY_FORK ? "Reset" : "Set"}
       </Button>
     </div>
