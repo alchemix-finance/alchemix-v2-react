@@ -9,6 +9,7 @@ import { TransmuterAccordionRow } from "@/components/transmuters/row/TransmuterA
 import { useTransmuters } from "@/lib/queries/useTransmuters";
 import { Button } from "../ui/button";
 import { externalLiquidityProviders } from "@/lib/config/externalLiquidityProviders";
+import { windowOpen } from "@/utils/windowOpen";
 
 export const Transmuters = () => {
   const chain = useChain();
@@ -57,7 +58,7 @@ export const Transmuters = () => {
                 <Button
                   key={provider.label}
                   className="w-full lg:w-max"
-                  onClick={() => window.open(provider.url, "_blank")}
+                  onClick={() => windowOpen(provider.url)}
                 >
                   <img
                     src={`./images/icons/${provider.icon}`}

@@ -22,6 +22,7 @@ import { useAccount, useWalletClient } from "wagmi";
 import { toast } from "sonner";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { getAddress } from "viem";
+import { windowOpen } from "@/utils/windowOpen";
 
 const votingTypeMapping: Record<string, string> = {
   "single-choice": "Single Choice",
@@ -35,14 +36,11 @@ const votingTypeMapping: Record<string, string> = {
 const supportedTypes = ["basic", "single-choice"];
 
 const openOnSnapshot = (id: string) => {
-  window.open(
-    `https://snapshot.org/#/alchemixstakers.eth/proposal/${id}`,
-    "_blank",
-  );
+  windowOpen(`https://snapshot.org/#/alchemixstakers.eth/proposal/${id}`);
 };
 
 const openOnForum = (discussion: string) => {
-  window.open(discussion, "_blank");
+  windowOpen(discussion);
 };
 
 export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
