@@ -7,5 +7,5 @@
 @tailwind utilities;
 
 body {
-  @apply bg-gradientMain;
+  @apply !bg-bodyGradient bg-fixed bg-no-repeat;
 }

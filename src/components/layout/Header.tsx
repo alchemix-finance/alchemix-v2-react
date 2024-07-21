@@ -4,13 +4,15 @@ import { ToOptions } from "@tanstack/react-router";
 import { IS_TENDERLY_FORK } from "@/lib/wagmi/tenderly";
 
 export const routeTitleToPathMapping = {
-  Vaults: "/vaults",
-  Transmuter: "/transmuters",
-  Bridge: "/bridge",
-  Farms: "/farms",
-  Governance: "/governance",
-  Utilities: "/utilities",
-} as const satisfies Record<string, ToOptions["to"]>;
+  Vaults: { to: "/vaults", icon: "/images/icons/yield_med.svg" },
+  Transmuters: { to: "/transmuters", icon: "/images/icons/transmuter_med.svg" },
+  Bridge: { to: "/bridge", icon: "/images/icons/swap_med.svg" },
+  Farms: { to: "/farms", icon: "/images/icons/farm_med.svg" },
+  Governance: { to: "/governance", icon: "/images/icons/alcx_med.svg" },
+  Utilities: { to: "/utilities", icon: "/images/icons/utilities_med.svg" },
+} as const satisfies Record<string, { to: ToOptions["to"]; icon: string }>;
+
+export type RouteTitle = keyof typeof routeTitleToPathMapping;
 
 export function Header() {
   return (

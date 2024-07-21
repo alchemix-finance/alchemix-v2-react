@@ -7,21 +7,17 @@ import {
 } from "@/components/layout/Header";
 import { useSentinel } from "@/lib/queries/sentinel/useSentinel";
 
-export function LeftNav() {
+export const MobileNav = () => {
   const matchRoute = useMatchRoute();
   const { data: isSentinel } = useSentinel();
   return (
-    <nav className="space-y-5">
-      <p className="my-4 text-xs font-medium uppercase tracking-wider opacity-30">
-        Navigation
-      </p>
+    <div className="fixed bottom-0 z-10 flex w-full justify-between space-x-4 bg-grey30inverse p-4 lg:hidden">
       {Object.keys(routeTitleToPathMapping).map((item) => (
         <Link
           key={item}
           to={routeTitleToPathMapping[item as RouteTitle].to}
           className={cn(
-            "flex cursor-pointer justify-between rounded-xl p-4 transition-all",
-            "hover:bg-grey10inverse hover:opacity-100",
+            "block cursor-pointer",
             matchRoute({
               to: routeTitleToPathMapping[item as RouteTitle].to,
               fuzzy: true,
@@ -30,7 +26,6 @@ export function LeftNav() {
               : "opacity-40",
           )}
         >
-          {item}
           <img
             src={routeTitleToPathMapping[item as RouteTitle].icon}
             className="h-7 w-7 invert"
@@ -42,8 +37,7 @@ export function LeftNav() {
         <Link
           to="/sentinel"
           className={cn(
-            "flex cursor-pointer justify-between rounded-xl p-4 transition-all",
-            "hover:bg-grey10inverse hover:opacity-100",
+            "block cursor-pointer",
             matchRoute({
               to: "/sentinel",
               fuzzy: true,
@@ -52,7 +46,6 @@ export function LeftNav() {
               : "opacity-40",
           )}
         >
-          Sentinel
           <img
             src="/images/icons/sentinel_med.svg"
             className="h-7 w-7 invert"
@@ -60,6 +53,6 @@ export function LeftNav() {
           />
         </Link>
       )}
-    </nav>
+    </div>
   );
-}
+};
