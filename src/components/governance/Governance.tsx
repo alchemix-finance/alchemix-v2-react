@@ -1,12 +1,12 @@
 import { useProposals } from "@/lib/queries/useProposals";
 import { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "../ui/skeleton";
 import { buttonVariants } from "../ui/button";
 
 import { Delegation } from "./Delegation";
 import { Accordion } from "../ui/accordion";
 import { ProposalsAccordionRow } from "./row/ProposalAccordionRow";
+import { LoadingBar } from "../common/LoadingBar";
 
 type ProposalFilter = "all" | "active" | "closed";
 
@@ -66,13 +66,11 @@ export const Governance = () => {
         </div>
         {isPending ? (
           <div className="rounded border border-grey10inverse bg-grey15inverse">
-            <div slot="header" className="flex space-x-4 px-6 py-4">
+            <div className="flex space-x-4 bg-grey10inverse px-6 py-4">
               <p className="inline-block self-center">Fetching data</p>
             </div>
-            <div slot="body">
-              <div className="my-4 flex justify-center">
-                <Skeleton className="h-10 w-full" />
-              </div>
+            <div className="my-4 flex justify-center">
+              <LoadingBar />
             </div>
           </div>
         ) : null}

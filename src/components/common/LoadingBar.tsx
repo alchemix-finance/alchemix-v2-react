@@ -10,12 +10,12 @@ const LoadingBar = React.forwardRef<
   <ProgressPrimitive.Root
     ref={ref}
     className={cn(
-      "relative h-4 w-full overflow-hidden rounded-full bg-[#6C93C7]/20 dark:bg-[#F5C59F]/20",
+      "relative h-1 w-32 overflow-hidden bg-blue3/20 dark:bg-bronze1/20",
       className,
     )}
     {...props}
   >
-    <ProgressPrimitive.Indicator className="animate-loading-bar h-full w-full flex-1 bg-[#6C93C7] transition-all dark:bg-[#F5C59F]" />
+    <ProgressPrimitive.Indicator className="absolute h-full flex-1 animate-loading-bar rounded-sm bg-blue3 will-change-transform fill-mode-forwards dark:bg-bronze1" />
   </ProgressPrimitive.Root>
 ));
 LoadingBar.displayName = ProgressPrimitive.Root.displayName;

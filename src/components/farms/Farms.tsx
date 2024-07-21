@@ -6,7 +6,6 @@ import { useMemo, useState } from "react";
 import { useCurveFarm } from "@/lib/queries/farms/useCurveFarm";
 import { useSushiFarm } from "@/lib/queries/farms/useSushiFarm";
 import { useInternalFarms } from "@/lib/queries/farms/useInternalFarms";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion } from "@/components/ui/accordion";
 import { FarmsAccordionRow } from "./row/FarmsAccordionRow";
@@ -14,6 +13,7 @@ import { staticExternalFarms } from "@/lib/config/farms";
 import { LiquidityMigration } from "./LiquidityMigration";
 import { GAlcsWrapper } from "./GAlcxWrapper";
 import { windowOpen } from "@/utils/windowOpen";
+import { LoadingBar } from "../common/LoadingBar";
 
 type Filter = "active" | "retired" | "external";
 
@@ -72,13 +72,11 @@ export const Farms = () => {
           <div>
             {isPending ? (
               <div className="rounded border border-grey10inverse bg-grey15inverse">
-                <div slot="header" className="flex space-x-4 px-6 py-4">
+                <div className="flex space-x-4 bg-grey10inverse px-6 py-4">
                   <p className="inline-block self-center">Fetching data</p>
                 </div>
-                <div slot="body">
-                  <div className="my-4 flex justify-center">
-                    <Skeleton className="h-10 w-full" />
-                  </div>
+                <div className="my-4 flex justify-center">
+                  <LoadingBar />
                 </div>
               </div>
             ) : null}

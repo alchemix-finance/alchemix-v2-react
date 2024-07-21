@@ -1,6 +1,5 @@
 import { Accordion } from "@/components/ui/accordion";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SYNTH_ASSETS, SynthAsset } from "@/lib/config/synths";
 import { useMemo, useState } from "react";
@@ -10,6 +9,7 @@ import { useTransmuters } from "@/lib/queries/useTransmuters";
 import { Button } from "../ui/button";
 import { externalLiquidityProviders } from "@/lib/config/externalLiquidityProviders";
 import { windowOpen } from "@/utils/windowOpen";
+import { LoadingBar } from "../common/LoadingBar";
 
 export const Transmuters = () => {
   const chain = useChain();
@@ -34,13 +34,11 @@ export const Transmuters = () => {
     <>
       {isPending ? (
         <div className="rounded border border-grey10inverse bg-grey15inverse">
-          <div slot="header" className="flex space-x-4 px-6 py-4">
+          <div className="flex space-x-4 bg-grey10inverse px-6 py-4">
             <p className="inline-block self-center">Fetching data</p>
           </div>
-          <div slot="body">
-            <div className="my-4 flex justify-center">
-              <Skeleton className="h-10 w-full" />
-            </div>
+          <div className="my-4 flex justify-center">
+            <LoadingBar />
           </div>
         </div>
       ) : null}
