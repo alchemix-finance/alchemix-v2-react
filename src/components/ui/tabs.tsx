@@ -17,12 +17,6 @@ const TabsList = React.forwardRef<
 ));
 TabsList.displayName = TabsPrimitive.List.displayName;
 
-// bg-grey10inverse
-// bg-opacity-30
-// hover:bg-grey1inverse hover:text-opacity-100
-// ACTIVE
-// bg-grey1inverse
-// hover:bg-grey1inverse hover:text-opacity-100
 const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
