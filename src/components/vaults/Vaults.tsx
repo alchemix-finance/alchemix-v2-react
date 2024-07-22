@@ -63,53 +63,63 @@ export const Vaults = () => {
       ) : null}
       {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
       {isSuccess && (
-        <div className="space-y-5">
-          <Tabs value={synthTab} onValueChange={onSynthTabChange}>
-            <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value={SYNTH_ASSETS.ALETH}>AlETH</TabsTrigger>
-              <TabsTrigger value={SYNTH_ASSETS.ALUSD}>AlUSD</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <VaultsMetrics />
-          <div className="rounded border p-5">
-            <Tabs value={actionTab} onValueChange={onActionTabChange}>
-              <TabsList>
-                <TabsTrigger value="borrow">Borrow</TabsTrigger>
-                <TabsTrigger value="repay">Repay</TabsTrigger>
-                <TabsTrigger value="liquidate">Liquidate</TabsTrigger>
-              </TabsList>
-              <TabsContent value="borrow">
-                <Borrow />
-              </TabsContent>
-              <TabsContent value="repay">
-                <Repay />
-              </TabsContent>
-              <TabsContent value="liquidate">
-                <Liquidate />
-              </TabsContent>
-            </Tabs>
+        <div className="space-y-8">
+          <div className="top-0 z-10 space-y-8 pt-4 drop-shadow-xl backdrop-blur backdrop-filter md:sticky">
+            <div className="rounded border border-grey10inverse bg-grey15inverse">
+              <Tabs value={synthTab} onValueChange={onSynthTabChange}>
+                <TabsList>
+                  <TabsTrigger value="all">All Vaults</TabsTrigger>
+                  <TabsTrigger value={SYNTH_ASSETS.ALETH}>AlETH</TabsTrigger>
+                  <TabsTrigger value={SYNTH_ASSETS.ALUSD}>AlUSD</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+            <div className="space-y-4">
+              <VaultsMetrics />
+              <div className="rounded border border-grey3inverse bg-grey10inverse">
+                <Tabs value={actionTab} onValueChange={onActionTabChange}>
+                  <TabsList>
+                    <TabsTrigger value="borrow">Borrow</TabsTrigger>
+                    <TabsTrigger value="repay">Repay</TabsTrigger>
+                    <TabsTrigger value="liquidate">Liquidate</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="borrow">
+                    <Borrow />
+                  </TabsContent>
+                  <TabsContent value="repay">
+                    <Repay />
+                  </TabsContent>
+                  <TabsContent value="liquidate">
+                    <Liquidate />
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </div>
           </div>
-          <Tabs
-            value={usedTab}
-            onValueChange={onUsedTabChange}
-            className="w-full"
-          >
-            <TabsList>
-              <TabsTrigger value="used">Your</TabsTrigger>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="unused">Unused</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <Accordion type="single" collapsible>
-            {filteredVaults && filteredVaults.length > 0 ? (
-              filteredVaults.map((vault) => (
-                <VaultAccordionRow key={vault.address} vault={vault} />
-              ))
-            ) : (
-              <div>No vaults for selected chain and synth asset</div>
-            )}
-          </Accordion>
+          <div className="rounded border border-grey10inverse bg-grey15inverse">
+            <div className="bg-grey10inverse px-6 py-4">
+              <Tabs
+                value={usedTab}
+                onValueChange={onUsedTabChange}
+                className="w-full"
+              >
+                <TabsList>
+                  <TabsTrigger value="used">Your Vaults</TabsTrigger>
+                  <TabsTrigger value="all">All Vaults</TabsTrigger>
+                  <TabsTrigger value="unused">Unused Vaults</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+            <Accordion type="single" collapsible className="p-4">
+              {filteredVaults && filteredVaults.length > 0 ? (
+                filteredVaults.map((vault) => (
+                  <VaultAccordionRow key={vault.address} vault={vault} />
+                ))
+              ) : (
+                <div>No vaults for selected chain and synth asset</div>
+              )}
+            </Accordion>
+          </div>
         </div>
       )}
     </>
