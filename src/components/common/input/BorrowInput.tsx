@@ -6,6 +6,7 @@ import { Token } from "@/lib/types";
 import { useVaults } from "@/lib/queries/useVaults";
 import { VaultHelper } from "@/utils/helpers/vaultHelper";
 import { formatEther, formatUnits } from "viem";
+import { Button } from "@/components/ui/button";
 
 export const BorrowInput = ({
   amount,
@@ -60,34 +61,54 @@ export const BorrowInput = ({
     return adjusted.toString();
   }, [debtToken, vaults]);
 
-  const setMax = () => {
+  const handleMax = () => {
     if (tokenBalance) {
       return setAmount(tokenBalance);
     }
   };
+  const handleClear = () => {
+    setAmount("");
+  };
 
   return (
-    <div className="flex flex-col">
-      <p
-        className={cn(
-          "inline-block self-end text-sm font-light text-lightgrey10",
-          tokenBalance !== "0" && "cursor-pointer",
-        )}
-        onClick={setMax}
-      >
-        Available: {formatNumber(tokenBalance)} {debtToken.symbol}
-      </p>
-      <Input
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        className={cn(
-          "mb-2",
-          tokenBalance !== undefined &&
-            +amount > +tokenBalance &&
-            "text-red-500 ring-2 ring-red-500 focus-visible:ring-red-500",
-        )}
-      />
+    <div className="flex flex-grow flex-col lg:flex-row">
+      <div className="relative flex-grow">
+        <p className="pointer-events-none absolute left-2 inline-block p-2 text-xs font-light text-lightgrey10 lg:text-sm">
+          Available: {formatNumber(tokenBalance)} {debtToken.symbol}
+        </p>
+        <Input
+          type="number"
+          value={amount}
+          className={cn(
+            "mb-2 h-full rounded-none p-4 text-right text-xl",
+            tokenBalance !== undefined &&
+              +amount > +tokenBalance &&
+              "text-red-500 ring-2 ring-red-500 focus-visible:ring-red-500",
+          )}
+          placeholder="0.00"
+          onChange={(e) => setAmount(e.target.value)}
+        />
+      </div>
+      <div className="flex lg:flex-col">
+        <Button
+          variant="action"
+          size="md"
+          weight="normal"
+          className="h-10 w-full border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+          onClick={handleMax}
+        >
+          MAX
+        </Button>
+        <Button
+          variant="action"
+          size="md"
+          weight="normal"
+          className="h-10 w-full border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+          onClick={handleClear}
+        >
+          CLEAR
+        </Button>
+      </div>
     </div>
   );
 };

@@ -17,7 +17,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { parseUnits } from "viem";
+import { isAddress, parseUnits } from "viem";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
 import { useQueryClient } from "@tanstack/react-query";
@@ -25,6 +25,9 @@ import { ALCHEMISTS_METADATA, SYNTH_ASSETS } from "@/lib/config/alchemists";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { Switch } from "@/components/ui/switch";
+import { AnimatePresence, m } from "framer-motion";
+import { Input } from "@/components/ui/input";
 
 export const Borrow = () => {
   const queryClient = useQueryClient();
@@ -33,7 +36,13 @@ export const Borrow = () => {
 
   const { address } = useAccount();
 
+  const [isDifferentAddress, setIsDifferentAddress] = useState(false);
+  const [confirmedDifferentAddress, setConfirmedDifferentAddress] =
+    useState(false);
+  const [receipientAddress, setReceipientAddress] = useState("");
   const [amount, setAmount] = useState("");
+
+  const receipient = isAddress(receipientAddress) ? receipientAddress : address;
 
   const { data: alchemists } = useAlchemists();
   const { data: tokens } = useTokensQuery();
@@ -72,9 +81,9 @@ export const Borrow = () => {
     abi: alchemistV2Abi,
     chainId: chain.id,
     functionName: "mint",
-    args: [parseUnits(amount, debtToken?.decimals ?? 18), address!],
+    args: [parseUnits(amount, debtToken?.decimals ?? 18), receipient!],
     query: {
-      enabled: !!address && !!debtToken && !isInputZero(amount),
+      enabled: !!receipient && !!debtToken && !isInputZero(amount),
     },
   });
 
@@ -101,6 +110,14 @@ export const Borrow = () => {
     setTokenAddress(value as `0x${string}`);
   };
 
+  const handleIsDifferentAddress = (checked: boolean) => {
+    setIsDifferentAddress(checked);
+  };
+
+  const handleConfirmedDifferentAddress = (checked: boolean) => {
+    setConfirmedDifferentAddress(checked);
+  };
+
   const onCtaClick = useCallback(() => {
     if (borrowError) {
       toast.error("Borrow failed", {
@@ -120,35 +137,117 @@ export const Borrow = () => {
       });
     }
   }, [borrow, borrowConfig, borrowError]);
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-4 bg-grey15inverse p-4">
       {!availableSynthAssets || (!debtToken && <p>Loading...</p>)}
       {!!availableSynthAssets && !!debtToken && (
         <>
-          <Select value={tokenAddress} onValueChange={handleDebtTokenSelect}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Debt Token">
-                {debtToken.symbol}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {availableSynthAssets &&
-                availableSynthAssets.map((token) => (
-                  <SelectItem key={token.address} value={token.address}>
-                    {token.symbol}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-          <BorrowInput
-            amount={amount}
-            setAmount={setAmount}
-            debtToken={debtToken}
-          />
+          <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+            <Select value={tokenAddress} onValueChange={handleDebtTokenSelect}>
+              <SelectTrigger className="h-auto w-[180px]">
+                <SelectValue placeholder="Debt Token" asChild>
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={`/images/token-icons/${debtToken.symbol}.svg`}
+                      alt={debtToken.symbol}
+                      className="h-12 w-12"
+                    />
+                    <span className="text-xl">{debtToken.symbol}</span>
+                  </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {availableSynthAssets &&
+                  availableSynthAssets.map((token) => (
+                    <SelectItem key={token.address} value={token.address}>
+                      {token.symbol}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+            <BorrowInput
+              amount={amount}
+              setAmount={setAmount}
+              debtToken={debtToken}
+            />
+          </div>
+          <div className="flex items-center">
+            <Switch
+              checked={isDifferentAddress}
+              onCheckedChange={handleIsDifferentAddress}
+              id="is-different-address"
+            />
+            <label
+              className="pl-2 text-sm text-lightgrey10inverse"
+              htmlFor="is-different-address"
+            >
+              Transfer loan to different wallet
+            </label>
+          </div>
+          <div>
+            <AnimatePresence initial={false}>
+              {isDifferentAddress && (
+                <m.div
+                  key="differentAddressInput"
+                  initial="collapsed"
+                  animate="open"
+                  exit="collapsed"
+                  variants={{
+                    open: { opacity: 1, height: "auto" },
+                    collapsed: { opacity: 0, height: 0 },
+                  }}
+                  transition={{
+                    duration: 0.2,
+                    ease: "easeOut",
+                  }}
+                  className="space-y-4"
+                >
+                  <div className="flex items-center rounded border border-grey3inverse bg-grey3inverse">
+                    <Input
+                      type="text"
+                      value={receipientAddress}
+                      onChange={(e) => setReceipientAddress(e.target.value)}
+                      className="h-full flex-grow rounded-none p-4 text-right text-xl"
+                      placeholder="0x..."
+                    />
+                    <Button
+                      variant="action"
+                      size="md"
+                      weight="normal"
+                      className="h-full border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+                      onClick={() => setReceipientAddress("")}
+                    >
+                      CLEAR
+                    </Button>
+                  </div>
+                  <div className="flex items-center">
+                    <Switch
+                      checked={confirmedDifferentAddress}
+                      onCheckedChange={handleConfirmedDifferentAddress}
+                      id="confirmed-different-address"
+                    />
+                    <label
+                      className="pl-2 text-sm text-lightgrey10inverse"
+                      htmlFor="confirmed-different-address"
+                    >
+                      I have verified the above address to be the correct
+                      recipient of my new loan
+                    </label>
+                  </div>
+                </m.div>
+              )}
+            </AnimatePresence>
+          </div>
           <Button
             variant="outline"
             onClick={onCtaClick}
-            disabled={isFetching || isInputZero(amount)}
+            disabled={
+              isFetching ||
+              isInputZero(amount) ||
+              (isDifferentAddress && !isAddress(receipientAddress)) ||
+              (isDifferentAddress && !confirmedDifferentAddress)
+            }
           >
             Borrow
           </Button>

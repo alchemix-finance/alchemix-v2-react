@@ -1,8 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+
 import { Web3Provider } from "@/components/providers/Web3Provider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { FramerMotionProvider } from "@/components/providers/FramerMotionProvider";
 
 // Import the generated route tree
 import { routeTree } from "@/routeTree.gen";
@@ -25,9 +27,11 @@ if (!rootElement.innerHTML) {
     <React.StrictMode>
       <QueryProvider>
         <Web3Provider>
-          <RouterProvider router={router} />
+          <FramerMotionProvider>
+            <RouterProvider router={router} />
+          </FramerMotionProvider>
         </Web3Provider>
       </QueryProvider>
-    </React.StrictMode>
+    </React.StrictMode>,
   );
 }
