@@ -68,9 +68,30 @@ export const Vaults = () => {
             <div className="rounded border border-grey10inverse bg-grey15inverse">
               <Tabs value={synthTab} onValueChange={onSynthTabChange}>
                 <TabsList>
-                  <TabsTrigger value="all">All Vaults</TabsTrigger>
-                  <TabsTrigger value={SYNTH_ASSETS.ALETH}>AlETH</TabsTrigger>
-                  <TabsTrigger value={SYNTH_ASSETS.ALUSD}>AlUSD</TabsTrigger>
+                  <TabsTrigger value="all" className="space-x-4">
+                    <img
+                      src="/images/icons/alcx_med.svg"
+                      className="h-5 w-5"
+                      alt="All vaults filter"
+                    />
+                    <p>All Vaults</p>
+                  </TabsTrigger>
+                  <TabsTrigger value={SYNTH_ASSETS.ALUSD} className="space-x-4">
+                    <img
+                      src="/images/icons/alusd_med.svg"
+                      className="h-5 w-5"
+                      alt="All vaults filter"
+                    />
+                    <p>alUSD</p>
+                  </TabsTrigger>
+                  <TabsTrigger value={SYNTH_ASSETS.ALETH} className="space-x-4">
+                    <img
+                      src="/images/icons/aleth_med.svg"
+                      className="h-5 w-5"
+                      alt="All vaults filter"
+                    />
+                    <p>alETH</p>
+                  </TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
@@ -103,10 +124,10 @@ export const Vaults = () => {
                 onValueChange={onUsedTabChange}
                 className="w-full"
               >
-                <TabsList>
-                  <TabsTrigger value="used">Your Vaults</TabsTrigger>
-                  <TabsTrigger value="all">All Vaults</TabsTrigger>
-                  <TabsTrigger value="unused">Unused Vaults</TabsTrigger>
+                <TabsList className="h-auto">
+                  <TabsTrigger value="used">Your Strategies</TabsTrigger>
+                  <TabsTrigger value="all">All Strategies</TabsTrigger>
+                  <TabsTrigger value="unused">Unused Strategies</TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
