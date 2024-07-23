@@ -84,8 +84,8 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
 
   return (
     <AccordionItem value={vault.address}>
-      <AccordionTrigger className="flex w-full flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 hover:cursor-pointer hover:no-underline lg:grid lg:grid-cols-12 lg:gap-2">
-        <div className="col-span-3 flex flex-row space-x-8">
+      <AccordionTrigger className="flex flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 py-4 pr-8 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:grid lg:grid-cols-12 lg:gap-2">
+        <div className="col-span-3 flex space-x-8 pl-8">
           <div className="relative">
             {vault.metadata.beta && (
               <img
@@ -113,7 +113,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               className="absolute left-6 top-6 h-9 w-9"
             />
           </div>
-          <div>
+          <div className="text-left">
             <p className="font-bold">{vault.metadata.label}</p>
             <p className="text-sm text-lightgrey10">
               {vaultYieldTokenData?.symbol ?? "..."}
@@ -122,8 +122,8 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             <p className="text-sm text-lightgrey10">LTV: {vaultLtv}%</p>
           </div>
         </div>
-        <div className="flex lg:hidden">
-          <div className="flex-2 w-full lg:w-1/6">
+        <div className="flex w-full lg:hidden">
+          <div className="w-full">
             <p className="text-center text-sm text-lightgrey10">Deposit</p>
             <CurrencyCell
               tokenAmount={sharesBalance}
@@ -132,7 +132,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               tokenDecimals={vaultUnderlyingTokenData?.decimals}
             />
           </div>
-          <div className="flex-2 w-full">
+          <div className="w-full">
             <p className="text-center text-sm text-lightgrey10">TVL</p>
             <CurrencyCell
               tokenAmount={tvl}
@@ -142,7 +142,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             />
           </div>
         </div>
-        <div className="flex-2 col-span-2 hidden w-full lg:block">
+        <div className="col-span-2 hidden w-full lg:block">
           <p className="text-center text-sm text-lightgrey10">Deposit</p>
           <CurrencyCell
             tokenAmount={sharesBalance}
@@ -151,7 +151,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             tokenDecimals={vaultUnderlyingTokenData?.decimals}
           />
         </div>
-        <div className="flex-2 col-span-4 flex flex-col px-8">
+        <div className="col-span-3 hidden flex-col px-8 lg:flex">
           <p className="text-center text-sm text-lightgrey10">TVL / Cap</p>
           <VaultCapacityCell
             vault={vault}
@@ -159,18 +159,20 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             tokenSymbol={vaultUnderlyingTokenData?.symbol}
           />
         </div>
-        <div className="hidden w-full flex-1 self-start lg:block">
-          <p className="text-center text-sm text-lightgrey10">
-            {vault.metadata.api.yieldType}
-          </p>
-          <VaultYieldCell vault={vault} />
-        </div>
-        <div className="hidden w-full flex-1 self-start lg:block">
-          <p className="text-center text-sm text-lightgrey10">Bonus</p>
-          <BonusCell vault={vault} />
+        <div className="col-span-4 flex w-full items-center">
+          <div className="w-full">
+            <p className="text-center text-sm text-lightgrey10">
+              {vault.metadata.api.yieldType}
+            </p>
+            <VaultYieldCell vault={vault} />
+          </div>
+          <div className="w-full">
+            <p className="text-center text-sm text-lightgrey10">Bonus</p>
+            <BonusCell vault={vault} />
+          </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="border border-grey10inverse bg-grey15inverse p-4">
+      <AccordionContent className="rounded-b border border-t-0 border-grey3inverse bg-grey10inverse p-4">
         <div className="flex w-full flex-col gap-4">
           {vault.metadata.messages.length > 0 &&
             vault.metadata.messages.map((message) => (

@@ -203,7 +203,7 @@ export const Vaults = () => {
                 </TabsList>
               </Tabs>
             </div>
-            <Accordion type="single" collapsible className="p-4">
+            <Accordion type="single" collapsible className="space-y-4 p-4">
               {filteredVaults && filteredVaults.length > 0 ? (
                 filteredVaults.map((vault) => (
                   <VaultAccordionRow key={vault.address} vault={vault} />

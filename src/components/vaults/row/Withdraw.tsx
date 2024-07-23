@@ -1,5 +1,4 @@
 import { Token, Vault } from "@/lib/types";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCallback, useMemo, useState } from "react";
 import {
@@ -16,6 +15,7 @@ import { VaultWithdrawTokenInput } from "@/components/common/input/VaultWithdraw
 import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
 import { formatEther } from "viem";
+import { SlippageInput } from "@/components/common/input/SlippageInput";
 
 export const Withdraw = ({
   vault,
@@ -103,14 +103,7 @@ export const Withdraw = ({
         isSelectedTokenYieldToken={isSelecedTokenYieldToken}
         vault={vault}
       />
-      <div className="flex items-center">
-        <p>Slippage</p>
-        <Input
-          type="number"
-          value={slippage}
-          onChange={(e) => setSlippage(e.target.value)}
-        />
-      </div>
+      <SlippageInput slippage={slippage} setSlippage={setSlippage} />
       <Button
         variant="outline"
         disabled={isFetching || isInputZero(amount)}

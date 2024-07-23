@@ -1,6 +1,5 @@
 import { Token, Vault } from "@/lib/types";
 import { TokenInput } from "@/components/common/input/TokenInput";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCallback, useMemo, useState } from "react";
 import {
@@ -18,6 +17,7 @@ import { isInputZero } from "@/utils/inputNotZero";
 import { useReadContract } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useChain } from "@/hooks/useChain";
+import { SlippageInput } from "@/components/common/input/SlippageInput";
 
 export const Deposit = ({
   vault,
@@ -110,14 +110,7 @@ export const Deposit = ({
         tokenSymbol={token.symbol}
         tokenDecimals={token.decimals}
       />
-      <div className="flex items-center">
-        <p>Slippage</p>
-        <Input
-          type="number"
-          value={slippage}
-          onChange={(e) => setSlippage(e.target.value)}
-        />
-      </div>
+      <SlippageInput slippage={slippage} setSlippage={setSlippage} />
       <Button
         variant="outline"
         disabled={isFull || isFetching || isInputZero(amount)}

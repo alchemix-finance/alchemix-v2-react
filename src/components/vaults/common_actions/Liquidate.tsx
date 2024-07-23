@@ -22,7 +22,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { SynthAsset } from "@/lib/config/synths";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection";
-import { Input } from "@/components/ui/input";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { useVaults } from "@/lib/queries/useVaults";
 import { isInputZero } from "@/utils/inputNotZero";
@@ -30,7 +29,7 @@ import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { LiquidateTokenInput } from "@/components/common/input/LiquidateInput";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { Switch } from "@/components/ui/switch";
-import { AmountQuickOptions } from "@/components/common/input/InputQuickOptions";
+import { SlippageInput } from "@/components/common/input/SlippageInput";
 
 export const Liquidate = () => {
   const queryClient = useQueryClient();
@@ -231,25 +230,7 @@ export const Liquidate = () => {
               tokenSymbol={liquidationToken.symbol}
             />
           </div>
-          <div className="flex flex-col">
-            <p className="whitespace-nowrap text-sm text-lightgrey10inverse">
-              Maximum Slippage: {slippage}%
-            </p>
-            <div className="flex items-center gap-2">
-              <AmountQuickOptions value={slippage} setValue={setSlippage} />
-              <div className="relative">
-                <Input
-                  type="number"
-                  value={slippage}
-                  onChange={(e) => setSlippage(e.target.value)}
-                  className="w-16"
-                />
-                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-lightgrey10inverse">
-                  %
-                </span>
-              </div>
-            </div>
-          </div>
+          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
           <div className="flex items-center">
             <Switch
               checked={confirmedLiquidation}
