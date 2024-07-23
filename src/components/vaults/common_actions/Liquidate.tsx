@@ -203,7 +203,7 @@ export const Liquidate = () => {
               onValueChange={handleLiquidationTokenSelect}
             >
               <SelectTrigger className="h-auto w-56">
-                <SelectValue placeholder="Repayment Token" asChild>
+                <SelectValue placeholder="Liquidation Token" asChild>
                   <div className="flex items-center gap-4">
                     <img
                       src={`/images/token-icons/${liquidationToken.symbol}.svg`}

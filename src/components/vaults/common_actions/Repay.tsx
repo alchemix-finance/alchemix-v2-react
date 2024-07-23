@@ -241,7 +241,7 @@ export const Repay = () => {
                 setRepaymentTokenAddress(value as `0x${string}`)
               }
             >
-              <SelectTrigger className="h-auto w-[180px]">
+              <SelectTrigger className="h-auto w-56">
                 <SelectValue placeholder="Repayment Token" asChild>
                   <div className="flex items-center gap-4">
                     <img

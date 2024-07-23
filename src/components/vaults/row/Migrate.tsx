@@ -11,6 +11,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useMigrate } from "@/lib/mutations/useMigrate";
 import { MigrateTokenInput } from "@/components/common/input/MigrateTokenInput";
 import { isInputZero } from "@/utils/inputNotZero";
+import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 
 export const Migrate = ({
   vault,
@@ -28,6 +29,14 @@ export const Migrate = ({
   const selectedVault = useMemo(() => {
     return selection.find((v) => v.address === selectedVaultAddress)!;
   }, [selectedVaultAddress, selection]);
+
+  const { data: tokens } = useTokensQuery();
+  const tokenOfSelectedVault = tokens?.find((t) =>
+    selectedVault.metadata.yieldTokenOverride
+      ? t.address.toLowerCase() ===
+        selectedVault.metadata.yieldTokenOverride.toLowerCase()
+      : t.address.toLowerCase() === selectedVault.yieldToken.toLowerCase(),
+  );
 
   const {
     isApprovalNeededWithdraw,
@@ -62,32 +71,56 @@ export const Migrate = ({
   ]);
 
   return (
-    <div className="space-y-2">
-      <Select
-        value={selectedVaultAddress}
-        onValueChange={(value) =>
-          setSelectedVaultAddress(value as `0x${string}`)
-        }
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Vault">
-            {selectedVault.metadata.label}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {selection.map((possibleVault) => (
-            <SelectItem
-              key={possibleVault.address}
-              value={possibleVault.address}
-            >
-              {possibleVault.metadata.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <MigrateTokenInput amount={amount} setAmount={setAmount} vault={vault} />
+    <div className="space-y-4">
+      <div className="flex items-center gap-4">
+        <p className="text-sm text-lightgrey10">Target Vault</p>
+        <Select
+          value={selectedVaultAddress}
+          onValueChange={(value) =>
+            setSelectedVaultAddress(value as `0x${string}`)
+          }
+        >
+          <SelectTrigger className="w-56">
+            <SelectValue placeholder="Vault" asChild>
+              <div className="flex items-center gap-4">
+                <img
+                  src={`/images/token-icons/${tokenOfSelectedVault?.symbol}.svg`}
+                  alt={tokenOfSelectedVault?.symbol}
+                  className="h-4 w-4"
+                />
+                {selectedVault.metadata.label}
+              </div>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {selection.map((possibleVault) => (
+              <SelectItem
+                key={possibleVault.address}
+                value={possibleVault.address}
+              >
+                {possibleVault.metadata.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+        <div className="flex items-center py-4 pl-4 pr-2">
+          <img
+            src="/images/token-icons/Shares.svg"
+            alt="Shares icon"
+            className="h-12 w-12"
+          />
+        </div>
+        <MigrateTokenInput
+          amount={amount}
+          setAmount={setAmount}
+          vault={vault}
+        />
+      </div>
       <Button
         variant="outline"
+        width="full"
         disabled={isFetching || isInputZero(amount)}
         onClick={onCtaClick}
       >

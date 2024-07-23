@@ -14,14 +14,16 @@ export const TokenInput = ({
   tokenAddress,
   tokenSymbol,
   tokenDecimals,
+  type = "Balance",
+  overrideBalance,
 }: {
   amount: string;
   setAmount: (amount: string) => void;
   tokenAddress: `0x${string}`;
   tokenSymbol: string;
   tokenDecimals: number;
-  showAmountOptions?: boolean;
-  showPercentOptions?: boolean;
+  type?: "Balance" | "Available";
+  overrideBalance?: string;
 }) => {
   const chain = useChain();
   const { address } = useAccount();
@@ -30,6 +32,7 @@ export const TokenInput = ({
     address,
     chainId: chain.id,
     query: {
+      enabled: !overrideBalance,
       select: (balance) => formatEther(balance.value),
     },
   });
@@ -41,7 +44,7 @@ export const TokenInput = ({
       functionName: "balanceOf",
       args: [address!],
       query: {
-        enabled: !!address,
+        enabled: !!address && !overrideBalance,
         select: (balance) => formatUnits(balance, tokenDecimals),
       },
     });
@@ -51,6 +54,9 @@ export const TokenInput = ({
   });
 
   const handleMax = () => {
+    if (overrideBalance) {
+      return setAmount(overrideBalance);
+    }
     if (tokenAddress === GAS_ADDRESS && gasBalance) {
       return setAmount(gasBalance);
     }
@@ -63,13 +69,17 @@ export const TokenInput = ({
     setAmount("");
   };
 
-  const balance = tokenAddress === GAS_ADDRESS ? gasBalance : tokenBalance;
+  const balance = overrideBalance
+    ? overrideBalance
+    : tokenAddress === GAS_ADDRESS
+      ? gasBalance
+      : tokenBalance;
 
   return (
     <div className="flex flex-grow flex-col lg:flex-row">
       <div className="relative flex-grow">
         <p className="pointer-events-none absolute left-2 inline-block p-2 text-xs font-light text-lightgrey10 lg:text-sm">
-          Balance: {formatNumber(balance)}{" "}
+          {type}: {formatNumber(balance)}{" "}
           {tokenAddress === GAS_ADDRESS
             ? chain.nativeCurrency.symbol
             : tokenSymbol}
@@ -91,7 +101,7 @@ export const TokenInput = ({
         <Button
           variant="action"
           weight="normal"
-          className="h-10 w-full border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+          className="h-10 w-full rounded-b-none rounded-l-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
           onClick={handleMax}
         >
           MAX
@@ -99,7 +109,7 @@ export const TokenInput = ({
         <Button
           variant="action"
           weight="normal"
-          className="h-10 w-full border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+          className="h-10 w-full rounded-l-none rounded-t-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
           onClick={handleClear}
         >
           CLEAR

@@ -101,7 +101,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             />
             <img
               src={
-                SYNTH_ASSETS_METADATA[vault.metadata.synthAssetType]?.icon ||
+                SYNTH_ASSETS_METADATA[vault.metadata.synthAssetType]?.icon ??
                 "./images/icons/alusd_med.svg"
               }
               alt={vault.metadata.label}
@@ -182,15 +182,26 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
                 type={message.type}
               />
             ))}
+
           <Tabs defaultValue="deposit">
-            <TabsList>
-              <TabsTrigger value="deposit">Deposit</TabsTrigger>
-              <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
-              {(chain.id === mainnet.id || chain.id === optimism.id) && (
-                <TabsTrigger value="migrate">Migrate</TabsTrigger>
-              )}
-              <TabsTrigger value="info">Info</TabsTrigger>
-            </TabsList>
+            <div className="rounded border border-grey1inverse bg-grey3inverse p-2">
+              <TabsList className="w-full overflow-x-auto">
+                <TabsTrigger value="deposit" className="h-8 w-full">
+                  Deposit
+                </TabsTrigger>
+                <TabsTrigger value="withdraw" className="h-8 w-full">
+                  Withdraw
+                </TabsTrigger>
+                {(chain.id === mainnet.id || chain.id === optimism.id) && (
+                  <TabsTrigger value="migrate" className="h-8 w-full">
+                    Migrate
+                  </TabsTrigger>
+                )}
+                <TabsTrigger value="info" className="h-8 w-full">
+                  Info
+                </TabsTrigger>
+              </TabsList>
+            </div>
             <TabsContent value="deposit">
               {vaultUnderlyingTokenData && vaultYieldTokenData && (
                 <Deposit

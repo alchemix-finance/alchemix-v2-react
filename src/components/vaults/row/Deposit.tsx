@@ -87,32 +87,44 @@ export const Deposit = ({
   }, [token, isApprovalNeeded, writeApprove, writeDeposit]);
 
   return (
-    <div className="space-y-2">
-      <Select
-        value={tokenAddress}
-        onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Token">{token.symbol}</SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {selection.map((token) => (
-            <SelectItem key={token?.address} value={token.address}>
-              {token.symbol}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <TokenInput
-        amount={amount}
-        setAmount={setAmount}
-        tokenAddress={token.address}
-        tokenSymbol={token.symbol}
-        tokenDecimals={token.decimals}
-      />
+    <div className="space-y-4">
+      <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+        <Select
+          value={tokenAddress}
+          onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
+        >
+          <SelectTrigger className="h-auto w-56">
+            <SelectValue placeholder="Token" asChild>
+              <div className="flex items-center gap-4">
+                <img
+                  src={`/images/token-icons/${token.symbol}.svg`}
+                  alt={token.symbol}
+                  className="h-12 w-12"
+                />
+                <span className="text-xl">{token.symbol}</span>
+              </div>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {selection.map((token) => (
+              <SelectItem key={token.address} value={token.address}>
+                {token.symbol}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <TokenInput
+          amount={amount}
+          setAmount={setAmount}
+          tokenAddress={token.address}
+          tokenSymbol={token.symbol}
+          tokenDecimals={token.decimals}
+        />
+      </div>
       <SlippageInput slippage={slippage} setSlippage={setSlippage} />
       <Button
         variant="outline"
+        width="full"
         disabled={isFull || isFetching || isInputZero(amount)}
         onClick={onCtaClick}
       >
