@@ -2,7 +2,7 @@ import { useChain } from "@/hooks/useChain";
 import { SYNTH_ASSETS_METADATA } from "@/lib/config/synths";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { Vault } from "@/lib/types";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { formatEther, formatUnits } from "viem";
 import {
   AccordionContent,
@@ -14,7 +14,7 @@ import { formatNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VaultMessage } from "@/components/vaults/row/VaultMessage";
 import { Info } from "@/components/vaults/row/Info";
 import { Deposit } from "@/components/vaults/row/Deposit";
@@ -25,9 +25,15 @@ import { useVaults } from "@/lib/queries/useVaults";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
+import { AnimatePresence } from "framer-motion";
+
+type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
 
 export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
   const chain = useChain();
+
+  const [contentAction, setContentAction] = useState<ContentAction>("deposit");
+
   const { data: tokens } = useTokensQuery();
   const { data: vaults } = useVaults();
   const selectionForMigration = useMemo(() => {
@@ -183,7 +189,10 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               />
             ))}
 
-          <Tabs defaultValue="deposit">
+          <Tabs
+            value={contentAction}
+            onValueChange={(value) => setContentAction(value as ContentAction)}
+          >
             <div className="rounded border border-grey1inverse bg-grey3inverse p-2">
               <TabsList className="w-full overflow-x-auto">
                 <TabsTrigger value="deposit" className="h-8 w-full">
@@ -192,6 +201,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
                 <TabsTrigger value="withdraw" className="h-8 w-full">
                   Withdraw
                 </TabsTrigger>
+                {/* Migration tool only exist on mainnet and optimism */}
                 {(chain.id === mainnet.id || chain.id === optimism.id) && (
                   <TabsTrigger value="migrate" className="h-8 w-full">
                     Migrate
@@ -202,41 +212,46 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
                 </TabsTrigger>
               </TabsList>
             </div>
-            <TabsContent value="deposit">
-              {vaultUnderlyingTokenData && vaultYieldTokenData && (
+          </Tabs>
+
+          <AnimatePresence initial={false} mode="wait">
+            {contentAction === "deposit" &&
+              vaultUnderlyingTokenData &&
+              vaultYieldTokenData && (
                 <Deposit
                   vault={vault}
                   underlyingTokenData={vaultUnderlyingTokenData}
                   yieldTokenData={vaultYieldTokenData}
+                  key="deposits"
                 />
               )}
-            </TabsContent>
-            <TabsContent value="withdraw">
-              {vaultUnderlyingTokenData && vaultYieldTokenData && (
+
+            {contentAction === "withdraw" &&
+              vaultUnderlyingTokenData &&
+              vaultYieldTokenData && (
                 <Withdraw
                   vault={vault}
                   underlyingTokenData={vaultUnderlyingTokenData}
                   yieldTokenData={vaultYieldTokenData}
+                  key="withdraw"
                 />
               )}
-            </TabsContent>
-            {/* Migration tool only exist on mainnet and optimism */}
-            {(chain.id === mainnet.id || chain.id === optimism.id) &&
-              !!selectionForMigration?.length && (
-                <TabsContent value="migrate">
-                  <Migrate vault={vault} selection={selectionForMigration} />
-                </TabsContent>
-              )}
-            {(chain.id === mainnet.id || chain.id === optimism.id) &&
-              !selectionForMigration?.length && (
-                <TabsContent value="migrate">
-                  <p>Migration not available for this vault.</p>
-                </TabsContent>
-              )}
-            <TabsContent value="info">
-              <Info vault={vault} />
-            </TabsContent>
-          </Tabs>
+
+            {contentAction === "migrate" &&
+              (selectionForMigration?.length ? (
+                <Migrate
+                  vault={vault}
+                  selection={selectionForMigration}
+                  key="migrate"
+                />
+              ) : (
+                <p className="text-center" key="migrate">
+                  No vaults available for migration
+                </p>
+              ))}
+
+            {contentAction === "info" && <Info vault={vault} key="info" />}
+          </AnimatePresence>
         </div>
       </AccordionContent>
     </AccordionItem>

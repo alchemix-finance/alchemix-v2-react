@@ -12,6 +12,7 @@ import { useMigrate } from "@/lib/mutations/useMigrate";
 import { MigrateTokenInput } from "@/components/common/input/MigrateTokenInput";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
+import { VaultActionMotionDiv } from "./motion";
 
 export const Migrate = ({
   vault,
@@ -71,67 +72,69 @@ export const Migrate = ({
   ]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <p className="text-sm text-lightgrey10">Target Vault</p>
-        <Select
-          value={selectedVaultAddress}
-          onValueChange={(value) =>
-            setSelectedVaultAddress(value as `0x${string}`)
-          }
-        >
-          <SelectTrigger className="w-56">
-            <SelectValue placeholder="Vault" asChild>
-              <div className="flex items-center gap-4">
-                <img
-                  src={`/images/token-icons/${tokenOfSelectedVault?.symbol}.svg`}
-                  alt={tokenOfSelectedVault?.symbol}
-                  className="h-4 w-4"
-                />
-                {selectedVault.metadata.label}
-              </div>
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {selection.map((possibleVault) => (
-              <SelectItem
-                key={possibleVault.address}
-                value={possibleVault.address}
-              >
-                {possibleVault.metadata.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex rounded border border-grey3inverse bg-grey3inverse">
-        <div className="flex items-center py-4 pl-4 pr-2">
-          <img
-            src="/images/token-icons/Shares.svg"
-            alt="Shares icon"
-            className="h-12 w-12"
+    <VaultActionMotionDiv>
+      <div className="space-y-4">
+        <div className="flex items-center gap-4">
+          <p className="text-sm text-lightgrey10">Target Vault</p>
+          <Select
+            value={selectedVaultAddress}
+            onValueChange={(value) =>
+              setSelectedVaultAddress(value as `0x${string}`)
+            }
+          >
+            <SelectTrigger className="w-56">
+              <SelectValue placeholder="Vault" asChild>
+                <div className="flex items-center gap-4">
+                  <img
+                    src={`/images/token-icons/${tokenOfSelectedVault?.symbol}.svg`}
+                    alt={tokenOfSelectedVault?.symbol}
+                    className="h-4 w-4"
+                  />
+                  {selectedVault.metadata.label}
+                </div>
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {selection.map((possibleVault) => (
+                <SelectItem
+                  key={possibleVault.address}
+                  value={possibleVault.address}
+                >
+                  {possibleVault.metadata.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+          <div className="flex items-center py-4 pl-4 pr-2">
+            <img
+              src="/images/token-icons/Shares.svg"
+              alt="Shares icon"
+              className="h-12 w-12"
+            />
+          </div>
+          <MigrateTokenInput
+            amount={amount}
+            setAmount={setAmount}
+            vault={vault}
           />
         </div>
-        <MigrateTokenInput
-          amount={amount}
-          setAmount={setAmount}
-          vault={vault}
-        />
+        <Button
+          variant="outline"
+          width="full"
+          disabled={isFetching || isInputZero(amount)}
+          onClick={onCtaClick}
+        >
+          {isFetching
+            ? "Preparing"
+            : isApprovalNeededWithdraw === true
+              ? "Approve Withdrawal"
+              : isApprovalNeededMint === true
+                ? "Approve Mint"
+                : "Migrate"}
+        </Button>
       </div>
-      <Button
-        variant="outline"
-        width="full"
-        disabled={isFetching || isInputZero(amount)}
-        onClick={onCtaClick}
-      >
-        {isFetching
-          ? "Preparing"
-          : isApprovalNeededWithdraw === true
-            ? "Approve Withdrawal"
-            : isApprovalNeededMint === true
-              ? "Approve Mint"
-              : "Migrate"}
-      </Button>
-    </div>
+    </VaultActionMotionDiv>
   );
 };

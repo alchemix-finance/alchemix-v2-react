@@ -16,6 +16,7 @@ import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
 import { formatEther } from "viem";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
+import { VaultActionMotionDiv } from "./motion";
 
 export const Withdraw = ({
   vault,
@@ -72,62 +73,64 @@ export const Withdraw = ({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex rounded border border-grey3inverse bg-grey3inverse">
-        <Select value={tokenAddress} onValueChange={onSelectChange}>
-          <SelectTrigger className="h-auto w-56">
-            <SelectValue placeholder="Token" asChild>
-              <div className="flex items-center gap-4">
-                <img
-                  src={`/images/token-icons/${token.symbol}.svg`}
-                  alt={token.symbol}
-                  className="h-12 w-12"
-                />
-                <span className="text-xl">{token.symbol}</span>
-              </div>
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {selection.map((token) => (
-              <SelectItem key={token.address} value={token.address}>
-                {token.symbol}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <VaultWithdrawTokenInput
-          amount={amount}
-          setAmount={setAmount}
-          tokenSymbol={token.symbol}
-          isSelectedTokenYieldToken={isSelecedTokenYieldToken}
-          vault={vault}
-        />
+    <VaultActionMotionDiv>
+      <div className="space-y-4">
+        <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+          <Select value={tokenAddress} onValueChange={onSelectChange}>
+            <SelectTrigger className="h-auto w-56">
+              <SelectValue placeholder="Token" asChild>
+                <div className="flex items-center gap-4">
+                  <img
+                    src={`/images/token-icons/${token.symbol}.svg`}
+                    alt={token.symbol}
+                    className="h-12 w-12"
+                  />
+                  <span className="text-xl">{token.symbol}</span>
+                </div>
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {selection.map((token) => (
+                <SelectItem key={token.address} value={token.address}>
+                  {token.symbol}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <VaultWithdrawTokenInput
+            amount={amount}
+            setAmount={setAmount}
+            tokenSymbol={token.symbol}
+            isSelectedTokenYieldToken={isSelecedTokenYieldToken}
+            vault={vault}
+          />
+        </div>
+        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        <p className="text-sm text-lightgrey10inverse">
+          Current debt:{" "}
+          {formatNumber(
+            formatEther(
+              vault.alchemist.position.debt < 0n
+                ? 0n
+                : vault.alchemist.position.debt,
+            ),
+            4,
+          )}{" "}
+          {vault.alchemist.synthType}
+        </p>
+        <Button
+          variant="outline"
+          width="full"
+          disabled={isFetching || isInputZero(amount)}
+          onClick={onCtaClick}
+        >
+          {isFetching
+            ? "Preparing"
+            : isApprovalNeeded === true
+              ? "Approve"
+              : "Withdraw"}
+        </Button>
       </div>
-      <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-      <p className="text-sm text-lightgrey10inverse">
-        Current debt:{" "}
-        {formatNumber(
-          formatEther(
-            vault.alchemist.position.debt < 0n
-              ? 0n
-              : vault.alchemist.position.debt,
-          ),
-          4,
-        )}{" "}
-        {vault.alchemist.synthType}
-      </p>
-      <Button
-        variant="outline"
-        width="full"
-        disabled={isFetching || isInputZero(amount)}
-        onClick={onCtaClick}
-      >
-        {isFetching
-          ? "Preparing"
-          : isApprovalNeeded === true
-            ? "Approve"
-            : "Withdraw"}
-      </Button>
-    </div>
+    </VaultActionMotionDiv>
   );
 };

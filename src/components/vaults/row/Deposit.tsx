@@ -18,6 +18,7 @@ import { useReadContract } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useChain } from "@/hooks/useChain";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
+import { VaultActionMotionDiv } from "./motion";
 
 export const Deposit = ({
   vault,
@@ -87,55 +88,57 @@ export const Deposit = ({
   }, [token, isApprovalNeeded, writeApprove, writeDeposit]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex rounded border border-grey3inverse bg-grey3inverse">
-        <Select
-          value={tokenAddress}
-          onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
+    <VaultActionMotionDiv>
+      <div className="space-y-4">
+        <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+          <Select
+            value={tokenAddress}
+            onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
+          >
+            <SelectTrigger className="h-auto w-56">
+              <SelectValue placeholder="Token" asChild>
+                <div className="flex items-center gap-4">
+                  <img
+                    src={`/images/token-icons/${token.symbol}.svg`}
+                    alt={token.symbol}
+                    className="h-12 w-12"
+                  />
+                  <span className="text-xl">{token.symbol}</span>
+                </div>
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {selection.map((token) => (
+                <SelectItem key={token.address} value={token.address}>
+                  {token.symbol}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <TokenInput
+            amount={amount}
+            setAmount={setAmount}
+            tokenAddress={token.address}
+            tokenSymbol={token.symbol}
+            tokenDecimals={token.decimals}
+          />
+        </div>
+        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        <Button
+          variant="outline"
+          width="full"
+          disabled={isFull || isFetching || isInputZero(amount)}
+          onClick={onCtaClick}
         >
-          <SelectTrigger className="h-auto w-56">
-            <SelectValue placeholder="Token" asChild>
-              <div className="flex items-center gap-4">
-                <img
-                  src={`/images/token-icons/${token.symbol}.svg`}
-                  alt={token.symbol}
-                  className="h-12 w-12"
-                />
-                <span className="text-xl">{token.symbol}</span>
-              </div>
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {selection.map((token) => (
-              <SelectItem key={token.address} value={token.address}>
-                {token.symbol}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <TokenInput
-          amount={amount}
-          setAmount={setAmount}
-          tokenAddress={token.address}
-          tokenSymbol={token.symbol}
-          tokenDecimals={token.decimals}
-        />
+          {isFull
+            ? "Vault is full"
+            : isFetching
+              ? "Preparing"
+              : token.address !== GAS_ADDRESS && isApprovalNeeded === true
+                ? "Approve"
+                : "Deposit"}
+        </Button>
       </div>
-      <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-      <Button
-        variant="outline"
-        width="full"
-        disabled={isFull || isFetching || isInputZero(amount)}
-        onClick={onCtaClick}
-      >
-        {isFull
-          ? "Vault is full"
-          : isFetching
-            ? "Preparing"
-            : token.address !== GAS_ADDRESS && isApprovalNeeded === true
-              ? "Approve"
-              : "Deposit"}
-      </Button>
-    </div>
+    </VaultActionMotionDiv>
   );
 };
