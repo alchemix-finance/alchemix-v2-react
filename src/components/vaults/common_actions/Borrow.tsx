@@ -115,6 +115,10 @@ export const Borrow = () => {
   };
 
   const handleConfirmedDifferentAddress = (checked: boolean) => {
+    if (!isAddress(receipientAddress)) {
+      toast.error("Invalid address");
+      return;
+    }
     setConfirmedDifferentAddress(checked);
   };
 
@@ -179,7 +183,7 @@ export const Borrow = () => {
               id="is-different-address"
             />
             <label
-              className="pl-2 text-sm text-lightgrey10inverse"
+              className="cursor-pointer pl-2 text-sm text-lightgrey10inverse"
               htmlFor="is-different-address"
             >
               Transfer loan to different wallet
@@ -203,19 +207,18 @@ export const Borrow = () => {
                   }}
                   className="space-y-4"
                 >
-                  <div className="flex items-center rounded border border-grey3inverse bg-grey3inverse">
+                  <div className="flex rounded border border-grey3inverse bg-grey3inverse">
                     <Input
                       type="text"
                       value={receipientAddress}
                       onChange={(e) => setReceipientAddress(e.target.value)}
-                      className="h-full flex-grow rounded-none p-4 text-right text-xl"
+                      className="relative h-full flex-grow rounded-none p-4 text-right text-xl"
                       placeholder="0x..."
                     />
                     <Button
                       variant="action"
-                      size="md"
                       weight="normal"
-                      className="h-full border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+                      className="flex h-auto border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
                       onClick={() => setReceipientAddress("")}
                     >
                       CLEAR
@@ -228,7 +231,7 @@ export const Borrow = () => {
                       id="confirmed-different-address"
                     />
                     <label
-                      className="pl-2 text-sm text-lightgrey10inverse"
+                      className="cursor-pointer pl-2 text-sm text-lightgrey10inverse"
                       htmlFor="confirmed-different-address"
                     >
                       I have verified the above address to be the correct
@@ -241,6 +244,7 @@ export const Borrow = () => {
           </div>
           <Button
             variant="outline"
+            width="full"
             onClick={onCtaClick}
             disabled={
               isFetching ||
@@ -249,7 +253,7 @@ export const Borrow = () => {
               (isDifferentAddress && !confirmedDifferentAddress)
             }
           >
-            Borrow
+            Borrow {debtToken.symbol}
           </Button>
         </>
       )}

@@ -139,7 +139,6 @@ export const Vaults = () => {
                         width="full"
                         variant="action"
                         weight="normal"
-                        size="md"
                         data-state={
                           actionOpened && actionTab === action
                             ? "active"
@@ -157,7 +156,7 @@ export const Vaults = () => {
                       </Button>
                     ))}
                   </div>
-                  <Button variant="action" size="md" onClick={handleOpenAction}>
+                  <Button variant="action" onClick={handleOpenAction}>
                     {actionOpened ? (
                       <EyeOffIcon className="h-6 w-6" />
                     ) : (

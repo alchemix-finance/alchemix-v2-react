@@ -92,7 +92,6 @@ export const BorrowInput = ({
       <div className="flex lg:flex-col">
         <Button
           variant="action"
-          size="md"
           weight="normal"
           className="h-10 w-full border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
           onClick={handleMax}
@@ -101,7 +100,6 @@ export const BorrowInput = ({
         </Button>
         <Button
           variant="action"
-          size="md"
           weight="normal"
           className="h-10 w-full border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
           onClick={handleClear}
