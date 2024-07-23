@@ -225,7 +225,7 @@ export const Repay = () => {
       : isFetchingRepayConfig;
 
   return (
-    <div className="space-y-2 bg-grey15inverse p-4">
+    <div className="space-y-4 bg-grey15inverse p-4">
       <DebtSelection
         selectedSynthAsset={selectedSynthAsset}
         availableSynthAssets={availableSynthAssets}
