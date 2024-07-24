@@ -203,7 +203,7 @@ export const Vaults = () => {
               >
                 <ScrollArea className="max-w-full">
                   <div className="relative h-6 w-full">
-                    <TabsList className="absolute flex h-auto">
+                    <TabsList className="absolute h-auto">
                       <TabsTrigger value="used">Your Strategies</TabsTrigger>
                       <TabsTrigger value="all">All Strategies</TabsTrigger>
                       <TabsTrigger value="unused">

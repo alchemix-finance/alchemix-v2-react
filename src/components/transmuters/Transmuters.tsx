@@ -76,7 +76,7 @@ export const Transmuters = () => {
               <Tabs value={synthTab} onValueChange={onSynthTabChange}>
                 <ScrollArea className="max-w-full">
                   <div className="relative h-7 w-full">
-                    <TabsList className="absolute flex h-auto">
+                    <TabsList className="absolute h-auto">
                       <TabsTrigger value="all" className="space-x-4">
                         <img
                           src="/images/icons/alcx_med.svg"

@@ -1,16 +1,11 @@
 import { stakingPoolsAbi } from "@/abi/stakingPools";
-import { TokenInput } from "@/components/common/input/TokenInput";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { stakingPoolsAddresses } from "@/lib/config/farms";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
-import { cn } from "@/utils/cn";
 import { isInputZero } from "@/utils/inputNotZero";
-import { formatNumber } from "@/utils/number";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { formatEther, parseEther, zeroAddress } from "viem";
@@ -23,6 +18,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { FarmContent } from "./FarmContent";
 
 export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const chain = useChain();
@@ -157,81 +153,24 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
     claimConfig && claim(claimConfig.request);
   };
 
-  const setMaxWithdraw = () => {
-    if (withdrawBalance) {
-      setWithdrawAmount(withdrawBalance);
-    }
-  };
-
   const isDisabled =
     farm.rewards.reduce((acc, rew) => acc + +rew.amount, 0) === 0;
 
   return (
-    <div className="flex flex-col gap-2 lg:flex-row lg:gap-8 lg:py-4 lg:pl-8 lg:pr-4">
-      <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4">
-        <TokenInput
-          amount={depositAmount}
-          setAmount={setDepositAmount}
-          tokenAddress={farm.poolTokenAddress}
-          tokenSymbol={farm.tokenSymbol}
-          tokenDecimals={18}
-        />
-        <Button disabled={isInputZero(depositAmount)} onClick={onDeposit}>
-          {isApprovalNeeded ? "Approve" : "Deposit"}
-        </Button>
-      </div>
-      <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4">
-        <div className="flex flex-col">
-          <p
-            className={cn(
-              "inline-block self-end text-sm font-light text-lightgrey10",
-              withdrawBalance !== "0" && "cursor-pointer",
-            )}
-            onClick={setMaxWithdraw}
-          >
-            Available: {formatNumber(withdrawBalance)} {farm.tokenSymbol}
-          </p>
-          <Input
-            type="number"
-            value={withdrawAmount}
-            onChange={(e) => setWithdrawAmount(e.target.value)}
-            className={cn(
-              "mb-2",
-              withdrawBalance !== undefined &&
-                +withdrawAmount > +withdrawBalance &&
-                "text-red-500 ring-2 ring-red-500 focus-visible:ring-red-500",
-            )}
-          />
-        </div>
-        <Button
-          disabled={
-            isInputZero(withdrawAmount) ||
-            +withdrawAmount > +(withdrawBalance ?? "0")
-          }
-          onClick={onWithdraw}
-        >
-          Withdraw
-        </Button>
-      </div>
-
-      <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4">
-        <label htmlFor="borrowInput" className="text-sm text-lightgrey10">
-          Rewards:
-        </label>
-        <div className="flex rounded border border-grey3inverse bg-grey3inverse">
-          {farm.rewards.map((reward) => (
-            <div
-              key={reward.tokenAddress}
-              className="h-full w-full appearance-none rounded bg-grey3inverse px-14 py-6 text-right text-xl"
-            >
-              {reward.amount} {reward.symbol}
-            </div>
-          ))}
-        </div>
-        <Button disabled={isDisabled} onClick={onClaim}>
-          Claim
-        </Button>
-      </div>
-    </div>
+    <FarmContent
+      depositAmount={depositAmount}
+      setDepositAmount={setDepositAmount}
+      onDeposit={onDeposit}
+      isApprovalNeeded={isApprovalNeeded}
+      withdrawAmount={withdrawAmount}
+      setWithdrawAmount={setWithdrawAmount}
+      onWithdraw={onWithdraw}
+      onClaim={onClaim}
+      isDisabled={isDisabled}
+      poolTokenAddress={farm.poolTokenAddress}
+      tokenSymbol={farm.tokenSymbol}
+      withdrawBalance={withdrawBalance}
+      rewards={farm.rewards}
+    />
   );
 };
