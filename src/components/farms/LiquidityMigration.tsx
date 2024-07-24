@@ -34,6 +34,8 @@ import { toast } from "sonner";
 import { TokenInput } from "../common/input/TokenInput";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { useChain } from "@/hooks/useChain";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
 
 const TOKENS_FROM = ["SLP"] as const;
 const TOKENS_TO = ["AURA", "BALANCER"] as const;
@@ -45,6 +47,7 @@ export const LiquidityMigration = () => {
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
 
+  const [open, setOpen] = useState(false);
   const [migrationAmount, setMigrationAmount] = useState("");
   const [selectedFrom, setSelectedFrom] = useState<From>(TOKENS_FROM[0]);
   const [selectedTarget, setSelectedTarget] = useState<Target>(TOKENS_TO[0]);
@@ -140,78 +143,132 @@ export const LiquidityMigration = () => {
     migrationError,
   ]);
 
+  const handleOpen = () => {
+    setOpen((prev) => !prev);
+  };
+
   return (
     <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse">
-      <div className="w-full bg-grey10inverse">
+      <div className="flex items-center justify-between bg-grey10inverse px-6 py-4 text-sm">
         <p className="text-sm">Liquidity Migration</p>
+        <Button
+          variant="action"
+          onClick={handleOpen}
+          className="hidden sm:inline-flex"
+        >
+          {open ? (
+            <EyeOffIcon className="h-6 w-6" />
+          ) : (
+            <EyeIcon className="h-6 w-6" />
+          )}
+        </Button>
       </div>
-      <div className="flex flex-col gap-8 p-4">
-        <div className="flex items-center">
-          <p>From:</p>{" "}
-          <Select
-            value={selectedFrom}
-            onValueChange={(value) => setSelectedFrom(value as From)}
+      <AnimatePresence initial={false}>
+        {open && (
+          <m.div
+            key="liquidityMigration"
+            initial="collapsed"
+            animate="open"
+            exit="collapsed"
+            variants={{
+              open: { opacity: 1, height: "auto" },
+              collapsed: { opacity: 0, height: 0 },
+            }}
+            transition={{
+              duration: 0.2,
+              ease: "easeOut",
+            }}
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select from">
-                {selectedFrom}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {TOKENS_FROM.map((token) => (
-                <SelectItem key={token} value={token}>
-                  {token}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex items-center">
-          <p>To:</p>{" "}
-          <Select
-            value={selectedTarget}
-            onValueChange={(value) => setSelectedTarget(value as Target)}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select to">
-                {selectedTarget}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {TOKENS_TO.map((token) => (
-                <SelectItem key={token} value={token}>
-                  {token}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <TokenInput
-          amount={migrationAmount}
-          setAmount={setMigrationAmount}
-          tokenDecimals={18}
-          tokenAddress={SUSHI_LP}
-          tokenSymbol="Sushi LP"
-        />
-        <Input
-          readOnly
-          aria-readonly
-          type="number"
-          value={
-            projectedAmount === undefined ? "" : formatEther(projectedAmount)
-          }
-          placeholder={`0.00 ${selectedTarget}`}
-        />
-        {isFetchingMigrationParams ? (
-          <div className="flex h-12 flex-row items-center justify-center">
-            <LoadingBar />
-          </div>
-        ) : (
-          <Button disabled={isInputZero(migrationAmount)} onClick={onMigrate}>
-            {isApprovalNeeded ? "Approve" : "Migrate Liquidity"}
-          </Button>
+            <div className="flex flex-col gap-8 p-4">
+              <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+                <Select
+                  value={selectedFrom}
+                  onValueChange={(value) => setSelectedFrom(value as From)}
+                >
+                  <SelectTrigger className="h-auto w-56">
+                    <SelectValue placeholder="Select From" asChild>
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={`/images/token-icons/${selectedFrom}.svg`}
+                          alt={selectedFrom}
+                          className="h-12 w-12"
+                        />
+                        <span className="text-xl">{selectedFrom}</span>
+                      </div>
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TOKENS_FROM.map((token) => (
+                      <SelectItem key={token} value={token}>
+                        {token}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <TokenInput
+                  amount={migrationAmount}
+                  setAmount={setMigrationAmount}
+                  tokenDecimals={18}
+                  tokenAddress={SUSHI_LP}
+                  tokenSymbol="Sushi LP"
+                />
+              </div>
+              <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+                <Select
+                  value={selectedTarget}
+                  onValueChange={(value) => setSelectedTarget(value as Target)}
+                >
+                  <SelectTrigger className="h-auto w-56">
+                    <SelectValue placeholder="Select To" asChild>
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={`/images/token-icons/${selectedTarget}.svg`}
+                          alt={selectedTarget}
+                          className="h-12 w-12"
+                        />
+                        <span className="text-xl">{selectedTarget}</span>
+                      </div>
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TOKENS_TO.map((token) => (
+                      <SelectItem key={token} value={token}>
+                        {token}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="h-20 flex-grow">
+                  <Input
+                    readOnly
+                    aria-readonly
+                    type="number"
+                    value={
+                      projectedAmount === undefined
+                        ? ""
+                        : formatEther(projectedAmount)
+                    }
+                    placeholder={`0.00 ${selectedTarget}`}
+                    className="h-full text-right"
+                  />
+                </div>
+              </div>
+              {isFetchingMigrationParams ? (
+                <div className="flex h-12 flex-row items-center justify-center">
+                  <LoadingBar />
+                </div>
+              ) : (
+                <Button
+                  disabled={isInputZero(migrationAmount)}
+                  onClick={onMigrate}
+                >
+                  {isApprovalNeeded ? "Approve" : "Migrate Liquidity"}
+                </Button>
+              )}
+            </div>
+          </m.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 };
