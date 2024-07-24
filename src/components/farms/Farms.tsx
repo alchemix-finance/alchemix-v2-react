@@ -14,6 +14,7 @@ import { LiquidityMigration } from "./LiquidityMigration";
 import { GAlcsWrapper } from "./GAlcxWrapper";
 import { windowOpen } from "@/utils/windowOpen";
 import { LoadingBar } from "../common/LoadingBar";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 type Filter = "active" | "retired" | "external";
 
@@ -121,22 +122,39 @@ export const Farms = () => {
                     ))}
                   </div>
                 </div>
-                <Tabs value={filter} onValueChange={onFilterChain}>
-                  <TabsList>
-                    <TabsTrigger value="active">Active</TabsTrigger>
-                    <TabsTrigger value="retired">Retired</TabsTrigger>
-                    <TabsTrigger value="external">External</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-                <Accordion type="single" collapsible>
-                  {filteredFarms.length > 0 ? (
-                    filteredFarms.map((farm) => (
-                      <FarmsAccordionRow key={farm.uuid} farm={farm} />
-                    ))
-                  ) : (
-                    <div>No vaults for selected chain and synth asset</div>
-                  )}
-                </Accordion>
+                <div className="rounded border border-grey10inverse bg-grey15inverse">
+                  <div className="flex space-x-4 bg-grey10inverse px-6 py-4">
+                    <Tabs
+                      value={filter}
+                      onValueChange={onFilterChain}
+                      className="w-full"
+                    >
+                      <ScrollArea className="max-w-full">
+                        <div className="relative h-6 w-full">
+                          <TabsList className="absolute h-auto">
+                            <TabsTrigger value="active">Active</TabsTrigger>
+                            <TabsTrigger value="retired">Retired</TabsTrigger>
+                            <TabsTrigger value="external">External</TabsTrigger>
+                          </TabsList>
+                        </div>
+                        <ScrollBar orientation="horizontal" />
+                      </ScrollArea>
+                    </Tabs>
+                  </div>
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="space-y-4 p-4"
+                  >
+                    {filteredFarms.length > 0 ? (
+                      filteredFarms.map((farm) => (
+                        <FarmsAccordionRow key={farm.uuid} farm={farm} />
+                      ))
+                    ) : (
+                      <div>No vaults for selected chain and synth asset</div>
+                    )}
+                  </Accordion>
+                </div>
               </div>
             )}
           </div>

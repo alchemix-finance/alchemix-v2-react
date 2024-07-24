@@ -188,8 +188,8 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
 
   return (
     <Button
-      variant="outline"
-      className="red5 hover:red-3 border-red4"
+      size="sm"
+      variant="destructive"
       disabled={isDisabled}
       onClick={onExitFarm}
     >

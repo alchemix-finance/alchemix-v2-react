@@ -20,7 +20,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
     <AccordionItem value={farm.uuid} disabled={!isActive}>
       <AccordionTrigger
         className={cn(
-          "relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 lg:flex-nowrap lg:space-y-0",
+          "relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:flex-nowrap lg:space-y-0",
           isActive
             ? "grid-cols-7 hover:cursor-pointer"
             : "grid-cols-5 hover:cursor-default",
@@ -33,34 +33,36 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
               alt={farm.metadata.title}
               className="h-12 w-12"
             />
-            <img
-              src={`/images/icons/${farm.metadata.tokenIcon}.svg`}
-              alt={farm.metadata.title}
-              className="absolute left-6 top-6 h-9 w-9"
-            />
+            {farm.metadata.tokenIcon && (
+              <img
+                src={`/images/icons/${farm.metadata.tokenIcon}.svg`}
+                alt={farm.metadata.title}
+                className="absolute left-6 top-6 h-9 w-9"
+              />
+            )}
           </div>
           <div>
             <p className="font-bold">{farm.metadata.title}</p>
             <p className="text-sm text-lightgrey10">{farm.metadata.subtitle}</p>
           </div>
         </div>
-        <div className="flex-2 w-1/2">
-          <p className="text-center text-sm text-lightgrey10">Staked Token</p>
+        <div className="flex-2 w-1/2 text-center">
+          <p className="text-sm text-lightgrey10">Staked Token</p>
           <div className="w-full">
-            <p className="text-center">{formatNumber(farm.staked.amount)}</p>
-            <p className="text-center text-sm text-lightgrey10">
+            <p className="">{formatNumber(farm.staked.amount)}</p>
+            <p className="text-sm text-lightgrey10">
               {farm.staked.tokenSymbol}
             </p>
           </div>
         </div>
         {isActive ? (
           <>
-            <div className="flex-2 w-1/2">
-              <p className="text-center text-sm text-lightgrey10">TVL</p>
+            <div className="flex-2 w-1/2 text-center">
+              <p className="text-sm text-lightgrey10">TVL</p>
               <TvlCell farm={farm} />
             </div>
-            <div className="flex-2 w-1/2">
-              <p className="text-center text-sm text-lightgrey10">Rewards</p>
+            <div className="flex-2 w-1/2 text-center">
+              <p className="text-sm text-lightgrey10">Rewards</p>
               <div className="flex flex-row justify-center space-x-2">
                 {farm.rewards.map((reward, i) => (
                   <Fragment key={reward.tokenAddress}>
@@ -81,14 +83,16 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
                 ))}
               </div>
             </div>
-            <div className="flex-2 w-1/2">
-              <p className="text-center text-sm text-lightgrey10">Yield</p>
-              <p className="text-center">{formatNumber(farm.yield.rate)}%</p>
+            <div className="flex-2 w-1/2 text-center">
+              <p className="text-sm text-lightgrey10">Yield</p>
+              <p>{formatNumber(farm.yield.rate)}%</p>
             </div>
-            <div className="flex-2 w-full lg:w-1/2">
-              <p className="text-center text-sm text-lightgrey10">Action</p>
+            <div className="flex-2 w-full text-center lg:w-1/2">
+              <p className="text-sm text-lightgrey10">Action</p>
               <div className="flex justify-between space-x-2">
-                <Button variant="ghost">Manage</Button>
+                <Button size="sm" weight="normal" variant="action">
+                  Manage
+                </Button>
                 <ExitButton farm={farm} />
               </div>
             </div>
@@ -114,7 +118,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
           </>
         )}
       </AccordionTrigger>
-      <AccordionContent>
+      <AccordionContent className="rounded rounded-t-none border border-t-0 border-grey3inverse">
         {farm.type === "internal" && <InternalFarmContent farm={farm} />}
         {farm.type === "external-sushi" && <SushiFarmContent farm={farm} />}
         {farm.type === "external-curve" && <CurveFarmContent farm={farm} />}
