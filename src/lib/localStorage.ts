@@ -9,6 +9,7 @@ interface LocalStorageSchema {
   tokenListCache: { tokens: Token[]; timestamp: number };
   tenderlyForkRpc: string;
   tenderlyForkChainId: number;
+  theme: "dark" | "light";
 }
 
 const localStorageVersion = "v1";

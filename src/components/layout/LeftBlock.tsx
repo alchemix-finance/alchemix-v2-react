@@ -3,10 +3,10 @@ import { Button } from "../ui/button";
 import { MoonIcon, SunIcon, FileIcon } from "lucide-react";
 import XPrevTwitterIcon from "@/assets/logos/x.svg?react";
 import { MobileNav } from "./MobileNav";
-import { useState } from "react";
+import { useTheme } from "../providers/ThemeProvider";
 
 export function LeftBlock() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { darkMode, handleDarkModeToggle } = useTheme();
   return (
     <>
       <div className="hidden max-h-screen min-w-[352px] flex-col gap-20 pl-8 pr-9 pt-8 lg:flex">
@@ -15,9 +15,9 @@ export function LeftBlock() {
           <Button
             variant="ghost"
             className="h-7 w-7 rounded border border-grey5inverse bg-transparent p-1 text-grey5inverse hover:border-grey1inverse hover:bg-transparent hover:text-grey1inverse"
-            onClick={() => setIsDarkMode(!isDarkMode)}
+            onClick={handleDarkModeToggle}
           >
-            {isDarkMode ? (
+            {darkMode ? (
               <MoonIcon className="h-4 w-4" />
             ) : (
               <SunIcon className="h-4 w-4" />

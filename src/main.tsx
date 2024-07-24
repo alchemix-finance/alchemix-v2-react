@@ -5,6 +5,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { Web3Provider } from "@/components/providers/Web3Provider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { FramerMotionProvider } from "@/components/providers/FramerMotionProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 // Import the generated route tree
 import { routeTree } from "@/routeTree.gen";
@@ -25,13 +26,15 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
-      <QueryProvider>
-        <Web3Provider>
-          <FramerMotionProvider>
-            <RouterProvider router={router} />
-          </FramerMotionProvider>
-        </Web3Provider>
-      </QueryProvider>
+      <ThemeProvider>
+        <QueryProvider>
+          <Web3Provider>
+            <FramerMotionProvider>
+              <RouterProvider router={router} />
+            </FramerMotionProvider>
+          </Web3Provider>
+        </QueryProvider>
+      </ThemeProvider>
     </React.StrictMode>,
   );
 }
