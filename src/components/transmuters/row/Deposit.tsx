@@ -1,5 +1,5 @@
 import { transmuterV2Abi } from "@/abi/transmuterV2";
-import { TokenInput } from "@/components/common/input/TokenInput";
+import { TransmuterInput } from "@/components/common/input/TransmuterInput";
 import { Button } from "@/components/ui/button";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
@@ -107,12 +107,14 @@ export const Deposit = ({
 
   return (
     <>
-      <TokenInput
+      <TransmuterInput
         amount={depositAmount}
         setAmount={setDepositAmount}
         tokenAddress={syntheticToken.address}
         tokenSymbol={syntheticToken.symbol}
         tokenDecimals={syntheticToken.decimals}
+        type="Balance"
+        transmuterAddress={transmuter.address}
       />
       <Button
         variant="outline"

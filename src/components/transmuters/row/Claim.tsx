@@ -91,6 +91,8 @@ export const Claim = ({
         transmuterAddress={transmuter.address}
         tokenSymbol={syntheticToken.symbol}
         type="Claimable"
+        tokenAddress={syntheticToken.address}
+        tokenDecimals={syntheticToken.decimals}
       />
 
       <Button
@@ -98,7 +100,7 @@ export const Claim = ({
         onClick={onCtaClick}
         disabled={isFetching || isInputZero(amount)}
       >
-        Withdraw
+        Claim
       </Button>
     </>
   );

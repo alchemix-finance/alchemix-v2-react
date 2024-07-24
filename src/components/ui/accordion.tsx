@@ -18,18 +18,18 @@ const AccordionTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Header className="flex">
-    <AccordionPrimitive.Trigger
-      ref={ref}
-      className={cn(
-        "relative flex flex-1 justify-between py-4 transition-all [&[data-state=open]>button]:rotate-90",
-        className,
-      )}
-      {...props}
-    >
-      {children}
-      <button className="absolute -left-2 top-8 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-bronze3 bg-grey10inverse text-opacity-80 transition-transform duration-200 hover:bg-grey1inverse hover:text-opacity-100">
-        +
-      </button>
+    <AccordionPrimitive.Trigger ref={ref} asChild {...props}>
+      <div
+        className={cn(
+          "relative flex flex-1 justify-between py-4 transition-all hover:cursor-pointer [&[data-state=open]>button]:rotate-90",
+          className,
+        )}
+      >
+        {children}
+        <button className="absolute -left-2 top-8 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-bronze3 bg-grey10inverse text-opacity-80 transition-transform duration-200 hover:bg-grey1inverse hover:text-opacity-100">
+          +
+        </button>
+      </div>
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ));

@@ -277,7 +277,7 @@ export const CurrencyCell = ({
       <p>
         {parseFloat(tokenAmountFormated) === 0
           ? tokenAmountFormated
-          : formatNumber(parseFloat(tokenAmountFormated))}
+          : formatNumber(parseFloat(tokenAmountFormated))}{" "}
         {tokenSymbol}
       </p>
       {tokenPrice && (

@@ -91,6 +91,8 @@ export const Withdraw = ({
         transmuterAddress={transmuter.address}
         tokenSymbol={syntheticToken.symbol}
         type="Available"
+        tokenAddress={syntheticToken.address}
+        tokenDecimals={syntheticToken.decimals}
       />
 
       <Button

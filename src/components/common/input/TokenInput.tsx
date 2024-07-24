@@ -1,4 +1,4 @@
-import { erc20Abi, formatEther, formatUnits } from "viem";
+import { erc20Abi, formatEther, formatUnits, zeroAddress } from "viem";
 import { useAccount, useBalance, useReadContract } from "wagmi";
 import { Input } from "@/components/ui/input";
 import { formatNumber } from "@/utils/number";
@@ -22,7 +22,7 @@ export const TokenInput = ({
   tokenAddress: `0x${string}`;
   tokenSymbol: string;
   tokenDecimals: number;
-  type?: "Balance" | "Available";
+  type?: "Balance" | "Available" | "Claimable";
   overrideBalance?: string;
 }) => {
   const chain = useChain();
@@ -32,7 +32,7 @@ export const TokenInput = ({
     address,
     chainId: chain.id,
     query: {
-      enabled: !overrideBalance,
+      enabled: !overrideBalance && tokenAddress === GAS_ADDRESS,
       select: (balance) => formatEther(balance.value),
     },
   });
@@ -44,7 +44,11 @@ export const TokenInput = ({
       functionName: "balanceOf",
       args: [address!],
       query: {
-        enabled: !!address && !overrideBalance,
+        enabled:
+          !!address &&
+          !overrideBalance &&
+          tokenAddress !== GAS_ADDRESS &&
+          tokenAddress !== zeroAddress,
         select: (balance) => formatUnits(balance, tokenDecimals),
       },
     });

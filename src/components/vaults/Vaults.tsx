@@ -14,6 +14,7 @@ import { LoadingBar } from "../common/LoadingBar";
 import { Button } from "../ui/button";
 import { m, AnimatePresence } from "framer-motion";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 type SynthFilter = "all" | SynthAsset;
 type UsedFilter = "all" | "used" | "unused";
@@ -98,7 +99,7 @@ export const Vaults = () => {
                     <img
                       src="/images/icons/alusd_med.svg"
                       className="h-5 w-5"
-                      alt="All vaults filter"
+                      alt="alUSD filter"
                     />
                     <p>alUSD</p>
                   </TabsTrigger>
@@ -106,7 +107,7 @@ export const Vaults = () => {
                     <img
                       src="/images/icons/aleth_med.svg"
                       className="h-5 w-5"
-                      alt="All vaults filter"
+                      alt="alETH filter"
                     />
                     <p>alETH</p>
                   </TabsTrigger>
@@ -117,7 +118,7 @@ export const Vaults = () => {
               <VaultsMetrics />
               <div className="rounded border border-grey3inverse">
                 <div className="flex space-x-4 bg-grey10inverse p-4">
-                  <div className="flex flex-grow space-x-4">
+                  <div className="flex flex-grow flex-col gap-4 sm:flex-row">
                     {(
                       [
                         {
@@ -156,7 +157,11 @@ export const Vaults = () => {
                       </Button>
                     ))}
                   </div>
-                  <Button variant="action" onClick={handleOpenAction}>
+                  <Button
+                    variant="action"
+                    onClick={handleOpenAction}
+                    className="hidden sm:inline-flex"
+                  >
                     {actionOpened ? (
                       <EyeOffIcon className="h-6 w-6" />
                     ) : (
@@ -196,11 +201,18 @@ export const Vaults = () => {
                 onValueChange={handleUsedTabChange}
                 className="w-full"
               >
-                <TabsList className="h-auto">
-                  <TabsTrigger value="used">Your Strategies</TabsTrigger>
-                  <TabsTrigger value="all">All Strategies</TabsTrigger>
-                  <TabsTrigger value="unused">Unused Strategies</TabsTrigger>
-                </TabsList>
+                <ScrollArea className="max-w-full">
+                  <div className="relative h-6 w-full">
+                    <TabsList className="absolute flex h-auto">
+                      <TabsTrigger value="used">Your Strategies</TabsTrigger>
+                      <TabsTrigger value="all">All Strategies</TabsTrigger>
+                      <TabsTrigger value="unused">
+                        Unused Strategies
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
               </Tabs>
             </div>
             <Accordion type="single" collapsible className="space-y-4 p-4">
