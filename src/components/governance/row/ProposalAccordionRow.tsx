@@ -283,7 +283,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
         <div className="rounded border border-grey3inverse bg-grey15inverse p-4">
           <p className="mb-3 text-sm opacity-50">Description</p>
           <div
-            className="w-full whitespace-pre-wrap text-justify"
+            className="w-full max-w-[calc(100vw-10rem)] overflow-x-auto whitespace-pre-wrap text-justify lg:max-w-[calc(100vw-32rem)]"
             dangerouslySetInnerHTML={{ __html: proposal.body }}
           ></div>
         </div>
