@@ -83,13 +83,15 @@ export const Farms = () => {
             {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
             {filteredFarms && (
               <div className="space-y-5">
-                <div className="mb-8 space-y-2 px-6 py-4">
-                  <p className="text-sm">External Farms</p>
-                  <div className="flex flex-wrap gap-4">
+                <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse">
+                  <div className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer">
+                    <p className="text-sm">External Farms</p>
+                  </div>
+                  <div className="flex flex-wrap gap-8 p-4">
                     {staticExternalFarms.map((farm) => (
                       <div
                         key={farm.name}
-                        className="flex w-64 flex-col justify-between gap-2 border p-2"
+                        className="flex w-64 flex-col justify-between gap-2 rounded border border-grey5inverse bg-grey10inverse p-2"
                       >
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
