@@ -1,12 +1,13 @@
 import { useProposals } from "@/lib/queries/useProposals";
 import { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { buttonVariants } from "../ui/button";
-
+import { Button } from "../ui/button";
+import SnapshotIcon from "@/assets/logos/snapshot.svg?react";
 import { Delegation } from "./Delegation";
 import { Accordion } from "../ui/accordion";
 import { ProposalsAccordionRow } from "./row/ProposalAccordionRow";
 import { LoadingBar } from "../common/LoadingBar";
+import { windowOpen } from "@/utils/windowOpen";
 
 type ProposalFilter = "all" | "active" | "closed";
 
@@ -24,23 +25,22 @@ export const Governance = () => {
   return (
     <div className="space-y-5">
       <div className="rounded border border-grey10inverse bg-grey15inverse">
-        <div className="flex flex-col gap-2 px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+        <div className="flex w-full flex-col gap-2 bg-grey10inverse px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
           <p>Delegation Hub</p>
-          <a
-            className={buttonVariants({
-              variant: "link",
-            })}
-            href="https://snapshot.org/#/delegate"
-            target="_blank"
-            rel="noreferrer noopener"
+          <Button
+            variant="action"
+            weight="normal"
+            onClick={() => windowOpen("https://snapshot.org/#/delegate")}
+            className="h-8 border-grey5inverse text-opacity-80 hover:text-opacity-100"
           >
-            Delegate on Snapshot
-          </a>
+            <SnapshotIcon className="h-5 w-5" />
+            <p className="ml-4">Open on Snapshot</p>
+          </Button>
         </div>
         <Delegation />
       </div>
       <div className="rounded border border-grey10inverse bg-grey15inverse">
-        <div className="flex flex-col gap-2 px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+        <div className="flex w-full flex-col gap-2 bg-grey10inverse px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
           <Tabs
             value={proposalsFilter}
             onValueChange={(value) =>
@@ -53,16 +53,17 @@ export const Governance = () => {
               <TabsTrigger value="closed">Closed</TabsTrigger>
             </TabsList>
           </Tabs>
-          <a
-            className={buttonVariants({
-              variant: "link",
-            })}
-            href="https://snapshot.org/#/alchemixstakers.eth"
-            target="_blank"
-            rel="noreferrer noopener"
+          <Button
+            variant="action"
+            weight="normal"
+            onClick={() =>
+              windowOpen("https://snapshot.org/#/alchemixstakers.eth")
+            }
+            className="h-8 border-grey5inverse text-opacity-80 hover:text-opacity-100"
           >
-            Open all proposals
-          </a>
+            <SnapshotIcon className="h-5 w-5" />
+            <p className="ml-4">All proposals</p>
+          </Button>
         </div>
         {isPending ? (
           <div className="rounded border border-grey10inverse bg-grey15inverse">
@@ -76,10 +77,10 @@ export const Governance = () => {
         ) : null}
         {isError && <p>Error. Unexpected. Contact Alchemix team.</p>}
         {filteredProposals && filteredProposals.length === 0 && (
-          <p>There are no proposals for selected filter.</p>
+          <p className="p-4">There are no proposals for selected filter.</p>
         )}
         {filteredProposals && filteredProposals.length > 0 && (
-          <Accordion type="single" collapsible>
+          <Accordion type="single" collapsible className="space-y-4 p-4">
             {filteredProposals.map((proposal) => (
               <ProposalsAccordionRow key={proposal.id} proposal={proposal} />
             ))}

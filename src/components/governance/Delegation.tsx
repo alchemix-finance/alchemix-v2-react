@@ -100,9 +100,13 @@ export const Delegation = () => {
           value={delegateAddress}
           onChange={(e) => setDelegateAddress(e.target.value)}
           type="text"
+          className="h-10 text-right"
           placeholder="0x..."
         />
         <Button
+          variant="outline"
+          size="sm"
+          weight="normal"
           disabled={!isAddress(delegateAddress)}
           onClick={onDelegateClick}
         >
