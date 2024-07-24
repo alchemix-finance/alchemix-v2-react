@@ -19,7 +19,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
     <AccordionItem value={farm.uuid} disabled={!isActive}>
       <AccordionTrigger
         className={cn(
-          "relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 hover:no-underline lg:flex-nowrap lg:space-y-0",
+          "relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 lg:flex-nowrap lg:space-y-0",
           isActive
             ? "grid-cols-7 hover:cursor-pointer"
             : "grid-cols-5 hover:cursor-default",

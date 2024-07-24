@@ -1,6 +1,6 @@
 import { Accordion } from "@/components/ui/accordion";
 import { useVaults } from "@/lib/queries/useVaults";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SYNTH_ASSETS, SynthAsset } from "@/lib/config/synths";
 import { useMemo, useState } from "react";
 import { VaultsMetrics } from "@/components/vaults/row/VaultsMetrics";
@@ -11,26 +11,45 @@ import { Borrow } from "@/components/vaults/common_actions/Borrow";
 import { Liquidate } from "@/components/vaults/common_actions/Liquidate";
 import { Repay } from "@/components/vaults/common_actions/Repay";
 import { LoadingBar } from "../common/LoadingBar";
+import { Button } from "../ui/button";
+import { m, AnimatePresence } from "framer-motion";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+
+type SynthFilter = "all" | SynthAsset;
+type UsedFilter = "all" | "used" | "unused";
+type Action = "Borrow" | "Repay" | "Liquidate";
 
 export const Vaults = () => {
   const chain = useChain();
 
-  const [synthTab, setSynthTab] = useState<"all" | SynthAsset>("all");
-  const [usedTab, setUsedTab] = useState<"all" | "used" | "unused">("all");
-  const [actionTab, setActionTab] = useState<
-    "borrow" | "repay" | "liquidate"
-  >();
+  const [synthTab, setSynthTab] = useState<SynthFilter>("all");
+  const [usedTab, setUsedTab] = useState<UsedFilter>("all");
+  const [actionOpened, setActionOpened] = useState(false);
+  const [actionTab, setActionTab] = useState<Action>();
 
   const { data: vaults, isPending, isSuccess, isError } = useVaults();
 
-  const onSynthTabChange = (tab: string) => {
-    setSynthTab(tab as "all" | SynthAsset);
+  const handleSynthTabChange = (tab: string) => {
+    setSynthTab(tab as SynthFilter);
   };
-  const onUsedTabChange = (tab: string) => {
-    setUsedTab(tab as "all" | "used" | "unused");
+  const handleUsedTabChange = (tab: string) => {
+    setUsedTab(tab as UsedFilter);
   };
-  const onActionTabChange = (tab: string) => {
-    setActionTab(tab as "borrow" | "repay" | "liquidate");
+  const handleOpenAction = () => {
+    setActionOpened((prev) => !prev);
+    if (!actionTab && !actionOpened) setActionTab("Borrow");
+  };
+  const handleActionTabChange = (tab: Action) => {
+    if (actionTab === tab) {
+      if (actionOpened) {
+        return setActionOpened(false);
+      } else {
+        return setActionOpened(true);
+      }
+    }
+    setActionOpened(true);
+    setActionTab(tab);
   };
 
   const filteredVaults = useMemo(() => {
@@ -63,53 +82,149 @@ export const Vaults = () => {
       ) : null}
       {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
       {isSuccess && (
-        <div className="space-y-5">
-          <Tabs value={synthTab} onValueChange={onSynthTabChange}>
-            <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value={SYNTH_ASSETS.ALETH}>AlETH</TabsTrigger>
-              <TabsTrigger value={SYNTH_ASSETS.ALUSD}>AlUSD</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <VaultsMetrics />
-          <div className="rounded border p-5">
-            <Tabs value={actionTab} onValueChange={onActionTabChange}>
-              <TabsList>
-                <TabsTrigger value="borrow">Borrow</TabsTrigger>
-                <TabsTrigger value="repay">Repay</TabsTrigger>
-                <TabsTrigger value="liquidate">Liquidate</TabsTrigger>
-              </TabsList>
-              <TabsContent value="borrow">
-                <Borrow />
-              </TabsContent>
-              <TabsContent value="repay">
-                <Repay />
-              </TabsContent>
-              <TabsContent value="liquidate">
-                <Liquidate />
-              </TabsContent>
-            </Tabs>
+        <div className="space-y-8">
+          <div className="top-0 z-10 space-y-8 pt-4 drop-shadow-xl backdrop-blur backdrop-filter md:sticky">
+            <div className="rounded border border-grey10inverse bg-grey15inverse">
+              <Tabs value={synthTab} onValueChange={handleSynthTabChange}>
+                <TabsList>
+                  <TabsTrigger value="all" className="space-x-4">
+                    <img
+                      src="/images/icons/alcx_med.svg"
+                      className="h-5 w-5"
+                      alt="All vaults filter"
+                    />
+                    <p>All Vaults</p>
+                  </TabsTrigger>
+                  <TabsTrigger value={SYNTH_ASSETS.ALUSD} className="space-x-4">
+                    <img
+                      src="/images/icons/alusd_med.svg"
+                      className="h-5 w-5"
+                      alt="alUSD filter"
+                    />
+                    <p>alUSD</p>
+                  </TabsTrigger>
+                  <TabsTrigger value={SYNTH_ASSETS.ALETH} className="space-x-4">
+                    <img
+                      src="/images/icons/aleth_med.svg"
+                      className="h-5 w-5"
+                      alt="alETH filter"
+                    />
+                    <p>alETH</p>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+            <div className="space-y-4">
+              <VaultsMetrics />
+              <div className="rounded border border-grey3inverse">
+                <div className="flex space-x-4 bg-grey10inverse p-4">
+                  <div className="flex flex-grow flex-col gap-4 sm:flex-row">
+                    {(
+                      [
+                        {
+                          action: "Borrow",
+                          iconUri: "/images/icons/Icon_Borrow.svg",
+                        },
+                        {
+                          action: "Repay",
+                          iconUri: "/images/icons/Icon_Repay.svg",
+                        },
+                        {
+                          action: "Liquidate",
+                          iconUri: "/images/icons/Icon_Liquidate.svg",
+                        },
+                      ] as const
+                    ).map(({ action, iconUri }) => (
+                      <Button
+                        key={action}
+                        width="full"
+                        variant="action"
+                        weight="normal"
+                        data-state={
+                          actionOpened && actionTab === action
+                            ? "active"
+                            : "inactive"
+                        }
+                        className="justify-start gap-4"
+                        onClick={() => handleActionTabChange(action)}
+                      >
+                        <img
+                          src={iconUri}
+                          alt={action}
+                          className="h-5 w-5 invert"
+                        />
+                        {action}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button
+                    variant="action"
+                    onClick={handleOpenAction}
+                    className="hidden sm:inline-flex"
+                  >
+                    {actionOpened ? (
+                      <EyeOffIcon className="h-6 w-6" />
+                    ) : (
+                      <EyeIcon className="h-6 w-6" />
+                    )}
+                  </Button>
+                </div>
+                <AnimatePresence initial={false}>
+                  {actionOpened && (
+                    <m.div
+                      key="actionContent"
+                      initial="collapsed"
+                      animate="open"
+                      exit="collapsed"
+                      variants={{
+                        open: { opacity: 1, height: "auto" },
+                        collapsed: { opacity: 0, height: 0 },
+                      }}
+                      transition={{
+                        duration: 0.2,
+                        ease: "easeOut",
+                      }}
+                    >
+                      {actionTab === "Borrow" && <Borrow />}
+                      {actionTab === "Repay" && <Repay />}
+                      {actionTab === "Liquidate" && <Liquidate />}
+                    </m.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
           </div>
-          <Tabs
-            value={usedTab}
-            onValueChange={onUsedTabChange}
-            className="w-full"
-          >
-            <TabsList>
-              <TabsTrigger value="used">Your</TabsTrigger>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="unused">Unused</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <Accordion type="single" collapsible>
-            {filteredVaults && filteredVaults.length > 0 ? (
-              filteredVaults.map((vault) => (
-                <VaultAccordionRow key={vault.address} vault={vault} />
-              ))
-            ) : (
-              <div>No vaults for selected chain and synth asset</div>
-            )}
-          </Accordion>
+          <div className="rounded border border-grey10inverse bg-grey15inverse">
+            <div className="bg-grey10inverse px-6 py-4">
+              <Tabs
+                value={usedTab}
+                onValueChange={handleUsedTabChange}
+                className="w-full"
+              >
+                <ScrollArea className="max-w-full">
+                  <div className="relative h-6 w-full">
+                    <TabsList className="absolute flex h-auto">
+                      <TabsTrigger value="used">Your Strategies</TabsTrigger>
+                      <TabsTrigger value="all">All Strategies</TabsTrigger>
+                      <TabsTrigger value="unused">
+                        Unused Strategies
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              </Tabs>
+            </div>
+            <Accordion type="single" collapsible className="space-y-4 p-4">
+              {filteredVaults && filteredVaults.length > 0 ? (
+                filteredVaults.map((vault) => (
+                  <VaultAccordionRow key={vault.address} vault={vault} />
+                ))
+              ) : (
+                <div>No vaults for selected chain and synth asset</div>
+              )}
+            </Accordion>
+          </div>
         </div>
       )}
     </>

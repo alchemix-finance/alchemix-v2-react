@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/utils/cn";
 
@@ -10,11 +9,7 @@ const AccordionItem = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
 >(({ className, ...props }, ref) => (
-  <AccordionPrimitive.Item
-    ref={ref}
-    className={cn("border-b border-black", className)}
-    {...props}
-  />
+  <AccordionPrimitive.Item ref={ref} className={className} {...props} />
 ));
 AccordionItem.displayName = "AccordionItem";
 
@@ -23,16 +18,18 @@ const AccordionTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Header className="flex">
-    <AccordionPrimitive.Trigger
-      ref={ref}
-      className={cn(
-        "flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180",
-        className,
-      )}
-      {...props}
-    >
-      {children}
-      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+    <AccordionPrimitive.Trigger ref={ref} asChild {...props}>
+      <div
+        className={cn(
+          "relative flex flex-1 justify-between py-4 transition-all hover:cursor-pointer [&[data-state=open]>button]:rotate-90",
+          className,
+        )}
+      >
+        {children}
+        <button className="absolute -left-2 top-8 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-bronze3 bg-grey10inverse text-opacity-80 transition-transform duration-200 hover:bg-grey1inverse hover:text-opacity-100">
+          +
+        </button>
+      </div>
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ));

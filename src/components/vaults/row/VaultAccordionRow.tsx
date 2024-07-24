@@ -2,7 +2,7 @@ import { useChain } from "@/hooks/useChain";
 import { SYNTH_ASSETS_METADATA } from "@/lib/config/synths";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { Vault } from "@/lib/types";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { formatEther, formatUnits } from "viem";
 import {
   AccordionContent,
@@ -14,7 +14,7 @@ import { formatNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VaultMessage } from "@/components/vaults/row/VaultMessage";
 import { Info } from "@/components/vaults/row/Info";
 import { Deposit } from "@/components/vaults/row/Deposit";
@@ -25,9 +25,15 @@ import { useVaults } from "@/lib/queries/useVaults";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
+import { AnimatePresence } from "framer-motion";
+
+type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
 
 export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
   const chain = useChain();
+
+  const [contentAction, setContentAction] = useState<ContentAction>("deposit");
+
   const { data: tokens } = useTokensQuery();
   const { data: vaults } = useVaults();
   const selectionForMigration = useMemo(() => {
@@ -84,8 +90,8 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
 
   return (
     <AccordionItem value={vault.address}>
-      <AccordionTrigger className="flex w-full flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 hover:cursor-pointer hover:no-underline lg:grid lg:grid-cols-12 lg:gap-2">
-        <div className="col-span-3 flex flex-row space-x-8">
+      <AccordionTrigger className="flex flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 py-4 pr-8 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:grid lg:grid-cols-12 lg:gap-2">
+        <div className="col-span-3 flex space-x-8 pl-8">
           <div className="relative">
             {vault.metadata.beta && (
               <img
@@ -101,7 +107,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             />
             <img
               src={
-                SYNTH_ASSETS_METADATA[vault.metadata.synthAssetType]?.icon ||
+                SYNTH_ASSETS_METADATA[vault.metadata.synthAssetType]?.icon ??
                 "./images/icons/alusd_med.svg"
               }
               alt={vault.metadata.label}
@@ -113,7 +119,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               className="absolute left-6 top-6 h-9 w-9"
             />
           </div>
-          <div>
+          <div className="text-left">
             <p className="font-bold">{vault.metadata.label}</p>
             <p className="text-sm text-lightgrey10">
               {vaultYieldTokenData?.symbol ?? "..."}
@@ -122,8 +128,8 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             <p className="text-sm text-lightgrey10">LTV: {vaultLtv}%</p>
           </div>
         </div>
-        <div className="flex lg:hidden">
-          <div className="flex-2 w-full lg:w-1/6">
+        <div className="flex w-full lg:hidden">
+          <div className="w-full">
             <p className="text-center text-sm text-lightgrey10">Deposit</p>
             <CurrencyCell
               tokenAmount={sharesBalance}
@@ -132,7 +138,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               tokenDecimals={vaultUnderlyingTokenData?.decimals}
             />
           </div>
-          <div className="flex-2 w-full">
+          <div className="w-full">
             <p className="text-center text-sm text-lightgrey10">TVL</p>
             <CurrencyCell
               tokenAmount={tvl}
@@ -142,7 +148,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             />
           </div>
         </div>
-        <div className="flex-2 col-span-2 hidden w-full lg:block">
+        <div className="col-span-2 hidden w-full lg:block">
           <p className="text-center text-sm text-lightgrey10">Deposit</p>
           <CurrencyCell
             tokenAmount={sharesBalance}
@@ -151,7 +157,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             tokenDecimals={vaultUnderlyingTokenData?.decimals}
           />
         </div>
-        <div className="flex-2 col-span-4 flex flex-col px-8">
+        <div className="col-span-3 hidden flex-col px-8 lg:flex">
           <p className="text-center text-sm text-lightgrey10">TVL / Cap</p>
           <VaultCapacityCell
             vault={vault}
@@ -159,18 +165,20 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             tokenSymbol={vaultUnderlyingTokenData?.symbol}
           />
         </div>
-        <div className="hidden w-full flex-1 self-start lg:block">
-          <p className="text-center text-sm text-lightgrey10">
-            {vault.metadata.api.yieldType}
-          </p>
-          <VaultYieldCell vault={vault} />
-        </div>
-        <div className="hidden w-full flex-1 self-start lg:block">
-          <p className="text-center text-sm text-lightgrey10">Bonus</p>
-          <BonusCell vault={vault} />
+        <div className="col-span-4 flex w-full items-center">
+          <div className="w-full">
+            <p className="text-center text-sm text-lightgrey10">
+              {vault.metadata.api.yieldType}
+            </p>
+            <VaultYieldCell vault={vault} />
+          </div>
+          <div className="w-full">
+            <p className="text-center text-sm text-lightgrey10">Bonus</p>
+            <BonusCell vault={vault} />
+          </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="border border-grey10inverse bg-grey15inverse p-4">
+      <AccordionContent className="rounded-b border border-t-0 border-grey3inverse bg-grey10inverse p-4">
         <div className="flex w-full flex-col gap-4">
           {vault.metadata.messages.length > 0 &&
             vault.metadata.messages.map((message) => (
@@ -180,50 +188,70 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
                 type={message.type}
               />
             ))}
-          <Tabs defaultValue="deposit">
-            <TabsList>
-              <TabsTrigger value="deposit">Deposit</TabsTrigger>
-              <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
-              {(chain.id === mainnet.id || chain.id === optimism.id) && (
-                <TabsTrigger value="migrate">Migrate</TabsTrigger>
-              )}
-              <TabsTrigger value="info">Info</TabsTrigger>
-            </TabsList>
-            <TabsContent value="deposit">
-              {vaultUnderlyingTokenData && vaultYieldTokenData && (
+
+          <Tabs
+            value={contentAction}
+            onValueChange={(value) => setContentAction(value as ContentAction)}
+          >
+            <div className="rounded border border-grey1inverse bg-grey3inverse p-2">
+              <TabsList className="w-full overflow-x-auto">
+                <TabsTrigger value="deposit" className="h-8 w-full">
+                  Deposit
+                </TabsTrigger>
+                <TabsTrigger value="withdraw" className="h-8 w-full">
+                  Withdraw
+                </TabsTrigger>
+                {/* Migration tool only exist on mainnet and optimism */}
+                {(chain.id === mainnet.id || chain.id === optimism.id) && (
+                  <TabsTrigger value="migrate" className="h-8 w-full">
+                    Migrate
+                  </TabsTrigger>
+                )}
+                <TabsTrigger value="info" className="h-8 w-full">
+                  Info
+                </TabsTrigger>
+              </TabsList>
+            </div>
+          </Tabs>
+
+          <AnimatePresence initial={false} mode="wait">
+            {contentAction === "deposit" &&
+              vaultUnderlyingTokenData &&
+              vaultYieldTokenData && (
                 <Deposit
                   vault={vault}
                   underlyingTokenData={vaultUnderlyingTokenData}
                   yieldTokenData={vaultYieldTokenData}
+                  key="deposits"
                 />
               )}
-            </TabsContent>
-            <TabsContent value="withdraw">
-              {vaultUnderlyingTokenData && vaultYieldTokenData && (
+
+            {contentAction === "withdraw" &&
+              vaultUnderlyingTokenData &&
+              vaultYieldTokenData && (
                 <Withdraw
                   vault={vault}
                   underlyingTokenData={vaultUnderlyingTokenData}
                   yieldTokenData={vaultYieldTokenData}
+                  key="withdraw"
                 />
               )}
-            </TabsContent>
-            {/* Migration tool only exist on mainnet and optimism */}
-            {(chain.id === mainnet.id || chain.id === optimism.id) &&
-              !!selectionForMigration?.length && (
-                <TabsContent value="migrate">
-                  <Migrate vault={vault} selection={selectionForMigration} />
-                </TabsContent>
-              )}
-            {(chain.id === mainnet.id || chain.id === optimism.id) &&
-              !selectionForMigration?.length && (
-                <TabsContent value="migrate">
-                  <p>Migration not available for this vault.</p>
-                </TabsContent>
-              )}
-            <TabsContent value="info">
-              <Info vault={vault} />
-            </TabsContent>
-          </Tabs>
+
+            {contentAction === "migrate" &&
+              (selectionForMigration?.length ? (
+                <Migrate
+                  vault={vault}
+                  selection={selectionForMigration}
+                  key="migrate"
+                />
+              ) : (
+                <p className="text-center" key="migrate">
+                  No vaults available for migration
+                </p>
+              ))}
+
+            {contentAction === "info" && <Info vault={vault} key="info" />}
+          </AnimatePresence>
         </div>
       </AccordionContent>
     </AccordionItem>
@@ -249,7 +277,7 @@ export const CurrencyCell = ({
       <p>
         {parseFloat(tokenAmountFormated) === 0
           ? tokenAmountFormated
-          : formatNumber(parseFloat(tokenAmountFormated))}
+          : formatNumber(parseFloat(tokenAmountFormated))}{" "}
         {tokenSymbol}
       </p>
       {tokenPrice && (
@@ -300,6 +328,7 @@ const VaultCapacityCell = ({
             <div
               className={cn(
                 "flex flex-col justify-center whitespace-nowrap bg-bronze1inverse text-left text-white shadow-none",
+                isPending && "animate-pulse",
               )}
               style={{
                 width: capacity?.isFull
@@ -313,7 +342,7 @@ const VaultCapacityCell = ({
       <div className="mt-2 flex flex-col items-center">
         <p
           className={cn(
-            "text-sm text-lightgrey10",
+            "text-center text-sm text-lightgrey10",
             isPending && "animate-pulse",
           )}
         >

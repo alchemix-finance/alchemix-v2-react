@@ -1,11 +1,9 @@
-import { Input } from "@/components/ui/input";
-import { formatNumber } from "@/utils/number";
 import { useMemo } from "react";
-import { cn } from "@/utils/cn";
 import { Token } from "@/lib/types";
 import { useVaults } from "@/lib/queries/useVaults";
 import { VaultHelper } from "@/utils/helpers/vaultHelper";
 import { formatEther, formatUnits } from "viem";
+import { TokenInput } from "./TokenInput";
 
 export const BorrowInput = ({
   amount,
@@ -60,34 +58,15 @@ export const BorrowInput = ({
     return adjusted.toString();
   }, [debtToken, vaults]);
 
-  const setMax = () => {
-    if (tokenBalance) {
-      return setAmount(tokenBalance);
-    }
-  };
-
   return (
-    <div className="flex flex-col">
-      <p
-        className={cn(
-          "inline-block self-end text-sm font-light text-lightgrey10",
-          tokenBalance !== "0" && "cursor-pointer",
-        )}
-        onClick={setMax}
-      >
-        Available: {formatNumber(tokenBalance)} {debtToken.symbol}
-      </p>
-      <Input
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        className={cn(
-          "mb-2",
-          tokenBalance !== undefined &&
-            +amount > +tokenBalance &&
-            "text-red-500 ring-2 ring-red-500 focus-visible:ring-red-500",
-        )}
-      />
-    </div>
+    <TokenInput
+      amount={amount}
+      setAmount={setAmount}
+      tokenAddress={debtToken.address}
+      tokenDecimals={debtToken.decimals}
+      tokenSymbol={debtToken.symbol}
+      type="Available"
+      overrideBalance={tokenBalance}
+    />
   );
 };

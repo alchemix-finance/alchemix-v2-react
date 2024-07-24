@@ -22,13 +22,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { SynthAsset } from "@/lib/config/synths";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection";
-import { Input } from "@/components/ui/input";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { useVaults } from "@/lib/queries/useVaults";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { LiquidateTokenInput } from "@/components/common/input/LiquidateInput";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { Switch } from "@/components/ui/switch";
+import { SlippageInput } from "@/components/common/input/SlippageInput";
 
 export const Liquidate = () => {
   const queryClient = useQueryClient();
@@ -37,6 +38,7 @@ export const Liquidate = () => {
 
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("2");
+  const [confirmedLiquidation, setConfirmedLiquidation] = useState(false);
 
   const { data: vaults } = useVaults();
   const { data: tokens } = useTokensQuery();
@@ -150,11 +152,16 @@ export const Liquidate = () => {
     )[0];
     setLiquidationTokenAddress(newRepaymentTokenAddress);
     setSelectedSynthAsset(newSynthAsset);
+    setAmount("");
   };
 
   const handleLiquidationTokenSelect = (value: string) => {
     setAmount("");
     setLiquidationTokenAddress(value as `0x${string}` | undefined);
+  };
+
+  const handleConfirmedLiquidationChange = (checked: boolean) => {
+    setConfirmedLiquidation(checked);
   };
 
   const onCtaClick = useCallback(() => {
@@ -178,7 +185,7 @@ export const Liquidate = () => {
   }, [liquidate, liquidateConfig, liquidateError]);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4 bg-grey15inverse p-4">
       <DebtSelection
         selectedSynthAsset={selectedSynthAsset}
         availableSynthAssets={availableSynthAssets}
@@ -190,15 +197,21 @@ export const Liquidate = () => {
       )}
       {!!avaiableLiquidationTokens && !!liquidationToken && !!vault && (
         <>
-          <div className="flex items-center gap-2">
-            <p>Repayment token:</p>
+          <div className="flex rounded border border-grey3inverse bg-grey3inverse">
             <Select
               value={liquidationTokenAddress}
               onValueChange={handleLiquidationTokenSelect}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Repayment Token">
-                  {liquidationToken.symbol}
+              <SelectTrigger className="h-auto w-56">
+                <SelectValue placeholder="Liquidation Token" asChild>
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={`/images/token-icons/${liquidationToken.symbol}.svg`}
+                      alt={liquidationToken.symbol}
+                      className="h-12 w-12"
+                    />
+                    <span className="text-xl">{liquidationToken.symbol}</span>
+                  </div>
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -210,25 +223,35 @@ export const Liquidate = () => {
                   ))}
               </SelectContent>
             </Select>
-          </div>
-          <LiquidateTokenInput
-            amount={amount}
-            setAmount={setAmount}
-            vault={vault}
-            tokenSymbol={liquidationToken.symbol}
-          />
-          <div className="flex items-center">
-            <p>Slippage</p>
-            <Input
-              type="number"
-              value={slippage}
-              onChange={(e) => setSlippage(e.target.value)}
+            <LiquidateTokenInput
+              amount={amount}
+              setAmount={setAmount}
+              vault={vault}
+              tokenSymbol={liquidationToken.symbol}
             />
+          </div>
+          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+          <div className="flex items-center">
+            <Switch
+              checked={confirmedLiquidation}
+              onCheckedChange={handleConfirmedLiquidationChange}
+              id="confirmed-liquidation"
+            />
+            <label
+              className="cursor-pointer pl-2 text-sm text-lightgrey10inverse"
+              htmlFor="confirmed-liquidation"
+            >
+              I understand that liquidating will use my deposited collateral to
+              repay the outstanding debt
+            </label>
           </div>
           <Button
             variant="outline"
+            width="full"
             onClick={onCtaClick}
-            disabled={isFetching || isInputZero(amount)}
+            disabled={
+              isFetching || isInputZero(amount) || !confirmedLiquidation
+            }
           >
             {isFetching ? "Preparing..." : "Liquidate"}
           </Button>

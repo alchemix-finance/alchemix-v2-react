@@ -170,7 +170,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
 
   return (
     <AccordionItem value={proposal.id}>
-      <AccordionTrigger className="rounded border border-grey3inverse bg-grey10inverse px-8 py-4 hover:cursor-pointer hover:no-underline">
+      <AccordionTrigger className="rounded border border-grey3inverse bg-grey10inverse px-8 py-4 hover:cursor-pointer">
         <div className="flex flex-col gap-4">
           <div className="flex w-full flex-row space-x-4">
             <svg

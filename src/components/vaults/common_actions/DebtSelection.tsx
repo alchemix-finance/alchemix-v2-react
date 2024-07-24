@@ -1,18 +1,12 @@
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { SynthAsset } from "@/lib/config/synths";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 import { formatEther } from "viem";
-import { useAccount, useReadContracts, useReadContract } from "wagmi";
+import { useAccount, useReadContracts } from "wagmi";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useChain } from "@/hooks/useChain";
 import { formatNumber } from "@/utils/number";
+import { cn } from "@/utils/cn";
 
 export const DebtSelection = ({
   selectedSynthAsset,
@@ -26,7 +20,7 @@ export const DebtSelection = ({
   const chain = useChain();
   const { address } = useAccount();
 
-  const { data: accounts } = useReadContracts({
+  const { data: debts, queryKey: debtsQueryKey } = useReadContracts({
     allowFailure: false,
     contracts: availableSynthAssets.map(
       (synthAsset) =>
@@ -41,43 +35,41 @@ export const DebtSelection = ({
           },
         }) as const,
     ),
-  });
-  const debts = accounts?.map((account) => (account[0] < 0 ? 0n : account[0]));
-
-  const { data: debt, queryKey: debtQueryKey } = useReadContract({
-    address: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
-    abi: alchemistV2Abi,
-    chainId: chain.id,
-    functionName: "accounts",
-    args: [address!],
     query: {
-      enabled: !!address,
-      select: ([debt]) => (debt < 0 ? 0n : debt),
+      select: (debts) => debts.map((debt) => (debt[0] < 0 ? 0n : debt[0])),
     },
   });
 
   useWatchQuery({
-    queryKey: debtQueryKey,
+    queryKey: debtsQueryKey,
   });
 
   return (
-    <div className="flex items-center gap-2">
-      <p>Choose what to repay:</p>
-      <Select value={selectedSynthAsset} onValueChange={handleSynthAssetChange}>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Synth">
-            {formatNumber(formatEther(debt ?? 0n))} {selectedSynthAsset}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {availableSynthAssets &&
-            availableSynthAssets.map((synthAsset, i) => (
-              <SelectItem key={synthAsset} value={synthAsset}>
-                {formatNumber(formatEther(debts?.[i] ?? 0n))} {synthAsset}
-              </SelectItem>
-            ))}
-        </SelectContent>
-      </Select>
+    <div className="flex items-center gap-4">
+      {availableSynthAssets.map((synthAsset, i) => (
+        <div
+          key={synthAsset}
+          className={cn(
+            "flex w-full gap-4 rounded border py-2 pl-4 pr-2",
+            selectedSynthAsset === synthAsset
+              ? "border-green4 hover:cursor-default"
+              : "border-grey5inverse opacity-60 hover:cursor-pointer",
+          )}
+          onClick={() => handleSynthAssetChange(synthAsset)}
+        >
+          <img
+            src={`/images/token-icons/${synthAsset}.svg`}
+            alt={synthAsset}
+            className="h-16 w-16"
+          />
+          <div className="flex flex-col space-y-2">
+            <p className="text-sm opacity-60">{synthAsset} Debt:</p>
+            <p className="font-alcxMono text-lg">
+              {formatNumber(formatEther(debts?.[i] ?? 0n), 4)}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

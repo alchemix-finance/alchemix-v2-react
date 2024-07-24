@@ -225,7 +225,7 @@ export const Repay = () => {
       : isFetchingRepayConfig;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4 bg-grey15inverse p-4">
       <DebtSelection
         selectedSynthAsset={selectedSynthAsset}
         availableSynthAssets={availableSynthAssets}
@@ -234,17 +234,23 @@ export const Repay = () => {
       {(!avaiableRepaymentTokens || !repaymentToken) && <p>Loading...</p>}
       {!!avaiableRepaymentTokens && !!repaymentToken && (
         <>
-          <div className="flex items-center gap-2">
-            <p>Repayment token:</p>
+          <div className="flex rounded border border-grey3inverse bg-grey3inverse">
             <Select
               value={repaymentTokenAddress}
               onValueChange={(value) =>
                 setRepaymentTokenAddress(value as `0x${string}`)
               }
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Repayment Token">
-                  {repaymentToken.symbol}
+              <SelectTrigger className="h-auto w-56">
+                <SelectValue placeholder="Repayment Token" asChild>
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={`/images/token-icons/${repaymentToken.symbol}.svg`}
+                      alt={repaymentToken.symbol}
+                      className="h-12 w-12"
+                    />
+                    <span className="text-xl">{repaymentToken.symbol}</span>
+                  </div>
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -256,20 +262,23 @@ export const Repay = () => {
                   ))}
               </SelectContent>
             </Select>
+            <TokenInput
+              amount={amount}
+              setAmount={setAmount}
+              tokenAddress={repaymentToken.address}
+              tokenSymbol={repaymentToken.symbol}
+              tokenDecimals={repaymentToken.decimals}
+            />
           </div>
-          <TokenInput
-            amount={amount}
-            setAmount={setAmount}
-            tokenAddress={repaymentToken.address}
-            tokenSymbol={repaymentToken.symbol}
-            tokenDecimals={repaymentToken.decimals}
-          />
           <Button
             variant="outline"
+            width="full"
             onClick={onCtaClick}
             disabled={isFetching || isInputZero(amount)}
           >
-            {isApprovalNeeded ? "Approve" : "Repay"}
+            {isApprovalNeeded
+              ? "Approve"
+              : `Repay with ${repaymentToken.symbol}`}
           </Button>
         </>
       )}

@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { externalLiquidityProviders } from "@/lib/config/externalLiquidityProviders";
 import { windowOpen } from "@/utils/windowOpen";
 import { LoadingBar } from "../common/LoadingBar";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 export const Transmuters = () => {
   const chain = useChain();
@@ -45,17 +46,19 @@ export const Transmuters = () => {
       {isError && <div>Error</div>}
       {isSuccess && (
         <div className="space-y-5">
-          <div className="mb-8">
-            <div className="flex justify-between px-6 py-4 text-sm">
+          <div className="w-full rounded border border-grey10inverse bg-grey15inverse">
+            <div className="bg-grey10inverse px-6 py-4 text-sm">
               <p className="inline-block self-center">
                 External Swap Providers
               </p>
             </div>
-            <div className="flex max-h-44 flex-col gap-4 overflow-y-visible px-6 py-4 lg:flex-row lg:overflow-y-hidden">
+            <div className="flex max-h-44 flex-col gap-4 overflow-y-auto px-6 py-4 lg:flex-row">
               {externalLiquidityProviders[chain.id].map((provider) => (
                 <Button
                   key={provider.label}
-                  className="w-full lg:w-max"
+                  variant="action"
+                  weight="normal"
+                  className="w-full gap-2 border-grey5inverse lg:w-max"
                   onClick={() => windowOpen(provider.url)}
                 >
                   <img
@@ -68,25 +71,61 @@ export const Transmuters = () => {
               ))}
             </div>
           </div>
-          <Tabs value={synthTab} onValueChange={onSynthTabChange}>
-            <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value={SYNTH_ASSETS.ALETH}>AlETH</TabsTrigger>
-              <TabsTrigger value={SYNTH_ASSETS.ALUSD}>AlUSD</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <Accordion type="single" collapsible>
-            {filteredTransmuters && filteredTransmuters.length > 0 ? (
-              filteredTransmuters.map((transmuter) => (
-                <TransmuterAccordionRow
-                  key={transmuter.address}
-                  transmuter={transmuter}
-                />
-              ))
-            ) : (
-              <div>No transmuters for selected chain and synth asset</div>
-            )}
-          </Accordion>
+          <div className="rounded border border-grey10inverse bg-grey15inverse">
+            <div className="bg-grey10inverse px-6 py-4">
+              <Tabs value={synthTab} onValueChange={onSynthTabChange}>
+                <ScrollArea className="max-w-full">
+                  <div className="relative h-7 w-full">
+                    <TabsList className="absolute flex h-auto">
+                      <TabsTrigger value="all" className="space-x-4">
+                        <img
+                          src="/images/icons/alcx_med.svg"
+                          className="h-5 w-5"
+                          alt="All transmuters filter"
+                        />
+                        <p>All Transmuters</p>
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value={SYNTH_ASSETS.ALUSD}
+                        className="space-x-4"
+                      >
+                        <img
+                          src="/images/icons/alusd_med.svg"
+                          className="h-5 w-5"
+                          alt="alUSD filter"
+                        />
+                        <p>alUSD</p>
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value={SYNTH_ASSETS.ALETH}
+                        className="space-x-4"
+                      >
+                        <img
+                          src="/images/icons/aleth_med.svg"
+                          className="h-5 w-5"
+                          alt="alETH filter"
+                        />
+                        <p>alETH</p>
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              </Tabs>
+            </div>
+            <Accordion type="single" collapsible className="space-y-4 p-4">
+              {filteredTransmuters && filteredTransmuters.length > 0 ? (
+                filteredTransmuters.map((transmuter) => (
+                  <TransmuterAccordionRow
+                    key={transmuter.address}
+                    transmuter={transmuter}
+                  />
+                ))
+              ) : (
+                <div>No transmuters for selected chain and synth asset</div>
+              )}
+            </Accordion>
+          </div>
         </div>
       )}
     </>

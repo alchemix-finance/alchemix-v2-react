@@ -119,8 +119,8 @@ export const DebugTokens = () => {
         </div>
         <div>
           <p className="font-light">
-            If some token doesn't appear to work, try setting it manually in
-            tenderly dashboard.
+            If some token doesn&apos;t appear to work, try setting it manually
+            in tenderly dashboard.
           </p>
         </div>
       </div>
