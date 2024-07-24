@@ -328,6 +328,7 @@ const VaultCapacityCell = ({
             <div
               className={cn(
                 "flex flex-col justify-center whitespace-nowrap bg-bronze1inverse text-left text-white shadow-none",
+                isPending && "animate-pulse",
               )}
               style={{
                 width: capacity?.isFull
@@ -341,7 +342,7 @@ const VaultCapacityCell = ({
       <div className="mt-2 flex flex-col items-center">
         <p
           className={cn(
-            "text-sm text-lightgrey10",
+            "text-center text-sm text-lightgrey10",
             isPending && "animate-pulse",
           )}
         >
