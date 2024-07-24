@@ -149,13 +149,12 @@ export const LiquidityMigration = () => {
 
   return (
     <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse">
-      <div className="flex items-center justify-between bg-grey10inverse px-6 py-4 text-sm">
+      <div
+        className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer"
+        onClick={handleOpen}
+      >
         <p className="text-sm">Liquidity Migration</p>
-        <Button
-          variant="action"
-          onClick={handleOpen}
-          className="hidden sm:inline-flex"
-        >
+        <Button variant="action" className="hidden sm:inline-flex">
           {open ? (
             <EyeOffIcon className="h-6 w-6" />
           ) : (

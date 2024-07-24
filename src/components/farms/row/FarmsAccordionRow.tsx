@@ -12,6 +12,7 @@ import { ExitButton } from "./ExitButton";
 import { CurveFarmContent } from "./CurveFarmContent";
 import { InternalFarmContent } from "./InternalFarmContent";
 import { SushiFarmContent } from "./SushiFarmContent";
+import { Fragment } from "react";
 
 export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
   const isActive = farm.isActive;
@@ -62,7 +63,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
               <p className="text-center text-sm text-lightgrey10">Rewards</p>
               <div className="flex flex-row justify-center space-x-2">
                 {farm.rewards.map((reward, i) => (
-                  <>
+                  <Fragment key={reward.tokenAddress}>
                     <div className="flex flex-col items-center space-y-1">
                       <img
                         src={`/images/icons/${reward.iconName}.svg`}
@@ -76,7 +77,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
                     {farm.rewards.length > 1 && i + 1 < farm.rewards.length && (
                       <div>+</div>
                     )}
-                  </>
+                  </Fragment>
                 ))}
               </div>
             </div>
