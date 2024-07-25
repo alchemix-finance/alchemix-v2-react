@@ -56,6 +56,18 @@ export const rainbowDarkTheme = {
     selectedWallet: "none",
     walletLogo: "none",
   },
+  colors: {
+    ...darkThemeNoBorderRadius.colors,
+    accentColor: "#F5C59F",
+    accentColorForeground: "#232833",
+    connectButtonBackground: "#20242C",
+    connectButtonInnerBackground: "#171B24",
+    modalBackground: "#282D3A",
+    modalBorder: "#20242C",
+    modalTextSecondary: "#979BA2",
+    profileAction: "#232833",
+    profileActionHover: "#20242C",
+  },
 } as const satisfies Theme;
 
 const defaultValue: ThemeStore = {
@@ -78,7 +90,7 @@ let initialHandled = false;
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const initialDark =
     lsService.getItem(0, "theme") === "dark" ||
-    (!("theme" in localStorage) &&
+    (!lsService.getItem(0, "theme") &&
       window.matchMedia("(prefers-color-scheme: dark)").matches);
   if (initialDark && !initialHandled) {
     document.documentElement.classList.add("dark");
