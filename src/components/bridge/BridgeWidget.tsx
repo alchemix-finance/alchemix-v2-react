@@ -1,29 +1,12 @@
 import { LiFiWidget, WidgetConfig } from "@lifi/widget";
 import { arbitrum, mainnet, optimism } from "viem/chains";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useMemo } from "react";
+import { useTheme } from "../providers/ThemeProvider";
 
-const widgetConfig: WidgetConfig = {
+const widgetConfig = {
   integrator: "Alchemix",
   variant: "wide",
-  theme: {
-    typography: {
-      fontFamily: "Montserrat, sans-serif",
-    },
-    container: {
-      border: "1px solid #DEDBD3",
-      borderRadius: "8px",
-    },
-    palette: {
-      background: {
-        default: "#E8E4DB",
-        paper: "#DEDBD3",
-      },
-      text: {
-        primary: "#000000",
-        secondary: "#979BA2",
-      },
-    },
-  },
 
   // Bridge configuration
   fromChain: mainnet.id,
@@ -78,19 +61,41 @@ const widgetConfig: WidgetConfig = {
       },
     ],
   },
-};
+} satisfies WidgetConfig;
 
 export const BridgeWidget = () => {
+  const { darkMode } = useTheme();
+
   const { openConnectModal } = useConnectModal();
-  return (
-    <LiFiWidget
-      integrator="Alchemix"
-      config={{
-        ...widgetConfig,
-        walletConfig: {
-          onConnect: openConnectModal,
+
+  const config = useMemo(() => {
+    return {
+      ...widgetConfig,
+      appearance: darkMode ? "dark" : "light",
+      theme: {
+        typography: {
+          fontFamily: "Montserrat, sans-serif",
         },
-      }}
-    />
-  );
+        container: {
+          border: darkMode ? "1px solid #20242C" : "1px solid #DEDBD3",
+          borderRadius: "8px",
+        },
+        palette: {
+          background: {
+            default: darkMode ? "#171B24" : "#E8E4DB",
+            paper: darkMode ? "#20242C" : "#DEDBD3",
+          },
+          text: {
+            primary: darkMode ? "#f5f5f5" : "#0A0A0A",
+            secondary: "#979BA2",
+          },
+        },
+      },
+      walletConfig: {
+        onConnect: openConnectModal,
+      },
+    } satisfies WidgetConfig;
+  }, [darkMode, openConnectModal]);
+
+  return <LiFiWidget integrator="Alchemix" config={config} />;
 };
