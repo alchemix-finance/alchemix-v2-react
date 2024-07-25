@@ -37,9 +37,9 @@ function Utilities() {
         {utilities.map((utility) => (
           <div
             key={utility.label}
-            className="w-1/4 rounded border border-grey10inverse bg-grey15inverse"
+            className="w-1/4 rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15"
           >
-            <p className="border-b border-grey10inverse px-4 py-2">
+            <p className="border-b border-grey10inverse px-4 py-2 dark:border-grey10">
               {utility.label}
             </p>
             <div
@@ -48,7 +48,7 @@ function Utilities() {
                 backgroundImage: `url('../images/screenshots/${utility.image}')`,
               }}
             ></div>
-            <div className="flex flex-row items-center justify-between border-t border-grey10inverse px-4 py-2">
+            <div className="flex flex-row items-center justify-between border-t border-grey10inverse px-4 py-2 dark:border-grey10">
               <div className="flex flex-row space-x-4">
                 <p>{utility.author}</p>
               </div>
