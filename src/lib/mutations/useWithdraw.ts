@@ -13,7 +13,7 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { GAS_ADDRESS } from "@/lib/constants";
+import { GAS_ADDRESS, MAX_UINT256_BN } from "@/lib/constants";
 import { wethGatewayAbi } from "@/abi/wethGateway";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
@@ -74,7 +74,12 @@ export const useWithdraw = ({
     ? sharesFromYieldToken
     : sharesFromUnderlyingToken;
 
-  const minimumOut = calculateMinimumOut(shares, parseUnits(slippage, 6));
+  const minimumOutUnderlying = !isSelecedTokenYieldToken
+    ? calculateMinimumOut(
+        parseUnits(amount, selectedToken.decimals),
+        parseUnits(slippage, 2),
+      )
+    : undefined;
 
   const {
     data: isApprovalNeededAaveGateway,
@@ -257,10 +262,11 @@ export const useWithdraw = ({
       vault.address,
       shares ?? 0n,
       address!,
-      minimumOut,
+      minimumOutUnderlying ?? MAX_UINT256_BN,
     ],
     query: {
       enabled:
+        minimumOutUnderlying !== undefined &&
         shares !== undefined &&
         !!address &&
         isApprovalNeededWethGateway !== true &&
@@ -295,9 +301,15 @@ export const useWithdraw = ({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
     functionName: "withdrawUnderlying",
-    args: [vault.address, shares ?? 0n, address!, minimumOut],
+    args: [
+      vault.address,
+      shares ?? 0n,
+      address!,
+      minimumOutUnderlying ?? MAX_UINT256_BN,
+    ],
     query: {
       enabled:
+        minimumOutUnderlying !== undefined &&
         shares !== undefined &&
         !!address &&
         selectedToken.address !== GAS_ADDRESS &&

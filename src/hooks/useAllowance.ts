@@ -9,7 +9,7 @@ import { useChain } from "@/hooks/useChain";
 import { erc20Abi, parseUnits } from "viem";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { GAS_ADDRESS } from "@/lib/constants";
+import { GAS_ADDRESS, MAX_UINT256_BN } from "@/lib/constants";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useWriteContractMutationCallback } from "./useWriteContractMutationCallback";
 
@@ -18,11 +18,13 @@ export const useAllowance = ({
   spender,
   amount,
   decimals = 18,
+  isInfiniteApproval = false,
 }: {
   tokenAddress: `0x${string}` | undefined;
   spender: `0x${string}`;
   amount: string;
   decimals: number | undefined;
+  isInfiniteApproval?: boolean;
 }) => {
   const chain = useChain();
   const { address } = useAccount();
@@ -47,7 +49,10 @@ export const useAllowance = ({
     abi: erc20Abi,
     functionName: "approve",
     chainId: chain.id,
-    args: [spender, parseUnits(amount, decimals)],
+    args: [
+      spender,
+      isInfiniteApproval ? MAX_UINT256_BN : parseUnits(amount, decimals),
+    ],
     query: {
       enabled: !isInputZero(amount) && !!address && spender !== GAS_ADDRESS,
     },

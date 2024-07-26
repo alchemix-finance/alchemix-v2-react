@@ -34,7 +34,7 @@ export const Deposit = ({
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("2");
   const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
-    underlyingTokenData.address,
+    yieldTokenData.address,
   );
 
   const { data: tokens } = useTokensQuery();
@@ -63,9 +63,16 @@ export const Deposit = ({
 
   const isETHCompatible =
     vault.metadata.wethGateway !== undefined && gasToken !== undefined;
-  const selection = isETHCompatible
-    ? [underlyingTokenData, yieldTokenData, gasToken]
-    : [underlyingTokenData, yieldTokenData];
+  const selection = [
+    ...(isETHCompatible ? [gasToken] : []),
+    underlyingTokenData,
+    yieldTokenData,
+  ].filter(
+    (t) =>
+      !vault.metadata.disabledDepositTokens
+        .map((t) => t.toLowerCase())
+        .includes(t.address.toLowerCase()),
+  );
 
   const token = selection.find((token) => token.address === tokenAddress)!;
 
