@@ -20,4 +20,4 @@ export const SUSHI_MAINNET_ADDRESS =
 export const CRV_MAINNET_ADDRESS = "0xd533a949740bb3306d119cc777fa900ba034cd52";
 
 // Number constants
-export const MAX_UINT256 = (BigInt(Math.pow(2, 256)) - 1n).toString();
+export const MAX_UINT256_BN = BigInt(Math.pow(2, 256)) - 1n;

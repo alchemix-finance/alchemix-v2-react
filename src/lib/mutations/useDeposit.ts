@@ -10,14 +10,16 @@ import { toast } from "sonner";
 import { parseUnits } from "viem";
 import {
   useAccount,
+  useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { GAS_ADDRESS } from "@/lib/constants";
+import { GAS_ADDRESS, MAX_UINT256_BN } from "@/lib/constants";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "../queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { isInputZero } from "@/utils/inputNotZero";
 
 export const useDeposit = ({
   vault,
@@ -45,10 +47,19 @@ export const useDeposit = ({
   const { address } = useAccount();
   const mutationCallback = useWriteContractMutationCallback();
 
-  const minimumOut = calculateMinimumOut(
-    parseUnits(amount, selectedToken.decimals),
-    parseUnits(slippage, 6),
-  );
+  const { data: minimumOut } = useReadContract({
+    address: vault.alchemist.address,
+    abi: alchemistV2Abi,
+    chainId: chain.id,
+    functionName: "convertUnderlyingTokensToYield",
+    args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
+    query: {
+      enabled: !isInputZero(amount),
+      select: (amountInYield) => {
+        return calculateMinimumOut(amountInYield, parseUnits(slippage, 2));
+      },
+    },
+  });
 
   const spender =
     selectedToken.address.toLowerCase() === yieldToken.address.toLowerCase() &&
@@ -157,14 +168,15 @@ export const useDeposit = ({
       vault.address,
       parseUnits(amount, selectedToken.decimals),
       address!,
-      minimumOut,
+      minimumOut ?? MAX_UINT256_BN,
     ],
     value: parseUnits(amount, selectedToken.decimals),
     query: {
       enabled:
         !!address &&
         selectedToken.address === GAS_ADDRESS &&
-        !!vault.metadata.wethGateway,
+        !!vault.metadata.wethGateway &&
+        minimumOut !== undefined,
     },
   });
 
@@ -197,7 +209,7 @@ export const useDeposit = ({
       vault.address,
       parseUnits(amount, selectedToken.decimals),
       address!,
-      minimumOut,
+      minimumOut ?? MAX_UINT256_BN,
     ],
     query: {
       enabled:
@@ -205,7 +217,8 @@ export const useDeposit = ({
         isApprovalNeeded !== true &&
         selectedToken.address !== GAS_ADDRESS &&
         selectedToken.address.toLowerCase() !==
-          yieldToken.address.toLowerCase(),
+          yieldToken.address.toLowerCase() &&
+        minimumOut !== undefined,
     },
   });
 
