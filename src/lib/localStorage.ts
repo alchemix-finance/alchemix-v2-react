@@ -12,7 +12,18 @@ interface LocalStorageSchema {
   theme: "dark" | "light";
 }
 
-const localStorageVersion = "v1";
+/**
+ * Clean up old keys from localStorage
+ */
+// const cleanUpOldKeys = () => {
+//   const keys = [
+//     "tokenListCache",
+//     "tenderlyForkRpc",
+//     "tenderlyForkChainId",
+//   ] as const satisfies (keyof LocalStorageSchema)[];
+// };
+
+const localStorageVersion = "Alchemix-React-v1.1";
 
 /**
  * LocalStorage service to get and set items in localStorage
@@ -33,7 +44,7 @@ export const lsService = {
     key: K,
   ): LocalStorageSchema[K] | undefined => {
     const value = localStorage.getItem(
-      `${chainId}-${key}-${localStorageVersion}`,
+      `${localStorageVersion}-${chainId}-${key}`,
     );
     if (!value) {
       return;
@@ -56,7 +67,7 @@ export const lsService = {
   ) => {
     const stringValue = JSON.stringify(value);
     localStorage.setItem(
-      `${chainId}-${key}-${localStorageVersion}`,
+      `${localStorageVersion}-${chainId}-${key}`,
       stringValue,
     );
   },
@@ -68,6 +79,6 @@ export const lsService = {
    * @param key One of the keys in LocalStorageSchema
    */
   removeItem: <K extends keyof LocalStorageSchema>(chainId: number, key: K) => {
-    localStorage.removeItem(`${chainId}-${key}-${localStorageVersion}`);
+    localStorage.removeItem(`${localStorageVersion}-${chainId}-${key}`);
   },
 };
