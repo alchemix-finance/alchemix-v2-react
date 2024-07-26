@@ -30,6 +30,7 @@ import { LiquidateTokenInput } from "@/components/common/input/LiquidateInput";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { Switch } from "@/components/ui/switch";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
+import { MAX_UINT256 } from "@/lib/constants";
 
 export const Liquidate = () => {
   const queryClient = useQueryClient();
@@ -101,7 +102,18 @@ export const Liquidate = () => {
     },
   });
 
-  const minimumOut = calculateMinimumOut(shares, parseUnits(slippage, 2));
+  const { data: minimumOut } = useReadContract({
+    address: vault?.alchemist.address,
+    abi: alchemistV2Abi,
+    chainId: chain.id,
+    functionName: "convertSharesToUnderlyingTokens",
+    args: [vault?.yieldToken ?? zeroAddress, vault?.position.shares ?? 0n],
+    query: {
+      enabled: !!vault,
+      select: (sharesInUnderlying) =>
+        calculateMinimumOut(sharesInUnderlying, parseUnits(slippage, 2)),
+    },
+  });
 
   const {
     data: liquidateConfig,
@@ -112,10 +124,17 @@ export const Liquidate = () => {
     abi: alchemistV2Abi,
     chainId: chain.id,
     functionName: "liquidate",
-    args: [liquidationToken?.address ?? zeroAddress, shares ?? 0n, minimumOut],
+    args: [
+      liquidationToken?.address ?? zeroAddress,
+      shares ?? 0n,
+      minimumOut ?? BigInt(MAX_UINT256),
+    ],
     query: {
       enabled:
-        !isInputZero(amount) && !!liquidationToken && shares !== undefined,
+        !isInputZero(amount) &&
+        !!liquidationToken &&
+        shares !== undefined &&
+        minimumOut !== undefined,
     },
   });
 
