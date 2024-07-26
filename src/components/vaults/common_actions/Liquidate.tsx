@@ -101,7 +101,7 @@ export const Liquidate = () => {
     },
   });
 
-  const minimumOut = calculateMinimumOut(shares, parseUnits(slippage, 6));
+  const minimumOut = calculateMinimumOut(shares, parseUnits(slippage, 2));
 
   const {
     data: liquidateConfig,

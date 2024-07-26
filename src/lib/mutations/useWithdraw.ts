@@ -74,7 +74,7 @@ export const useWithdraw = ({
     ? sharesFromYieldToken
     : sharesFromUnderlyingToken;
 
-  const minimumOut = calculateMinimumOut(shares, parseUnits(slippage, 6));
+  const minimumOut = calculateMinimumOut(shares, parseUnits(slippage, 2));
 
   const {
     data: isApprovalNeededAaveGateway,
