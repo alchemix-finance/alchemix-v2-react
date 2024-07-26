@@ -63,9 +63,16 @@ export const Deposit = ({
 
   const isETHCompatible =
     vault.metadata.wethGateway !== undefined && gasToken !== undefined;
-  const selection = isETHCompatible
-    ? [underlyingTokenData, yieldTokenData, gasToken]
-    : [underlyingTokenData, yieldTokenData];
+  const selection = [
+    ...(isETHCompatible ? [gasToken] : []),
+    underlyingTokenData,
+    yieldTokenData,
+  ].filter(
+    (t) =>
+      !vault.metadata.disabledDepositTokens
+        .map((t) => t.toLowerCase())
+        .includes(t.address.toLowerCase()),
+  );
 
   const token = selection.find((token) => token.address === tokenAddress)!;
 
