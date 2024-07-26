@@ -15,7 +15,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { GAS_ADDRESS, MAX_UINT256 } from "@/lib/constants";
+import { GAS_ADDRESS, MAX_UINT256_BN } from "@/lib/constants";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "../queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
@@ -168,7 +168,7 @@ export const useDeposit = ({
       vault.address,
       parseUnits(amount, selectedToken.decimals),
       address!,
-      minimumOut ?? BigInt(MAX_UINT256),
+      minimumOut ?? MAX_UINT256_BN,
     ],
     value: parseUnits(amount, selectedToken.decimals),
     query: {
@@ -209,7 +209,7 @@ export const useDeposit = ({
       vault.address,
       parseUnits(amount, selectedToken.decimals),
       address!,
-      minimumOut ?? BigInt(MAX_UINT256),
+      minimumOut ?? MAX_UINT256_BN,
     ],
     query: {
       enabled:

@@ -1,4 +1,4 @@
-import { MAX_UINT256 } from "@/lib/constants";
+import { MAX_UINT256_BN } from "@/lib/constants";
 
 /**
  * Calculate the minimum out for a given amount with slippage
@@ -10,7 +10,7 @@ export const calculateMinimumOut = (
   amount: bigint | undefined,
   slippage: bigint,
 ) => {
-  if (!amount) return BigInt(MAX_UINT256);
+  if (!amount) return MAX_UINT256_BN;
   const bps = 10000n;
   return amount - (amount * slippage) / bps;
 };

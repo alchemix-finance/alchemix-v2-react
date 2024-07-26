@@ -7,11 +7,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import {
-  ALCX_MAINNET_ADDRESS,
-  G_ALCX_MAINNET_ADDRESS,
-  MAX_UINT256,
-} from "@/lib/constants";
+import { ALCX_MAINNET_ADDRESS, G_ALCX_MAINNET_ADDRESS } from "@/lib/constants";
 import { formatEther, parseEther } from "viem";
 import { TokenInput } from "../common/input/TokenInput";
 import { formatNumber } from "@/utils/number";
@@ -67,8 +63,9 @@ export const GAlcsWrapper = () => {
   const { isApprovalNeeded, approveConfig, approve } = useAllowance({
     tokenAddress: ALCX_MAINNET_ADDRESS,
     spender: G_ALCX_MAINNET_ADDRESS,
-    amount: isInfiniteApproval ? MAX_UINT256 : amount,
+    amount,
     decimals: 18,
+    isInfiniteApproval,
   });
 
   const { data: wrapConfig, error: wrapError } = useSimulateContract({
