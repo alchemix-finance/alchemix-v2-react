@@ -46,18 +46,19 @@ export interface VaultMetadata {
   synthAssetType: SynthAsset;
   underlying: string;
   messages: { message: string; type: MessageType }[];
-  wethGateway?: Address;
-  gateway?: Address;
-  migrator?: Address;
-  yieldTokenOverride?: Address;
-  strategy?: string;
-  beta?: boolean;
   api: {
     apr: AprFn;
     yieldType: string;
     cacheKey: string;
     bonus: BonusFn;
   };
+  disabledDepositTokens: Address[];
+  wethGateway?: Address;
+  gateway?: Address;
+  migrator?: Address;
+  yieldTokenOverride?: Address;
+  strategy?: string;
+  beta?: boolean;
 }
 
 /**
