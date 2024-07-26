@@ -79,7 +79,7 @@ export const FarmContent = ({
 
   return (
     <div className="flex flex-col gap-2 lg:flex-row lg:gap-8 lg:py-4 lg:pl-8 lg:pr-4">
-      <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4">
+      <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
         <div className="space-y-4">
           <p className="text-xs font-light text-lightgrey10 lg:text-sm">
             Balance: {formatNumber(balance)} {tokenSymbol}
@@ -103,7 +103,7 @@ export const FarmContent = ({
               <Button
                 variant="action"
                 weight="normal"
-                className="h-10 w-full rounded-b-none rounded-l-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+                className="h-10 w-full rounded-b-none rounded-l-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey3 dark:text-lightgrey10 dark:hover:bg-grey1"
                 onClick={handleMaxDeposit}
               >
                 MAX
@@ -111,7 +111,7 @@ export const FarmContent = ({
               <Button
                 variant="action"
                 weight="normal"
-                className="h-10 w-full rounded-l-none rounded-t-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+                className="h-10 w-full rounded-l-none rounded-t-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey3 dark:text-lightgrey10 dark:hover:bg-grey1"
                 onClick={handleClearDeposit}
               >
                 CLEAR
@@ -127,7 +127,7 @@ export const FarmContent = ({
           {isApprovalNeeded ? "Approve" : "Deposit"}
         </Button>
       </div>
-      <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4">
+      <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
         <div className="space-y-4">
           <p className="text-xs font-light text-lightgrey10 lg:text-sm">
             Available: {formatNumber(withdrawBalance)} {tokenSymbol}
@@ -151,7 +151,7 @@ export const FarmContent = ({
               <Button
                 variant="action"
                 weight="normal"
-                className="h-10 w-full rounded-b-none rounded-l-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+                className="h-10 w-full rounded-b-none rounded-l-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey3 dark:text-lightgrey10 dark:hover:bg-grey1"
                 onClick={handleMaxWithdraw}
               >
                 MAX
@@ -159,7 +159,7 @@ export const FarmContent = ({
               <Button
                 variant="action"
                 weight="normal"
-                className="h-10 w-full rounded-l-none rounded-t-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+                className="h-10 w-full rounded-l-none rounded-t-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey3 dark:text-lightgrey10 dark:hover:bg-grey1"
                 onClick={handleClearWithdraw}
               >
                 CLEAR
@@ -179,15 +179,15 @@ export const FarmContent = ({
         </Button>
       </div>
 
-      <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4">
+      <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
         <p className="text-xs font-light text-lightgrey10 lg:text-sm">
           Rewards
         </p>
-        <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+        <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
           {rewards.map((reward) => (
             <div
               key={reward.tokenAddress}
-              className="h-full w-full appearance-none rounded bg-grey3inverse px-14 py-6 text-right text-xl"
+              className="h-full w-full appearance-none rounded bg-grey3inverse px-14 py-6 text-right text-xl dark:bg-grey3"
             >
               {reward.amount} {reward.symbol}
             </div>
