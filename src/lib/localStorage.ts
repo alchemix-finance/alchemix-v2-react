@@ -22,7 +22,7 @@ interface LocalStorageSchema {
 //   ] as const satisfies (keyof LocalStorageSchema)[];
 // };
 
-const localStorageVersion = "Alchemix-React-v1.1";
+const localStorageVersion = "alchemixr-v1.1";
 
 /**
  * LocalStorage service to get and set items in localStorage
