@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/utils/cn";
-// text-white2inverse text-opacity-80
+
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded text-sm ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300",
   {
@@ -14,14 +14,14 @@ const buttonVariants = cva(
         destructive:
           "bg-red-500 text-neutral-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-neutral-50 dark:hover:bg-red-900/90",
         outline:
-          "text-md border border-green4 bg-green7 hover:bg-green4 hover:text-neutral-900 dark:border-white dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:hover:text-neutral-50",
+          "text-md border border-green4 bg-green7 hover:bg-green4 hover:text-neutral-900 dark:border-green4 dark:bg-grey10 dark:hover:bg-grey5 dark:hover:text-neutral-50",
         secondary:
           "bg-neutral-100 border border-gray-300 text-neutral-900 hover:bg-neutral-100/80 dark:bg-neutral-800 dark:text-neutral-50 dark:hover:bg-neutral-800/80",
         ghost:
           "hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-50",
         link: "text-neutral-900 underline-offset-4 underline hover:no-underline dark:text-neutral-50",
         action:
-          "border border-bronze3 bg-grey10inverse hover:bg-grey1inverse data-[state=active]:bg-grey1inverse data-[state=active]:text-bronze4",
+          "border border-bronze3 bg-grey10inverse dark:bg-grey10 dark:hover:bg-grey1 hover:bg-grey1inverse dark:data-[state=active]:bg-grey1 data-[state=active]:bg-grey1inverse data-[state=active]:text-bronze4 dark:data-[state=active]:text-bronze4inverse",
       },
       size: {
         default: "h-12 px-3 py-1",
