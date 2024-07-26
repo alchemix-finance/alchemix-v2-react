@@ -12,7 +12,7 @@ export const SlippageInput = ({
 }: SlippageInputProps) => {
   return (
     <div className="flex flex-col">
-      <p className="whitespace-nowrap text-sm text-lightgrey10inverse">
+      <p className="whitespace-nowrap text-sm text-lightgrey10inverse dark:text-lightgrey10">
         Maximum Slippage: {slippage}%
       </p>
       <div className="flex items-center gap-2">
@@ -24,7 +24,7 @@ export const SlippageInput = ({
             onChange={(e) => setSlippage(e.target.value)}
             className="w-16"
           />
-          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-lightgrey10inverse">
+          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-lightgrey10inverse dark:text-lightgrey10">
             %
           </span>
         </div>
