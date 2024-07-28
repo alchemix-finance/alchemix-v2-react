@@ -24,7 +24,7 @@ export function formatNumber(
   }
 }
 
-/** Enforce precision on an input string number */
+/** Enforce precision on a string number */
 export const sanitizeNumber = (input: string, precision?: number): string => {
   const sanitized = input
     .replace(/,/, ".")
