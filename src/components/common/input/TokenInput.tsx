@@ -1,12 +1,13 @@
 import { erc20Abi, formatEther, formatUnits, zeroAddress } from "viem";
 import { useAccount, useBalance, useReadContract } from "wagmi";
 import { Input } from "@/components/ui/input";
-import { formatNumber } from "@/utils/number";
+import { formatNumber, sanitizeNumber } from "@/utils/number";
 import { useChain } from "@/hooks/useChain";
 import { cn } from "@/utils/cn";
 import { GAS_ADDRESS } from "@/lib/constants";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { Button } from "@/components/ui/button";
+import { decimalNumberValidationRegex } from "@/utils/inputValidation";
 
 export const TokenInput = ({
   amount,
@@ -57,6 +58,11 @@ export const TokenInput = ({
     queryKeys: [gasBalanceQueryKey, tokenBalanceQueryKey],
   });
 
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitized = sanitizeNumber(e.target.value, tokenDecimals);
+    setAmount(sanitized);
+  };
+
   const handleMax = () => {
     if (overrideBalance) {
       return setAmount(overrideBalance);
@@ -89,7 +95,9 @@ export const TokenInput = ({
             : tokenSymbol}
         </p>
         <Input
-          type="number"
+          type="text"
+          inputMode="decimal"
+          pattern={decimalNumberValidationRegex}
           value={amount}
           className={cn(
             "mb-2 h-full rounded-none p-4 text-right text-xl",
@@ -98,7 +106,7 @@ export const TokenInput = ({
               "text-red-500 ring-2 ring-red-500 focus-visible:ring-red-500",
           )}
           placeholder="0.00"
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={onChange}
         />
       </div>
       <div className="flex lg:flex-col">

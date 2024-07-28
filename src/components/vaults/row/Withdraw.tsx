@@ -101,6 +101,7 @@ export const Withdraw = ({
             amount={amount}
             setAmount={setAmount}
             tokenSymbol={token.symbol}
+            tokenDecimals={token.decimals}
             isSelectedTokenYieldToken={isSelecedTokenYieldToken}
             vault={vault}
           />

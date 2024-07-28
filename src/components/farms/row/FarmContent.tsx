@@ -4,7 +4,8 @@ import { useChain } from "@/hooks/useChain";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { cn } from "@/utils/cn";
 import { isInputZero } from "@/utils/inputNotZero";
-import { formatNumber } from "@/utils/number";
+import { decimalNumberValidationRegex } from "@/utils/inputValidation";
+import { formatNumber, sanitizeNumber } from "@/utils/number";
 import { erc20Abi, formatEther } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 
@@ -57,6 +58,16 @@ export const FarmContent = ({
     queryKey: balanceQueryKey,
   });
 
+  const onDepositChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitized = sanitizeNumber(e.target.value, 18);
+    setDepositAmount(sanitized);
+  };
+
+  const onWithdrawChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitized = sanitizeNumber(e.target.value, 18);
+    setWithdrawAmount(sanitized);
+  };
+
   const handleMaxDeposit = () => {
     if (balance) {
       return setDepositAmount(balance);
@@ -87,7 +98,9 @@ export const FarmContent = ({
           <div className="flex flex-col lg:flex-row">
             <div className="relative flex-grow">
               <Input
-                type="number"
+                type="text"
+                inputMode="decimal"
+                pattern={decimalNumberValidationRegex}
                 value={depositAmount}
                 className={cn(
                   "mb-2 h-full rounded-none p-4 text-right text-xl",
@@ -96,7 +109,7 @@ export const FarmContent = ({
                     "text-red-500 ring-2 ring-red-500 focus-visible:ring-red-500",
                 )}
                 placeholder="0.00"
-                onChange={(e) => setDepositAmount(e.target.value)}
+                onChange={onDepositChange}
               />
             </div>
             <div className="flex lg:flex-col">
@@ -135,7 +148,9 @@ export const FarmContent = ({
           <div className="flex flex-col lg:flex-row">
             <div className="relative flex-grow">
               <Input
-                type="number"
+                type="text"
+                inputMode="decimal"
+                pattern={decimalNumberValidationRegex}
                 value={withdrawAmount}
                 className={cn(
                   "mb-2 h-full rounded-none p-4 text-right text-xl",
@@ -144,7 +159,7 @@ export const FarmContent = ({
                     "text-red-500 ring-2 ring-red-500 focus-visible:ring-red-500",
                 )}
                 placeholder="0.00"
-                onChange={(e) => setWithdrawAmount(e.target.value)}
+                onChange={onWithdrawChange}
               />
             </div>
             <div className="flex lg:flex-col">

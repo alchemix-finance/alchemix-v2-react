@@ -241,7 +241,7 @@ export const LiquidityMigration = () => {
                   <Input
                     readOnly
                     aria-readonly
-                    type="number"
+                    type="text"
                     value={
                       projectedAmount === undefined
                         ? ""

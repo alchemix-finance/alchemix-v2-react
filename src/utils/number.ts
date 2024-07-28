@@ -23,3 +23,17 @@ export function formatNumber(
     return "0.00";
   }
 }
+
+/** Enforce precision on an input string number */
+export const sanitizeNumber = (input: string, precision?: number): string => {
+  const sanitized = input
+    .replace(/,/, ".")
+    .replace(/[^\d.]/g, "")
+    .replace(/\./, "x")
+    .replace(/\./g, "")
+    .replace(/x/, ".");
+  if (!precision) return sanitized;
+  const [integer, decimals] = sanitized.split(".");
+  if (decimals) return `${integer}.${decimals.substring(0, precision)}`;
+  else return sanitized;
+};

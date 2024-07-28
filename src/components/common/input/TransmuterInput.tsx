@@ -4,9 +4,10 @@ import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useChain } from "@/hooks/useChain";
 import { Input } from "@/components/ui/input";
-import { formatNumber } from "@/utils/number";
+import { formatNumber, sanitizeNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
 import { Button } from "@/components/ui/button";
+import { decimalNumberValidationRegex } from "@/utils/inputValidation";
 
 export const TransmuterInput = ({
   amount,
@@ -78,6 +79,11 @@ export const TransmuterInput = ({
         ? unexchangedBalance
         : claimableBalance;
 
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitized = sanitizeNumber(e.target.value, tokenDecimals);
+    setAmount(sanitized);
+  };
+
   const handleMax = () => {
     if (balance) {
       return setAmount(balance);
@@ -96,7 +102,9 @@ export const TransmuterInput = ({
       <div className="flex flex-col lg:flex-row">
         <div className="relative flex-grow">
           <Input
-            type="number"
+            type="text"
+            inputMode="decimal"
+            pattern={decimalNumberValidationRegex}
             value={amount}
             className={cn(
               "mb-2 h-full rounded-none p-4 text-right text-xl",
@@ -105,7 +113,7 @@ export const TransmuterInput = ({
                 "text-red-500 ring-2 ring-red-500 focus-visible:ring-red-500",
             )}
             placeholder="0.00"
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={onChange}
           />
         </div>
         <div className="flex lg:flex-col">

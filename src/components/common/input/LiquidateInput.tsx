@@ -11,11 +11,13 @@ export const LiquidateTokenInput = ({
   setAmount,
   vault,
   tokenSymbol,
+  tokenDecimals,
 }: {
   amount: string;
   setAmount: (amount: string) => void;
   vault: Vault;
   tokenSymbol: string;
+  tokenDecimals: number;
 }) => {
   const chain = useChain();
   const { address } = useAccount();
@@ -80,7 +82,7 @@ export const LiquidateTokenInput = ({
   return (
     <TokenInput
       tokenAddress={zeroAddress}
-      tokenDecimals={18}
+      tokenDecimals={tokenDecimals}
       amount={amount}
       setAmount={setAmount}
       tokenSymbol={tokenSymbol}
