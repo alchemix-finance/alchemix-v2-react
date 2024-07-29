@@ -1,8 +1,16 @@
-import { LiFiWidget, WidgetConfig } from "@lifi/widget";
+import { WidgetConfig } from "@lifi/widget";
 import { arbitrum, mainnet, optimism } from "viem/chains";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useMemo } from "react";
-import { useTheme } from "../providers/ThemeProvider";
+import { Suspense, lazy, useMemo, useState } from "react";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import { Button } from "@/components/ui/button";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
+import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
+
+const LiFiWidget = lazy(() =>
+  import("@lifi/widget").then((mod) => ({ default: mod.LiFiWidget })),
+);
 
 const widgetConfig = {
   integrator: "Alchemix",
@@ -63,7 +71,9 @@ const widgetConfig = {
   },
 } satisfies WidgetConfig;
 
-export const BridgeWidget = () => {
+export const LiFiBridgeWidget = () => {
+  const [open, setOpen] = useState(false);
+
   const { darkMode } = useTheme();
 
   const { openConnectModal } = useConnectModal();
@@ -97,5 +107,41 @@ export const BridgeWidget = () => {
     } satisfies WidgetConfig;
   }, [darkMode, openConnectModal]);
 
-  return <LiFiWidget integrator="Alchemix" config={config} />;
+  const handleOpen = () => setOpen(!open);
+
+  return (
+    <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+      <div
+        className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer dark:bg-grey10"
+        onClick={handleOpen}
+      >
+        <p className="text-sm">LiFi Bridge</p>
+        <Button variant="action" className="hidden sm:inline-flex">
+          {open ? (
+            <EyeOffIcon className="h-6 w-6" />
+          ) : (
+            <EyeIcon className="h-6 w-6" />
+          )}
+        </Button>
+      </div>
+      <AnimatePresence initial={false}>
+        {open && (
+          <m.div
+            key="liFiBridgeWidget"
+            initial="collapsed"
+            animate="open"
+            exit="collapsed"
+            variants={accordionVariants}
+            transition={accordionTransition}
+          >
+            <div className="p-5">
+              <Suspense fallback={null}>
+                <LiFiWidget integrator="Alchemix" config={config} />
+              </Suspense>
+            </div>
+          </m.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };

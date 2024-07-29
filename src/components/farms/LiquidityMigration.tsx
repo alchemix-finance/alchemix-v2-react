@@ -36,6 +36,7 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { useChain } from "@/hooks/useChain";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
 import { AnimatePresence, m } from "framer-motion";
+import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
 
 const TOKENS_FROM = ["SLP"] as const;
 const TOKENS_TO = ["AURA", "BALANCER"] as const;
@@ -169,14 +170,8 @@ export const LiquidityMigration = () => {
             initial="collapsed"
             animate="open"
             exit="collapsed"
-            variants={{
-              open: { opacity: 1, height: "auto" },
-              collapsed: { opacity: 0, height: 0 },
-            }}
-            transition={{
-              duration: 0.2,
-              ease: "easeOut",
-            }}
+            variants={accordionVariants}
+            transition={accordionTransition}
           >
             <div className="flex flex-col gap-8 p-4">
               <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
