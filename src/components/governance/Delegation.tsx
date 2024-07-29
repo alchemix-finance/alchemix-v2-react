@@ -120,7 +120,7 @@ export const Delegation = () => {
             {userDelegations?.delegating.map(({ delegate }) => (
               <div
                 key={delegate}
-                className="flex w-full flex-row space-x-2 rounded border border-grey3inverse bg-grey10inverse p-2"
+                className="flex w-full flex-row space-x-2 rounded border border-grey3inverse bg-grey10inverse p-2 dark:border-grey3 dark:bg-grey10"
               >
                 <p>{shortenAddress(delegate)}</p>
               </div>
@@ -136,7 +136,7 @@ export const Delegation = () => {
             {userDelegations?.delegations.map(({ delegator }) => (
               <div
                 key={delegator}
-                className="flex w-full flex-row space-x-2 rounded border border-grey3inverse bg-grey10inverse p-2"
+                className="flex w-full flex-row space-x-2 rounded border border-grey3inverse bg-grey10inverse p-2 dark:border-grey3 dark:bg-grey10"
               >
                 <p>{shortenAddress(delegator)}</p>
               </div>

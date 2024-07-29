@@ -171,9 +171,9 @@ export const GAlcsWrapper = () => {
   };
 
   return (
-    <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse">
+    <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
       <div
-        className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer"
+        className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer dark:bg-grey10"
         onClick={handleOpen}
       >
         <p className="text-sm">gALCX Wrapper</p>
@@ -202,11 +202,11 @@ export const GAlcsWrapper = () => {
             }}
           >
             <div className="flex flex-col gap-8 p-4 lg:flex-row">
-              <div className="flex w-full flex-col space-y-4 rounded border border-grey10inverse bg-grey10inverse p-4">
+              <div className="flex w-full flex-col space-y-4 rounded border border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10">
                 <div className="flex flex-row justify-end">
                   <div className="flex items-center">
                     <label
-                      className="pr-[15px] text-sm leading-none text-lightgrey10inverse"
+                      className="pr-[15px] text-sm leading-none text-lightgrey10inverse dark:text-lightgrey10"
                       htmlFor="is-unwrap"
                     >
                       Wrap
@@ -217,7 +217,7 @@ export const GAlcsWrapper = () => {
                       id="is-unwrap"
                     />
                     <label
-                      className="pl-[15px] text-sm leading-none text-lightgrey10inverse"
+                      className="pl-[15px] text-sm leading-none text-lightgrey10inverse dark:text-lightgrey10"
                       htmlFor="is-unwrap"
                     >
                       Unwrap
@@ -225,7 +225,7 @@ export const GAlcsWrapper = () => {
                   </div>
                 </div>
                 <div className="relative flex w-full flex-row">
-                  <div className="flex w-full justify-end rounded border border-grey3inverse bg-grey3inverse">
+                  <div className="flex w-full justify-end rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
                     <TokenInput
                       amount={amount}
                       setAmount={setAmount}
@@ -238,7 +238,7 @@ export const GAlcsWrapper = () => {
                   </div>
                 </div>
                 <div className="flex h-8 flex-row space-x-4">
-                  <div className="flex w-full rounded bg-grey3inverse p-4 text-center text-xl">
+                  <div className="flex w-full rounded bg-grey3inverse p-4 text-center text-xl dark:bg-grey3">
                     <p className="w-full self-center text-right text-sm text-lightgrey10">
                       {isUnwrap
                         ? `${formatNumber(projectedAlcx)} ALCX`
@@ -247,12 +247,12 @@ export const GAlcsWrapper = () => {
                   </div>
                 </div>
                 <div className="flex flex-row justify-between">
-                  <p className="flex-auto text-sm text-lightgrey10inverse">
+                  <p className="flex-auto text-sm text-lightgrey10inverse dark:text-lightgrey10">
                     Approval
                   </p>
                   <div className="flex items-center">
                     <label
-                      className="pr-[15px] text-sm leading-none text-lightgrey10inverse"
+                      className="pr-[15px] text-sm leading-none text-lightgrey10inverse dark:text-lightgrey10"
                       htmlFor="is-infinite-approval"
                     >
                       Fixed
@@ -263,7 +263,7 @@ export const GAlcsWrapper = () => {
                       id="is-infinite-approval"
                     />
                     <label
-                      className="pl-[15px] text-sm leading-none text-lightgrey10inverse"
+                      className="pl-[15px] text-sm leading-none text-lightgrey10inverse dark:text-lightgrey10"
                       htmlFor="is-infinite-approval"
                     >
                       Infinite
@@ -279,7 +279,7 @@ export const GAlcsWrapper = () => {
                 </Button>
               </div>
               <div className="flex flex-col justify-between gap-4">
-                <div className="w-full rounded border-grey10inverse bg-grey10inverse p-4">
+                <div className="w-full rounded border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10">
                   <p className="mb-4">
                     A liquid ALCX wrapper for single-sided staking.
                   </p>
@@ -293,7 +293,7 @@ export const GAlcsWrapper = () => {
                     per gALCX.
                   </p>
                 </div>
-                <div className="flex w-full flex-col justify-between gap-6 rounded border-grey10inverse bg-grey10inverse p-4 lg:flex-row">
+                <div className="flex w-full flex-col justify-between gap-6 rounded border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10 lg:flex-row">
                   <div className="flex-col">
                     <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
                       gALCX Token Supply

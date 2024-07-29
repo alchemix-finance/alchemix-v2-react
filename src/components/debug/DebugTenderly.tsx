@@ -47,7 +47,7 @@ export const DebugTenderly = () => {
     );
   };
   return (
-    <div className="flex flex-col justify-between gap-4 border border-grey3inverse p-4">
+    <div className="flex flex-col justify-between gap-4 border border-grey3inverse p-4 dark:border-grey3">
       <div className="space-y-4">
         <div className="flex flex-col gap-2">
           <p>Tenderly chain:</p>

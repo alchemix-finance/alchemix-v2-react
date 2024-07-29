@@ -90,7 +90,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
 
   return (
     <AccordionItem value={vault.address}>
-      <AccordionTrigger className="flex flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 py-4 pr-8 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:grid lg:grid-cols-12 lg:gap-2">
+      <AccordionTrigger className="flex flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 py-4 pr-8 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 dark:border-grey3 dark:bg-grey10 lg:grid lg:grid-cols-12 lg:gap-2">
         <div className="col-span-3 flex space-x-8 pl-8">
           <div className="relative">
             {vault.metadata.beta && (
@@ -178,7 +178,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="rounded-b border border-t-0 border-grey3inverse bg-grey10inverse p-4">
+      <AccordionContent className="rounded-b border border-t-0 border-grey3inverse bg-grey10inverse p-4 dark:border-grey3 dark:bg-grey10">
         <div className="flex w-full flex-col gap-4">
           {vault.metadata.messages.length > 0 &&
             vault.metadata.messages.map((message) => (
@@ -193,7 +193,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             value={contentAction}
             onValueChange={(value) => setContentAction(value as ContentAction)}
           >
-            <div className="rounded border border-grey1inverse bg-grey3inverse p-2">
+            <div className="rounded border border-grey1inverse bg-grey3inverse p-2 dark:border-grey1 dark:bg-grey3">
               <TabsList className="w-full overflow-x-auto">
                 <TabsTrigger value="deposit" className="h-8 w-full">
                   Deposit
@@ -324,10 +324,10 @@ const VaultCapacityCell = ({
     <>
       <div className="w-full self-start pt-2">
         <div className="relative">
-          <div className="flex h-2 overflow-hidden rounded border border-bronze1inverse bg-bronze4inverse text-xs">
+          <div className="flex h-2 overflow-hidden rounded border border-bronze1inverse bg-bronze4inverse text-xs dark:border-bronze1 dark:bg-bronze4">
             <div
               className={cn(
-                "flex flex-col justify-center whitespace-nowrap bg-bronze1inverse text-left text-white shadow-none",
+                "flex flex-col justify-center whitespace-nowrap bg-bronze1inverse text-left text-white shadow-none dark:bg-bronze1 dark:text-black",
                 isPending && "animate-pulse",
               )}
               style={{

@@ -75,7 +75,7 @@ export const Withdraw = ({
   return (
     <VaultActionMotionDiv>
       <div className="space-y-4">
-        <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+        <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
           <Select value={tokenAddress} onValueChange={onSelectChange}>
             <SelectTrigger className="h-auto w-56">
               <SelectValue placeholder="Token" asChild>
@@ -107,7 +107,7 @@ export const Withdraw = ({
           />
         </div>
         <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-        <p className="text-sm text-lightgrey10inverse">
+        <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
           Current debt:{" "}
           {formatNumber(
             formatEther(

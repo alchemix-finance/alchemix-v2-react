@@ -34,8 +34,8 @@ export const Transmuters = () => {
   return (
     <>
       {isPending ? (
-        <div className="rounded border border-grey10inverse bg-grey15inverse">
-          <div className="flex space-x-4 bg-grey10inverse px-6 py-4">
+        <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+          <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
             <p className="inline-block self-center">Fetching data</p>
           </div>
           <div className="my-4 flex justify-center">
@@ -46,8 +46,8 @@ export const Transmuters = () => {
       {isError && <div>Error</div>}
       {isSuccess && (
         <div className="space-y-5">
-          <div className="w-full rounded border border-grey10inverse bg-grey15inverse">
-            <div className="bg-grey10inverse px-6 py-4 text-sm">
+          <div className="w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+            <div className="bg-grey10inverse px-6 py-4 text-sm dark:bg-grey10">
               <p className="inline-block self-center">
                 External Swap Providers
               </p>
@@ -58,7 +58,7 @@ export const Transmuters = () => {
                   key={provider.label}
                   variant="action"
                   weight="normal"
-                  className="w-full gap-2 border-grey5inverse lg:w-max"
+                  className="w-full gap-2 border-grey5inverse dark:border-grey5 lg:w-max"
                   onClick={() => windowOpen(provider.url)}
                 >
                   <img
@@ -71,8 +71,8 @@ export const Transmuters = () => {
               ))}
             </div>
           </div>
-          <div className="rounded border border-grey10inverse bg-grey15inverse">
-            <div className="bg-grey10inverse px-6 py-4">
+          <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+            <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
               <Tabs value={synthTab} onValueChange={onSynthTabChange}>
                 <ScrollArea className="max-w-full">
                   <div className="relative h-7 w-full">

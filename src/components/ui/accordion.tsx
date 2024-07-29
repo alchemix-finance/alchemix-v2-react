@@ -26,7 +26,7 @@ const AccordionTrigger = React.forwardRef<
         )}
       >
         {children}
-        <button className="absolute -left-2 top-8 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-bronze3 bg-grey10inverse text-opacity-80 transition-transform duration-200 hover:bg-grey1inverse hover:text-opacity-100">
+        <button className="absolute -left-2 top-8 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-bronze3 bg-grey10inverse text-opacity-80 transition-transform duration-200 hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey10 dark:hover:bg-grey1">
           +
         </button>
       </div>

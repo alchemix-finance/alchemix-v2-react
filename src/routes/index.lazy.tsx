@@ -78,10 +78,10 @@ function Index() {
       <div className="flex justify-center">
         <Link
           to="/vaults"
-          className="shadow-glow hover:shadow-hoveredGlow rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider transition-all"
+          className="rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider shadow-glow transition-all hover:shadow-hoveredGlow"
         >
           <span className="flex items-center space-x-4 self-center text-orange4">
-            <span className="self-center text-white2inverse">
+            <span className="self-center">
               Get your first Self-Repaying Loan
             </span>
             <svg
@@ -144,7 +144,7 @@ function Index() {
           A multi-functional account for all your financial needs
         </p>
         <img
-          className="w-3/4 self-center invert"
+          className="w-3/4 self-center invert dark:filter-none"
           src="/images/landing-page/diagram.svg"
           alt="A diagram depicting the possibilities of Alchemix"
         />
@@ -156,7 +156,7 @@ function Index() {
         </a>
       </div>
 
-      <div className="flex flex-col space-y-4 border-b border-t border-grey5inverse py-8">
+      <div className="flex flex-col space-y-4 border-b border-t border-grey5inverse py-8 dark:border-grey5">
         <p className="text-center font-alcxTitles text-3xl opacity-75">
           Leverage your assets
         </p>
@@ -164,7 +164,7 @@ function Index() {
           {assets.map((asset) => (
             <div
               key={asset.address}
-              className="flex w-full flex-row space-x-4 rounded-lg border border-grey1inverse bg-grey15inverse p-4 lg:w-max"
+              className="flex w-full flex-row space-x-4 rounded-lg border border-grey1inverse bg-grey15inverse p-4 dark:border-grey1 dark:bg-grey15 lg:w-max"
             >
               <img
                 src={`/images/icons/${asset.name.toLowerCase()}.svg`}
@@ -192,7 +192,7 @@ function Index() {
           The benefits of Alchemix
         </p>
         <div className="flex w-full flex-col md:flex-row">
-          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16">
+          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16 dark:border-grey1 dark:bg-grey15">
             <p className="font-alcxTitles text-2xl font-light text-orange4">
               Leverage your wealth
             </p>
@@ -208,7 +208,7 @@ function Index() {
               Learn more
             </a>
           </div>
-          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16">
+          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16 dark:border-grey1 dark:bg-grey15">
             <p className="font-alcxTitles text-2xl font-light text-orange4">
               Wide range of tokens
             </p>
@@ -223,7 +223,7 @@ function Index() {
               Learn more
             </a>
           </div>
-          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16">
+          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16 dark:border-grey1 dark:bg-grey15">
             <p className="font-alcxTitles text-2xl font-light text-orange4">
               No liquidations
             </p>
@@ -239,7 +239,7 @@ function Index() {
               Learn more
             </a>
           </div>
-          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16">
+          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16 dark:border-grey1 dark:bg-grey15">
             <p className="font-alcxTitles text-2xl font-light text-orange4">
               Completely flexible
             </p>
@@ -258,13 +258,13 @@ function Index() {
         </div>
       </div>
 
-      <div className="flex justify-center text-bronze4inverse">
+      <div className="flex justify-center text-bronze4inverse dark:text-bronze4">
         <Link
           to="/vaults"
-          className="shadow-glow hover:shadow-hoveredGlow rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider transition-all"
+          className="rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider shadow-glow transition-all hover:shadow-hoveredGlow"
         >
           <span className="flex items-center space-x-4 self-center text-orange4">
-            <span className="self-center text-white2inverse">
+            <span className="self-center">
               Get your first Self-Repaying Loan
             </span>
             <svg

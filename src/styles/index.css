@@ -8,5 +8,5 @@
 @tailwind utilities;
 
 body {
-  @apply !bg-bodyGradient bg-fixed bg-no-repeat;
+  @apply dark:!bg-bodyGradientInverse !bg-bodyGradient bg-fixed bg-no-repeat text-white2inverse dark:text-white2;
 }

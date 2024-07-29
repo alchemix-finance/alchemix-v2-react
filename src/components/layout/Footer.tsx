@@ -9,7 +9,7 @@ const copyrightYear = () => {
 
 export const Footer = () => {
   return (
-    <footer className="flex flex-col border-t border-grey5inverse py-12 pb-16 pl-8 lg:pb-12">
+    <footer className="flex flex-col border-t border-grey5inverse py-12 pb-16 pl-8 dark:border-grey5 lg:pb-12">
       <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-11">
         <div className="w-60">
           <img
@@ -129,7 +129,7 @@ export const Footer = () => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <XPrevTwitterIcon className="h-5 w-5" />
+                <XPrevTwitterIcon className="h-5 w-5 dark:fill-white2" />
                 <span>X (Prev. Twitter)</span>
               </a>
             </li>

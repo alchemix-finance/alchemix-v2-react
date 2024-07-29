@@ -163,8 +163,8 @@ export const Sentinel = () => {
   };
 
   return (
-    <div className="relative rounded border border-grey10inverse bg-grey15inverse">
-      <div className="bg-grey10inverse px-6 py-4">
+    <div className="relative rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+      <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
         <h5 className="text-sm">Alchemix Control Panel</h5>
       </div>
       {isPending && <LoadingBar />}
@@ -172,7 +172,7 @@ export const Sentinel = () => {
         <div className="space-y-4 p-4">
           <Accordion type="single" collapsible>
             <AccordionItem value="alTokens" className="border-b-0">
-              <AccordionTrigger className="bg-grey10inverse px-6 py-4">
+              <AccordionTrigger className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
                 <h5 className="text-sm">Alchemists</h5>
               </AccordionTrigger>
               <AccordionContent className="p-2">
@@ -220,7 +220,7 @@ export const Sentinel = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="transmuters" className="border-b-0">
-              <AccordionTrigger className="bg-grey10inverse px-6 py-4">
+              <AccordionTrigger className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
                 <h5 className="text-sm">Transmuters</h5>
               </AccordionTrigger>
               <AccordionContent className="p-2">
@@ -271,7 +271,7 @@ export const Sentinel = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="vaults" className="border-b-0">
-              <AccordionTrigger className="bg-grey10inverse px-6 py-4">
+              <AccordionTrigger className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
                 <h5 className="text-sm">Vaults</h5>
               </AccordionTrigger>
               <AccordionContent className="p-2">

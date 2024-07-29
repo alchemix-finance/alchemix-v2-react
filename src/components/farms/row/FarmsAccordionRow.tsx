@@ -20,7 +20,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
     <AccordionItem value={farm.uuid} disabled={!isActive}>
       <AccordionTrigger
         className={cn(
-          "relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:flex-nowrap lg:space-y-0",
+          "relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 dark:border-grey3 dark:bg-grey10 lg:flex-nowrap lg:space-y-0",
           isActive
             ? "grid-cols-7 hover:cursor-pointer"
             : "grid-cols-5 hover:cursor-default",
@@ -118,7 +118,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
           </>
         )}
       </AccordionTrigger>
-      <AccordionContent className="rounded rounded-t-none border border-t-0 border-grey3inverse">
+      <AccordionContent className="rounded rounded-t-none border border-t-0 border-grey3inverse dark:border-grey3">
         {farm.type === "internal" && <InternalFarmContent farm={farm} />}
         {farm.type === "external-sushi" && <SushiFarmContent farm={farm} />}
         {farm.type === "external-curve" && <CurveFarmContent farm={farm} />}

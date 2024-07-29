@@ -11,8 +11,12 @@ export const Page = ({
 }) => {
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-6 border-b border-grey5inverse p-8">
-        <img src={iconUri} alt={`${title} icon`} className="h-20 w-20 invert" />
+      <div className="flex items-center gap-6 border-b border-grey5inverse p-8 dark:border-grey5">
+        <img
+          src={iconUri}
+          alt={`${title} icon`}
+          className="h-20 w-20 invert dark:filter-none"
+        />
         <div>
           <h1 className="mb-2 font-alcxTitles text-2xl tracking-wider">
             {title}
