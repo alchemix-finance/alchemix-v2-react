@@ -143,11 +143,11 @@ export const Borrow = () => {
   }, [borrow, borrowConfig, borrowError]);
 
   return (
-    <div className="space-y-4 bg-grey15inverse p-4">
+    <div className="space-y-4 bg-grey15inverse p-4 dark:bg-grey15">
       {!availableSynthAssets || (!debtToken && <p>Loading...</p>)}
       {!!availableSynthAssets && !!debtToken && (
         <>
-          <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+          <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
             <Select value={tokenAddress} onValueChange={handleDebtTokenSelect}>
               <SelectTrigger className="h-auto w-[180px]">
                 <SelectValue placeholder="Debt Token" asChild>
@@ -183,7 +183,7 @@ export const Borrow = () => {
               id="is-different-address"
             />
             <label
-              className="cursor-pointer pl-2 text-sm text-lightgrey10inverse"
+              className="cursor-pointer pl-2 text-sm text-lightgrey10inverse dark:text-lightgrey10"
               htmlFor="is-different-address"
             >
               Transfer loan to different wallet
@@ -207,7 +207,7 @@ export const Borrow = () => {
                   }}
                   className="space-y-4"
                 >
-                  <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+                  <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
                     <Input
                       type="text"
                       value={receipientAddress}
@@ -218,7 +218,7 @@ export const Borrow = () => {
                     <Button
                       variant="action"
                       weight="normal"
-                      className="flex h-auto border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100"
+                      className="flex h-auto border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey3 dark:text-lightgrey10 dark:hover:bg-grey1"
                       onClick={() => setReceipientAddress("")}
                     >
                       CLEAR
@@ -231,7 +231,7 @@ export const Borrow = () => {
                       id="confirmed-different-address"
                     />
                     <label
-                      className="cursor-pointer pl-2 text-sm text-lightgrey10inverse"
+                      className="cursor-pointer pl-2 text-sm text-lightgrey10inverse dark:text-lightgrey10"
                       htmlFor="confirmed-different-address"
                     >
                       I have verified the above address to be the correct

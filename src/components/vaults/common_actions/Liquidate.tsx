@@ -207,7 +207,7 @@ export const Liquidate = () => {
   }, [liquidate, liquidateConfig, liquidateError]);
 
   return (
-    <div className="space-y-4 bg-grey15inverse p-4">
+    <div className="space-y-4 bg-grey15inverse p-4 dark:bg-grey15">
       <DebtSelection
         selectedSynthAsset={selectedSynthAsset}
         availableSynthAssets={availableSynthAssets}
@@ -219,7 +219,7 @@ export const Liquidate = () => {
       )}
       {!!avaiableLiquidationTokens && !!liquidationToken && !!vault && (
         <>
-          <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+          <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
             <Select
               value={liquidationTokenAddress}
               onValueChange={handleLiquidationTokenSelect}
@@ -260,7 +260,7 @@ export const Liquidate = () => {
               id="confirmed-liquidation"
             />
             <label
-              className="cursor-pointer pl-2 text-sm text-lightgrey10inverse"
+              className="cursor-pointer pl-2 text-sm text-lightgrey10inverse dark:text-lightgrey10"
               htmlFor="confirmed-liquidation"
             >
               I understand that liquidating will use my deposited collateral to

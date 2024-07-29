@@ -35,7 +35,7 @@ export const Info = ({ vault }: { vault: Vault }) => {
         <p className="w-full self-center text-sm text-lightgrey10">
           List of contracts associated with this vault:
         </p>
-        <div className="flex flex-col flex-wrap items-center justify-center gap-2 break-all rounded border border-grey5inverse bg-grey1inverse p-4 text-white2inverse">
+        <div className="flex flex-col flex-wrap items-center justify-center gap-2 break-all rounded border border-grey5inverse bg-grey1inverse p-4 dark:border-grey5 dark:bg-grey1">
           {Object.values(info).map(({ label, address }) => {
             if (!address) return null;
             return (

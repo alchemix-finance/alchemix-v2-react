@@ -72,8 +72,8 @@ export const Farms = () => {
           <GAlcsWrapper />
           <div>
             {isPending ? (
-              <div className="rounded border border-grey10inverse bg-grey15inverse">
-                <div className="flex space-x-4 bg-grey10inverse px-6 py-4">
+              <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+                <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
                   <p className="inline-block self-center">Fetching data</p>
                 </div>
                 <div className="my-4 flex justify-center">
@@ -84,15 +84,15 @@ export const Farms = () => {
             {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
             {filteredFarms && (
               <div className="space-y-5">
-                <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse">
-                  <div className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer">
+                <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+                  <div className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer dark:bg-grey10">
                     <p className="text-sm">External Farms</p>
                   </div>
                   <div className="flex flex-wrap gap-8 p-4">
                     {staticExternalFarms.map((farm) => (
                       <div
                         key={farm.name}
-                        className="flex w-64 flex-col justify-between gap-2 rounded border border-grey5inverse bg-grey10inverse p-2"
+                        className="flex w-64 flex-col justify-between gap-2 rounded border border-grey5inverse bg-grey10inverse p-2 dark:bg-grey10"
                       >
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
@@ -122,8 +122,8 @@ export const Farms = () => {
                     ))}
                   </div>
                 </div>
-                <div className="rounded border border-grey10inverse bg-grey15inverse">
-                  <div className="flex space-x-4 bg-grey10inverse px-6 py-4">
+                <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+                  <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
                     <Tabs
                       value={filter}
                       onValueChange={onFilterChain}

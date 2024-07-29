@@ -177,7 +177,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
 
   return (
     <AccordionItem value={proposal.id}>
-      <AccordionTrigger className="rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0">
+      <AccordionTrigger className="rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 dark:border-grey3 dark:bg-grey10">
         <div className="flex w-full flex-col gap-4">
           <div className="flex space-x-4">
             <BadgeCheckIcon
@@ -279,15 +279,15 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="flex flex-col gap-4 rounded rounded-t-none border border-t-0 border-grey3inverse bg-grey10inverse px-4">
-        <div className="rounded border border-grey3inverse bg-grey15inverse p-4">
+      <AccordionContent className="flex flex-col gap-4 rounded rounded-t-none border border-t-0 border-grey3inverse bg-grey10inverse px-4 dark:border-grey3 dark:bg-grey10">
+        <div className="rounded border border-grey3inverse bg-grey15inverse p-4 dark:border-grey3 dark:bg-grey15">
           <p className="mb-3 text-sm opacity-50">Description</p>
           <div
             className="w-full max-w-[calc(100vw-10rem)] overflow-x-auto whitespace-pre-wrap text-justify lg:max-w-[calc(100vw-32rem)]"
             dangerouslySetInnerHTML={{ __html: proposal.body }}
           ></div>
         </div>
-        <div className="flex min-w-max flex-col rounded border border-grey3inverse bg-grey15inverse p-4">
+        <div className="flex min-w-max flex-col rounded border border-grey3inverse bg-grey15inverse p-4 dark:border-grey3 dark:bg-grey15">
           <p className="mb-3 opacity-50">Your vote</p>
           <div id="selection" className="mb-6 w-auto">
             {proposal.state !== "closed" && !isSupported && (
@@ -338,7 +338,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                 <Button
                   variant="action"
                   weight="normal"
-                  className="border-grey5inverse text-opacity-80 hover:text-opacity-100"
+                  className="border-grey5inverse text-opacity-80 hover:text-opacity-100 dark:border-grey5"
                   onClick={() => openOnForum(proposal.discussion)}
                 >
                   <MessagesSquareIcon className="h-5 w-5" />
@@ -348,7 +348,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               <Button
                 variant="action"
                 weight="normal"
-                className="border-grey5inverse text-opacity-80 hover:text-opacity-100"
+                className="border-grey5inverse text-opacity-80 hover:text-opacity-100 dark:border-grey5"
                 onClick={() => openOnSnapshot(proposal.id)}
               >
                 <SnapshotIcon className="h-5 w-5" />

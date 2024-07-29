@@ -36,8 +36,15 @@
   <body>
     <style>
       /* Avoid white flash on reload */
-      body {
-        background-color: #f5f2ee;
+      @media (prefers-color-scheme: light) {
+        body {
+          background-color: #f5f2ee;
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #0a0d11;
+        }
       }
     </style>
     <div id="root"></div>

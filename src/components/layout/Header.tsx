@@ -16,12 +16,12 @@ export type RouteTitle = keyof typeof routeTitleToPathMapping;
 
 export function Header() {
   return (
-    <header className="flex items-center justify-between border-b border-grey5inverse bg-grey30inverse p-4 md:pb-5 md:pl-8 md:pt-5">
+    <header className="flex items-center justify-between border-b border-grey5inverse bg-grey30inverse p-4 dark:border-grey5 dark:bg-grey30 md:pb-5 md:pl-8 md:pt-5">
       <div className="text-center">
         <Link to="/" className="flex items-center justify-center">
           <img
             src="/images/icons/ALCX_Std_logo.svg"
-            className="h-11 invert"
+            className="h-11 invert dark:filter-none"
             alt="The Alchemix logo"
           />
         </Link>
@@ -29,7 +29,7 @@ export function Header() {
       <div className="flex items-center gap-4">
         {IS_TENDERLY_FORK && (
           <Link to="/debug">
-            <div className="border border-red1 bg-grey5inverse p-2">
+            <div className="border border-red1 bg-grey5inverse p-2 dark:bg-grey5">
               <p>FORK</p>
             </div>
           </Link>

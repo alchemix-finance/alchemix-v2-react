@@ -148,9 +148,9 @@ export const LiquidityMigration = () => {
   };
 
   return (
-    <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse">
+    <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
       <div
-        className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer"
+        className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer dark:bg-grey10"
         onClick={handleOpen}
       >
         <p className="text-sm">Liquidity Migration</p>
@@ -179,7 +179,7 @@ export const LiquidityMigration = () => {
             }}
           >
             <div className="flex flex-col gap-8 p-4">
-              <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+              <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
                 <Select
                   value={selectedFrom}
                   onValueChange={(value) => setSelectedFrom(value as From)}
@@ -212,7 +212,7 @@ export const LiquidityMigration = () => {
                   tokenSymbol="Sushi LP"
                 />
               </div>
-              <div className="flex rounded border border-grey3inverse bg-grey3inverse">
+              <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
                 <Select
                   value={selectedTarget}
                   onValueChange={(value) => setSelectedTarget(value as Target)}
