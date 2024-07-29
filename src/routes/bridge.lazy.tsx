@@ -1,6 +1,6 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { Page } from "@/components/common/Page";
-import { BridgeContent } from "@/components/bridge/BridgeContent";
+import { Bridge } from "@/components/bridge/Bridge";
 
 export const Route = createLazyFileRoute("/bridge")({
   component: BridgeRoute,
@@ -13,7 +13,7 @@ function BridgeRoute() {
       description="Transfer your tokens to other chains"
       iconUri="/images/icons/swap_thin.svg"
     >
-      <BridgeContent />
+      <Bridge />
     </Page>
   );
 }
