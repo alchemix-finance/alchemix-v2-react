@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { AmountQuickOptions } from "./InputQuickOptions";
 import { decimalNumberValidationRegex } from "@/utils/inputValidation";
-import { sanitizeNumber } from "@/utils/number";
+import { formatInput, sanitizeNumber } from "@/utils/number";
 
 interface SlippageInputProps {
   slippage: string;
@@ -15,6 +15,10 @@ export const SlippageInput = ({
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitized = sanitizeNumber(e.target.value, 2);
     setSlippage(sanitized);
+  };
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const formatted = formatInput(e.target.value);
+    if (formatted !== e.target.value) setSlippage(formatted);
   };
   return (
     <div className="flex flex-col">
@@ -30,6 +34,7 @@ export const SlippageInput = ({
             pattern={decimalNumberValidationRegex}
             value={slippage}
             onChange={onChange}
+            onBlur={onBlur}
             className="w-16"
           />
           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-lightgrey10inverse dark:text-lightgrey10">

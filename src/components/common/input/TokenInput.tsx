@@ -1,7 +1,7 @@
 import { erc20Abi, formatEther, formatUnits, zeroAddress } from "viem";
 import { useAccount, useBalance, useReadContract } from "wagmi";
 import { Input } from "@/components/ui/input";
-import { formatNumber, sanitizeNumber } from "@/utils/number";
+import { formatInput, formatNumber, sanitizeNumber } from "@/utils/number";
 import { useChain } from "@/hooks/useChain";
 import { cn } from "@/utils/cn";
 import { GAS_ADDRESS } from "@/lib/constants";
@@ -63,6 +63,11 @@ export const TokenInput = ({
     setAmount(sanitized);
   };
 
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const formatted = formatInput(e.target.value);
+    if (formatted !== e.target.value) setAmount(formatted);
+  };
+
   const handleMax = () => {
     if (overrideBalance) {
       return setAmount(overrideBalance);
@@ -107,6 +112,7 @@ export const TokenInput = ({
           )}
           placeholder="0.00"
           onChange={onChange}
+          onBlur={onBlur}
         />
       </div>
       <div className="flex lg:flex-col">

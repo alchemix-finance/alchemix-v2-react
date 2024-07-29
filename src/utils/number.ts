@@ -25,7 +25,7 @@ export function formatNumber(
 }
 
 /** Enforce precision on a string number */
-export const sanitizeNumber = (input: string, precision?: number): string => {
+export const sanitizeNumber = (input: string, precision?: number) => {
   const sanitized = input
     .replace(/,/, ".")
     .replace(/[^\d.]/g, "")
@@ -36,4 +36,12 @@ export const sanitizeNumber = (input: string, precision?: number): string => {
   const [integer, decimals] = sanitized.split(".");
   if (decimals) return `${integer}.${decimals.substring(0, precision)}`;
   else return sanitized;
+};
+
+/** Format input number */
+export const formatInput = (input: string) => {
+  if (!input) return "";
+  if (input === ".") return "0";
+  // NOTE: Input matches pattern, so we don't expect it to be NaN
+  return parseFloat(input).toString();
 };

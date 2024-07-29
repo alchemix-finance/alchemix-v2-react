@@ -5,7 +5,7 @@ import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { cn } from "@/utils/cn";
 import { isInputZero } from "@/utils/inputNotZero";
 import { decimalNumberValidationRegex } from "@/utils/inputValidation";
-import { formatNumber, sanitizeNumber } from "@/utils/number";
+import { formatInput, formatNumber, sanitizeNumber } from "@/utils/number";
 import { erc20Abi, formatEther } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 
@@ -63,9 +63,19 @@ export const FarmContent = ({
     setDepositAmount(sanitized);
   };
 
+  const onDepositBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const formatted = formatInput(e.target.value);
+    if (formatted !== e.target.value) setDepositAmount(formatted);
+  };
+
   const onWithdrawChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitized = sanitizeNumber(e.target.value, 18);
     setWithdrawAmount(sanitized);
+  };
+
+  const onWithdrawBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const formatted = formatInput(e.target.value);
+    if (formatted !== e.target.value) setWithdrawAmount(formatted);
   };
 
   const handleMaxDeposit = () => {
@@ -110,6 +120,7 @@ export const FarmContent = ({
                 )}
                 placeholder="0.00"
                 onChange={onDepositChange}
+                onBlur={onDepositBlur}
               />
             </div>
             <div className="flex lg:flex-col">
@@ -160,6 +171,7 @@ export const FarmContent = ({
                 )}
                 placeholder="0.00"
                 onChange={onWithdrawChange}
+                onBlur={onWithdrawBlur}
               />
             </div>
             <div className="flex lg:flex-col">

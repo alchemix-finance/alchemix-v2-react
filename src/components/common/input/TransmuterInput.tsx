@@ -4,7 +4,7 @@ import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useChain } from "@/hooks/useChain";
 import { Input } from "@/components/ui/input";
-import { formatNumber, sanitizeNumber } from "@/utils/number";
+import { formatInput, formatNumber, sanitizeNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
 import { Button } from "@/components/ui/button";
 import { decimalNumberValidationRegex } from "@/utils/inputValidation";
@@ -84,6 +84,11 @@ export const TransmuterInput = ({
     setAmount(sanitized);
   };
 
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const formatted = formatInput(e.target.value);
+    if (formatted !== e.target.value) setAmount(formatted);
+  };
+
   const handleMax = () => {
     if (balance) {
       return setAmount(balance);
@@ -114,6 +119,7 @@ export const TransmuterInput = ({
             )}
             placeholder="0.00"
             onChange={onChange}
+            onBlur={onBlur}
           />
         </div>
         <div className="flex lg:flex-col">
