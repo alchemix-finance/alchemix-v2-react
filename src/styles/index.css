@@ -10,11 +10,3 @@
 body {
   @apply dark:!bg-bodyGradientInverse !bg-bodyGradient bg-fixed bg-no-repeat text-white2inverse dark:text-white2;
 }
-
-@layer base {
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-}

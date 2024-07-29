@@ -13,12 +13,14 @@ export const VaultWithdrawTokenInput = ({
   amount,
   setAmount,
   tokenSymbol,
+  tokenDecimals,
   vault,
   isSelectedTokenYieldToken,
 }: {
   amount: string;
   setAmount: (amount: string) => void;
   tokenSymbol: string;
+  tokenDecimals: number;
   vault: Vault;
   isSelectedTokenYieldToken: boolean;
 }) => {
@@ -160,7 +162,7 @@ export const VaultWithdrawTokenInput = ({
   return (
     <TokenInput
       tokenAddress={zeroAddress}
-      tokenDecimals={18}
+      tokenDecimals={tokenDecimals}
       amount={amount}
       setAmount={setAmount}
       tokenSymbol={tokenSymbol}

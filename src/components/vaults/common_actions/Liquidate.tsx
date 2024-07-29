@@ -250,6 +250,7 @@ export const Liquidate = () => {
               setAmount={setAmount}
               vault={vault}
               tokenSymbol={liquidationToken.symbol}
+              tokenDecimals={liquidationToken.decimals}
             />
           </div>
           <SlippageInput slippage={slippage} setSlippage={setSlippage} />
