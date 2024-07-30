@@ -12,7 +12,7 @@ import {
 import { tenderlyForkChain } from "./tenderly";
 import { chains } from "./chains";
 
-const projectId = "50142a32098234f9b609a09096df9be5";
+const projectId = import.meta.env.VITE_WC_PROJECT_ID;
 
 const connectors = connectorsForWallets(
   [

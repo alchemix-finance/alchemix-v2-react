@@ -475,7 +475,7 @@ export const VAULTS: VaultsConfig = {
   [arbitrum.id]: {
     //alUSD
     "0x248a431116c6f6FCD5Fe1097d16d0597E24100f5": {
-      label: "AAVE aArbUSDC",
+      label: "AAVE aArbUSDCn",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "USDC",
       messages: [],

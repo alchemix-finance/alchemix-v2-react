@@ -95,27 +95,25 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <div className="relative">
             {vault.metadata.beta && (
               <img
-                src="./images/icons/beta.svg"
+                src="/images/icons/beta.svg"
                 alt="Experimental Vault"
                 className="absolute left-0 top-0 w-8"
               />
             )}
             <img
-              src="./images/icons/beta.svg"
-              alt="Experimental Vault"
-              className="absolute left-0 top-0 w-8"
-            />
-            <img
               src={
                 SYNTH_ASSETS_METADATA[vault.metadata.synthAssetType]?.icon ??
                 "./images/icons/alusd_med.svg"
               }
-              alt={vault.metadata.label}
+              alt={
+                SYNTH_ASSETS_METADATA[vault.metadata.synthAssetType]?.icon ??
+                vault.metadata.label
+              }
               className="h-12 w-12"
             />
             <img
               src={`/images/icons/${vaultYieldTokenData?.symbol.toLowerCase()}.svg`}
-              alt={vault.metadata.label}
+              alt={vaultYieldTokenData?.symbol ?? vault.metadata.label}
               className="absolute left-6 top-6 h-9 w-9"
             />
           </div>
