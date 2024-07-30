@@ -7,7 +7,6 @@ import { CurrencyCell } from "@/components/vaults/row/VaultAccordionRow";
 import { SYNTH_ASSETS_METADATA } from "@/lib/config/synths";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { Transmuter } from "@/lib/types";
-import { useMemo } from "react";
 import { Deposit } from "./Deposit";
 import { Withdraw } from "./Withdraw";
 import { Claim } from "./Claim";
@@ -18,21 +17,11 @@ export const TransmuterAccordionRow = ({
   transmuter: Transmuter;
 }) => {
   const { data: tokens } = useTokensQuery();
-  const syntheticToken = useMemo(
-    () =>
-      tokens?.find(
-        (t) =>
-          t.address.toLowerCase() === transmuter.syntheticToken.toLowerCase(),
-      ),
-    [tokens, transmuter.syntheticToken],
+  const syntheticToken = tokens?.find(
+    (t) => t.address.toLowerCase() === transmuter.syntheticToken.toLowerCase(),
   );
-  const underlyingToken = useMemo(
-    () =>
-      tokens?.find(
-        (t) =>
-          t.address.toLowerCase() === transmuter.underlyingToken.toLowerCase(),
-      ),
-    [tokens, transmuter.underlyingToken],
+  const underlyingToken = tokens?.find(
+    (t) => t.address.toLowerCase() === transmuter.underlyingToken.toLowerCase(),
   );
   const totalDeposited =
     transmuter.account.exchangedBalance + transmuter.account.unexchangedBalance;
@@ -53,7 +42,7 @@ export const TransmuterAccordionRow = ({
                   underlyingToken?.symbol.toLowerCase() +
                   ".svg"
                 }
-                alt={transmuter.metadata.label}
+                alt={underlyingToken?.symbol ?? transmuter.metadata.label}
                 className="absolute left-6 top-6 h-9 w-9"
               />
             </div>
