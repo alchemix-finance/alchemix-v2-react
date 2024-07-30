@@ -19,7 +19,6 @@ import { parseUnits, zeroAddress } from "viem";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
 import { useQueryClient } from "@tanstack/react-query";
-import { TokenInput } from "@/components/common/input/TokenInput";
 import { SynthAsset } from "@/lib/config/synths";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { useAlchemists } from "@/lib/queries/useAlchemists";
@@ -28,6 +27,7 @@ import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection"
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { RepayInput } from "@/components/common/input/RepayInput";
 
 export const Repay = () => {
   const queryClient = useQueryClient();
@@ -262,12 +262,17 @@ export const Repay = () => {
                   ))}
               </SelectContent>
             </Select>
-            <TokenInput
+            <RepayInput
               amount={amount}
               setAmount={setAmount}
-              tokenAddress={repaymentToken.address}
-              tokenSymbol={repaymentToken.symbol}
-              tokenDecimals={repaymentToken.decimals}
+              repaymentToken={repaymentToken}
+              alchemistAddress={
+                ALCHEMISTS_METADATA[chain.id][selectedSynthAsset]
+              }
+              isSelectedSynthAsset={
+                repaymentToken.symbol.toLowerCase() ===
+                selectedSynthAsset.toLowerCase()
+              }
             />
           </div>
           <Button
