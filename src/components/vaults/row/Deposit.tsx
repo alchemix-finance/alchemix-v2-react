@@ -32,7 +32,7 @@ export const Deposit = ({
   const chain = useChain();
 
   const [amount, setAmount] = useState("");
-  const [slippage, setSlippage] = useState("2");
+  const [slippage, setSlippage] = useState("0.5");
   const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
     yieldTokenData.address,
   );

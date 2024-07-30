@@ -38,7 +38,7 @@ export const Liquidate = () => {
   const mutationCallback = useWriteContractMutationCallback();
 
   const [amount, setAmount] = useState("");
-  const [slippage, setSlippage] = useState("2");
+  const [slippage, setSlippage] = useState("0.5");
   const [confirmedLiquidation, setConfirmedLiquidation] = useState(false);
 
   const { data: vaults } = useVaults();
