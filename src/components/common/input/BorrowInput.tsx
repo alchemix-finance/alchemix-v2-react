@@ -1,10 +1,11 @@
 import { Token } from "@/lib/types";
 import { useVaults } from "@/lib/queries/useVaults";
-import { formatEther, zeroAddress } from "viem";
+import { formatEther } from "viem";
 import { TokenInput } from "./TokenInput";
 import { useAccount, useReadContract } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
+import { useChain } from "@/hooks/useChain";
 
 export const BorrowInput = ({
   amount,
@@ -15,6 +16,7 @@ export const BorrowInput = ({
   setAmount: (amount: string) => void;
   debtToken: Token;
 }) => {
+  const chain = useChain();
   const { data: vaults } = useVaults();
 
   const vaultForAlchemist = vaults?.find(
@@ -23,7 +25,7 @@ export const BorrowInput = ({
       debtToken.address.toLowerCase(),
   );
 
-  const { address = zeroAddress } = useAccount();
+  const { address } = useAccount();
 
   const {
     data: totalValueOfCollateralInDebtTokens,
@@ -31,20 +33,22 @@ export const BorrowInput = ({
   } = useReadContract({
     address: vaultForAlchemist?.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "totalValue",
-    args: [address],
+    args: [address!],
     query: {
-      enabled: !!vaultForAlchemist,
+      enabled: !!vaultForAlchemist && !!address,
     },
   });
 
   const { data: debt, queryKey: accountsQueryKey } = useReadContract({
     address: vaultForAlchemist?.alchemist.address,
     abi: alchemistV2Abi,
+    chainId: chain.id,
     functionName: "accounts",
-    args: [address],
+    args: [address!],
     query: {
-      enabled: !!vaultForAlchemist,
+      enabled: !!vaultForAlchemist && !!address,
       select: (accounts) => (accounts[0] > 0n ? accounts[0] : 0n),
     },
   });
