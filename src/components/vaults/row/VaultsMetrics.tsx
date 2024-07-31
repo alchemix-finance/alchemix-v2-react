@@ -12,8 +12,9 @@ import { formatEther, formatUnits } from "viem";
 export const VaultsMetrics = () => {
   const { data: alchemists } = useAlchemists();
   const { data: vaults } = useVaults();
+  // TODO: DefiLlama has missing price for alETH on Arb. Possible somewhere else too. So we take underlying price. Which is more than real value, but better than 0.
   const debtTokenPrices = useGetMultipleTokenPrices(
-    alchemists?.map((alchemist) => alchemist.debtToken),
+    alchemists?.map((alchemist) => alchemist.underlyingTokens[0]),
   );
   const underlyingTokensPrices = useGetMultipleTokenPrices(
     vaults?.map((vault) => vault.underlyingToken),
