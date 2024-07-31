@@ -1,9 +1,10 @@
-import { useMemo } from "react";
 import { Token } from "@/lib/types";
 import { useVaults } from "@/lib/queries/useVaults";
-import { VaultHelper } from "@/utils/helpers/vaultHelper";
-import { formatEther, formatUnits } from "viem";
+import { formatEther, zeroAddress } from "viem";
 import { TokenInput } from "./TokenInput";
+import { useAccount, useReadContract } from "wagmi";
+import { alchemistV2Abi } from "@/abi/alchemistV2";
+import { useWatchQuery } from "@/hooks/useWatchQuery";
 
 export const BorrowInput = ({
   amount,
@@ -16,47 +17,56 @@ export const BorrowInput = ({
 }) => {
   const { data: vaults } = useVaults();
 
-  // TODO: I think we can make this more reactive.
-  // E.g. reading all shares via use read contracts.
-  // Currently shares get stale after useVaults run.
-  // UPDATE THOUGHT: On the other hand we can't expect this to be updated anywhere outside of Alchemix.
-  // So it is safe to only update it when alchemists or vaults invalidate.
-  // UPDATE THOUGHT: If latter, we can put it in useVaults and keep it in fields accordingly.
-  const tokenBalance = useMemo(() => {
-    if (!vaults) return;
-    const vaultsForDebtToken = vaults.filter(
-      (vault) =>
-        vault.alchemist.debtToken.toLowerCase() ===
-        debtToken.address.toLowerCase(),
-    );
-    const depositForDebtToken = vaultsForDebtToken.reduce((prev, curr) => {
-      const vaultHelper = new VaultHelper(curr);
-      const decimals = curr.underlyingTokensParams.decimals;
-      const balanceUnderlying = vaultHelper.convertSharesToUnderlyingTokens(
-        curr.position.shares,
-      );
+  const vaultForAlchemist = vaults?.find(
+    (vault) =>
+      vault.alchemist.debtToken.toLowerCase() ===
+      debtToken.address.toLowerCase(),
+  );
 
-      const formattedBalance = formatUnits(balanceUnderlying, decimals);
+  const { address = zeroAddress } = useAccount();
 
-      return prev + +formattedBalance;
-    }, 0);
+  const {
+    data: totalValueOfCollateralInDebtTokens,
+    queryKey: totalValueQueryKey,
+  } = useReadContract({
+    address: vaultForAlchemist?.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "totalValue",
+    args: [address],
+    query: {
+      enabled: !!vaultForAlchemist,
+    },
+  });
 
-    const ltv = +formatEther(
-      vaultsForDebtToken[0].alchemist.minimumCollateralization,
-    );
-    const debt =
-      vaultsForDebtToken[0].alchemist.position.debt > 0n
-        ? vaultsForDebtToken[0].alchemist.position.debt
-        : 0n;
-    const debtFormatted = formatUnits(debt, debtToken.decimals);
-    const amountAvailableToBorrow = depositForDebtToken / ltv - +debtFormatted;
-    if (amountAvailableToBorrow < 0) return "0";
-    // Adjusting for floating point errors
-    // TODO: This is a wacky way to fix floating point errors. We should find a better way.
-    const adjusted = +amountAvailableToBorrow.toFixed(6) - 0.000001;
-    if (adjusted < 0) return "0";
-    return adjusted.toString();
-  }, [debtToken, vaults]);
+  const { data: debt, queryKey: accountsQueryKey } = useReadContract({
+    address: vaultForAlchemist?.alchemist.address,
+    abi: alchemistV2Abi,
+    functionName: "accounts",
+    args: [address],
+    query: {
+      enabled: !!vaultForAlchemist,
+      select: (accounts) => (accounts[0] > 0n ? accounts[0] : 0n),
+    },
+  });
+
+  const availableCredit =
+    totalValueOfCollateralInDebtTokens !== undefined &&
+    vaultForAlchemist !== undefined &&
+    debt !== undefined
+      ? totalValueOfCollateralInDebtTokens /
+          BigInt(
+            formatEther(vaultForAlchemist?.alchemist.minimumCollateralization),
+          ) -
+        debt
+      : 0n;
+
+  const overrideBalance = formatEther(
+    availableCredit > 0n ? availableCredit : 0n,
+  );
+
+  useWatchQuery({
+    queryKeys: [totalValueQueryKey, accountsQueryKey],
+  });
 
   return (
     <TokenInput
@@ -66,7 +76,7 @@ export const BorrowInput = ({
       tokenDecimals={debtToken.decimals}
       tokenSymbol={debtToken.symbol}
       type="Available"
-      overrideBalance={tokenBalance}
+      overrideBalance={overrideBalance}
     />
   );
 };
