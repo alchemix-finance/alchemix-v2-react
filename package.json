@@ -29,6 +29,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.12",
+    "dnum": "^2.13.1",
     "framer-motion": "^11.3.19",
     "graphql": "^16.9.0",
     "graphql-request": "^7.1.0",

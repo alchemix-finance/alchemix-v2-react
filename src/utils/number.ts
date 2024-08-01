@@ -1,3 +1,5 @@
+import { from, toString } from "dnum";
+
 export function formatNumber(
   amount: string | number | undefined | null,
   decimals = 2,
@@ -38,10 +40,9 @@ export const sanitizeNumber = (input: string, precision?: number) => {
   else return sanitized;
 };
 
-/** Format input number */
-export const formatInput = (input: string) => {
-  if (!input) return "";
-  if (input === ".") return "0";
-  // NOTE: Input matches pattern, so we don't expect it to be NaN
-  return parseFloat(input).toString();
+/** Format string number to look like a real number */
+export const formatInput = (value: string) => {
+  if (!value) return "";
+  if (value === ".") return "0";
+  return toString(from(value));
 };
