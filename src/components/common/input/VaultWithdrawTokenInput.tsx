@@ -2,7 +2,7 @@ import { useAccount, useReadContract } from "wagmi";
 import { useChain } from "@/hooks/useChain";
 import { Vault } from "@/lib/types";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { formatUnits, parseUnits, zeroAddress } from "viem";
+import { formatEther, formatUnits, parseUnits, zeroAddress } from "viem";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useMemo } from "react";
 import { TokenInput } from "./TokenInput";
@@ -84,15 +84,18 @@ export const VaultWithdrawTokenInput = ({
     if (collateralInDebtToken === undefined) {
       return 0n;
     }
-    const maxWithdrawAmount =
-      collateralInDebtToken - vault.alchemist.position.debt;
+    const requiredCoverInDebt =
+      vault.alchemist.position.debt *
+      BigInt(formatEther(vault.alchemist.minimumCollateralization));
 
-    if (otherCoverInDebt >= vault.alchemist.position.debt) {
+    const maxWithdrawAmount = collateralInDebtToken - requiredCoverInDebt;
+
+    if (otherCoverInDebt >= requiredCoverInDebt) {
       return collateralInDebtToken;
     } else {
       return maxWithdrawAmount;
     }
-  }, [collateralInDebtToken, otherCoverInDebt, vault.alchemist.position.debt]);
+  }, [collateralInDebtToken, otherCoverInDebt, vault]);
 
   const { data: balanceForUnderlying } = useReadContract({
     address: vault.alchemist.address,
