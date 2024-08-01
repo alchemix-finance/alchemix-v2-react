@@ -38,10 +38,6 @@ export const VaultWithdrawTokenInput = ({
       },
     });
 
-  useWatchQuery({
-    queryKey: sharesBalanceQueryKey,
-  });
-
   const { data: underlyingTokenCollateral } = useReadContract({
     address: vault.alchemist.address,
     chainId: chain.id,
@@ -64,7 +60,10 @@ export const VaultWithdrawTokenInput = ({
     },
   });
 
-  const { data: totalCollateralInDebtToken } = useReadContract({
+  const {
+    data: totalCollateralInDebtToken,
+    queryKey: totalCollateralInDebtTokenQueryKey,
+  } = useReadContract({
     address: vault.alchemist.address,
     chainId: chain.id,
     abi: alchemistV2Abi,
@@ -73,6 +72,10 @@ export const VaultWithdrawTokenInput = ({
     query: {
       enabled: !!address,
     },
+  });
+
+  useWatchQuery({
+    queryKeys: [sharesBalanceQueryKey, totalCollateralInDebtTokenQueryKey],
   });
 
   const otherCoverInDebt =
