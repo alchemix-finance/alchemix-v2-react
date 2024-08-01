@@ -44,5 +44,6 @@ export const sanitizeNumber = (input: string, precision?: number) => {
 export const formatInput = (value: string) => {
   if (!value) return "";
   if (value === ".") return "0";
+  if (value.endsWith(".")) return toString(from(value.replace(".", "")));
   return toString(from(value));
 };
