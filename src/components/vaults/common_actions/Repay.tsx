@@ -67,7 +67,7 @@ export const Repay = () => {
   }, [alchemists, selectedSynthAsset, tokens]);
 
   const [repaymentTokenAddress, setRepaymentTokenAddress] = useState(
-    avaiableRepaymentTokens?.[0].address,
+    avaiableRepaymentTokens?.[0]?.address,
   );
 
   const repaymentToken = tokens?.find(

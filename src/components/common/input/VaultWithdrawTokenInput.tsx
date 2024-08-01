@@ -5,8 +5,6 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { formatEther, formatUnits, parseUnits, zeroAddress } from "viem";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useMemo } from "react";
-import { useVaults } from "@/lib/queries/useVaults";
-import { VaultHelper } from "@/utils/helpers/vaultHelper";
 import { TokenInput } from "./TokenInput";
 
 export const VaultWithdrawTokenInput = ({
@@ -27,8 +25,6 @@ export const VaultWithdrawTokenInput = ({
   const chain = useChain();
   const { address } = useAccount();
 
-  const { data: vaults } = useVaults();
-
   const { data: sharesBalance, queryKey: sharesBalanceQueryKey } =
     useReadContract({
       address: vault.alchemist.address,
@@ -46,7 +42,7 @@ export const VaultWithdrawTokenInput = ({
     queryKey: sharesBalanceQueryKey,
   });
 
-  const { data: underlyingTokenBalance } = useReadContract({
+  const { data: underlyingTokenCollateral } = useReadContract({
     address: vault.alchemist.address,
     chainId: chain.id,
     abi: alchemistV2Abi,
@@ -54,90 +50,64 @@ export const VaultWithdrawTokenInput = ({
     args: [vault.yieldToken, sharesBalance ?? 0n],
     query: {
       enabled: sharesBalance !== undefined,
-      select: (balance) =>
-        formatUnits(balance, vault.underlyingTokensParams.decimals),
     },
   });
 
-  const otherCoverInUnderlying = useMemo(() => {
-    if (!vaults || !underlyingTokenBalance) {
-      return 0;
+  const { data: collateralInDebtToken } = useReadContract({
+    address: vault.alchemist.address,
+    chainId: chain.id,
+    abi: alchemistV2Abi,
+    functionName: "normalizeUnderlyingTokensToDebt",
+    args: [vault.underlyingToken, underlyingTokenCollateral ?? 0n],
+    query: {
+      enabled: underlyingTokenCollateral !== undefined,
+    },
+  });
+
+  const { data: totalCollateralInDebtToken } = useReadContract({
+    address: vault.alchemist.address,
+    chainId: chain.id,
+    abi: alchemistV2Abi,
+    functionName: "totalValue",
+    args: [address!],
+    query: {
+      enabled: !!address,
+    },
+  });
+
+  const otherCoverInDebt =
+    totalCollateralInDebtToken !== undefined &&
+    collateralInDebtToken !== undefined
+      ? totalCollateralInDebtToken - collateralInDebtToken
+      : 0n;
+  const balanceInDebt = useMemo(() => {
+    if (collateralInDebtToken === undefined) {
+      return 0n;
     }
-    const vaultsForDebtToken = vaults.filter(
-      (v) =>
-        v.alchemist.debtToken.toLowerCase() ===
-        vault.alchemist.debtToken.toLowerCase(),
-    );
-    const aggregatedDepositAmount = vaultsForDebtToken.reduce((prev, curr) => {
-      const vaultHelper = new VaultHelper(curr);
-      const balanceUnderlying = vaultHelper.convertSharesToUnderlyingTokens(
-        curr.position.shares,
-      );
+    const requiredCoverInDebt =
+      vault.alchemist.position.debt *
+      BigInt(formatEther(vault.alchemist.minimumCollateralization));
 
-      return prev + balanceUnderlying;
-    }, 0n);
+    const maxWithdrawAmount = collateralInDebtToken - requiredCoverInDebt;
 
-    const aggregatedDepositAmountFormatted = formatUnits(
-      aggregatedDepositAmount,
-      vault.underlyingTokensParams.decimals,
-    );
+    if (otherCoverInDebt >= requiredCoverInDebt) {
+      return collateralInDebtToken;
+    } else {
+      return maxWithdrawAmount;
+    }
+  }, [collateralInDebtToken, otherCoverInDebt, vault]);
 
-    return +aggregatedDepositAmountFormatted - +underlyingTokenBalance;
-  }, [
-    underlyingTokenBalance,
-    vault.alchemist.debtToken,
-    vault.underlyingTokensParams.decimals,
-    vaults,
-  ]);
-
-  const { data: requiredCoverInUnderlying } = useReadContract({
+  const { data: balanceForUnderlying } = useReadContract({
     address: vault.alchemist.address,
     chainId: chain.id,
     abi: alchemistV2Abi,
     functionName: "normalizeDebtTokensToUnderlying",
-    args: [
-      vault.underlyingToken,
-      vault.alchemist.position.debt < 0n ? 0n : vault.alchemist.position.debt,
-    ],
+    args: [vault.underlyingToken, balanceInDebt],
     query: {
-      select: (requiredCover) => {
-        const ltv = BigInt(
-          formatEther(vault.alchemist.minimumCollateralization),
-        );
-        return formatUnits(
-          requiredCover * ltv,
-          vault.underlyingTokensParams.decimals,
-        );
-      },
+      select: (balance) =>
+        formatUnits(balance, vault.underlyingTokensParams.decimals),
     },
   });
-
-  const balanceForUnderlying = useMemo(() => {
-    if (underlyingTokenBalance === undefined) {
-      return "0";
-    }
-
-    if (
-      otherCoverInUnderlying === undefined ||
-      requiredCoverInUnderlying === undefined
-    ) {
-      return "0";
-    }
-
-    const maxWithdrawAmount =
-      +underlyingTokenBalance - +requiredCoverInUnderlying;
-
-    if (otherCoverInUnderlying >= +requiredCoverInUnderlying) {
-      return underlyingTokenBalance;
-    } else {
-      return maxWithdrawAmount.toFixed(vault.underlyingTokensParams.decimals);
-    }
-  }, [
-    otherCoverInUnderlying,
-    requiredCoverInUnderlying,
-    underlyingTokenBalance,
-    vault.underlyingTokensParams.decimals,
-  ]);
 
   const { data: balanceForYieldToken } = useReadContract({
     address: vault.alchemist.address,
@@ -146,7 +116,10 @@ export const VaultWithdrawTokenInput = ({
     functionName: "convertUnderlyingTokensToYield",
     args: [
       vault.yieldToken,
-      parseUnits(balanceForUnderlying, vault.underlyingTokensParams.decimals),
+      parseUnits(
+        balanceForUnderlying ?? "0",
+        vault.underlyingTokensParams.decimals,
+      ),
     ],
     query: {
       enabled: balanceForUnderlying !== undefined,
