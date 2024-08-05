@@ -18,6 +18,8 @@ import { wethGatewayAbi } from "@/abi/wethGateway";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { staticTokenAdapterAbi } from "@/abi/staticTokenAdapter";
+import { isInputZero } from "@/utils/inputNotZero";
 
 export const useWithdraw = ({
   vault,
@@ -26,6 +28,7 @@ export const useWithdraw = ({
   slippage,
   yieldToken,
   setAmount,
+  isSelectedTokenYieldToken,
 }: {
   amount: string;
   slippage: string;
@@ -33,6 +36,7 @@ export const useWithdraw = ({
   selectedToken: Token;
   yieldToken: Token;
   setAmount: (amount: string) => void;
+  isSelectedTokenYieldToken: boolean;
 }) => {
   const chain = useChain();
   const queryClient = useQueryClient();
@@ -45,17 +49,38 @@ export const useWithdraw = ({
 
   const { address } = useAccount();
 
-  const isSelecedTokenYieldToken =
-    selectedToken.address.toLowerCase() === yieldToken.address.toLowerCase();
+  /**
+   * Adjusted for Aave token adapters.
+   * So that when withdrawing Aave yield bearing token, you get exactly what you input.
+   * Used in conjunction with `staticToDynamic` read in `VaultWithdrawTokenInput.tsx`.
+   * It is safe to assume that static adapter has same decimals as yield token (it inherits from it).
+   */
+  const { data: aaveAdjustedAmount } = useReadContract({
+    address: vault.yieldToken,
+    abi: staticTokenAdapterAbi,
+    functionName: "dynamicToStaticAmount",
+    args: [parseUnits(amount, selectedToken.decimals)],
+    query: {
+      enabled:
+        !isInputZero(amount) &&
+        isSelectedTokenYieldToken &&
+        !!vault.metadata.yieldTokenOverride,
+    },
+  });
+
+  const withdrawAmount =
+    isSelectedTokenYieldToken && !!vault.metadata.yieldTokenOverride
+      ? aaveAdjustedAmount
+      : parseUnits(amount, selectedToken.decimals);
 
   const { data: sharesFromYieldToken } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
     chainId: chain.id,
     functionName: "convertYieldTokensToShares",
-    args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
+    args: [vault.yieldToken, withdrawAmount ?? 0n],
     query: {
-      enabled: isSelecedTokenYieldToken,
+      enabled: isSelectedTokenYieldToken && !isInputZero(amount),
     },
   });
 
@@ -66,15 +91,15 @@ export const useWithdraw = ({
     functionName: "convertUnderlyingTokensToShares",
     args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
     query: {
-      enabled: !isSelecedTokenYieldToken,
+      enabled: !isSelectedTokenYieldToken && !isInputZero(amount),
     },
   });
 
-  const shares = isSelecedTokenYieldToken
+  const shares = isSelectedTokenYieldToken
     ? sharesFromYieldToken
     : sharesFromUnderlyingToken;
 
-  const minimumOutUnderlying = !isSelecedTokenYieldToken
+  const minimumOutUnderlying = !isSelectedTokenYieldToken
     ? calculateMinimumOut(
         parseUnits(amount, selectedToken.decimals),
         parseUnits(slippage, 2),

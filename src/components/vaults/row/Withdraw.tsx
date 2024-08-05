@@ -46,7 +46,7 @@ export const Withdraw = ({
 
   const token = selection.find((token) => token.address === tokenAddress)!;
 
-  const isSelecedTokenYieldToken =
+  const isSelectedTokenYieldToken =
     token.address.toLowerCase() === yieldTokenData.address.toLowerCase();
 
   const { isApprovalNeeded, writeApprove, writeWithdraw, isFetching } =
@@ -57,6 +57,7 @@ export const Withdraw = ({
       slippage,
       yieldToken: yieldTokenData,
       setAmount,
+      isSelectedTokenYieldToken,
     });
 
   const onCtaClick = useCallback(() => {
@@ -102,7 +103,7 @@ export const Withdraw = ({
             setAmount={setAmount}
             tokenSymbol={token.symbol}
             tokenDecimals={token.decimals}
-            isSelectedTokenYieldToken={isSelecedTokenYieldToken}
+            isSelectedTokenYieldToken={isSelectedTokenYieldToken}
             vault={vault}
           />
         </div>
