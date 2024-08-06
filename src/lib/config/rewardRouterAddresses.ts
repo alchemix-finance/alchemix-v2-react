@@ -16,3 +16,10 @@ export const rewardTokens = {
     rewardTokenSymbol: "ARB",
   },
 } as const;
+
+export const bonusRewardEndTimestamp = {
+  // December 13th
+  [optimism.id]: 1734048000,
+  // September 8th
+  [arbitrum.id]: 1725753600,
+};

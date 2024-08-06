@@ -3,6 +3,7 @@ import { getTokenPriceInEth } from "@/lib/queries/useTokenPrice";
 import { formatEther, formatUnits } from "viem";
 import { rewardRouterAbi } from "@/abi/rewardRouter";
 import {
+  bonusRewardEndTimestamp,
   rewardRouterAddresses,
   rewardTokens,
 } from "@/lib/config/rewardRouterAddresses";
@@ -91,20 +92,17 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
   if (!tokens) throw new Error("Tokens not ready");
 
   // [rewardCollectorAddress, rewardToken, rewardAmount, rewardTimeframe, lastRewardTimestamp]
-  const [, , rewardAmount, rewardTimeframe, lastRewardTimestamp] =
-    await publicClient.readContract({
-      address: rewardRouterAddresses[chainId],
-      abi: rewardRouterAbi,
-      functionName: "getRewardCollector",
-      args: [vault.address],
-    });
+  const [, , rewardAmount, rewardTimeframe] = await publicClient.readContract({
+    address: rewardRouterAddresses[chainId],
+    abi: rewardRouterAbi,
+    functionName: "getRewardCollector",
+    args: [vault.address],
+  });
 
   const bonusYieldTokenSymbol = rewardTokens[chainId].rewardTokenSymbol;
   const bonusTimeLimit = true;
 
-  const rewardEnd = dayjs.unix(
-    Number(lastRewardTimestamp) + Number(rewardTimeframe),
-  );
+  const rewardEnd = dayjs.unix(bonusRewardEndTimestamp[chainId]);
   const distributionTimeAmount = rewardEnd.diff(dayjs(), "days");
 
   const distributionTimeUnit = distributionTimeAmount > 1 ? "days" : "day";
