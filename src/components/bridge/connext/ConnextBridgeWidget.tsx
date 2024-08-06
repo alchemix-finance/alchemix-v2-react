@@ -1,21 +1,6 @@
-// NOTE: We import this whole module lazily.
-// This would not cause a bundle size increase.
-// Type imports also get eliminated during compilation.
-import type { SdkConfig } from "@connext/sdk";
-import { useEthersSigner } from "@/hooks/useEthersSigner";
-
-import { QueryKeys } from "@/lib/queries/queriesSchema";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useAccount, useSwitchChain } from "wagmi";
+import { useSwitchChain } from "wagmi";
 import { useCallback, useState } from "react";
-import {
-  formatEther,
-  isAddress,
-  parseEther,
-  parseUnits,
-  zeroAddress,
-} from "viem";
-import { toast } from "sonner";
+import { isAddress, zeroAddress } from "viem";
 import { arbitrum, mainnet, optimism } from "viem/chains";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import {
@@ -38,29 +23,13 @@ import { isInputZero } from "@/utils/inputNotZero";
 import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
 import { useChain } from "@/hooks/useChain";
 import { formatNumber } from "@/utils/number";
-
-const sdkConfig = {
-  network: "mainnet",
-  chains: {
-    // ETH
-    6648936: {
-      chainId: 1,
-      providers: ["https://ethereum-rpc.publicnode.com"],
-    },
-    // OP
-    1869640809: {
-      chainId: 10,
-      providers: ["https://optimism-rpc.publicnode.com"],
-    },
-    // ARB
-    1634886255: {
-      chainId: 42161,
-      providers: ["https://arbitrum-one.publicnode.com"],
-    },
-  },
-  // Turn down connext sdk logs in production.
-  logLevel: "silent",
-} as const satisfies SdkConfig;
+import {
+  useConnextRelayerFee,
+  useConnextAmountOut,
+  useConnextApproval,
+  useConnextWriteApprove,
+  useConnextWriteBridge,
+} from "./lib/connext";
 
 const chainIdToDomainMapping = {
   [mainnet.id.toString()]: "6648936",
@@ -123,16 +92,17 @@ export const ConnextBridgeWidget = () => {
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
 
-  const { data: relayerFee } = useRelayerFee({
+  const { data: relayerFee } = useConnextRelayerFee({
     originDomain,
     destinationDomain,
   });
-  const { data: amountOut, isFetching: isFetchingAmountOut } = useAmountOut({
-    originDomain,
-    destinationDomain,
-    originTokenAddress,
-    amount,
-  });
+  const { data: amountOut, isFetching: isFetchingAmountOut } =
+    useConnextAmountOut({
+      originDomain,
+      destinationDomain,
+      originTokenAddress,
+      amount,
+    });
 
   const { data: approveData } = useConnextApproval({
     originDomain,
@@ -146,8 +116,10 @@ export const ConnextBridgeWidget = () => {
     relayerFee === undefined ||
     amountOut === undefined;
 
-  const { mutate: writeApprove, isPending: isApproving } = useApprove();
-  const { mutate: writeBridge, isPending: isBridging } = useBridge();
+  const { mutate: writeApprove, isPending: isApproving } =
+    useConnextWriteApprove();
+  const { mutate: writeBridge, isPending: isBridging } =
+    useConnextWriteBridge();
 
   const { switchChain } = useSwitchChain();
 
@@ -350,219 +322,4 @@ export const ConnextBridgeWidget = () => {
       </Button>
     </div>
   );
-};
-
-const useConnextSdk = () => {
-  const { address } = useAccount();
-  return useQuery({
-    queryKey: [QueryKeys.ConnextSdk("init"), address],
-    queryFn: async () => {
-      const create = await import("@connext/sdk").then((mod) => mod.create);
-      const sdk = await create({ ...sdkConfig, signerAddress: address });
-      return sdk.sdkBase;
-    },
-    staleTime: Infinity,
-  });
-};
-
-const useRelayerFee = ({
-  originDomain,
-  destinationDomain,
-}: {
-  originDomain: string;
-  destinationDomain: string;
-}) => {
-  const { data: connextSdk } = useConnextSdk();
-  return useQuery({
-    queryKey: [
-      QueryKeys.ConnextSdk("relayerFee"),
-      connextSdk,
-      originDomain,
-      destinationDomain,
-    ],
-    queryFn: async () => {
-      if (!connextSdk) throw new Error("SDK not ready");
-      const relayerFeeBN = await connextSdk.estimateRelayerFee({
-        originDomain,
-        destinationDomain,
-      });
-      const relayerFee = formatEther(BigInt(relayerFeeBN.toString()));
-      return relayerFee;
-    },
-    enabled: !!connextSdk,
-    staleTime: Infinity,
-  });
-};
-
-const useAmountOut = ({
-  originDomain,
-  destinationDomain,
-  originTokenAddress,
-  amount,
-}: {
-  originDomain: string;
-  destinationDomain: string;
-  originTokenAddress: string;
-  amount: string;
-}) => {
-  const { data: connextSdk } = useConnextSdk();
-  return useQuery({
-    queryKey: [
-      QueryKeys.ConnextSdk("amountOut"),
-      connextSdk,
-      originDomain,
-      destinationDomain,
-      originTokenAddress,
-      amount,
-    ],
-    queryFn: async () => {
-      if (!connextSdk) throw new Error("SDK not ready");
-      const { amountReceived, routerFee } =
-        await connextSdk.calculateAmountReceived(
-          originDomain,
-          destinationDomain,
-          originTokenAddress,
-          // uint256 in string
-          parseEther(amount).toString(),
-        );
-
-      return {
-        amountReceived: formatEther(BigInt(amountReceived.toString())),
-        routerFee: formatEther(BigInt(routerFee.toString())),
-      };
-    },
-    enabled: !!connextSdk && !isInputZero(amount),
-  });
-};
-
-const useConnextApproval = ({
-  originDomain,
-  originTokenAddress,
-  amount,
-}: {
-  originDomain: string;
-  originTokenAddress: string;
-  amount: string;
-}) => {
-  const { data: connextSdk } = useConnextSdk();
-  return useQuery({
-    queryKey: [
-      QueryKeys.ConnextSdk("approval"),
-      connextSdk,
-      originDomain,
-      originTokenAddress,
-      amount,
-    ],
-    queryFn: async () => {
-      if (!connextSdk) throw new Error("SDK not ready");
-      const approveTx = await connextSdk.approveIfNeeded(
-        originDomain,
-        originTokenAddress,
-        // uint256 in string
-        parseEther(amount).toString(),
-        // fixes approval
-        false,
-      );
-      if (!approveTx)
-        return {
-          isApprovalNeeded: false,
-          approveTx: undefined,
-        } as const;
-      return {
-        isApprovalNeeded: true,
-        approveTx,
-      } as const;
-    },
-    enabled: !!connextSdk && !isInputZero(amount),
-  });
-};
-
-const useApprove = () => {
-  const signer = useEthersSigner();
-  return useMutation({
-    mutationFn: async ({
-      approveData,
-    }: {
-      approveData: ReturnType<typeof useConnextApproval>["data"] | undefined;
-    }) => {
-      if (!signer) throw new Error("Signer not ready");
-      if (!approveData) throw new Error("Approval data not ready");
-      if (!approveData.isApprovalNeeded) throw new Error("Approval not needed");
-      const approveTxReq = approveData.approveTx;
-      const approveTx = await signer.sendTransaction(approveTxReq);
-      toast.promise(
-        () =>
-          new Promise((resolve, reject) =>
-            approveTx
-              .wait()
-              .then((receipt) => (receipt.status === 1 ? resolve : reject)),
-          ),
-        {
-          loading: "Bridging...",
-          success: "Bridge success!",
-          error: "Bridge failed.",
-        },
-      );
-      await approveTx.wait();
-    },
-  });
-};
-
-const useBridge = () => {
-  const { address } = useAccount();
-  const signer = useEthersSigner();
-
-  const { data: connextSdk } = useConnextSdk();
-  return useMutation({
-    mutationFn: async ({
-      originDomain,
-      destinationDomain,
-      originTokenAddress,
-      amount,
-      slippage,
-      relayerFee,
-    }: {
-      originDomain: string;
-      destinationDomain: string;
-      originTokenAddress: string;
-      amount: string; // uint256 in string
-      slippage: string; // in %
-      relayerFee: string; // in wei
-    }) => {
-      if (!connextSdk) throw new Error("SDK not ready");
-      if (!address) throw new Error("Not connected");
-      if (!signer) throw new Error("Signer not ready");
-      if (!relayerFee) throw new Error("Relayer fee not ready");
-      const bridgeTxParams = {
-        origin: originDomain,
-        destination: destinationDomain,
-        to: address,
-        asset: originTokenAddress,
-        delegate: address,
-        callData: "0x",
-        // uint256 in string
-        amount: parseEther(amount).toString(),
-        // uint256 in string
-        relayerFee: parseEther(relayerFee).toString(),
-        // in BPS (basis points) in string
-        slippage: parseUnits(slippage, 2).toString(),
-      };
-      const xcallTxReq = await connextSdk.xcall(bridgeTxParams);
-      const xcallTx = await signer.sendTransaction(xcallTxReq);
-      toast.promise(
-        () =>
-          new Promise((resolve, reject) =>
-            xcallTx
-              .wait()
-              .then((receipt) => (receipt.status === 1 ? resolve : reject)),
-          ),
-        {
-          loading: "Bridging...",
-          success: "Bridge success!",
-          error: "Bridge failed.",
-        },
-      );
-      await xcallTx.wait();
-    },
-  });
 };
