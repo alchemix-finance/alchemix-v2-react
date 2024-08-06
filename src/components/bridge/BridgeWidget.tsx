@@ -1,8 +1,13 @@
-import { LiFiWidget, WidgetConfig } from "@lifi/widget";
+import type { WidgetConfig } from "@lifi/widget";
 import { arbitrum, mainnet, optimism } from "viem/chains";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useMemo } from "react";
+import { Suspense, lazy, useMemo } from "react";
 import { useTheme } from "../providers/ThemeProvider";
+import { BridgeFallback } from "./BridgeFallback";
+
+const LiFiWidget = lazy(() =>
+  import("@lifi/widget").then((module) => ({ default: module.LiFiWidget })),
+);
 
 const widgetConfig = {
   integrator: "Alchemix",
@@ -97,5 +102,9 @@ export const BridgeWidget = () => {
     } satisfies WidgetConfig;
   }, [darkMode, openConnectModal]);
 
-  return <LiFiWidget integrator="Alchemix" config={config} />;
+  return (
+    <Suspense fallback={<BridgeFallback />}>
+      <LiFiWidget integrator="Alchemix" config={config} />
+    </Suspense>
+  );
 };
