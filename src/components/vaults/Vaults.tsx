@@ -15,7 +15,7 @@ import { Button } from "../ui/button";
 import { m, AnimatePresence } from "framer-motion";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
+import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
 
 type SynthFilter = "all" | SynthAsset;
 type UsedFilter = "all" | "used" | "unused";

@@ -36,7 +36,7 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { useChain } from "@/hooks/useChain";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
 import { AnimatePresence, m } from "framer-motion";
-import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
+import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
 
 const TOKENS_FROM = ["SLP"] as const;
 const TOKENS_TO = ["AURA", "BALANCER"] as const;
