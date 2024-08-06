@@ -349,7 +349,7 @@ export const VAULTS: VaultsConfig = {
     },
 
     "0x4186Eb285b1efdf372AC5896a08C346c7E373cC4": {
-      label: "AAVE aUSDC.e",
+      label: "AAVE aUSDC",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "USDC",
       messages: [],
@@ -379,7 +379,7 @@ export const VAULTS: VaultsConfig = {
       disabledDepositTokens: [],
     },
     "0x059Eaa296B18E0d954632c8242dDb4a271175EeD": {
-      label: "Yearn yvUSDC.e",
+      label: "Yearn yvUSDC",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "USDC",
       messages: [
