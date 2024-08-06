@@ -94,11 +94,11 @@ export const Liquidate = () => {
     chainId: chain.id,
     functionName: "convertYieldTokensToShares",
     args: [
-      liquidationToken?.address ?? zeroAddress,
-      parseUnits(amount, liquidationToken?.decimals ?? 18),
+      vault?.yieldToken ?? zeroAddress,
+      parseUnits(amount, vault?.yieldTokenParams.decimals ?? 18),
     ],
     query: {
-      enabled: !!liquidationToken && !isInputZero(amount),
+      enabled: !!vault && !isInputZero(amount),
     },
   });
 
@@ -108,11 +108,11 @@ export const Liquidate = () => {
     chainId: chain.id,
     functionName: "convertYieldTokensToUnderlying",
     args: [
-      liquidationToken?.address ?? zeroAddress,
-      parseUnits(amount, liquidationToken?.decimals ?? 18),
+      vault?.yieldToken ?? zeroAddress,
+      parseUnits(amount, vault?.yieldTokenParams.decimals ?? 18),
     ],
     query: {
-      enabled: !!liquidationToken && !isInputZero(amount),
+      enabled: !!vault && !isInputZero(amount),
       select: (sharesInUnderlying) =>
         calculateMinimumOut(sharesInUnderlying, parseUnits(slippage, 2)),
     },
@@ -128,14 +128,14 @@ export const Liquidate = () => {
     chainId: chain.id,
     functionName: "liquidate",
     args: [
-      liquidationToken?.address ?? zeroAddress,
+      vault?.yieldToken ?? zeroAddress,
       shares ?? 0n,
       minimumOut ?? MAX_UINT256_BN,
     ],
     query: {
       enabled:
         !isInputZero(amount) &&
-        !!liquidationToken &&
+        !!vault &&
         shares !== undefined &&
         minimumOut !== undefined,
     },
