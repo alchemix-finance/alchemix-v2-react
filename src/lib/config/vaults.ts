@@ -384,7 +384,7 @@ export const VAULTS: VaultsConfig = {
       underlying: "USDC",
       messages: [
         {
-          message: "Yearn yvUSDC is currently disabled for deposits.",
+          message: "Yearn yvUSDC is currently disabled for USDC deposits.",
           type: "warning",
         },
       ],
@@ -404,7 +404,7 @@ export const VAULTS: VaultsConfig = {
       underlying: "DAI",
       messages: [
         {
-          message: "Yearn yvDAI is currently disabled for deposits.",
+          message: "Yearn yvDAI is currently disabled for DAI deposits.",
           type: "warning",
         },
       ],
@@ -456,7 +456,7 @@ export const VAULTS: VaultsConfig = {
       underlying: "WETH",
       messages: [
         {
-          message: "Yearn yvWETH is currently disabled for deposits.",
+          message: "Yearn yvWETH is currently disabled for WETH deposits.",
           type: "warning",
         },
       ],

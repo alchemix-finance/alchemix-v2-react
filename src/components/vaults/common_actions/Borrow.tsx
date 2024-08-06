@@ -60,7 +60,7 @@ export const Borrow = () => {
   }, [alchemists, tokens]);
 
   const [tokenAddress, setTokenAddress] = useState(
-    availableSynthAssets?.[0].address,
+    availableSynthAssets?.[0]?.address,
   );
   const debtToken = tokens?.find(
     (token) => token.address.toLowerCase() === tokenAddress?.toLowerCase(),
