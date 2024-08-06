@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 import { m, AnimatePresence } from "framer-motion";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
 
 type SynthFilter = "all" | SynthAsset;
 type UsedFilter = "all" | "used" | "unused";
@@ -176,14 +177,8 @@ export const Vaults = () => {
                       initial="collapsed"
                       animate="open"
                       exit="collapsed"
-                      variants={{
-                        open: { opacity: 1, height: "auto" },
-                        collapsed: { opacity: 0, height: 0 },
-                      }}
-                      transition={{
-                        duration: 0.2,
-                        ease: "easeOut",
-                      }}
+                      variants={accordionVariants}
+                      transition={accordionTransition}
                     >
                       {actionTab === "Borrow" && <Borrow />}
                       {actionTab === "Repay" && <Repay />}
