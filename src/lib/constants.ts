@@ -5,8 +5,7 @@ export const GAS_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 export const ONE_MINUTE_IN_MS = 60 * 1000;
 export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-// Addresses used in the app. These are the addresses of the contracts on the Ethereum mainnet,
-// so we do not create chain mappings for them.
+// Addresses used in the app
 export const DELEGATE_REGISTRY_ADDRESS =
   "0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446";
 export const WETH_MAINNET_ADDRESS =
@@ -18,6 +17,10 @@ export const G_ALCX_MAINNET_ADDRESS =
 export const SUSHI_MAINNET_ADDRESS =
   "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2";
 export const CRV_MAINNET_ADDRESS = "0xd533a949740bb3306d119cc777fa900ba034cd52";
+export const ALCX_ARBITRUM_ADDRESS =
+  "0x27b58D226fe8f792730a795764945Cf146815AA7";
+export const ALCX_OPTIMISM_ADDRESS =
+  "0xE974B9b31dBFf4369b94a1bAB5e228f35ed44125";
 
 // Number constants
 export const MAX_UINT256_BN = BigInt(Math.pow(2, 256)) - 1n;

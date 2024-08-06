@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { AnimatePresence, m } from "framer-motion";
 import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
+import { BridgeFallback } from "../BridgeFallback";
 
 const LiFiWidget = lazy(() =>
   import("@lifi/widget").then((mod) => ({ default: mod.LiFiWidget })),
@@ -135,7 +136,7 @@ export const LiFiBridgeWidget = () => {
             transition={accordionTransition}
           >
             <div className="p-5">
-              <Suspense fallback={null}>
+              <Suspense fallback={<BridgeFallback />}>
                 <LiFiWidget integrator="Alchemix" config={config} />
               </Suspense>
             </div>

@@ -3,15 +3,20 @@ import { useQuery } from "@tanstack/react-query";
 import { lsService } from "@/lib/localStorage";
 import { useAlchemists } from "./useAlchemists";
 import { VAULTS } from "@/lib/config/vaults";
-import { mainnet } from "viem/chains";
+import { arbitrum, mainnet, optimism } from "viem/chains";
 import { erc20Abi, zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 import { Token } from "@/lib/types";
-import { GAS_ADDRESS, ONE_DAY_IN_MS } from "@/lib/constants";
+import {
+  ALCX_ARBITRUM_ADDRESS,
+  ALCX_MAINNET_ADDRESS,
+  ALCX_OPTIMISM_ADDRESS,
+  GAS_ADDRESS,
+  G_ALCX_MAINNET_ADDRESS,
+  ONE_DAY_IN_MS,
+} from "@/lib/constants";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "./queriesSchema";
-
-const gALCXAddress = "0x93Dede06AE3B5590aF1d4c111BC54C3f717E4b35";
 
 export const useTokensQuery = () => {
   const { address: userAddress = zeroAddress } = useAccount();
@@ -43,7 +48,14 @@ export const useTokensQuery = () => {
         .filter((token) => token !== undefined) as `0x${string}`[];
       tokensAddresses.push(...tokensAddressesFromVaultOverries);
       if (chain.id === mainnet.id) {
-        tokensAddresses.push(gALCXAddress);
+        tokensAddresses.push(G_ALCX_MAINNET_ADDRESS);
+        tokensAddresses.push(ALCX_MAINNET_ADDRESS);
+      }
+      if (chain.id === arbitrum.id) {
+        tokensAddresses.push(ALCX_ARBITRUM_ADDRESS);
+      }
+      if (chain.id === optimism.id) {
+        tokensAddresses.push(ALCX_OPTIMISM_ADDRESS);
       }
 
       const calls = tokensAddresses.flatMap(

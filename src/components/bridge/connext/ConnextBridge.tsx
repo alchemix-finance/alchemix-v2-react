@@ -3,6 +3,7 @@ import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
 import { AnimatePresence, m } from "framer-motion";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Suspense, lazy, useState } from "react";
+import { BridgeFallback } from "../BridgeFallback";
 
 const ConnextBridgeWidget = lazy(() =>
   import("./ConnextBridgeWidget").then((module) => ({
@@ -39,7 +40,7 @@ export const ConnextBridge = () => {
             transition={accordionTransition}
           >
             <div className="p-5">
-              <Suspense fallback={null}>
+              <Suspense fallback={<BridgeFallback />}>
                 <ConnextBridgeWidget />
               </Suspense>
             </div>
