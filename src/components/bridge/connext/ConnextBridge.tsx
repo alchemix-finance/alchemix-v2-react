@@ -2,10 +2,16 @@ import { Button } from "@/components/ui/button";
 import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
 import { AnimatePresence, m } from "framer-motion";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
+
+const ConnextBridgeWidget = lazy(() =>
+  import("./ConnextBridgeWidget").then((module) => ({
+    default: module.ConnextBridgeWidget,
+  })),
+);
 
 export const ConnextBridge = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(!open);
   return (
     <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
@@ -32,7 +38,11 @@ export const ConnextBridge = () => {
             variants={accordionVariants}
             transition={accordionTransition}
           >
-            <div className="flex flex-col gap-8 p-4"></div>
+            <div className="p-5">
+              <Suspense fallback={null}>
+                <ConnextBridgeWidget />
+              </Suspense>
+            </div>
           </m.div>
         )}
       </AnimatePresence>

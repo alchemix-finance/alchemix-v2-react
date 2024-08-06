@@ -17,6 +17,8 @@ export const QueryKeys = {
   Migration: (v: string) => `migrate-${v}`,
   VotesForAddress: "votesForAddress",
   Farms: (type: "internal" | "sushi" | "curve") => `farms-${type}`,
+  ConnextSdk: (type: "init" | "relayerFee" | "amountOut" | "approval") =>
+    `connextSdk-${type}`,
 } as const;
 
 // TODO: We can split alchemists, vaults, tokens, transmuters etc into separate queries
