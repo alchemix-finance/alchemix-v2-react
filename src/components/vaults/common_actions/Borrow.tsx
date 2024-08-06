@@ -28,6 +28,7 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { Switch } from "@/components/ui/switch";
 import { AnimatePresence, m } from "framer-motion";
 import { Input } from "@/components/ui/input";
+import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
 
 export const Borrow = () => {
   const queryClient = useQueryClient();
@@ -197,14 +198,8 @@ export const Borrow = () => {
                   initial="collapsed"
                   animate="open"
                   exit="collapsed"
-                  variants={{
-                    open: { opacity: 1, height: "auto" },
-                    collapsed: { opacity: 0, height: 0 },
-                  }}
-                  transition={{
-                    duration: 0.2,
-                    ease: "easeOut",
-                  }}
+                  variants={accordionVariants}
+                  transition={accordionTransition}
                   className="space-y-4"
                 >
                   <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
