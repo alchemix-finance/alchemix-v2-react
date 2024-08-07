@@ -23,7 +23,7 @@ export const useWatchQuery = ({ queryKey, queryKeys }: UseWatchQueryArgs) => {
   });
   useEffect(() => {
     const isETH = chain.id === mainnet.id;
-    if (blockNumber && (isETH || Number(blockNumber) % 5 === 0)) {
+    if (blockNumber && (isETH || Number(blockNumber) % 2 === 0)) {
       if (queryKey) {
         queryClient.invalidateQueries({ queryKey });
         return;
