@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense } from "react";
 import {
   createRootRoute,
   ErrorComponentProps,
@@ -41,20 +41,13 @@ export const Route = createRootRoute({
 });
 
 function ErrorComponent(props: ErrorComponentProps) {
-  const [isNewVersionAvailable, setIsNewVersionAvailable] = useState(false);
-  // Reload the page on production deployment updates
-  // https://vitejs.dev/guide/build#load-error-handling
-  useEffect(() => {
-    const listener = () => {
-      setIsNewVersionAvailable(true);
-    };
-    window.addEventListener("vite:preloadError", listener);
-    return () => window.removeEventListener("vite:preloadError", listener);
-  }, []);
+  const isNewVersionError = props.error.message.includes(
+    "Failed to fetch dynamically imported module",
+  );
   return (
-    <div className={cn("p-2", !isNewVersionAvailable && "text-red-500")}>
-      {isNewVersionAvailable
-        ? "New dApp version is available. Please, reload the page!"
+    <div className={cn("p-2", !isNewVersionError && "text-red-500")}>
+      {isNewVersionError
+        ? "New dApp version is available. Please, reload the page."
         : props.error.message}
     </div>
   );
