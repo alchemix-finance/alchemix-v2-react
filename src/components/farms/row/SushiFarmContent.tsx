@@ -1,7 +1,7 @@
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
-import { sushi } from "@/lib/config/farms";
+import { SUSHI } from "@/lib/config/farms";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
@@ -35,7 +35,7 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
   const { address = zeroAddress } = useAccount();
 
   const { data: withdrawBalance, queryKey: balanceQueryKey } = useReadContract({
-    address: sushi.masterchef,
+    address: SUSHI.masterchef,
     abi: sushiMasterchefAbi,
     chainId: chain.id,
     functionName: "userInfo",
@@ -51,13 +51,13 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
   //-- Deposit --//
   const { isApprovalNeeded, approveConfig, approve } = useAllowance({
     tokenAddress: farm.poolTokenAddress,
-    spender: sushi.masterchef,
+    spender: SUSHI.masterchef,
     amount: depositAmount,
     decimals: 18,
   });
 
   const { data: depositConfig } = useSimulateContract({
-    address: sushi.masterchef,
+    address: SUSHI.masterchef,
     abi: sushiMasterchefAbi,
     chainId: chain.id,
     functionName: "deposit",
@@ -93,7 +93,7 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
 
   //-- Withdraw --//
   const { data: withdrawConfig } = useSimulateContract({
-    address: sushi.masterchef,
+    address: SUSHI.masterchef,
     abi: sushiMasterchefAbi,
     chainId: chain.id,
     functionName: "withdraw",
@@ -125,7 +125,7 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
 
   //-- Claim --//
   const { data: claimConfig } = useSimulateContract({
-    address: sushi.masterchef,
+    address: SUSHI.masterchef,
     abi: sushiMasterchefAbi,
     chainId: chain.id,
     functionName: "harvest",

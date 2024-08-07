@@ -9,7 +9,7 @@ import { useInternalFarms } from "@/lib/queries/farms/useInternalFarms";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion } from "@/components/ui/accordion";
 import { FarmsAccordionRow } from "./row/FarmsAccordionRow";
-import { staticExternalFarms } from "@/lib/config/farms";
+import { STATIC_EXTERNAL_FARMS } from "@/lib/config/farms";
 import { LiquidityMigration } from "./LiquidityMigration";
 import { GAlcsWrapper } from "./GAlcxWrapper";
 import { windowOpen } from "@/utils/windowOpen";
@@ -89,7 +89,7 @@ export const Farms = () => {
                     <p className="text-sm">External Farms</p>
                   </div>
                   <div className="flex flex-wrap gap-8 p-4">
-                    {staticExternalFarms.map((farm) => (
+                    {STATIC_EXTERNAL_FARMS.map((farm) => (
                       <div
                         key={farm.name}
                         className="flex w-64 flex-col justify-between gap-2 rounded border border-grey5inverse bg-grey10inverse p-2 dark:bg-grey10"

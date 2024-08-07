@@ -11,8 +11,8 @@ import {
 } from "@/lib/constants";
 import { mainnet } from "viem/chains";
 import {
-  internalFarmsMetadata,
-  stakingPoolsAddresses,
+  INTERNAL_FARMS_METADATA,
+  STAKING_POOL_ADDRESSES,
 } from "@/lib/config/farms";
 import { stakingPoolsAbi } from "@/abi/stakingPools";
 import { uuid } from "@/utils/uuid";
@@ -48,7 +48,7 @@ export const useInternalFarms = () => {
         throw new Error("Prices are not ready.");
 
       const stakingPoolsContract = {
-        address: stakingPoolsAddresses[chain.id],
+        address: STAKING_POOL_ADDRESSES[chain.id],
         abi: stakingPoolsAbi,
       } as const;
 
@@ -140,7 +140,7 @@ export const useInternalFarms = () => {
             bigint,
           ];
 
-          const metadata = internalFarmsMetadata.find(
+          const metadata = INTERNAL_FARMS_METADATA.find(
             (pool) =>
               pool.address.toLowerCase() === poolTokenAddress.toLowerCase(),
           );

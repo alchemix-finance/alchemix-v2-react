@@ -4,7 +4,7 @@ import { sushiMasterchefAbi } from "@/abi/sushiMasterchef";
 import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
-import { curve, stakingPoolsAddresses, sushi } from "@/lib/config/farms";
+import { CURVE, STAKING_POOL_ADDRESSES, SUSHI } from "@/lib/config/farms";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -29,7 +29,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
   //-- Internal --//
   const { data: internalExitConfig, error: internalError } =
     useSimulateContract({
-      address: stakingPoolsAddresses[mainnet.id],
+      address: STAKING_POOL_ADDRESSES[mainnet.id],
       abi: stakingPoolsAbi,
       chainId: chain.id,
       functionName: "exit",
@@ -57,7 +57,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
 
   //-- Sushi --//
   const { data: sushiExitConfig, error: sushiError } = useSimulateContract({
-    address: sushi.masterchef,
+    address: SUSHI.masterchef,
     abi: sushiMasterchefAbi,
     chainId: chain.id,
     functionName: "emergencyWithdraw",
@@ -84,7 +84,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
 
   //-- Curve --//
   const { data: curveExitConfig, error: curveError } = useSimulateContract({
-    address: curve.gauge,
+    address: CURVE.gauge,
     abi: curveGaugeAbi,
     chainId: chain.id,
     functionName: "withdraw",
