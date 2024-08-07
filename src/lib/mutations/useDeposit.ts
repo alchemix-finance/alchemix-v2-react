@@ -68,12 +68,13 @@ export const useDeposit = ({
       ? vault.metadata.gateway
       : vault.alchemist.address;
 
-  const { approve, approveConfig, isApprovalNeeded } = useAllowance({
-    amount,
-    spender,
-    tokenAddress: selectedToken.address,
-    decimals: selectedToken.decimals,
-  });
+  const { approve, approveConfig, isApprovalNeeded, approveUsdtEthConfig } =
+    useAllowance({
+      amount,
+      spender,
+      tokenAddress: selectedToken.address,
+      decimals: selectedToken.decimals,
+    });
 
   const {
     data: depositGatewayConfig,
@@ -361,8 +362,12 @@ export const useDeposit = ({
   ]);
 
   const writeApprove = useCallback(() => {
+    if (approveUsdtEthConfig) {
+      approve(approveUsdtEthConfig.request);
+      return;
+    }
     approveConfig?.request && approve(approveConfig.request);
-  }, [approve, approveConfig]);
+  }, [approve, approveConfig, approveUsdtEthConfig]);
 
   const isFetching = useMemo(() => {
     if (!amount) return;
