@@ -10,7 +10,7 @@ import {
   ONE_DAY_IN_MS,
 } from "@/lib/constants";
 import { mainnet } from "viem/chains";
-import { curve } from "@/lib/config/farms";
+import { CURVE } from "@/lib/config/farms";
 import { uuid } from "@/utils/uuid";
 import { curveGaugeAbi } from "@/abi/curveGauge";
 import { curveMetapoolAbi } from "@/abi/curveMetapool";
@@ -28,15 +28,15 @@ export const useCurveFarm = () => {
     queryKey: [QueryKeys.Farms("curve"), chain.id, address],
     queryFn: async () => {
       const curveGaugeContract = {
-        address: curve.gauge,
+        address: CURVE.gauge,
         abi: curveGaugeAbi,
       } as const;
       const curveMetapoolContract = {
-        address: curve.metapool,
+        address: CURVE.metapool,
         abi: curveMetapoolAbi,
       } as const;
       const curveRewardsContract = {
-        address: curve.rewards,
+        address: CURVE.rewards,
         abi: curveRewardsAbi,
       } as const;
 
@@ -119,7 +119,7 @@ export const useCurveFarm = () => {
         poolTokenBalance: formatEther(poolTokenBalance),
         tokenSymbol,
         isActive: false,
-        metapoolAddress: curve.metapool,
+        metapoolAddress: CURVE.metapool,
         tvl: formatEther(totalSupply * virtualPrice),
         rewards: [
           {
@@ -141,7 +141,7 @@ export const useCurveFarm = () => {
           type: "APY",
           rate: "0",
         },
-        metadata: curve.metadata,
+        metadata: CURVE.metadata,
       };
 
       return farm;
