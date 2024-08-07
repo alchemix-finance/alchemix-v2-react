@@ -47,7 +47,6 @@ function ErrorComponent(props: ErrorComponentProps) {
   useEffect(() => {
     const listener = () => {
       setIsNewVersionAvailable(true);
-      window.location.reload();
     };
     window.addEventListener("vite:preloadError", listener);
     return () => window.removeEventListener("vite:preloadError", listener);
