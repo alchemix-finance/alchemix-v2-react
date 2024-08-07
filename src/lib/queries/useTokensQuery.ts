@@ -79,12 +79,20 @@ export const useTokensQuery = () => {
       });
 
       const tokens = tokensAddresses.map((address, i) => {
-        const [decimals, symbol, name] = results.slice(i * 4, i * 4 + 4) as [
+        const [decimals, _symbol, name] = results.slice(i * 4, i * 4 + 4) as [
           number,
           string,
           string,
           bigint,
         ];
+
+        const isUsdcE = [
+          "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+          "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+        ]
+          .map((t) => t.toLowerCase())
+          .includes(address.toLowerCase());
+        const symbol = isUsdcE ? "USDC.e" : _symbol;
 
         const token: Token = {
           address,
