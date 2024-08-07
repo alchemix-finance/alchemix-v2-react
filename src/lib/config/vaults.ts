@@ -69,7 +69,7 @@ export const VAULTS: VaultsConfig = {
       label: "Yearn yvUSDT",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "USDT",
-      messages: [],
+      messages: [{ message: "Vault is disabled.", type: "warning" }],
       migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       api: {
         apr: getYearnApy,
@@ -294,7 +294,7 @@ export const VAULTS: VaultsConfig = {
       label: "Yearn DAI",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "DAI",
-      messages: [],
+      messages: [{ message: "Vault is disabled.", type: "warning" }],
       api: {
         apr: getYearnApy,
         yieldType: "APY",
@@ -307,7 +307,7 @@ export const VAULTS: VaultsConfig = {
       label: "Yearn USDC",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "USDC",
-      messages: [],
+      messages: [{ message: "Vault is disabled.", type: "warning" }],
       api: {
         apr: getYearnApy,
         yieldType: "APY",
@@ -320,7 +320,7 @@ export const VAULTS: VaultsConfig = {
       label: "Yearn fUSDT",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "USDT",
-      messages: [],
+      messages: [{ message: "Vault is disabled.", type: "warning" }],
       api: {
         apr: getYearnApy,
         yieldType: "APY",
