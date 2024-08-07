@@ -1,13 +1,7 @@
 import { useSwitchChain } from "wagmi";
 import { useCallback, useState } from "react";
 import { isAddress, zeroAddress } from "viem";
-import { arbitrum, mainnet, optimism } from "viem/chains";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
-import {
-  ALCX_MAINNET_ADDRESS,
-  ALCX_ARBITRUM_ADDRESS,
-  ALCX_OPTIMISM_ADDRESS,
-} from "@/lib/constants";
 import {
   Select,
   SelectTrigger,
@@ -20,7 +14,6 @@ import { TokenInput } from "@/components/common/input/TokenInput";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { Button } from "@/components/ui/button";
 import { isInputZero } from "@/utils/inputNotZero";
-import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
 import { useChain } from "@/hooks/useChain";
 import { formatNumber } from "@/utils/number";
 import {
@@ -29,35 +22,10 @@ import {
   useConnextApproval,
   useConnextWriteApprove,
   useConnextWriteBridge,
+  chainIdToDomainMapping,
+  bridgeChains,
+  chainToAvailableTokensMapping,
 } from "./lib/connext";
-
-const chainIdToDomainMapping = {
-  [mainnet.id.toString()]: "6648936",
-  [optimism.id.toString()]: "1869640809",
-  [arbitrum.id.toString()]: "1634886255",
-} as const;
-
-const chainToAvailableTokensMapping = {
-  [mainnet.id.toString()]: [
-    ALCX_MAINNET_ADDRESS,
-    SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH,
-    SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD,
-  ].map((t) => t.toLowerCase()),
-
-  [optimism.id.toString()]: [
-    ALCX_OPTIMISM_ADDRESS,
-    SYNTH_ASSETS_ADDRESSES[optimism.id].alETH,
-    SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD,
-  ].map((t) => t.toLowerCase()),
-
-  [arbitrum.id.toString()]: [
-    ALCX_ARBITRUM_ADDRESS,
-    SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
-    SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
-  ].map((t) => t.toLowerCase()),
-};
-
-const bridgeChains = [mainnet, optimism, arbitrum];
 
 export const ConnextBridgeWidget = () => {
   const chain = useChain();
@@ -96,6 +64,7 @@ export const ConnextBridgeWidget = () => {
     originDomain,
     destinationDomain,
   });
+
   const { data: amountOut, isFetching: isFetchingAmountOut } =
     useConnextAmountOut({
       originDomain,
@@ -108,6 +77,7 @@ export const ConnextBridgeWidget = () => {
     originDomain,
     originTokenAddress,
     amount,
+    originChainId: parseInt(originChainId),
   });
 
   const notReady =
@@ -170,32 +140,24 @@ export const ConnextBridgeWidget = () => {
     [originChainId, switchChain],
   );
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (!approveData) return;
     if (approveData?.isApprovalNeeded === true) {
       writeApprove({ approveData });
       return;
     }
     if (!relayerFee) return;
+
     writeBridge({
       originDomain,
       destinationDomain,
+      destinationChainId: parseInt(destinationChainId),
       originTokenAddress,
       amount,
       slippage,
       relayerFee,
     });
-  }, [
-    amount,
-    approveData,
-    destinationDomain,
-    originDomain,
-    originTokenAddress,
-    relayerFee,
-    slippage,
-    writeApprove,
-    writeBridge,
-  ]);
+  };
 
   return (
     <div className="space-y-4">

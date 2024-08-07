@@ -1,4 +1,4 @@
-import { providers } from "ethers";
+import { Web3Provider } from "@ethersproject/providers";
 import { useMemo } from "react";
 import type { Chain, Client, Transport, Account } from "viem";
 import { Config, useConnectorClient } from "wagmi";
@@ -14,7 +14,7 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
-  const provider = new providers.Web3Provider(transport, network);
+  const provider = new Web3Provider(transport, network);
   const signer = provider.getSigner(account.address);
   return signer;
 }
