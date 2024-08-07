@@ -1,6 +1,6 @@
 import { Token, Vault } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Select,
   SelectTrigger,
@@ -34,9 +34,7 @@ export const Withdraw = ({
   );
 
   const { data: tokens } = useTokensQuery();
-  const gasToken = useMemo(() => {
-    return tokens?.find((token) => token.address === GAS_ADDRESS);
-  }, [tokens]);
+  const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
 
   const isETHCompatible =
     vault.metadata.wethGateway !== undefined && gasToken !== undefined;
@@ -106,7 +104,9 @@ export const Withdraw = ({
             vault={vault}
           />
         </div>
-        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        {!isSelecedTokenYieldToken && (
+          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        )}
         <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
           Current debt:{" "}
           {formatNumber(
