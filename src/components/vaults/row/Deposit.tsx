@@ -1,7 +1,7 @@
 import { Token, Vault } from "@/lib/types";
 import { TokenInput } from "@/components/common/input/TokenInput";
 import { Button } from "@/components/ui/button";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Select,
   SelectTrigger,
@@ -38,9 +38,7 @@ export const Deposit = ({
   );
 
   const { data: tokens } = useTokensQuery();
-  const gasToken = useMemo(() => {
-    return tokens?.find((token) => token.address === GAS_ADDRESS);
-  }, [tokens]);
+  const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
 
   const { data: currentValue } = useReadContract({
     address: vault.alchemist.address,
@@ -75,6 +73,8 @@ export const Deposit = ({
   );
 
   const token = selection.find((token) => token.address === tokenAddress)!;
+  const isSelecedTokenYieldToken =
+    token.address.toLowerCase() === yieldTokenData.address.toLowerCase();
 
   const { isApprovalNeeded, writeApprove, writeDeposit, isFetching } =
     useDeposit({
@@ -130,7 +130,9 @@ export const Deposit = ({
             tokenDecimals={token.decimals}
           />
         </div>
-        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        {!isSelecedTokenYieldToken && (
+          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        )}
         <Button
           variant="outline"
           width="full"
