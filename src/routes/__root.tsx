@@ -1,10 +1,15 @@
-import { lazy, Suspense } from "react";
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { lazy, Suspense, useEffect, useState } from "react";
+import {
+  createRootRoute,
+  ErrorComponentProps,
+  Outlet,
+} from "@tanstack/react-router";
 
 import { Layout } from "@/components/layout/Layout";
 import { Toaster } from "@/components/ui/sonner";
 
 import "@/styles/index.css";
+import { cn } from "@/utils/cn";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -32,7 +37,26 @@ export const Route = createRootRoute({
       </>
     );
   },
-  errorComponent: (props) => (
-    <div className="p-2 text-red-500">{props.error.message}</div>
-  ),
+  errorComponent: ErrorComponent,
 });
+
+function ErrorComponent(props: ErrorComponentProps) {
+  const [isNewVersionAvailable, setIsNewVersionAvailable] = useState(false);
+  // Reload the page on production deployment updates
+  // https://vitejs.dev/guide/build#load-error-handling
+  useEffect(() => {
+    const listener = () => {
+      setIsNewVersionAvailable(true);
+      window.location.reload();
+    };
+    window.addEventListener("vite:preloadError", listener);
+    return () => window.removeEventListener("vite:preloadError", listener);
+  }, []);
+  return (
+    <div className={cn("p-2", !isNewVersionAvailable && "text-red-500")}>
+      {isNewVersionAvailable
+        ? "New dApp version is available. Please, reload the page!"
+        : props.error.message}
+    </div>
+  );
+}
