@@ -1,6 +1,9 @@
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { toast } from "sonner";
-import { WaitForTransactionReceiptTimeoutError } from "viem";
+import {
+  TransactionNotFoundError,
+  WaitForTransactionReceiptTimeoutError,
+} from "viem";
 import { UsePublicClientReturnType, UseWriteContractParameters } from "wagmi";
 
 interface MutationCallbackArgs {
@@ -23,19 +26,37 @@ export const mutationCallback = ({
         hash,
         description: action,
       });
-      const miningPromise = publicClient.waitForTransactionReceipt({
-        hash,
-      });
-      toast.promise(miningPromise, {
+      const executionPromise = () =>
+        new Promise((resolve, reject) => {
+          publicClient
+            .waitForTransactionReceipt({
+              hash,
+            })
+            .then((receipt) =>
+              receipt.status === "success"
+                ? resolve(receipt)
+                : reject(new Error("Transaction reverted")),
+            );
+        });
+      toast.promise(executionPromise, {
         loading: `Pending ${action}...`,
         success: `${action} confirmed`,
         error: (e) => {
           const actionWithFirstLetterLowercased =
             action.charAt(0).toLowerCase() + action.slice(1);
 
-          return e instanceof WaitForTransactionReceiptTimeoutError
-            ? `We could not confirm your ${actionWithFirstLetterLowercased}. Please check your wallet.`
-            : `${action} failed`;
+          if (
+            e instanceof WaitForTransactionReceiptTimeoutError ||
+            e instanceof TransactionNotFoundError
+          ) {
+            return `We could not confirm your ${actionWithFirstLetterLowercased}. Please check your wallet.`;
+          }
+
+          if (e instanceof Error) {
+            return `${action} failed: ${e.message}`;
+          }
+
+          return `${action} failed`;
         },
       });
     },
