@@ -11,7 +11,7 @@ import {
   WETH_MAINNET_ADDRESS,
 } from "@/lib/constants";
 import { mainnet } from "viem/chains";
-import { sushi } from "@/lib/config/farms";
+import { SUSHI } from "@/lib/config/farms";
 import { uuid } from "@/utils/uuid";
 import { sushiPoolAbi } from "@/abi/sushiPool";
 import { sushiMasterchefAbi } from "@/abi/sushiMasterchef";
@@ -54,15 +54,15 @@ export const useSushiFarm = () => {
         throw new Error("Prices are not ready.");
 
       const sushiPoolContract = {
-        address: sushi.pool,
+        address: SUSHI.pool,
         abi: sushiPoolAbi,
       } as const;
       const sushiMasterchefContract = {
-        address: sushi.masterchef,
+        address: SUSHI.masterchef,
         abi: sushiMasterchefAbi,
       } as const;
       const sushiOnsenRewarderContract = {
-        address: sushi.onsenRewarder,
+        address: SUSHI.onsenRewarder,
         abi: sushiOnsenRewarderAbi,
       } as const;
 
@@ -114,7 +114,7 @@ export const useSushiFarm = () => {
           {
             ...sushiPoolContract,
             functionName: "balanceOf",
-            args: [sushi.masterchef],
+            args: [SUSHI.masterchef],
           },
           {
             ...sushiMasterchefContract,
@@ -195,12 +195,12 @@ export const useSushiFarm = () => {
         underlyingAddresses: [underlying0, underlying1],
         tokenSymbol,
         poolTokenBalance: formatEther(poolTokenBalance),
-        masterChefAddress: sushi.masterchef,
+        masterChefAddress: SUSHI.masterchef,
         isActive: alcxPerBlock + sushiPerBlock > 0n,
-        poolTokenAddress: sushi.pool,
+        poolTokenAddress: SUSHI.pool,
         reserves: [formatEther(reserve0), formatEther(reserve1)],
         tvl: tvl.toString(),
-        metadata: sushi.metadata,
+        metadata: SUSHI.metadata,
       };
 
       return farm;

@@ -2,7 +2,7 @@ import { stakingPoolsAbi } from "@/abi/stakingPools";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
-import { stakingPoolsAddresses } from "@/lib/config/farms";
+import { STAKING_POOL_ADDRESSES } from "@/lib/config/farms";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
@@ -36,7 +36,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const { address = zeroAddress } = useAccount();
 
   const { data: withdrawBalance, queryKey: balanceQueryKey } = useReadContract({
-    address: stakingPoolsAddresses[mainnet.id],
+    address: STAKING_POOL_ADDRESSES[mainnet.id],
     abi: stakingPoolsAbi,
     chainId: chain.id,
     functionName: "getStakeTotalDeposited",
@@ -52,13 +52,13 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   //-- Deposit --//
   const { isApprovalNeeded, approveConfig, approve } = useAllowance({
     tokenAddress: farm.poolTokenAddress,
-    spender: stakingPoolsAddresses[mainnet.id],
+    spender: STAKING_POOL_ADDRESSES[mainnet.id],
     amount: depositAmount,
     decimals: 18,
   });
 
   const { data: depositConfig } = useSimulateContract({
-    address: stakingPoolsAddresses[mainnet.id],
+    address: STAKING_POOL_ADDRESSES[mainnet.id],
     abi: stakingPoolsAbi,
     chainId: chain.id,
     functionName: "deposit",
@@ -94,7 +94,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
 
   //-- Withdraw --//
   const { data: withdrawConfig } = useSimulateContract({
-    address: stakingPoolsAddresses[mainnet.id],
+    address: STAKING_POOL_ADDRESSES[mainnet.id],
     abi: stakingPoolsAbi,
     chainId: chain.id,
     functionName: "withdraw",
@@ -126,7 +126,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
 
   //-- Claim --//
   const { data: claimConfig } = useSimulateContract({
-    address: stakingPoolsAddresses[mainnet.id],
+    address: STAKING_POOL_ADDRESSES[mainnet.id],
     abi: stakingPoolsAbi,
     chainId: chain.id,
     functionName: "claim",

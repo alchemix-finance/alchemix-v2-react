@@ -7,7 +7,7 @@ import { useChain } from "@/hooks/useChain";
 import { TransmuterAccordionRow } from "@/components/transmuters/row/TransmuterAccordionRow";
 import { useTransmuters } from "@/lib/queries/useTransmuters";
 import { Button } from "../ui/button";
-import { externalLiquidityProviders } from "@/lib/config/externalLiquidityProviders";
+import { EXTERNAL_LIQUIDITY_PROVIDERS } from "@/lib/config/externalLiquidityProviders";
 import { windowOpen } from "@/utils/windowOpen";
 import { LoadingBar } from "../common/LoadingBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
@@ -53,12 +53,12 @@ export const Transmuters = () => {
               </p>
             </div>
             <div className="flex max-h-44 flex-col gap-4 overflow-y-auto px-6 py-4 lg:flex-row">
-              {externalLiquidityProviders[chain.id].map((provider) => (
+              {EXTERNAL_LIQUIDITY_PROVIDERS[chain.id].map((provider) => (
                 <Button
                   key={provider.label}
                   variant="action"
                   weight="normal"
-                  className="w-full gap-2 border-grey5inverse dark:border-grey5 lg:w-max"
+                  className="w-full gap-2 border-grey5inverse lg:w-max dark:border-grey5"
                   onClick={() => windowOpen(provider.url)}
                 >
                   <img
