@@ -78,7 +78,6 @@ const sdkConfig = {
       providers: ["https://arbitrum-one.publicnode.com"],
     },
   },
-  // Turn down connext sdk logs in production.
   logLevel: "silent",
 } as const satisfies SdkConfig;
 
@@ -281,10 +280,10 @@ export const useConnextWriteApprove = () => {
         abi: erc20Abi,
         functionName: "approve",
       });
-      const bridgePromiseToastDescription = {
-        loading: "Bridging...",
-        success: "Bridge success!",
-        error: "Bridge failed.",
+      const approvePromiseToastDescription = {
+        loading: "Approving...",
+        success: "Approve success!",
+        error: "Approve failed.",
       };
 
       let executionPromise: () => Promise<
@@ -315,7 +314,7 @@ export const useConnextWriteApprove = () => {
           });
       }
 
-      toast.promise(executionPromise, bridgePromiseToastDescription);
+      toast.promise(executionPromise, approvePromiseToastDescription);
       await executionPromise();
     },
   });
