@@ -18,6 +18,8 @@ export const G_ALCX_MAINNET_ADDRESS =
 export const SUSHI_MAINNET_ADDRESS =
   "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2";
 export const CRV_MAINNET_ADDRESS = "0xd533a949740bb3306d119cc777fa900ba034cd52";
+export const USDT_MAINNET_ADDRESS =
+  "0xdAC17F958D2ee523a2206206994597C13D831ec7";
 
 // Number constants
 export const MAX_UINT256_BN = BigInt(Math.pow(2, 256)) - 1n;
