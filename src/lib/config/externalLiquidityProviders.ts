@@ -1,6 +1,6 @@
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 
-const defaultSwapProviders = [
+const DEFAULT_SWAP_PROVIDERS = [
   {
     label: "Curve",
     url: "https://curve.fi/",
@@ -23,10 +23,10 @@ const defaultSwapProviders = [
   },
 ];
 
-export const externalLiquidityProviders = {
-  [mainnet.id]: defaultSwapProviders,
+export const EXTERNAL_LIQUIDITY_PROVIDERS = {
+  [mainnet.id]: DEFAULT_SWAP_PROVIDERS,
   [optimism.id]: [
-    ...defaultSwapProviders,
+    ...DEFAULT_SWAP_PROVIDERS,
     {
       label: "Velodrome",
       url: "https://velodrome.finance/swap",
@@ -34,12 +34,12 @@ export const externalLiquidityProviders = {
     },
   ],
   [arbitrum.id]: [
-    ...defaultSwapProviders,
+    ...DEFAULT_SWAP_PROVIDERS,
     {
       label: "Ramses",
       url: "https://app.ramses.exchange/swap",
       icon: "ramses.svg",
     },
   ],
-  [fantom.id]: defaultSwapProviders,
+  [fantom.id]: DEFAULT_SWAP_PROVIDERS,
 };

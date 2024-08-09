@@ -3,8 +3,9 @@ import { getTokenPriceInEth } from "@/lib/queries/useTokenPrice";
 import { formatEther, formatUnits } from "viem";
 import { rewardRouterAbi } from "@/abi/rewardRouter";
 import {
-  rewardRouterAddresses,
-  rewardTokens,
+  BONUS_REWARDS_END_TIMESTAMPS,
+  REWARD_ROUTER_ADDRESSES,
+  REWARD_TOKENS,
 } from "@/lib/config/rewardRouterAddresses";
 import { BonusFn } from "@/lib/config/metadataTypes";
 import { getAaveReserves } from "./aave";
@@ -91,27 +92,24 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
   if (!tokens) throw new Error("Tokens not ready");
 
   // [rewardCollectorAddress, rewardToken, rewardAmount, rewardTimeframe, lastRewardTimestamp]
-  const [, , rewardAmount, rewardTimeframe, lastRewardTimestamp] =
-    await publicClient.readContract({
-      address: rewardRouterAddresses[chainId],
-      abi: rewardRouterAbi,
-      functionName: "getRewardCollector",
-      args: [vault.address],
-    });
+  const [, , rewardAmount, rewardTimeframe] = await publicClient.readContract({
+    address: REWARD_ROUTER_ADDRESSES[chainId],
+    abi: rewardRouterAbi,
+    functionName: "getRewardCollector",
+    args: [vault.address],
+  });
 
-  const bonusYieldTokenSymbol = rewardTokens[chainId].rewardTokenSymbol;
+  const bonusYieldTokenSymbol = REWARD_TOKENS[chainId].rewardTokenSymbol;
   const bonusTimeLimit = true;
 
-  const rewardEnd = dayjs.unix(
-    Number(lastRewardTimestamp) + Number(rewardTimeframe),
-  );
+  const rewardEnd = dayjs.unix(BONUS_REWARDS_END_TIMESTAMPS[chainId]);
   const distributionTimeAmount = rewardEnd.diff(dayjs(), "days");
 
   const distributionTimeUnit = distributionTimeAmount > 1 ? "days" : "day";
 
   const bonusYieldValue = await getTokenPriceInEth({
     chainId,
-    tokenAddress: rewardTokens[chainId].rewardTokenAddress,
+    tokenAddress: REWARD_TOKENS[chainId].rewardTokenAddress,
   });
   const tokenPriceInEth = await getTokenPriceInEth({
     chainId,

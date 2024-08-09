@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
 import { AnimatePresence, m } from "framer-motion";
+import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
 
 export const GAlcsWrapper = () => {
   const chain = useChain();
@@ -192,14 +193,8 @@ export const GAlcsWrapper = () => {
             initial="collapsed"
             animate="open"
             exit="collapsed"
-            variants={{
-              open: { opacity: 1, height: "auto" },
-              collapsed: { opacity: 0, height: 0 },
-            }}
-            transition={{
-              duration: 0.2,
-              ease: "easeOut",
-            }}
+            variants={accordionVariants}
+            transition={accordionTransition}
           >
             <div className="flex flex-col gap-8 p-4 lg:flex-row">
               <div className="flex w-full flex-col space-y-4 rounded border border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10">
@@ -293,7 +288,7 @@ export const GAlcsWrapper = () => {
                     per gALCX.
                   </p>
                 </div>
-                <div className="flex w-full flex-col justify-between gap-6 rounded border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10 lg:flex-row">
+                <div className="flex w-full flex-col justify-between gap-6 rounded border-grey10inverse bg-grey10inverse p-4 lg:flex-row dark:border-grey10 dark:bg-grey10">
                   <div className="flex-col">
                     <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
                       gALCX Token Supply

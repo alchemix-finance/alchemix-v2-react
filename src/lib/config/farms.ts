@@ -1,10 +1,10 @@
 import { mainnet } from "viem/chains";
 
-export const stakingPoolsAddresses = {
+export const STAKING_POOL_ADDRESSES = {
   [mainnet.id]: "0xAB8e74017a8Cc7c15FFcCd726603790d26d7DeCa",
 } as const;
 
-export const sushi = {
+export const SUSHI = {
   pool: "0xC3f279090a47e80990Fe3a9c30d24Cb117EF91a8",
   masterchef: "0xEF0881eC094552b2e128Cf945EF17a6752B4Ec5d",
   onsenRewarder: "0x7519C93fC5073E15d89131fD38118D73A72370F8",
@@ -17,7 +17,7 @@ export const sushi = {
   },
 } as const;
 
-export const curve = {
+export const CURVE = {
   gauge: "0x9582C4ADACB3BCE56Fea3e590F05c3ca2fb9C477",
   metapool: "0x43b4fdfd4ff969587185cdb6f0bd875c5fc83f8c",
   rewards: "0xb76256d1091e93976c61449d6e500d9f46d827d4",
@@ -30,7 +30,7 @@ export const curve = {
   },
 } as const;
 
-export const internalFarmsMetadata = [
+export const INTERNAL_FARMS_METADATA = [
   {
     type: "internal",
     address: "0xbc6da0fe9ad5f3b0d58160288917aa56653660e9",
@@ -89,7 +89,7 @@ export const internalFarmsMetadata = [
   },
 ] as const;
 
-export const staticExternalFarms = [
+export const STATIC_EXTERNAL_FARMS = [
   {
     icon: "saddle.svg",
     name: "Saddle d4",

@@ -1,18 +1,49 @@
-import { WaitForTransactionReceiptTimeoutError, stringToHex } from "viem";
-import { it, expect } from "vitest";
+import {
+  TransactionNotFoundError,
+  WaitForTransactionReceiptTimeoutError,
+  stringToHex,
+} from "viem";
+import { describe, it, expect } from "vitest";
 
-it("Should pass if error is instance of WaitForTransactionReceiptTimeoutError", () => {
-  const mockHash = stringToHex("");
-  const thrownErrorInCallback = new WaitForTransactionReceiptTimeoutError({
-    hash: mockHash,
+describe("mutationCallback", () => {
+  it("Error is instance of WaitForTransactionReceiptTimeoutError", () => {
+    const mockHash = stringToHex("");
+    const thrownErrorInCallback = new WaitForTransactionReceiptTimeoutError({
+      hash: mockHash,
+    });
+
+    expect(thrownErrorInCallback).toBeInstanceOf(
+      WaitForTransactionReceiptTimeoutError,
+    );
+
+    const isInstanceOf =
+      thrownErrorInCallback instanceof WaitForTransactionReceiptTimeoutError;
+
+    expect(isInstanceOf).toBe(true);
   });
 
-  expect(thrownErrorInCallback).toBeInstanceOf(
-    WaitForTransactionReceiptTimeoutError,
-  );
+  it("Error is instance of TransactionNotFoundError", () => {
+    const mockHash = stringToHex("");
+    const thrownErrorInCallback = new TransactionNotFoundError({
+      hash: mockHash,
+    });
 
-  const isInstanceOf =
-    thrownErrorInCallback instanceof WaitForTransactionReceiptTimeoutError;
+    expect(thrownErrorInCallback).toBeInstanceOf(TransactionNotFoundError);
 
-  expect(isInstanceOf).toBe(true);
+    const isInstanceOf =
+      thrownErrorInCallback instanceof TransactionNotFoundError;
+
+    expect(isInstanceOf).toBe(true);
+  });
+
+  it("Error is not instance of TransactionNotFoundError", () => {
+    const thrownErrorInCallback = new Error("Some other error");
+
+    expect(thrownErrorInCallback).not.toBeInstanceOf(TransactionNotFoundError);
+
+    const isInstanceOf =
+      thrownErrorInCallback instanceof TransactionNotFoundError;
+
+    expect(isInstanceOf).toBe(false);
+  });
 });

@@ -17,6 +17,7 @@ export const TokenInput = ({
   tokenDecimals,
   type = "Balance",
   overrideBalance,
+  externalMaximumAmount,
 }: {
   amount: string;
   setAmount: (amount: string) => void;
@@ -25,6 +26,7 @@ export const TokenInput = ({
   tokenDecimals: number;
   type?: "Balance" | "Available" | "Claimable";
   overrideBalance?: string;
+  externalMaximumAmount?: string;
 }) => {
   const chain = useChain();
   const { address } = useAccount();
@@ -69,6 +71,9 @@ export const TokenInput = ({
   };
 
   const handleMax = () => {
+    if (externalMaximumAmount) {
+      return setAmount(externalMaximumAmount);
+    }
     if (overrideBalance) {
       return setAmount(overrideBalance);
     }

@@ -1,6 +1,6 @@
 import { useAllowance } from "@/hooks/useAllowance";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
-import { curve } from "@/lib/config/farms";
+import { CURVE } from "@/lib/config/farms";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
@@ -35,7 +35,7 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const { address = zeroAddress } = useAccount();
 
   const { data: withdrawBalance, queryKey: balanceQueryKey } = useReadContract({
-    address: curve.gauge,
+    address: CURVE.gauge,
     abi: curveGaugeAbi,
     chainId: chain.id,
     functionName: "balanceOf",
@@ -51,13 +51,13 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   //-- Deposit --//
   const { isApprovalNeeded, approveConfig, approve } = useAllowance({
     tokenAddress: farm.poolTokenAddress,
-    spender: curve.gauge,
+    spender: CURVE.gauge,
     amount: depositAmount,
     decimals: 18,
   });
 
   const { data: depositConfig } = useSimulateContract({
-    address: curve.gauge,
+    address: CURVE.gauge,
     abi: curveGaugeAbi,
     chainId: chain.id,
     functionName: "deposit",
@@ -93,7 +93,7 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
 
   //-- Withdraw --//
   const { data: withdrawConfig } = useSimulateContract({
-    address: curve.gauge,
+    address: CURVE.gauge,
     abi: curveGaugeAbi,
     chainId: chain.id,
     functionName: "withdraw",
@@ -125,7 +125,7 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
 
   //-- Claim --//
   const { data: claimConfig } = useSimulateContract({
-    address: curve.gauge,
+    address: CURVE.gauge,
     abi: curveGaugeAbi,
     chainId: chain.id,
     functionName: "claim_rewards",

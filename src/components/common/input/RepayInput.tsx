@@ -66,7 +66,7 @@ export const RepayInput = ({
   });
 
   const debt = isSelectedSynthAsset ? debtBalance : debtInUnderlying;
-  const overrideBalance =
+  const externalMaximumAmount =
     !!debt && !!repaymentTokenBalance && +debt < +repaymentTokenBalance
       ? debt
       : undefined;
@@ -79,7 +79,7 @@ export const RepayInput = ({
       tokenDecimals={repaymentToken.decimals}
       tokenSymbol={repaymentToken.symbol}
       type="Available"
-      overrideBalance={overrideBalance}
+      externalMaximumAmount={externalMaximumAmount}
     />
   );
 };
