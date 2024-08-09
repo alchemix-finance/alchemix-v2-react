@@ -105,7 +105,7 @@ export const Withdraw = ({
             vault={vault}
           />
         </div>
-        {!isSelecedTokenYieldToken && (
+        {!isSelectedTokenYieldToken && (
           <SlippageInput slippage={slippage} setSlippage={setSlippage} />
         )}
         <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
