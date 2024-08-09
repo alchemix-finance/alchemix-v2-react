@@ -73,7 +73,7 @@ export const Deposit = ({
   );
 
   const token = selection.find((token) => token.address === tokenAddress)!;
-  const isSelecedTokenYieldToken =
+  const isSelectedTokenYieldToken =
     token.address.toLowerCase() === yieldTokenData.address.toLowerCase();
 
   const { isApprovalNeeded, writeApprove, writeDeposit, isFetching } =
@@ -130,7 +130,7 @@ export const Deposit = ({
             tokenDecimals={token.decimals}
           />
         </div>
-        {!isSelecedTokenYieldToken && (
+        {!isSelectedTokenYieldToken && (
           <SlippageInput slippage={slippage} setSlippage={setSlippage} />
         )}
         <Button
