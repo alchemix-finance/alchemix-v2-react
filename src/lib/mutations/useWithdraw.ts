@@ -45,7 +45,7 @@ export const useWithdraw = ({
 
   const { address } = useAccount();
 
-  const isSelecedTokenYieldToken =
+  const isSelectedTokenYieldToken =
     selectedToken.address.toLowerCase() === yieldToken.address.toLowerCase();
 
   const { data: sharesFromYieldToken } = useReadContract({
@@ -55,7 +55,7 @@ export const useWithdraw = ({
     functionName: "convertYieldTokensToShares",
     args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
     query: {
-      enabled: isSelecedTokenYieldToken,
+      enabled: isSelectedTokenYieldToken,
     },
   });
 
@@ -66,15 +66,15 @@ export const useWithdraw = ({
     functionName: "convertUnderlyingTokensToShares",
     args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
     query: {
-      enabled: !isSelecedTokenYieldToken,
+      enabled: !isSelectedTokenYieldToken,
     },
   });
 
-  const shares = isSelecedTokenYieldToken
+  const shares = isSelectedTokenYieldToken
     ? sharesFromYieldToken
     : sharesFromUnderlyingToken;
 
-  const minimumOutUnderlying = !isSelecedTokenYieldToken
+  const minimumOutUnderlying = !isSelectedTokenYieldToken
     ? calculateMinimumOut(
         parseUnits(amount, selectedToken.decimals),
         parseUnits(slippage, 2),
