@@ -54,10 +54,14 @@ export const Vaults = () => {
   };
 
   const filteredVaults = useMemo(() => {
+    const onlyEnabledVaults = vaults?.filter(
+      (vault) =>
+        vault.yieldTokenParams.enabled !== false || vault.position.shares > 0,
+    );
     const synthFiltered =
       synthTab === "all"
-        ? vaults
-        : [...(vaults ?? [])].filter(
+        ? onlyEnabledVaults
+        : onlyEnabledVaults?.filter(
             (vault) =>
               ALCHEMISTS_METADATA[chain.id][synthTab].toLowerCase() ===
               vault.alchemist.address.toLowerCase(),
