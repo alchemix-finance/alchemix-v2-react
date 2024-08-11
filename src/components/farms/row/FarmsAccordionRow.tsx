@@ -20,7 +20,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
     <AccordionItem value={farm.uuid} disabled={!isActive}>
       <AccordionTrigger
         className={cn(
-          "relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 dark:border-grey3 dark:bg-grey10 lg:flex-nowrap lg:space-y-0",
+          "relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:flex-nowrap lg:space-y-0 dark:border-grey3 dark:bg-grey10",
           isActive
             ? "grid-cols-7 hover:cursor-pointer"
             : "grid-cols-5 hover:cursor-default",
@@ -111,8 +111,8 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
                 </div>
               ))}
             </div>
-            <div className="flex-2 w-1/2">
-              <p className="text-center text-sm text-lightgrey10">Action</p>
+            <div className="flex-2 w-1/2 text-center">
+              <p className="text-sm text-lightgrey10">Action</p>
               <ExitButton farm={farm} />
             </div>
           </>

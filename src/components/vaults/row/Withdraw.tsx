@@ -75,7 +75,7 @@ export const Withdraw = ({
       <div className="space-y-4">
         <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
           <Select value={tokenAddress} onValueChange={onSelectChange}>
-            <SelectTrigger className="h-auto w-56">
+            <SelectTrigger className="h-auto w-24 sm:w-56">
               <SelectValue placeholder="Token" asChild>
                 <div className="flex items-center gap-4">
                   <img
@@ -83,7 +83,9 @@ export const Withdraw = ({
                     alt={token.symbol}
                     className="h-12 w-12"
                   />
-                  <span className="text-xl">{token.symbol}</span>
+                  <span className="hidden text-xl sm:inline">
+                    {token.symbol}
+                  </span>
                 </div>
               </SelectValue>
             </SelectTrigger>
