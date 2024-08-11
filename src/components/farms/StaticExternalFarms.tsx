@@ -45,7 +45,7 @@ export const StaticExternalFarms = () => {
                 </div>
                 {/* <p className="text-sm">{farm.subtitle}</p> */}
               </div>
-              <div>
+              <div className="flex items-center gap-2">
                 {farm.actions.map((action) => (
                   <a
                     key={action.url}
