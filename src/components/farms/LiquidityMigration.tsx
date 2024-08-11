@@ -154,7 +154,7 @@ export const LiquidityMigration = () => {
         className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer dark:bg-grey10"
         onClick={handleOpen}
       >
-        <p className="text-sm">Liquidity Migration</p>
+        <p className="text-sm">Sushi to Balancer Liquidity Migration</p>
         <Button variant="action" className="hidden sm:inline-flex">
           {open ? (
             <EyeOffIcon className="h-6 w-6" />
@@ -179,13 +179,13 @@ export const LiquidityMigration = () => {
                   value={selectedFrom}
                   onValueChange={(value) => setSelectedFrom(value as From)}
                 >
-                  <SelectTrigger className="h-auto w-56">
+                  <SelectTrigger className="h-auto w-24 sm:w-56">
                     <SelectValue placeholder="Select From" asChild>
                       <div className="flex items-center gap-4">
                         <img
                           src={`/images/token-icons/${selectedFrom}.svg`}
                           alt={selectedFrom}
-                          className="h-12 w-12"
+                          className="hidden h-12 w-12 sm:block"
                         />
                         <span className="text-xl">{selectedFrom}</span>
                       </div>
@@ -212,13 +212,13 @@ export const LiquidityMigration = () => {
                   value={selectedTarget}
                   onValueChange={(value) => setSelectedTarget(value as Target)}
                 >
-                  <SelectTrigger className="h-auto w-56">
+                  <SelectTrigger className="h-auto w-24 sm:w-56">
                     <SelectValue placeholder="Select To" asChild>
                       <div className="flex items-center gap-4">
                         <img
                           src={`/images/token-icons/${selectedTarget}.svg`}
                           alt={selectedTarget}
-                          className="h-12 w-12"
+                          className="hidden h-12 w-12 sm:block"
                         />
                         <span className="text-xl">{selectedTarget}</span>
                       </div>

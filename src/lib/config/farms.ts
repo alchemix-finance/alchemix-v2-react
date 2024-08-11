@@ -1,4 +1,4 @@
-import { mainnet } from "viem/chains";
+import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 
 export const STAKING_POOL_ADDRESSES = {
   [mainnet.id]: "0xAB8e74017a8Cc7c15FFcCd726603790d26d7DeCa",
@@ -89,59 +89,276 @@ export const INTERNAL_FARMS_METADATA = [
   },
 ] as const;
 
-export const STATIC_EXTERNAL_FARMS = [
-  {
-    icon: "saddle.svg",
-    name: "Saddle d4",
-    subtitle:
-      "Deposit alUSD, FEI, FRAX, and/or LUSD to earn ALCX, TRIBE, FXS and LQTY",
-    actions: [
-      {
-        label: "Deposit",
-        url: "https://saddle.exchange/#/pools/d4/deposit",
-      },
-      {
-        label: "Stake",
-        url: "https://app.frax.finance/staking#Saddle_alUSD_FEI_FRAX_LUSD",
-      },
-      {
-        label: "Swap",
-        url: "https://saddle.exchange/#/",
-      },
-    ],
-  },
-  {
-    icon: "sushi.svg",
-    name: "alUSD/ETH Onsen",
-    subtitle: "Deposit alUSD and ETH on Sushiswap to earn SUSHI",
-    actions: [
-      {
-        label: "Deposit",
-        url: "https://app.sushi.com/add/ETH/0xBC6DA0FE9aD5f3b0d58160288917AA56653660E9",
-      },
-      {
-        label: "Stake",
-        url: "https://app.sushi.com/farm",
-      },
-      {
-        label: "Swap",
-        url: "https://app.sushi.com/swap#/swap?inputCurrency=0xbc6da0fe9ad5f3b0d58160288917aa56653660e9&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-      },
-    ],
-  },
-  {
-    icon: "mstable.svg",
-    name: "mStable alUSD Feeder",
-    subtitle: "Deposit alUSD to earn MTA",
-    actions: [
-      {
-        label: "Deposit & Stake",
-        url: "https://mstable.app/#/musd/pools/0x4eaa01974b6594c0ee62ffd7fee56cf11e6af936",
-      },
-      {
-        label: "Swap",
-        url: "https://mstable.app/#/musd/swap",
-      },
-    ],
-  },
-] as const;
+export const STATIC_EXTERNAL_FARMS = {
+  [mainnet.id]: [
+    {
+      icon: "balancer.svg",
+      collabicon: "aura.webp",
+      name: "AURA x Balancer",
+      symbol: "ALCX-WETH",
+      subtitle:
+        "Deposit liquidity on Balancer, and then stake your received BPT to earn AURA in addition to Balancer's native rewards",
+      actions: [
+        {
+          label: "Deposit",
+          url: "https://balancer.fi/pools/ethereum/v2/0xf16aee6a71af1a9bc8f56975a4c2705ca7a782bc0002000000000000000004bb/add-liquidity",
+        },
+        {
+          label: "Stake",
+          url: "https://app.aura.finance/#/1/pool/74",
+        },
+      ],
+    },
+    {
+      icon: "crv.svg",
+      collabicon: "convex.svg",
+      name: "Curve x Convex",
+      symbol: "alUSD-3CRV",
+      subtitle:
+        "Deposit and stake alUSD and 3CRV to earn CRV and CVX in addition to Curve's native rewards.",
+      actions: [
+        {
+          label: "Deposit",
+          url: "https://curve.fi/#/ethereum/pools/alusd/deposit",
+        },
+        {
+          label: "Stake",
+          url: "https://curve.convexfinance.com/stake",
+        },
+      ],
+    },
+    {
+      icon: "crv.svg",
+      collabicon: "convex.svg",
+      name: "Curve x Convex",
+      symbol: "alUSD-FRAXBP",
+      subtitle:
+        "Deposit and stake alUSD and FRAXBP to earn CRV and CVX in addition to Curve's native rewards.",
+      actions: [
+        {
+          label: "Deposit",
+          url: "https://curve.fi/#/ethereum/pools/factory-v2-147/deposit",
+        },
+        {
+          label: "Stake",
+          url: "https://curve.convexfinance.com/stake",
+        },
+      ],
+    },
+    {
+      icon: "crv.svg",
+      collabicon: "convex.svg",
+      name: "Curve x Convex",
+      symbol: "alETH-WETH",
+      subtitle:
+        "Deposit and stake alETH and WETH to earn CRV and CVX in addition to Curve's native rewards.",
+      actions: [
+        {
+          label: "Deposit",
+          url: "https://curve.fi/#/ethereum/pools/factory-stable-ng-36/deposit",
+        },
+        {
+          label: "Stake",
+          url: "https://curve.convexfinance.com/stake",
+        },
+      ],
+    },
+    {
+      icon: "crv.svg",
+      collabicon: "convex.svg",
+      name: "Curve x Convex",
+      symbol: "alETH-frxETH",
+      subtitle:
+        "Deposit and stake alETH and frxETH to earn CRV and CVX in addition to Curve's native rewards.",
+      actions: [
+        {
+          label: "Deposit",
+          url: "https://curve.fi/#/ethereum/pools/factory-v2-253/deposit",
+        },
+        {
+          label: "Stake",
+          url: "https://curve.convexfinance.com/stake",
+        },
+      ],
+    },
+    {
+      icon: "crv.svg",
+      collabicon: "convex.svg",
+      name: "Curve x Convex",
+      symbol: "ALCX-FRAXBP",
+      subtitle:
+        "Deposit and stake ALCX and FRAXBP to earn CRV and CVX in addition to Curve's native rewards.",
+      actions: [
+        {
+          label: "Deposit",
+          url: "https://curve.fi/#/ethereum/pools/factory-crypto-96/deposit",
+        },
+        {
+          label: "Stake",
+          url: "https://curve.convexfinance.com/stake",
+        },
+      ],
+    },
+  ],
+  [optimism.id]: [
+    {
+      symbol: "alUSD-USDC",
+      icon: "velodrome.svg",
+      collabicon: "",
+      name: "Velodrome",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://velo.drome.eth.limo/deposit?token0=0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85&token1=0xCB8FA9a76b8e203D8C3797bF438d8FB81Ea3326A&type=0",
+        },
+      ],
+    },
+    {
+      symbol: "alUSD-FRAX",
+      icon: "velodrome.svg",
+      collabicon: "",
+      name: "Velodrome",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://velo.drome.eth.limo/deposit?token0=0x2E3D870790dC77A83DD1d18184Acc7439A53f475&token1=0xCB8FA9a76b8e203D8C3797bF438d8FB81Ea3326A&type=0",
+        },
+      ],
+    },
+    {
+      symbol: "alUSD-DOLA",
+      icon: "velodrome.svg",
+      collabicon: "",
+      name: "Velodrome",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://velo.drome.eth.limo/deposit?token0=0x8aE125E8653821E851F12A49F7765db9a9ce7384&token1=0xCB8FA9a76b8e203D8C3797bF438d8FB81Ea3326A&type=0",
+        },
+      ],
+    },
+    {
+      symbol: "alUSD-OP",
+      icon: "velodrome.svg",
+      collabicon: "",
+      name: "Velodrome",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://velo.drome.eth.limo/deposit?token0=0x4200000000000000000000000000000000000042&token1=0xCB8FA9a76b8e203D8C3797bF438d8FB81Ea3326A&type=-1",
+        },
+      ],
+    },
+    {
+      symbol: "alETH-WETH",
+      icon: "velodrome.svg",
+      collabicon: "",
+      name: "Velodrome",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://velo.drome.eth.limo/deposit?token0=0x3E29D3A9316dAB217754d13b28646B76607c5f04&token1=0x4200000000000000000000000000000000000006&type=0",
+        },
+      ],
+    },
+    {
+      symbol: "alETH-frxETH",
+      icon: "velodrome.svg",
+      collabicon: "",
+      name: "Velodrome",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://velo.drome.eth.limo/deposit?token0=0x3E29D3A9316dAB217754d13b28646B76607c5f04&token1=0x6806411765Af15Bddd26f8f544A34cC40cb9838B&type=0",
+        },
+      ],
+    },
+    {
+      symbol: "alETH-OP",
+      icon: "velodrome.svg",
+      collabicon: "",
+      name: "Velodrome",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://velo.drome.eth.limo/deposit?token0=0x3E29D3A9316dAB217754d13b28646B76607c5f04&token1=0x4200000000000000000000000000000000000042&type=-1",
+        },
+      ],
+    },
+  ],
+  [arbitrum.id]: [
+    {
+      symbol: "alUSD-FRAX",
+      icon: "ramses.svg",
+      collabicon: "",
+      name: "Ramses",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://app.ramses.exchange/manage/v1/0xfd599db360cd9713657c95df66650a427d213010",
+        },
+      ],
+    },
+    {
+      symbol: "alUSD-GRAI",
+      icon: "ramses.svg",
+      collabicon: "",
+      name: "Ramses",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://app.ramses.exchange/single-stake?vaultAddress=0x7d41fbe50ed131816e87c4d7340424740882f709",
+        },
+      ],
+    },
+    {
+      symbol: "alUSD-alETH",
+      icon: "ramses.svg",
+      collabicon: "",
+      name: "Ramses",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://app.ramses.exchange/liquidity/v2/0xb69d60d0690733c0cc4db1c1aedeeaa308f30328",
+        },
+      ],
+    },
+    {
+      symbol: "alETH-frxETH",
+      icon: "ramses.svg",
+      collabicon: "",
+      name: "Ramses",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://app.ramses.exchange/manage/v1/0xfb4fe921f724f3c7b610a826c827f9f6ecef6886",
+        },
+      ],
+    },
+    {
+      symbol: "alETH-ALCX",
+      icon: "ramses.svg",
+      collabicon: "",
+      name: "Ramses",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://app.ramses.exchange/manage/v1/0x9c99764ad164360cf85eda42fa2f4166b6cba2a4",
+        },
+      ],
+    },
+    {
+      symbol: "alETH-GRAI",
+      icon: "ramses.svg",
+      collabicon: "",
+      name: "Ramses",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://app.ramses.exchange/single-stake?vaultAddress=0xf9e36cf8d3f64692919061011c0d28f6f55a795b",
+        },
+      ],
+    },
+  ],
+  [fantom.id]: [],
+} as const;
