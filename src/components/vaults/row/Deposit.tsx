@@ -102,7 +102,7 @@ export const Deposit = ({
             value={tokenAddress}
             onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
           >
-            <SelectTrigger className="h-auto w-56">
+            <SelectTrigger className="h-auto w-24 sm:w-56">
               <SelectValue placeholder="Token" asChild>
                 <div className="flex items-center gap-4">
                   <img
@@ -110,7 +110,9 @@ export const Deposit = ({
                     alt={token.symbol}
                     className="h-12 w-12"
                   />
-                  <span className="text-xl">{token.symbol}</span>
+                  <span className="hidden text-xl sm:inline">
+                    {token.symbol}
+                  </span>
                 </div>
               </SelectValue>
             </SelectTrigger>
