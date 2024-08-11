@@ -27,7 +27,7 @@ export const TransmuterAccordionRow = ({
     transmuter.account.exchangedBalance + transmuter.account.unexchangedBalance;
   return (
     <AccordionItem value={transmuter.address}>
-      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 dark:border-grey3 dark:bg-grey10 sm:grid-cols-3 lg:grid-cols-4">
+      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 sm:grid-cols-3 lg:grid-cols-4 dark:border-grey3 dark:bg-grey10">
         <div className="col-span-2 flex justify-start pl-4 sm:col-span-3 lg:col-span-1">
           <div className="flex flex-row space-x-8">
             <div className="relative">
@@ -89,7 +89,7 @@ export const TransmuterAccordionRow = ({
           )}
         </div>
       </AccordionTrigger>
-      <AccordionContent className="flex flex-col items-center gap-5 rounded-b border border-t-0 border-grey3inverse bg-grey15inverse p-4 dark:border-grey3 dark:bg-grey15 lg:flex-row">
+      <AccordionContent className="flex flex-col items-center gap-5 rounded-b border border-t-0 border-grey3inverse bg-grey15inverse p-4 lg:flex-row dark:border-grey3 dark:bg-grey15">
         <div className="flex w-full flex-col gap-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
           {syntheticToken && (
             <Deposit transmuter={transmuter} syntheticToken={syntheticToken} />
@@ -103,8 +103,8 @@ export const TransmuterAccordionRow = ({
         </div>
 
         <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
-          {syntheticToken && (
-            <Claim transmuter={transmuter} syntheticToken={syntheticToken} />
+          {underlyingToken && (
+            <Claim transmuter={transmuter} underlyingToken={underlyingToken} />
           )}
         </div>
       </AccordionContent>

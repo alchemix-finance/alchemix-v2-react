@@ -424,6 +424,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlying: "WETH",
       messages: [],
+      wethGateway: "0xDB3fE4Da32c2A79654D98e5a41B22173a0AF3933",
       gateway: "0xBa3e8437a06397430036E23fF9153408a3203aFD",
       migrator: "0x00E33722ba54545667E76a18CE9D544130eEAbcC",
       yieldTokenOverride: "0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8",
