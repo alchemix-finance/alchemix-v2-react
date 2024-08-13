@@ -190,11 +190,6 @@ export const useVaults = () => {
 
       const vaultsWithTokenAdaptersAndMetadata = vaultsWithTokenAdapters
         .filter((vault) => VAULTS[chain.id][vault.yieldToken] !== undefined)
-        .filter(
-          (vault) =>
-            vault.yieldTokenParams.enabled !== false ||
-            vault.position.shares > 0,
-        )
         .map((vault) => {
           const metadata = VAULTS[chain.id][vault.yieldToken];
           return {

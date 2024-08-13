@@ -9,12 +9,11 @@ import { useInternalFarms } from "@/lib/queries/farms/useInternalFarms";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion } from "@/components/ui/accordion";
 import { FarmsAccordionRow } from "./row/FarmsAccordionRow";
-import { STATIC_EXTERNAL_FARMS } from "@/lib/config/farms";
 import { LiquidityMigration } from "./LiquidityMigration";
 import { GAlcsWrapper } from "./GAlcxWrapper";
-import { windowOpen } from "@/utils/windowOpen";
 import { LoadingBar } from "../common/LoadingBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { StaticExternalFarms } from "./StaticExternalFarms";
 
 type Filter = "active" | "retired" | "external";
 
@@ -68,8 +67,9 @@ export const Farms = () => {
     <>
       {chain.id === mainnet.id && (
         <div className="space-y-5">
-          <LiquidityMigration />
           <GAlcsWrapper />
+          <StaticExternalFarms />
+          <LiquidityMigration />
           <div>
             {isPending ? (
               <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
@@ -83,78 +83,34 @@ export const Farms = () => {
             ) : null}
             {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
             {filteredFarms && (
-              <div className="space-y-5">
-                <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-                  <div className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer dark:bg-grey10">
-                    <p className="text-sm">External Farms</p>
-                  </div>
-                  <div className="flex flex-wrap gap-8 p-4">
-                    {STATIC_EXTERNAL_FARMS.map((farm) => (
-                      <div
-                        key={farm.name}
-                        className="flex w-64 flex-col justify-between gap-2 rounded border border-grey5inverse bg-grey10inverse p-2 dark:bg-grey10"
-                      >
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <img
-                              src={`./images/icons/${farm.icon}`}
-                              className="h-5 w-5 rounded-full"
-                              alt={`${farm.name} logo`}
-                            />
-                            <h2 className="font-semibold tracking-tight">
-                              {farm.name}
-                            </h2>
-                          </div>
-                          <p className="text-sm">{farm.subtitle}</p>
-                        </div>
-                        <div>
-                          {farm.actions.map((action) => (
-                            <Button
-                              key={action.url}
-                              variant="link"
-                              onClick={() => windowOpen(action.url)}
-                            >
-                              {action.label}
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-                  <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
-                    <Tabs
-                      value={filter}
-                      onValueChange={onFilterChain}
-                      className="w-full"
-                    >
-                      <ScrollArea className="max-w-full">
-                        <div className="relative h-6 w-full">
-                          <TabsList className="absolute h-auto">
-                            <TabsTrigger value="active">Active</TabsTrigger>
-                            <TabsTrigger value="retired">Retired</TabsTrigger>
-                            <TabsTrigger value="external">External</TabsTrigger>
-                          </TabsList>
-                        </div>
-                        <ScrollBar orientation="horizontal" />
-                      </ScrollArea>
-                    </Tabs>
-                  </div>
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="space-y-4 p-4"
+              <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+                <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
+                  <Tabs
+                    value={filter}
+                    onValueChange={onFilterChain}
+                    className="w-full"
                   >
-                    {filteredFarms.length > 0 ? (
-                      filteredFarms.map((farm) => (
-                        <FarmsAccordionRow key={farm.uuid} farm={farm} />
-                      ))
-                    ) : (
-                      <div>No vaults for selected chain and synth asset</div>
-                    )}
-                  </Accordion>
+                    <ScrollArea className="max-w-full">
+                      <div className="relative h-6 w-full">
+                        <TabsList className="absolute h-auto">
+                          <TabsTrigger value="active">Active</TabsTrigger>
+                          <TabsTrigger value="retired">Retired</TabsTrigger>
+                          <TabsTrigger value="external">External</TabsTrigger>
+                        </TabsList>
+                      </div>
+                      <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
+                  </Tabs>
                 </div>
+                <Accordion type="single" collapsible className="space-y-4 p-4">
+                  {filteredFarms.length > 0 ? (
+                    filteredFarms.map((farm) => (
+                      <FarmsAccordionRow key={farm.uuid} farm={farm} />
+                    ))
+                  ) : (
+                    <div>No vaults for selected chain and synth asset</div>
+                  )}
+                </Accordion>
               </div>
             )}
           </div>
@@ -162,17 +118,21 @@ export const Farms = () => {
       )}
 
       {chain.id !== mainnet.id && (
-        <div>
-          <p>Farms only supported on Ethereum Mainnet currently.</p>
-          <Button
-            onClick={() =>
-              switchChain({
-                chainId: mainnet.id,
-              })
-            }
-          >
-            Switch to Ethereum
-          </Button>
+        <div className="space-y-5">
+          <StaticExternalFarms />
+          <div className="space-y-2">
+            <p>gALCX Wrapper is available on Mainnet</p>
+            <Button
+              variant="action"
+              onClick={() =>
+                switchChain({
+                  chainId: mainnet.id,
+                })
+              }
+            >
+              Switch to Ethereum
+            </Button>
+          </div>
         </div>
       )}
     </>

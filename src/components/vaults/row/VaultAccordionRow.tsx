@@ -26,6 +26,7 @@ import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { AnimatePresence } from "framer-motion";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
 
@@ -90,7 +91,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
 
   return (
     <AccordionItem value={vault.address}>
-      <AccordionTrigger className="flex flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 py-4 pr-8 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 dark:border-grey3 dark:bg-grey10 lg:grid lg:grid-cols-12 lg:gap-2">
+      <AccordionTrigger className="flex flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 py-4 pr-8 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:grid lg:grid-cols-12 lg:gap-2 dark:border-grey3 dark:bg-grey10">
         <div className="col-span-3 flex space-x-8 pl-8">
           <div className="relative">
             {vault.metadata.beta && (
@@ -187,30 +188,37 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               />
             ))}
 
-          <Tabs
-            value={contentAction}
-            onValueChange={(value) => setContentAction(value as ContentAction)}
-          >
-            <div className="rounded border border-grey1inverse bg-grey3inverse p-2 dark:border-grey1 dark:bg-grey3">
-              <TabsList className="w-full overflow-x-auto">
-                <TabsTrigger value="deposit" className="h-8 w-full">
-                  Deposit
-                </TabsTrigger>
-                <TabsTrigger value="withdraw" className="h-8 w-full">
-                  Withdraw
-                </TabsTrigger>
-                {/* Migration tool only exist on mainnet and optimism */}
-                {(chain.id === mainnet.id || chain.id === optimism.id) && (
-                  <TabsTrigger value="migrate" className="h-8 w-full">
-                    Migrate
-                  </TabsTrigger>
-                )}
-                <TabsTrigger value="info" className="h-8 w-full">
-                  Info
-                </TabsTrigger>
-              </TabsList>
-            </div>
-          </Tabs>
+          <div className="rounded border border-grey1inverse bg-grey3inverse p-2 dark:border-grey1 dark:bg-grey3">
+            <Tabs
+              value={contentAction}
+              onValueChange={(value) =>
+                setContentAction(value as ContentAction)
+              }
+            >
+              <ScrollArea className="max-w-full">
+                <div className="relative h-8 w-full">
+                  <TabsList className="absolute h-auto">
+                    <TabsTrigger value="deposit" className="h-8 w-full">
+                      Deposit
+                    </TabsTrigger>
+                    <TabsTrigger value="withdraw" className="h-8 w-full">
+                      Withdraw
+                    </TabsTrigger>
+                    {/* Migration tool only exist on mainnet and optimism */}
+                    {(chain.id === mainnet.id || chain.id === optimism.id) && (
+                      <TabsTrigger value="migrate" className="h-8 w-full">
+                        Migrate
+                      </TabsTrigger>
+                    )}
+                    <TabsTrigger value="info" className="h-8 w-full">
+                      Info
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </Tabs>
+          </div>
 
           <AnimatePresence initial={false} mode="wait">
             {contentAction === "deposit" &&

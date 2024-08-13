@@ -19,10 +19,10 @@ import {
 
 export const Claim = ({
   transmuter,
-  syntheticToken,
+  underlyingToken,
 }: {
   transmuter: Transmuter;
-  syntheticToken: Token;
+  underlyingToken: Token;
 }) => {
   const chain = useChain();
   const queryClient = useQueryClient();
@@ -89,10 +89,10 @@ export const Claim = ({
         amount={amount}
         setAmount={setAmount}
         transmuterAddress={transmuter.address}
-        tokenSymbol={syntheticToken.symbol}
+        tokenSymbol={underlyingToken.symbol}
         type="Claimable"
-        tokenAddress={syntheticToken.address}
-        tokenDecimals={syntheticToken.decimals}
+        tokenAddress={underlyingToken.address}
+        tokenDecimals={underlyingToken.decimals}
       />
 
       <Button

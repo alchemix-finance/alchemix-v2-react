@@ -82,13 +82,13 @@ export const Migrate = ({
               setSelectedVaultAddress(value as `0x${string}`)
             }
           >
-            <SelectTrigger className="w-56">
+            <SelectTrigger className="w-24 sm:w-56">
               <SelectValue placeholder="Vault" asChild>
                 <div className="flex items-center gap-4">
                   <img
                     src={`/images/token-icons/${tokenOfSelectedVault?.symbol}.svg`}
                     alt={tokenOfSelectedVault?.symbol}
-                    className="h-4 w-4"
+                    className="hidden h-4 w-4 sm:block"
                   />
                   {selectedVault.metadata.label}
                 </div>

@@ -224,7 +224,7 @@ export const Liquidate = () => {
               value={liquidationTokenAddress}
               onValueChange={handleLiquidationTokenSelect}
             >
-              <SelectTrigger className="h-auto w-56">
+              <SelectTrigger className="h-auto w-24 sm:w-56">
                 <SelectValue placeholder="Liquidation Token" asChild>
                   <div className="flex items-center gap-4">
                     <img
@@ -232,7 +232,9 @@ export const Liquidate = () => {
                       alt={liquidationToken.symbol}
                       className="h-12 w-12"
                     />
-                    <span className="text-xl">{liquidationToken.symbol}</span>
+                    <span className="hidden text-xl sm:inline">
+                      {liquidationToken.symbol}
+                    </span>
                   </div>
                 </SelectValue>
               </SelectTrigger>
