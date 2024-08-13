@@ -121,8 +121,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <div className="text-left">
             <p className="font-bold">{vault.metadata.label}</p>
             <p className="text-sm text-lightgrey10">
-              {vaultYieldTokenData?.symbol ?? "..."}
-              {vaultUnderlyingTokenData?.symbol ?? "..."}
+              {vault.metadata.underlyingSymbol} / {vault.metadata.yieldSymbol}
             </p>
             <p className="text-sm text-lightgrey10">LTV: {vaultLtv}%</p>
           </div>

@@ -76,7 +76,7 @@ export const Sentinel = () => {
     );
     return {
       ...transmuter,
-      tokenLabel: vault?.metadata.underlying,
+      tokenLabel: vault?.metadata.underlyingSymbol,
     };
   });
 
