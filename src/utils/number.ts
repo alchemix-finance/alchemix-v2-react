@@ -85,7 +85,6 @@ export function formatNumber(
         2,
         numStr.indexOf(digits),
       ).length;
-      console.log(numberOfZerosAfterDecimalPoint, amount);
       if (numberOfZerosAfterDecimalPoint > 2) {
         // We need new formatter with more significant digits
         const formatter = new Intl.NumberFormat(locale, {
