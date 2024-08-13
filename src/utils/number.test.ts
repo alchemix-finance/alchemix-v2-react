@@ -30,6 +30,22 @@ describe("Format number", () => {
     });
   });
 
+  describe("Negative numbers disabled", () => {
+    it('Should return "0.00" if amount is -1', () => {
+      const amount = "-1";
+      const formatted = formatNumber(amount, { allowNegative: false });
+      expect(formatted).toBe("0.00");
+    });
+    it('Should return "$0.00" if amount is -1 and isCurrency is true', () => {
+      const amount = "-1";
+      const formatted = formatNumber(amount, {
+        allowNegative: false,
+        isCurrency: true,
+      });
+      expect(formatted).toBe("$0.00");
+    });
+  });
+
   describe("Small numbers", () => {
     it('Should return "0.0₅1" for amount 0.000001', () => {
       expect(formatNumber(0.000001)).toEqual("0.0₅1");

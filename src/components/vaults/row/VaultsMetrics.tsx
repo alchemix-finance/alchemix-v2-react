@@ -66,7 +66,11 @@ export const VaultsMetrics = () => {
             </div>
             <div className="flex">
               <div className="mr-2 flex">
-                {formatNumber(totalDebt, { decimals: 2, isCurrency: true })}
+                {formatNumber(totalDebt, {
+                  decimals: 2,
+                  isCurrency: true,
+                  allowNegative: false,
+                })}
               </div>
             </div>
           </div>
@@ -79,6 +83,7 @@ export const VaultsMetrics = () => {
                 {formatNumber(availableCredit, {
                   decimals: 2,
                   isCurrency: true,
+                  allowNegative: false,
                 })}
               </div>
             </div>

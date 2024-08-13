@@ -1,4 +1,4 @@
-import { from, toString } from "dnum";
+import { from, toString, lessThan } from "dnum";
 
 const subscriptMap: Record<string, string> = {
   "0": "₀",
@@ -36,14 +36,26 @@ const getDisplayCurrency = (currency: string) => {
   return "name";
 };
 
+interface FormatNumberOptions {
+  decimals?: number;
+  isCurrency?: boolean;
+  allowNegative?: boolean;
+}
+
 export function formatNumber(
   amount: string | number | undefined | null,
   {
     decimals = 2,
     isCurrency = false,
-  }: { decimals?: number; isCurrency?: boolean } = {},
+    allowNegative = true,
+  }: FormatNumberOptions = {},
 ) {
   if (amount !== undefined && amount !== null && !isNaN(+amount)) {
+    // Negative numbers check
+    if (!allowNegative && lessThan(amount, 0)) {
+      return `${isCurrency ? "$" : ""}0.00`;
+    }
+
     const comparator = 1 / Math.pow(10, decimals);
 
     const intlOptions: Intl.NumberFormatOptions = {
