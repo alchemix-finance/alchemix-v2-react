@@ -34,7 +34,7 @@ export const Deposit = ({
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
   const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
-    yieldTokenData.address,
+    underlyingTokenData.address,
   );
 
   const { data: tokens } = useTokensQuery();

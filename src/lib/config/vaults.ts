@@ -384,7 +384,7 @@ export const VAULTS: VaultsConfig = {
       underlying: "USDC",
       messages: [
         {
-          message: "Yearn yvUSDC is currently disabled for USDC deposits.",
+          message: "Yearn yvUSDC is currently disabled for USDC.e deposits.",
           type: "warning",
         },
       ],
@@ -476,7 +476,7 @@ export const VAULTS: VaultsConfig = {
   [arbitrum.id]: {
     //alUSD
     "0x248a431116c6f6FCD5Fe1097d16d0597E24100f5": {
-      label: "AAVE aArbUSDCn",
+      label: "AAVE aArbUSDC",
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlying: "USDC",
       messages: [],

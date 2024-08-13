@@ -160,11 +160,11 @@ function Index() {
         <p className="text-center font-alcxTitles text-3xl opacity-75">
           Leverage your assets
         </p>
-        <div className="flex flex-col justify-center gap-2 lg:grid lg:grid-cols-5">
+        <div className="flex flex-col justify-center gap-2 lg:grid lg:grid-cols-3">
           {assets.map((asset) => (
             <div
               key={asset.address}
-              className="flex w-full flex-row space-x-4 rounded-lg border border-grey1inverse bg-grey15inverse p-4 dark:border-grey1 dark:bg-grey15 lg:w-max"
+              className="flex w-full flex-row space-x-4 rounded-lg border border-grey1inverse bg-grey15inverse p-4 dark:border-grey1 dark:bg-grey15"
             >
               <img
                 src={`/images/icons/${asset.name.toLowerCase()}.svg`}
