@@ -145,7 +145,7 @@ export const Borrow = () => {
 
   return (
     <div className="space-y-4 bg-grey15inverse p-4 dark:bg-grey15">
-      {!availableSynthAssets || (!debtToken && <p>Loading...</p>)}
+      {(!availableSynthAssets || !debtToken) && <p>Loading...</p>}
       {!!availableSynthAssets && !!debtToken && (
         <>
           <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
