@@ -13,7 +13,13 @@ const subscriptMap: Record<string, string> = {
   "9": "₉",
 };
 
-const subscriptDigit = (digit: number) => subscriptMap[digit];
+const subscriptDigit = (digit: number) => {
+  return digit
+    .toString()
+    .split("")
+    .map((d) => subscriptMap[d])
+    .join("");
+};
 const subscript = (num: number, formatter: Intl.NumberFormat) => {
   const transform = (part: Intl.NumberFormatPart) => {
     if (part.type !== "fraction") return part.value;

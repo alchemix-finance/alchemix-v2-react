@@ -37,6 +37,9 @@ describe("Format number", () => {
     it('Should return "0.0₆12345" for amount 0.000000123456', () => {
       expect(formatNumber(0.000000123456)).toEqual("0.0₆12345");
     });
+    it('Should return "0.0₁₄1" for amount 0.000000000000001', () => {
+      expect(formatNumber(0.000000000000001)).toEqual("0.0₁₄1");
+    });
     it('Should return less than comparator representation "< 0.01" for amount 0.001', () => {
       expect(formatNumber(0.001)).toEqual("< 0.01");
     });
