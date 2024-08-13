@@ -15,8 +15,8 @@ function BridgeRoute() {
       iconUri="/images/icons/swap_thin.svg"
     >
       <div className="space-y-2">
-        <p>We are integrating bridge into Alchemix App.</p>
-        <p>Proceed to Connext App to bridge:</p>
+        <p>We are integrating bridging into the Alchemix front end.</p>
+        <p>In the meantime, you may bridge directly through Connext:</p>
         <div className="flex items-center gap-2">
           <Button
             variant="action"
