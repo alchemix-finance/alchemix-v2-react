@@ -2,9 +2,11 @@ import { createLazyFileRoute } from "@tanstack/react-router";
 import { Page } from "@/components/common/Page";
 import { Button } from "@/components/ui/button";
 import { windowOpen } from "@/utils/windowOpen";
+import { ErrorComponent } from "@/components/error/ErrorComponent";
 
 export const Route = createLazyFileRoute("/bridge")({
   component: BridgeRoute,
+  errorComponent: ErrorComponent,
 });
 
 function BridgeRoute() {

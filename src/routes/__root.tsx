@@ -1,15 +1,11 @@
 import { lazy, Suspense } from "react";
-import {
-  createRootRoute,
-  ErrorComponentProps,
-  Outlet,
-} from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+
+import "@/styles/index.css";
 
 import { Layout } from "@/components/layout/Layout";
 import { Toaster } from "@/components/ui/sonner";
-
-import "@/styles/index.css";
-import { cn } from "@/utils/cn";
+import { ErrorComponent } from "@/components/error/ErrorComponent";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -39,16 +35,3 @@ export const Route = createRootRoute({
   },
   errorComponent: ErrorComponent,
 });
-
-function ErrorComponent(props: ErrorComponentProps) {
-  const isNewVersionError = props.error.message.includes(
-    "Failed to fetch dynamically imported module",
-  );
-  return (
-    <div className={cn("p-2", !isNewVersionError && "text-red-500")}>
-      {isNewVersionError
-        ? "New dApp version is available. Please, reload the page."
-        : props.error.message}
-    </div>
-  );
-}

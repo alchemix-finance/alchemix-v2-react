@@ -1,9 +1,10 @@
 import { Page } from "@/components/common/Page";
 import { Farms } from "@/components/farms/Farms";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, ErrorComponent } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/farms")({
   component: FarmsRoute,
+  errorComponent: ErrorComponent,
 });
 
 function FarmsRoute() {
