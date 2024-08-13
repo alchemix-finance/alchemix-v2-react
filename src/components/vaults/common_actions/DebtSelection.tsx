@@ -65,7 +65,7 @@ export const DebtSelection = ({
           <div className="flex flex-col space-y-2">
             <p className="text-sm opacity-60">{synthAsset} Debt:</p>
             <p className="font-alcxMono text-lg">
-              {formatNumber(formatEther(debts?.[i] ?? 0n), 4)}
+              {formatNumber(formatEther(debts?.[i] ?? 0n), { decimals: 4 })}
             </p>
           </div>
         </div>

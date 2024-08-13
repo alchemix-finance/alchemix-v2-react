@@ -287,7 +287,9 @@ export const CurrencyCell = ({
         {tokenSymbol}
       </p>
       {tokenPrice && (
-        <p className="text-sm text-lightgrey10">${formatNumber(amount)}</p>
+        <p className="text-sm text-lightgrey10">
+          {formatNumber(amount, { decimals: 2, isCurrency: true })}
+        </p>
       )}
     </div>
   );
