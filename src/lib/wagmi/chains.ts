@@ -1,52 +1,71 @@
-// We overwrite the default RPCs for the Optimism chain, thus we can just pass http() transport to the client,
-// as it will use the RPCs defined here with fallback transport.
+/**
+ * We override the rpcUrls for each chain to use our own list of rpcs.
+ * If the app is running on the production url, we use infura rpcs.
+ */
 
 import { arbitrum, mainnet, optimism, fantom } from "viem/chains";
 import type { Chain } from "@rainbow-me/rainbowkit";
 
-const optimismWithRpcs = {
-  ...optimism,
-  rpcUrls: {
-    default: {
-      http: [
-        "https://optimism.blockpi.network/v1/rpc/public",
-        "https://1rpc.io/op",
-        "https://optimism-rpc.publicnode.com",
-        "https://optimism-mainnet.public.blastapi.io",
-        "https://rpc.ankr.com/optimism",
-      ],
-    },
-  },
-} as const satisfies Chain;
+const INFURA_KEY = import.meta.env.VITE_INFURA_API_KEY;
 
-const mainnetWithRpcs = {
-  ...mainnet,
-  rpcUrls: {
-    default: {
-      http: [
+const mainnetRpcs =
+  __VERCEL_ENV__ === "production"
+    ? [`https://mainnet.infura.io/v3/${INFURA_KEY}`]
+    : [
         "https://1rpc.io/eth",
         "https://ethereum-rpc.publicnode.com",
         "https://ethereum.blockpi.network/v1/rpc/public",
         "https://eth.drpc.org",
         "https://eth-mainnet.public.blastapi.io",
         "https://rpc.ankr.com/eth",
-      ],
+      ];
+
+const mainnetWithRpcs = {
+  ...mainnet,
+  rpcUrls: {
+    default: {
+      http: mainnetRpcs,
     },
   },
 } as const satisfies Chain;
 
-const arbitrumWithRpcs = {
-  ...arbitrum,
+const optimismRpcs =
+  __VERCEL_ENV__ === "production"
+    ? [`https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`]
+    : [
+        "https://optimism.blockpi.network/v1/rpc/public",
+        "https://1rpc.io/op",
+        "https://optimism-rpc.publicnode.com",
+        "https://optimism-mainnet.public.blastapi.io",
+        "https://rpc.ankr.com/optimism",
+      ];
+
+const optimismWithRpcs = {
+  ...optimism,
   rpcUrls: {
     default: {
-      http: [
+      http: optimismRpcs,
+    },
+  },
+} as const satisfies Chain;
+
+const arbitrumRpcs =
+  __VERCEL_ENV__ === "production"
+    ? [`https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`]
+    : [
         "https://arb1.arbitrum.io/rpc",
         "https://1rpc.io/arb",
         "https://arbitrum-one.publicnode.com",
         "https://arbitrum-one-rpc.publicnode.com",
         "https://rpc.ankr.com/arbitrum",
         "https://arbitrum-one.public.blastapi.io",
-      ],
+      ];
+
+const arbitrumWithRpcs = {
+  ...arbitrum,
+  rpcUrls: {
+    default: {
+      http: arbitrumRpcs,
     },
   },
 } as const satisfies Chain;

@@ -6,7 +6,7 @@ import { gql, request } from "graphql-request";
 
 const aaveApiParams = {
   [mainnet.id]: {
-    url: "https://gateway-arbitrum.network.thegraph.com/api/b6da9f745ab40e51bfa76f0cb1bc4c82/subgraphs/id/8wR23o1zkS4gpLqLNU4kG3JHYVucqGyopL5utGxP2q1N",
+    url: `https://gateway-arbitrum.network.thegraph.com/api/${import.meta.env.VITE_SUBGRAPH_API_KEY}/subgraphs/id/8wR23o1zkS4gpLqLNU4kG3JHYVucqGyopL5utGxP2q1N`,
     query: gql`
       {
         reserves {
@@ -28,7 +28,7 @@ const aaveApiParams = {
     `,
   },
   [optimism.id]: {
-    url: "https://gateway-arbitrum.network.thegraph.com/api/b6da9f745ab40e51bfa76f0cb1bc4c82/subgraphs/id/DSfLz8oQBUeU5atALgUFQKMTSYV9mZAVYp4noLSXAfvb",
+    url: `https://gateway-arbitrum.network.thegraph.com/api/${import.meta.env.VITE_SUBGRAPH_API_KEY}/subgraphs/id/DSfLz8oQBUeU5atALgUFQKMTSYV9mZAVYp4noLSXAfvb`,
     query: gql`
       {
         reserves {
@@ -59,7 +59,7 @@ const aaveApiParams = {
     `,
   },
   [arbitrum.id]: {
-    url: "https://gateway-arbitrum.network.thegraph.com/api/b6da9f745ab40e51bfa76f0cb1bc4c82/subgraphs/id/DLuE98kEb5pQNXAcKFQGQgfSQ57Xdou4jnVbAEqMfy3B",
+    url: `https://gateway-arbitrum.network.thegraph.com/api/${import.meta.env.VITE_SUBGRAPH_API_KEY}/subgraphs/id/DLuE98kEb5pQNXAcKFQGQgfSQ57Xdou4jnVbAEqMfy3B`,
     query: gql`
       {
         reserves {
