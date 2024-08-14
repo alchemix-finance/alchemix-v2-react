@@ -6,19 +6,19 @@
 import { arbitrum, mainnet, optimism, fantom } from "viem/chains";
 import type { Chain } from "@rainbow-me/rainbowkit";
 
+const isProduction = `"${__VERCEL_ENV__}"` === "production";
 const INFURA_KEY = import.meta.env.VITE_INFURA_API_KEY;
 
-const mainnetRpcs =
-  __VERCEL_ENV__ === "production"
-    ? [`https://mainnet.infura.io/v3/${INFURA_KEY}`]
-    : [
-        "https://1rpc.io/eth",
-        "https://ethereum-rpc.publicnode.com",
-        "https://ethereum.blockpi.network/v1/rpc/public",
-        "https://eth.drpc.org",
-        "https://eth-mainnet.public.blastapi.io",
-        "https://rpc.ankr.com/eth",
-      ];
+const mainnetRpcs = isProduction
+  ? [`https://mainnet.infura.io/v3/${INFURA_KEY}`]
+  : [
+      "https://1rpc.io/eth",
+      "https://ethereum-rpc.publicnode.com",
+      "https://ethereum.blockpi.network/v1/rpc/public",
+      "https://eth.drpc.org",
+      "https://eth-mainnet.public.blastapi.io",
+      "https://rpc.ankr.com/eth",
+    ];
 
 const mainnetWithRpcs = {
   ...mainnet,
@@ -29,16 +29,15 @@ const mainnetWithRpcs = {
   },
 } as const satisfies Chain;
 
-const optimismRpcs =
-  __VERCEL_ENV__ === "production"
-    ? [`https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`]
-    : [
-        "https://optimism.blockpi.network/v1/rpc/public",
-        "https://1rpc.io/op",
-        "https://optimism-rpc.publicnode.com",
-        "https://optimism-mainnet.public.blastapi.io",
-        "https://rpc.ankr.com/optimism",
-      ];
+const optimismRpcs = isProduction
+  ? [`https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`]
+  : [
+      "https://optimism.blockpi.network/v1/rpc/public",
+      "https://1rpc.io/op",
+      "https://optimism-rpc.publicnode.com",
+      "https://optimism-mainnet.public.blastapi.io",
+      "https://rpc.ankr.com/optimism",
+    ];
 
 const optimismWithRpcs = {
   ...optimism,
@@ -49,17 +48,16 @@ const optimismWithRpcs = {
   },
 } as const satisfies Chain;
 
-const arbitrumRpcs =
-  __VERCEL_ENV__ === "production"
-    ? [`https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`]
-    : [
-        "https://arb1.arbitrum.io/rpc",
-        "https://1rpc.io/arb",
-        "https://arbitrum-one.publicnode.com",
-        "https://arbitrum-one-rpc.publicnode.com",
-        "https://rpc.ankr.com/arbitrum",
-        "https://arbitrum-one.public.blastapi.io",
-      ];
+const arbitrumRpcs = isProduction
+  ? [`https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`]
+  : [
+      "https://arb1.arbitrum.io/rpc",
+      "https://1rpc.io/arb",
+      "https://arbitrum-one.publicnode.com",
+      "https://arbitrum-one-rpc.publicnode.com",
+      "https://rpc.ankr.com/arbitrum",
+      "https://arbitrum-one.public.blastapi.io",
+    ];
 
 const arbitrumWithRpcs = {
   ...arbitrum,
