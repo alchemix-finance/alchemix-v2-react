@@ -10,7 +10,10 @@ const IS_VERCEL_PRODUCTION = __VERCEL_ENV__ === "production";
 const INFURA_KEY = import.meta.env.VITE_INFURA_API_KEY;
 
 const mainnetRpcs = IS_VERCEL_PRODUCTION
-  ? [`https://mainnet.infura.io/v3/${INFURA_KEY}`]
+  ? [
+      `https://mainnet.infura.io/v3/${INFURA_KEY}`,
+      "https://ethereum-rpc.publicnode.com",
+    ]
   : [
       "https://1rpc.io/eth",
       "https://ethereum-rpc.publicnode.com",
@@ -30,7 +33,10 @@ const mainnetWithRpcs = {
 } as const satisfies Chain;
 
 const optimismRpcs = IS_VERCEL_PRODUCTION
-  ? [`https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`]
+  ? [
+      `https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`,
+      "https://optimism-rpc.publicnode.com",
+    ]
   : [
       "https://optimism.blockpi.network/v1/rpc/public",
       "https://1rpc.io/op",
@@ -49,7 +55,10 @@ const optimismWithRpcs = {
 } as const satisfies Chain;
 
 const arbitrumRpcs = IS_VERCEL_PRODUCTION
-  ? [`https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`]
+  ? [
+      `https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`,
+      "https://arbitrum-one-rpc.publicnode.com",
+    ]
   : [
       "https://arb1.arbitrum.io/rpc",
       "https://1rpc.io/arb",
