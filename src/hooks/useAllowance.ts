@@ -46,13 +46,15 @@ export const useAllowance = ({
     args: [address!, spender],
     chainId: chain.id,
     query: {
-      enabled: !!address && tokenAddress !== GAS_ADDRESS,
+      enabled:
+        !!address && tokenAddress !== GAS_ADDRESS && !isInputZero(amount),
       select: (allowance) => ({
         isApprovalNeeded: allowance < parseUnits(amount, decimals),
         allowance,
       }),
     },
   });
+
   const { isApprovalNeeded, allowance } = allowanceData ?? {};
 
   const { data: approveConfig } = useSimulateContract({
@@ -98,16 +100,23 @@ export const useAllowance = ({
     }),
   });
 
-  const { data: approvalReceipt } = useWaitForTransactionReceipt({
-    chainId: chain.id,
-    hash: approveTxHash,
-  });
+  const { data: approvalReceipt, queryKey: approvalReceiptQueryKey } =
+    useWaitForTransactionReceipt({
+      chainId: chain.id,
+      hash: approveTxHash,
+    });
 
   useEffect(() => {
     if (approvalReceipt) {
       queryClient.invalidateQueries({ queryKey: isApprovalNeededQueryKey });
+      queryClient.resetQueries({ queryKey: approvalReceiptQueryKey });
     }
-  }, [approvalReceipt, isApprovalNeededQueryKey, queryClient]);
+  }, [
+    approvalReceipt,
+    isApprovalNeededQueryKey,
+    approvalReceiptQueryKey,
+    queryClient,
+  ]);
 
   return {
     isApprovalNeeded,
