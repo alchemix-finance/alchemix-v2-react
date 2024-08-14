@@ -6,10 +6,10 @@
 import { arbitrum, mainnet, optimism, fantom } from "viem/chains";
 import type { Chain } from "@rainbow-me/rainbowkit";
 
-const isProduction = `"${__VERCEL_ENV__}"` === "production";
+const IS_VERCEL_PRODUCTION = __VERCEL_ENV__ === "production";
 const INFURA_KEY = import.meta.env.VITE_INFURA_API_KEY;
 
-const mainnetRpcs = isProduction
+const mainnetRpcs = IS_VERCEL_PRODUCTION
   ? [`https://mainnet.infura.io/v3/${INFURA_KEY}`]
   : [
       "https://1rpc.io/eth",
@@ -29,7 +29,7 @@ const mainnetWithRpcs = {
   },
 } as const satisfies Chain;
 
-const optimismRpcs = isProduction
+const optimismRpcs = IS_VERCEL_PRODUCTION
   ? [`https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`]
   : [
       "https://optimism.blockpi.network/v1/rpc/public",
@@ -48,7 +48,7 @@ const optimismWithRpcs = {
   },
 } as const satisfies Chain;
 
-const arbitrumRpcs = isProduction
+const arbitrumRpcs = IS_VERCEL_PRODUCTION
   ? [`https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`]
   : [
       "https://arb1.arbitrum.io/rpc",

@@ -32,6 +32,6 @@ export default defineConfig({
   // NOTE: Define global variable for the app environment
   // Only works if we use vercel for deployment.
   define: {
-    __VERCEL_ENV__: process.env.VITE_VERCEL_ENV,
+    __VERCEL_ENV__: JSON.stringify(process.env.VITE_VERCEL_ENV),
   },
 });
