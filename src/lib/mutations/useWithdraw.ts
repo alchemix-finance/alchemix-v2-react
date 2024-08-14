@@ -156,10 +156,11 @@ export const useWithdraw = ({
       action: "Approve",
     }),
   });
-  const { data: approvalReceipt } = useWaitForTransactionReceipt({
-    chainId: chain.id,
-    hash: approveHash,
-  });
+  const { data: approvalReceipt, queryKey: approveQueryKey } =
+    useWaitForTransactionReceipt({
+      chainId: chain.id,
+      hash: approveHash,
+    });
   useEffect(() => {
     if (approvalReceipt) {
       queryClient.invalidateQueries({
@@ -168,11 +169,13 @@ export const useWithdraw = ({
       queryClient.invalidateQueries({
         queryKey: isApprovalNeededWethGatewayQueryKey,
       });
+      queryClient.resetQueries({ queryKey: approveQueryKey });
     }
   }, [
     approvalReceipt,
     isApprovalNeededAaveGatewayQueryKey,
     isApprovalNeededWethGatewayQueryKey,
+    approveQueryKey,
     queryClient,
   ]);
 
@@ -189,7 +192,7 @@ export const useWithdraw = ({
       enabled:
         shares !== undefined &&
         !!address &&
-        isApprovalNeededAaveGateway !== true &&
+        isApprovalNeededAaveGateway === false &&
         selectedToken.address.toLowerCase() ===
           yieldToken.address.toLowerCase() &&
         !!vault.metadata.gateway &&
@@ -273,7 +276,7 @@ export const useWithdraw = ({
         minimumOutUnderlying !== undefined &&
         shares !== undefined &&
         !!address &&
-        isApprovalNeededWethGateway !== true &&
+        isApprovalNeededWethGateway === false &&
         selectedToken.address === GAS_ADDRESS &&
         !!vault.metadata.wethGateway,
     },

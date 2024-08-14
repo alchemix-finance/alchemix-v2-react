@@ -97,7 +97,7 @@ export const useDeposit = ({
     query: {
       enabled:
         !!address &&
-        isApprovalNeeded !== true &&
+        isApprovalNeeded === false &&
         selectedToken.address.toLowerCase() ===
           yieldToken.address.toLowerCase() &&
         !!vault.metadata.gateway &&
@@ -135,7 +135,7 @@ export const useDeposit = ({
     query: {
       enabled:
         !!address &&
-        isApprovalNeeded !== true &&
+        isApprovalNeeded === false &&
         selectedToken.address.toLowerCase() ===
           yieldToken.address.toLowerCase() &&
         !vault.metadata.gateway &&
@@ -220,7 +220,7 @@ export const useDeposit = ({
     query: {
       enabled:
         !!address &&
-        isApprovalNeeded !== true &&
+        isApprovalNeeded === false &&
         selectedToken.address !== GAS_ADDRESS &&
         selectedToken.address.toLowerCase() !==
           yieldToken.address.toLowerCase() &&
@@ -398,7 +398,7 @@ export const useDeposit = ({
 
     // deposit gas
     if (selectedToken.address === GAS_ADDRESS) {
-      return isDepositGasConfigFetching || isFetchingAllowance;
+      return isDepositGasConfigFetching;
     }
 
     // if depositUnderlyingConfig is available, deposit using alchemist
