@@ -30,10 +30,31 @@ describe("Format number", () => {
     });
   });
 
+  describe("Dust to zero", () => {
+    it('Should return "0.00" if amount is dust (less than 6 wei) for 18 decimals token', () => {
+      const amount = "0.000000000000000005";
+      const formatted = formatNumber(amount, {
+        dustToZero: true,
+        tokenDecimals: 18,
+      });
+      expect(formatted).toBe("0.00");
+    });
+    it('Should return "0.00" if amount is dust (less than 6 wei) for 6 decimals token', () => {
+      const amount = "0.000005";
+      const formatted = formatNumber(amount, {
+        dustToZero: true,
+        tokenDecimals: 6,
+      });
+      expect(formatted).toBe("0.00");
+    });
+  });
+
   describe("Negative numbers disabled", () => {
     it('Should return "0.00" if amount is -1', () => {
       const amount = "-1";
-      const formatted = formatNumber(amount, { allowNegative: false });
+      const formatted = formatNumber(amount, {
+        allowNegative: false,
+      });
       expect(formatted).toBe("0.00");
     });
     it('Should return "$0.00" if amount is -1 and isCurrency is true', () => {
@@ -87,10 +108,13 @@ describe("Format number", () => {
   });
 
   describe("Decimals", () => {
-    it("Should format number with 4 decimals", () => {
-      const amount = "1000";
+    it("Should format number with 4 significant decimals", () => {
+      const amount = "1000.12345";
       const formatted = formatNumber(amount, { decimals: 4 });
-      expect(formatted).toBe("1,000.0000");
+      expect(formatted).toBe("1,000.1234");
+    });
+    it("Should format number with 2 decimals if there are no decimals in the input", () => {
+      expect(formatNumber("1000")).toBe("1,000.00");
     });
   });
 });

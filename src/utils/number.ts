@@ -1,4 +1,5 @@
-import { from, toString, lessThan } from "dnum";
+import { from, toString, lessThan, equal, type Numberish } from "dnum";
+import { parseUnits } from "viem";
 
 const subscriptMap: Record<string, string> = {
   "0": "₀",
@@ -20,6 +21,7 @@ const subscriptDigit = (digit: number) => {
     .map((d) => subscriptMap[d])
     .join("");
 };
+
 const subscript = (num: number, formatter: Intl.NumberFormat) => {
   const transform = (part: Intl.NumberFormatPart) => {
     if (part.type !== "fraction") return part.value;
@@ -36,11 +38,27 @@ const getDisplayCurrency = (currency: string) => {
   return "name";
 };
 
-interface FormatNumberOptions {
+const enforceToDecimalString = (value: Numberish) => toString(from(value));
+
+interface BaseFormatNumberOptions {
   decimals?: number;
   isCurrency?: boolean;
   allowNegative?: boolean;
+  dustToZero?: boolean;
+  tokenDecimals?: number;
 }
+
+interface DustToZeroTrue extends BaseFormatNumberOptions {
+  dustToZero: true;
+  tokenDecimals: number;
+}
+
+interface DustToZeroFalse extends BaseFormatNumberOptions {
+  dustToZero?: false;
+  tokenDecimals?: never;
+}
+
+type FormatNumberOptions = DustToZeroTrue | DustToZeroFalse;
 
 export function formatNumber(
   amount: string | number | undefined | null,
@@ -48,19 +66,36 @@ export function formatNumber(
     decimals = 2,
     isCurrency = false,
     allowNegative = true,
+    dustToZero = false,
+    tokenDecimals = 18,
   }: FormatNumberOptions = {},
 ) {
-  if (amount !== undefined && amount !== null && !isNaN(+amount)) {
+  if (amount !== undefined && amount !== null && !!amount && !isNaN(+amount)) {
     // Negative numbers check
     if (!allowNegative && lessThan(amount, 0)) {
       return `${isCurrency ? "$" : ""}0.00`;
+    }
+
+    // Dust to zero check
+    if (dustToZero) {
+      try {
+        const amountBigInt = parseUnits(
+          enforceToDecimalString(amount),
+          tokenDecimals,
+        );
+        if (lessThan(amountBigInt, 5n) || equal(amountBigInt, 5n)) {
+          return `${isCurrency ? "$" : ""}0.00`;
+        }
+      } catch (e) {
+        console.error("Error parsing units", e);
+      }
     }
 
     const comparator = 1 / Math.pow(10, decimals);
 
     const intlOptions: Intl.NumberFormatOptions = {
       roundingMode: "trunc",
-      minimumFractionDigits: decimals,
+      minimumFractionDigits: 2,
       maximumFractionDigits: decimals,
     };
 
@@ -88,7 +123,7 @@ export function formatNumber(
     if (+amount > 0 && +amount < comparator) {
       const lessThanComparatorRepresentation = `< ${comparator.toFixed(decimals)}`;
 
-      const numStr = enforceToDecimalString(amount.toString());
+      const numStr = enforceToDecimalString(amount);
       const match = numStr.match(/0\.0*(\d+)/);
       if (!match) return lessThanComparatorRepresentation;
 
@@ -126,8 +161,6 @@ export const sanitizeNumber = (input: string, precision?: number) => {
   if (decimals) return `${integer}.${decimals.substring(0, precision)}`;
   else return sanitized;
 };
-
-const enforceToDecimalString = (value: string) => toString(from(value));
 
 /** Format string number to look like a real number */
 export const formatInput = (value: string) => {

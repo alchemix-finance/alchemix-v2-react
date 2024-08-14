@@ -81,6 +81,7 @@ export const BorrowInput = ({
       tokenSymbol={debtToken.symbol}
       type="Available"
       overrideBalance={overrideBalance}
+      dustToZero={true}
     />
   );
 };
