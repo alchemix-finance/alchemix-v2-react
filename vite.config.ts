@@ -12,7 +12,6 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-
   // NOTE: vesper pools endpoint and yearn doesn't have CORS set up ?
   server: {
     proxy: {
@@ -27,11 +26,5 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/yearn-vaults/, ""),
       },
     },
-  },
-
-  // NOTE: Define global variable for the app environment
-  // Only works if we use vercel for deployment.
-  define: {
-    __VERCEL_ENV__: process.env.VITE_VERCEL_ENV,
   },
 });
