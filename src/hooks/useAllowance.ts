@@ -35,21 +35,24 @@ export const useAllowance = ({
   const queryClient = useQueryClient();
   const mutationCallback = useWriteContractMutationCallback();
 
-  const { data: allowanceData, queryKey: isApprovalNeededQueryKey } =
-    useReadContract({
-      address: tokenAddress,
-      abi: erc20Abi,
-      functionName: "allowance",
-      args: [address!, spender],
-      chainId: chain.id,
-      query: {
-        enabled: !!address && tokenAddress !== GAS_ADDRESS,
-        select: (allowance) => ({
-          isApprovalNeeded: allowance < parseUnits(amount, decimals),
-          allowance,
-        }),
-      },
-    });
+  const {
+    data: allowanceData,
+    queryKey: isApprovalNeededQueryKey,
+    isFetching,
+  } = useReadContract({
+    address: tokenAddress,
+    abi: erc20Abi,
+    functionName: "allowance",
+    args: [address!, spender],
+    chainId: chain.id,
+    query: {
+      enabled: !!address && tokenAddress !== GAS_ADDRESS,
+      select: (allowance) => ({
+        isApprovalNeeded: allowance < parseUnits(amount, decimals),
+        allowance,
+      }),
+    },
+  });
   const { isApprovalNeeded, allowance } = allowanceData ?? {};
 
   const { data: approveConfig } = useSimulateContract({
@@ -111,5 +114,6 @@ export const useAllowance = ({
     approve,
     approveConfig,
     approveUsdtEthConfig,
+    isFetching,
   };
 };

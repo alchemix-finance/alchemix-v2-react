@@ -84,12 +84,14 @@ export const useWithdraw = ({
   const {
     data: isApprovalNeededAaveGateway,
     queryKey: isApprovalNeededAaveGatewayQueryKey,
+    isFetching: isApprovalNeededAaveGatewayFetching,
   } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
     chainId: chain.id,
     functionName: "withdrawAllowance",
     args: [address!, vault.metadata.gateway!, vault.yieldToken],
+    scopeKey: selectedToken.address,
     query: {
       enabled:
         shares !== undefined &&
@@ -104,12 +106,14 @@ export const useWithdraw = ({
   const {
     data: isApprovalNeededWethGateway,
     queryKey: isApprovalNeededWethGatewayQueryKey,
+    isFetching: isApprovalNeededWethGatewayFetching,
   } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
     chainId: chain.id,
     functionName: "withdrawAllowance",
     args: [address!, vault.metadata.wethGateway!, vault.address],
+    scopeKey: selectedToken.address,
     query: {
       enabled:
         shares !== undefined &&
@@ -343,6 +347,7 @@ export const useWithdraw = ({
   const writeApprove = useCallback(() => {
     if (approveAaveGatewayConfig) {
       approve(approveAaveGatewayConfig.request);
+      return;
     }
     if (approveWethGatewayConfig) {
       approve(approveWethGatewayConfig.request);
@@ -478,7 +483,9 @@ export const useWithdraw = ({
       !!vault.metadata.gateway &&
       !!vault.metadata.yieldTokenOverride
     ) {
-      return isWithdrawGatewayConfigFetching;
+      return (
+        isWithdrawGatewayConfigFetching || isApprovalNeededAaveGatewayFetching
+      );
     }
 
     // withdraw alchemist
@@ -488,7 +495,9 @@ export const useWithdraw = ({
       !vault.metadata.gateway &&
       !vault.metadata.yieldTokenOverride
     ) {
-      return isWithdrawAlchemistConfigFetching;
+      return (
+        isWithdrawAlchemistConfigFetching || isApprovalNeededWethGatewayFetching
+      );
     }
 
     // withdraw gas
@@ -509,6 +518,8 @@ export const useWithdraw = ({
     isWithdrawGasConfigFetching,
     isWithdrawGatewayConfigFetching,
     isWithdrawUnderlyingConfigFetching,
+    isApprovalNeededAaveGatewayFetching,
+    isApprovalNeededWethGatewayFetching,
     selectedToken.address,
     vault.metadata.gateway,
     vault.metadata.yieldTokenOverride,

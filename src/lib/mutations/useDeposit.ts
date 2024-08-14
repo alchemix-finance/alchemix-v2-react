@@ -68,13 +68,18 @@ export const useDeposit = ({
       ? vault.metadata.gateway
       : vault.alchemist.address;
 
-  const { approve, approveConfig, isApprovalNeeded, approveUsdtEthConfig } =
-    useAllowance({
-      amount,
-      spender,
-      tokenAddress: selectedToken.address,
-      decimals: selectedToken.decimals,
-    });
+  const {
+    approve,
+    approveConfig,
+    isApprovalNeeded,
+    approveUsdtEthConfig,
+    isFetching: isFetchingAllowance,
+  } = useAllowance({
+    amount,
+    spender,
+    tokenAddress: selectedToken.address,
+    decimals: selectedToken.decimals,
+  });
 
   const {
     data: depositGatewayConfig,
@@ -378,7 +383,7 @@ export const useDeposit = ({
       !!vault.metadata.gateway &&
       !!vault.metadata.yieldTokenOverride
     ) {
-      return isDepositGatewayConfigFetching;
+      return isDepositGatewayConfigFetching || isFetchingAllowance;
     }
 
     // deposit alchemist
@@ -393,7 +398,7 @@ export const useDeposit = ({
 
     // deposit gas
     if (selectedToken.address === GAS_ADDRESS) {
-      return isDepositGasConfigFetching;
+      return isDepositGasConfigFetching || isFetchingAllowance;
     }
 
     // if depositUnderlyingConfig is available, deposit using alchemist
@@ -409,6 +414,7 @@ export const useDeposit = ({
     isDepositGasConfigFetching,
     isDepositGatewayConfigFetching,
     isDepositUnderlyingConfigFetching,
+    isFetchingAllowance,
     selectedToken.address,
     vault.metadata.gateway,
     vault.metadata.yieldTokenOverride,
