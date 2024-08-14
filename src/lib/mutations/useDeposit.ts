@@ -68,13 +68,18 @@ export const useDeposit = ({
       ? vault.metadata.gateway
       : vault.alchemist.address;
 
-  const { approve, approveConfig, isApprovalNeeded, approveUsdtEthConfig } =
-    useAllowance({
-      amount,
-      spender,
-      tokenAddress: selectedToken.address,
-      decimals: selectedToken.decimals,
-    });
+  const {
+    approve,
+    approveConfig,
+    isApprovalNeeded,
+    approveUsdtEthConfig,
+    isFetching: isFetchingAllowance,
+  } = useAllowance({
+    amount,
+    spender,
+    tokenAddress: selectedToken.address,
+    decimals: selectedToken.decimals,
+  });
 
   const {
     data: depositGatewayConfig,
@@ -92,7 +97,7 @@ export const useDeposit = ({
     query: {
       enabled:
         !!address &&
-        isApprovalNeeded !== true &&
+        isApprovalNeeded === false &&
         selectedToken.address.toLowerCase() ===
           yieldToken.address.toLowerCase() &&
         !!vault.metadata.gateway &&
@@ -130,7 +135,7 @@ export const useDeposit = ({
     query: {
       enabled:
         !!address &&
-        isApprovalNeeded !== true &&
+        isApprovalNeeded === false &&
         selectedToken.address.toLowerCase() ===
           yieldToken.address.toLowerCase() &&
         !vault.metadata.gateway &&
@@ -215,7 +220,7 @@ export const useDeposit = ({
     query: {
       enabled:
         !!address &&
-        isApprovalNeeded !== true &&
+        isApprovalNeeded === false &&
         selectedToken.address !== GAS_ADDRESS &&
         selectedToken.address.toLowerCase() !==
           yieldToken.address.toLowerCase() &&
@@ -378,7 +383,7 @@ export const useDeposit = ({
       !!vault.metadata.gateway &&
       !!vault.metadata.yieldTokenOverride
     ) {
-      return isDepositGatewayConfigFetching;
+      return isDepositGatewayConfigFetching || isFetchingAllowance;
     }
 
     // deposit alchemist
@@ -409,6 +414,7 @@ export const useDeposit = ({
     isDepositGasConfigFetching,
     isDepositGatewayConfigFetching,
     isDepositUnderlyingConfigFetching,
+    isFetchingAllowance,
     selectedToken.address,
     vault.metadata.gateway,
     vault.metadata.yieldTokenOverride,

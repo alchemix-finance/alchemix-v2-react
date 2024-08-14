@@ -9,7 +9,7 @@ import { isInputZero } from "@/utils/inputNotZero";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { parseEther } from "viem";
+import { parseUnits } from "viem";
 import {
   useAccount,
   useSimulateContract,
@@ -41,7 +41,7 @@ export const Claim = ({
     abi: transmuterV2Abi,
     chainId: chain.id,
     functionName: "claim",
-    args: [parseEther(amount), address!],
+    args: [parseUnits(amount, underlyingToken.decimals), address!],
     query: {
       enabled: !!address && !isInputZero(amount),
     },
@@ -86,11 +86,11 @@ export const Claim = ({
   return (
     <>
       <TransmuterInput
+        type="Claimable"
         amount={amount}
         setAmount={setAmount}
         transmuterAddress={transmuter.address}
         tokenSymbol={underlyingToken.symbol}
-        type="Claimable"
         tokenAddress={underlyingToken.address}
         tokenDecimals={underlyingToken.decimals}
       />

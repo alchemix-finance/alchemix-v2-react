@@ -30,13 +30,11 @@ export const DebtSelection = ({
           chainId: chain.id,
           functionName: "accounts",
           args: [address!],
-          query: {
-            enabled: !!address,
-          },
         }) as const,
     ),
     query: {
       select: (debts) => debts.map((debt) => (debt[0] < 0 ? 0n : debt[0])),
+      enabled: !!address,
     },
   });
 
