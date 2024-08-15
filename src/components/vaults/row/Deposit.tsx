@@ -1,7 +1,7 @@
 import { Token, Vault } from "@/lib/types";
 import { TokenInput } from "@/components/common/input/TokenInput";
 import { Button } from "@/components/ui/button";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Select,
   SelectTrigger,
@@ -33,14 +33,16 @@ export const Deposit = ({
 
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
-  const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
-    yieldTokenData.address,
-  );
+
+  const initTokenAddress = vault.metadata.disabledDepositTokens
+    .map((t) => t.toLowerCase())
+    .includes(underlyingTokenData.address.toLowerCase())
+    ? yieldTokenData.address
+    : underlyingTokenData.address;
+  const [tokenAddress, setTokenAddress] = useState(initTokenAddress);
 
   const { data: tokens } = useTokensQuery();
-  const gasToken = useMemo(() => {
-    return tokens?.find((token) => token.address === GAS_ADDRESS);
-  }, [tokens]);
+  const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
 
   const { data: currentValue } = useReadContract({
     address: vault.alchemist.address,
@@ -75,6 +77,8 @@ export const Deposit = ({
   );
 
   const token = selection.find((token) => token.address === tokenAddress)!;
+  const isSelectedTokenYieldToken =
+    token.address.toLowerCase() === yieldTokenData.address.toLowerCase();
 
   const { isApprovalNeeded, writeApprove, writeDeposit, isFetching } =
     useDeposit({
@@ -102,7 +106,7 @@ export const Deposit = ({
             value={tokenAddress}
             onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
           >
-            <SelectTrigger className="h-auto w-56">
+            <SelectTrigger className="h-auto w-24 sm:w-56">
               <SelectValue placeholder="Token" asChild>
                 <div className="flex items-center gap-4">
                   <img
@@ -110,7 +114,9 @@ export const Deposit = ({
                     alt={token.symbol}
                     className="h-12 w-12"
                   />
-                  <span className="text-xl">{token.symbol}</span>
+                  <span className="hidden text-xl sm:inline">
+                    {token.symbol}
+                  </span>
                 </div>
               </SelectValue>
             </SelectTrigger>
@@ -130,7 +136,9 @@ export const Deposit = ({
             tokenDecimals={token.decimals}
           />
         </div>
-        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        {!isSelectedTokenYieldToken && (
+          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        )}
         <Button
           variant="outline"
           width="full"

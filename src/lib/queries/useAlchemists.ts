@@ -51,7 +51,13 @@ export const useAlchemists = () => {
               abi: alchemistV2Abi,
               address: alchemistAddress,
               functionName: "accounts",
-              args: [address!],
+              args: [address],
+            },
+            {
+              abi: alchemistV2Abi,
+              address: alchemistAddress,
+              functionName: "totalValue",
+              args: [address],
             },
             {
               abi: alchemistV2Abi,
@@ -77,13 +83,15 @@ export const useAlchemists = () => {
           debtToken,
           minimumCollateralization,
           [debt, depositedTokens],
+          totalValue,
           yieldTokens,
           underlyingTokens,
-        ] = results.slice(i * 6, i * 6 + 6) as [
+        ] = results.slice(i * 7, i * 7 + 7) as [
           Address,
           Address,
           bigint,
           [bigint, Address[]],
+          bigint,
           Address[],
           Address[],
         ];
@@ -100,6 +108,7 @@ export const useAlchemists = () => {
             debt,
             depositedTokens,
           },
+          totalValue,
           yieldTokens,
           underlyingTokens,
           minimumCollateralization,

@@ -88,6 +88,7 @@ export const LiquidateTokenInput = ({
       tokenSymbol={tokenSymbol}
       type="Available"
       overrideBalance={balance}
+      dustToZero={true}
     />
   );
 };

@@ -44,6 +44,7 @@ export const MigrateTokenInput = ({
       setAmount={setAmount}
       tokenDecimals={18}
       overrideBalance={sharesBalance}
+      dustToZero={true}
     />
   );
 };

@@ -1,7 +1,7 @@
-import { useBlockNumber } from "wagmi";
-import { useChain } from "./useChain";
 import { useEffect } from "react";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
+import { useBlockNumber } from "wagmi";
+import { useChain } from "./useChain";
 
 export type UseWatchQueryArgs =
   | {
@@ -30,5 +30,5 @@ export const useWatchQuery = ({ queryKey, queryKeys }: UseWatchQueryArgs) => {
         queryClient.invalidateQueries({ queryKey: key });
       });
     }
-  }, [blockNumber, queryClient, queryKey, queryKeys]);
+  }, [blockNumber, chain.id, queryClient, queryKey, queryKeys]);
 };

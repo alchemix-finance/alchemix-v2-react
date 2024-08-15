@@ -68,7 +68,13 @@ export const useDeposit = ({
       ? vault.metadata.gateway
       : vault.alchemist.address;
 
-  const { approve, approveConfig, isApprovalNeeded } = useAllowance({
+  const {
+    approve,
+    approveConfig,
+    isApprovalNeeded,
+    approveUsdtEthConfig,
+    isFetching: isFetchingAllowance,
+  } = useAllowance({
     amount,
     spender,
     tokenAddress: selectedToken.address,
@@ -91,7 +97,7 @@ export const useDeposit = ({
     query: {
       enabled:
         !!address &&
-        isApprovalNeeded !== true &&
+        isApprovalNeeded === false &&
         selectedToken.address.toLowerCase() ===
           yieldToken.address.toLowerCase() &&
         !!vault.metadata.gateway &&
@@ -129,7 +135,7 @@ export const useDeposit = ({
     query: {
       enabled:
         !!address &&
-        isApprovalNeeded !== true &&
+        isApprovalNeeded === false &&
         selectedToken.address.toLowerCase() ===
           yieldToken.address.toLowerCase() &&
         !vault.metadata.gateway &&
@@ -214,7 +220,7 @@ export const useDeposit = ({
     query: {
       enabled:
         !!address &&
-        isApprovalNeeded !== true &&
+        isApprovalNeeded === false &&
         selectedToken.address !== GAS_ADDRESS &&
         selectedToken.address.toLowerCase() !==
           yieldToken.address.toLowerCase() &&
@@ -361,8 +367,12 @@ export const useDeposit = ({
   ]);
 
   const writeApprove = useCallback(() => {
+    if (approveUsdtEthConfig) {
+      approve(approveUsdtEthConfig.request);
+      return;
+    }
     approveConfig?.request && approve(approveConfig.request);
-  }, [approve, approveConfig]);
+  }, [approve, approveConfig, approveUsdtEthConfig]);
 
   const isFetching = useMemo(() => {
     if (!amount) return;
@@ -373,7 +383,7 @@ export const useDeposit = ({
       !!vault.metadata.gateway &&
       !!vault.metadata.yieldTokenOverride
     ) {
-      return isDepositGatewayConfigFetching;
+      return isDepositGatewayConfigFetching || isFetchingAllowance;
     }
 
     // deposit alchemist
@@ -404,6 +414,7 @@ export const useDeposit = ({
     isDepositGasConfigFetching,
     isDepositGatewayConfigFetching,
     isDepositUnderlyingConfigFetching,
+    isFetchingAllowance,
     selectedToken.address,
     vault.metadata.gateway,
     vault.metadata.yieldTokenOverride,

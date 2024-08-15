@@ -1,3 +1,8 @@
+import { UseQueryResult } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { formatEther, formatUnits } from "viem";
+import { multiply, toNumber } from "dnum";
+
 import { VaultHelper } from "@/utils/helpers/vaultHelper";
 import { useAlchemists } from "@/lib/queries/useAlchemists";
 import { useGetMultipleTokenPrices } from "@/lib/queries/useTokenPrice";
@@ -5,9 +10,6 @@ import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { useVaults } from "@/lib/queries/useVaults";
 import { Token, Vault } from "@/lib/types";
 import { formatNumber } from "@/utils/number";
-import { UseQueryResult } from "@tanstack/react-query";
-import { useMemo } from "react";
-import { formatEther, formatUnits } from "viem";
 
 export const VaultsMetrics = () => {
   const { data: alchemists } = useAlchemists();
@@ -19,6 +21,7 @@ export const VaultsMetrics = () => {
   const underlyingTokensPrices = useGetMultipleTokenPrices(
     vaults?.map((vault) => vault.underlyingToken),
   );
+
   const { data: tokens } = useTokensQuery();
 
   const totalDeposit = useMemo(
@@ -27,18 +30,12 @@ export const VaultsMetrics = () => {
   );
 
   const totalDebt = useMemo(() => {
-    return calculateTotalDebt(alchemists, debtTokenPrices, vaults);
-  }, [alchemists, debtTokenPrices, vaults]);
+    return calculateTotalDebt(alchemists, debtTokenPrices);
+  }, [alchemists, debtTokenPrices]);
 
   const availableCredit = useMemo(
-    () =>
-      calculateAvailableCredit(
-        alchemists,
-        tokens,
-        vaults,
-        underlyingTokensPrices,
-      ) - totalDebt,
-    [alchemists, tokens, totalDebt, underlyingTokensPrices, vaults],
+    () => calculateAvailableCredit(alchemists, debtTokenPrices, totalDebt),
+    [alchemists, debtTokenPrices, totalDebt],
   );
 
   const globalTVL = useMemo(
@@ -55,7 +52,9 @@ export const VaultsMetrics = () => {
               Total Deposit
             </div>
             <div className="flex">
-              <div className="mr-2 flex">${formatNumber(totalDeposit)}</div>
+              <div className="mr-2 flex">
+                {formatNumber(totalDeposit, { decimals: 2, isCurrency: true })}
+              </div>
             </div>
           </div>
           <div className="flex-col">
@@ -63,7 +62,13 @@ export const VaultsMetrics = () => {
               Current Debt
             </div>
             <div className="flex">
-              <div className="mr-2 flex">${formatNumber(totalDebt)}</div>
+              <div className="mr-2 flex">
+                {formatNumber(totalDebt, {
+                  decimals: 2,
+                  isCurrency: true,
+                  allowNegative: false,
+                })}
+              </div>
             </div>
           </div>
           <div className="flex-col">
@@ -71,7 +76,13 @@ export const VaultsMetrics = () => {
               Available Credit
             </div>
             <div className="flex">
-              <div className="mr-2 flex">${formatNumber(availableCredit)}</div>
+              <div className="mr-2 flex">
+                {formatNumber(availableCredit, {
+                  decimals: 2,
+                  isCurrency: true,
+                  allowNegative: false,
+                })}
+              </div>
             </div>
           </div>
           <div className="flex-col border-t border-dashed border-bronze3 md:border-l md:border-t-0 md:pl-6 md:pt-0">
@@ -79,7 +90,9 @@ export const VaultsMetrics = () => {
               Global TVL
             </div>
             <div className="flex">
-              <div className="mr-2 flex">${formatNumber(globalTVL)}</div>
+              <div className="mr-2 flex">
+                {formatNumber(globalTVL, { decimals: 2, isCurrency: true })}
+              </div>
             </div>
           </div>
         </div>
@@ -96,55 +109,50 @@ function calculateTotalDeposit(
   return vaults?.reduce((previousValue, currentVault, i) => {
     const vaultHelper = new VaultHelper(currentVault);
 
-    const sharesBalance = vaultHelper.convertSharesToUnderlyingTokens(
-      currentVault.position.shares,
-    );
+    const sharesBalanceInUnderlying =
+      vaultHelper.convertSharesToUnderlyingTokens(currentVault.position.shares);
 
     const vaultUnderlyingTokenData = tokens?.find(
       (t) =>
         t.address.toLowerCase() === currentVault.underlyingToken.toLowerCase(),
     );
+
     const tokenPrice = underlyingTokensPrices[i].data;
-
-    if (!vaultUnderlyingTokenData) {
-      return previousValue + 0;
-    }
-
-    const amountTokens = formatUnits(
-      sharesBalance,
-      vaultUnderlyingTokenData.decimals,
-    );
 
     if (!tokenPrice) {
       return previousValue + 0;
     }
 
-    return previousValue + tokenPrice * parseFloat(amountTokens);
+    if (!vaultUnderlyingTokenData) {
+      return previousValue + 0;
+    }
+
+    return (
+      previousValue +
+      toNumber(
+        multiply(tokenPrice, [
+          sharesBalanceInUnderlying,
+          vaultUnderlyingTokenData.decimals,
+        ]),
+      )
+    );
   }, 0);
 }
 
 function calculateTotalDebt(
   alchemists: ReturnType<typeof useAlchemists>["data"],
-  debtTokenPrices: UseQueryResult<number, Error>[],
-  vaults: Vault[] | undefined,
+  debtTokensPrices: UseQueryResult<number, Error>[],
 ) {
   if (!alchemists) return 0;
   let debt = 0;
   for (let i = 0; i < alchemists.length; i++) {
     const alchemist = alchemists[i];
-    const debtTokenPrice = debtTokenPrices[i].data;
-    const filteredVaults = vaults?.filter(
-      (vault) =>
-        vault.alchemist.address.toLowerCase() ===
-        alchemist.address.toLowerCase(),
-    );
+    const debtTokenPrice = debtTokensPrices[i].data;
 
-    const rawDebt = formatEther(alchemist.position.debt);
+    const rawDebt = alchemist.position.debt;
 
-    if ((!!filteredVaults && filteredVaults.length === 0) || !debtTokenPrice) {
-      debt += 0;
-    } else {
-      debt += debtTokenPrice * parseFloat(rawDebt);
+    if (debtTokenPrice) {
+      debt += toNumber(multiply(debtTokenPrice, [rawDebt, 18]));
     }
   }
 
@@ -157,60 +165,38 @@ function calculateTotalDebt(
 
 function calculateAvailableCredit(
   alchemists: ReturnType<typeof useAlchemists>["data"],
-  tokens: Token[] | undefined,
-  vaults: Vault[] | undefined,
-  tokenPrices: UseQueryResult<number, Error>[],
+  debtTokensPrices: UseQueryResult<number, Error>[],
+  totalDebt: number,
 ) {
-  let availableCredit = 0;
-  if (!vaults) return 0;
+  let availableCreditWithoutDebt = 0;
+  if (!alchemists) return 0;
 
-  for (let i = 0; i < vaults.length; i++) {
-    const vault = vaults[i];
-    const tokenPrice = tokenPrices[i].data;
+  for (let i = 0; i < alchemists.length; i++) {
+    const alchemist = alchemists[i];
+    const totalValue = alchemist.totalValue;
+    const tokenPrice = debtTokensPrices[i].data;
 
-    const vaultHelper = new VaultHelper(vault);
-
-    const sharesBalance = vaultHelper.convertSharesToUnderlyingTokens(
-      vault.position.shares,
-    );
-
-    const vaultUnderlyingTokenData = tokens?.find(
-      (t) => t.address.toLowerCase() === vault.underlyingToken.toLowerCase(),
-    );
-
-    if (!vaultUnderlyingTokenData) {
+    if (!tokenPrice) {
       continue;
     }
 
-    const alchemist = alchemists?.find(
-      (al) =>
-        al.address.toLowerCase() === vault.alchemist.address.toLowerCase(),
-    );
+    const totalDepositValue = toNumber(multiply(tokenPrice, [totalValue, 18]));
 
-    const ratio = parseFloat(
-      formatEther(alchemist?.minimumCollateralization ?? 0n),
-    );
+    const ratio = +formatEther(alchemist.minimumCollateralization ?? 0n);
 
-    if (tokenPrice) {
-      const tokensValue =
-        tokenPrice *
-        parseFloat(
-          formatUnits(sharesBalance, vaultUnderlyingTokenData.decimals),
-        );
+    const debtLimit = totalDepositValue / ratio;
 
-      const debtLimit = tokensValue / ratio;
-
-      availableCredit += debtLimit;
-    }
+    availableCreditWithoutDebt += debtLimit;
   }
 
+  const availableCredit = availableCreditWithoutDebt - totalDebt;
   return availableCredit;
 }
 
 function calculateGlobalTVL(
   tokens: Token[] | undefined,
   vaults: Vault[] | undefined,
-  tokenPrices: UseQueryResult<number, Error>[],
+  underlyingTokensPrices: UseQueryResult<number, Error>[],
 ) {
   return vaults?.reduce((prevValue, currVault, i) => {
     const vaultHelper = new VaultHelper(currVault);
@@ -218,7 +204,7 @@ function calculateGlobalTVL(
     const vaultTVL = vaultHelper.convertSharesToUnderlyingTokens(
       currVault.yieldTokenParams.totalShares,
     );
-    const tokenPrice = tokenPrices[i].data;
+    const tokenPrice = underlyingTokensPrices[i].data;
 
     const vaultUnderlyingTokenData = tokens?.find(
       (t) =>
@@ -229,13 +215,13 @@ function calculateGlobalTVL(
       return prevValue + 0;
     }
 
-    const tvl = parseFloat(
-      formatUnits(vaultTVL, vaultUnderlyingTokenData.decimals),
-    );
-
     if (!tokenPrice) {
       return prevValue + 0;
     }
+
+    const tvl = parseFloat(
+      formatUnits(vaultTVL, vaultUnderlyingTokenData.decimals),
+    );
 
     return prevValue + tokenPrice * tvl;
   }, 0);

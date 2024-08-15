@@ -6,10 +6,14 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useChain } from "@/hooks/useChain";
-import { erc20Abi, parseUnits } from "viem";
+import { erc20Abi, parseAbi, parseUnits } from "viem";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { GAS_ADDRESS, MAX_UINT256_BN } from "@/lib/constants";
+import {
+  GAS_ADDRESS,
+  MAX_UINT256_BN,
+  USDT_MAINNET_ADDRESS,
+} from "@/lib/constants";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useWriteContractMutationCallback } from "./useWriteContractMutationCallback";
 
@@ -31,18 +35,27 @@ export const useAllowance = ({
   const queryClient = useQueryClient();
   const mutationCallback = useWriteContractMutationCallback();
 
-  const { data: isApprovalNeeded, queryKey: isApprovalNeededQueryKey } =
-    useReadContract({
-      address: tokenAddress,
-      abi: erc20Abi,
-      functionName: "allowance",
-      args: [address!, spender],
-      chainId: chain.id,
-      query: {
-        enabled: !!address && spender !== GAS_ADDRESS,
-        select: (allowance) => allowance < parseUnits(amount, decimals),
-      },
-    });
+  const {
+    data: allowanceData,
+    queryKey: isApprovalNeededQueryKey,
+    isFetching,
+  } = useReadContract({
+    address: tokenAddress,
+    abi: erc20Abi,
+    functionName: "allowance",
+    args: [address!, spender],
+    chainId: chain.id,
+    query: {
+      enabled:
+        !!address && tokenAddress !== GAS_ADDRESS && !isInputZero(amount),
+      select: (allowance) => ({
+        isApprovalNeeded: allowance < parseUnits(amount, decimals),
+        allowance,
+      }),
+    },
+  });
+
+  const { isApprovalNeeded, allowance } = allowanceData ?? {};
 
   const { data: approveConfig } = useSimulateContract({
     address: tokenAddress,
@@ -54,7 +67,30 @@ export const useAllowance = ({
       isInfiniteApproval ? MAX_UINT256_BN : parseUnits(amount, decimals),
     ],
     query: {
-      enabled: !isInputZero(amount) && !!address && spender !== GAS_ADDRESS,
+      enabled:
+        !isInputZero(amount) &&
+        !!address &&
+        isApprovalNeeded === true &&
+        tokenAddress !== GAS_ADDRESS &&
+        tokenAddress?.toLowerCase() !== USDT_MAINNET_ADDRESS.toLowerCase(),
+    },
+  });
+
+  /** USDT on Ethereum doesn't follow ERC20 standard.
+   * https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7#code#L199
+   */
+  const { data: approveUsdtEthConfig } = useSimulateContract({
+    address: tokenAddress,
+    abi: parseAbi(["function approve(address _spender, uint _value) public"]),
+    functionName: "approve",
+    args: [spender, allowance ? 0n : MAX_UINT256_BN],
+    query: {
+      enabled:
+        !isInputZero(amount) &&
+        !!address &&
+        isApprovalNeeded === true &&
+        allowance !== undefined &&
+        tokenAddress?.toLowerCase() === USDT_MAINNET_ADDRESS.toLowerCase(),
     },
   });
 
@@ -64,20 +100,29 @@ export const useAllowance = ({
     }),
   });
 
-  const { data: approvalReceipt } = useWaitForTransactionReceipt({
-    chainId: chain.id,
-    hash: approveTxHash,
-  });
+  const { data: approvalReceipt, queryKey: approvalReceiptQueryKey } =
+    useWaitForTransactionReceipt({
+      chainId: chain.id,
+      hash: approveTxHash,
+    });
 
   useEffect(() => {
     if (approvalReceipt) {
       queryClient.invalidateQueries({ queryKey: isApprovalNeededQueryKey });
+      queryClient.resetQueries({ queryKey: approvalReceiptQueryKey });
     }
-  }, [approvalReceipt, isApprovalNeededQueryKey, queryClient]);
+  }, [
+    approvalReceipt,
+    isApprovalNeededQueryKey,
+    approvalReceiptQueryKey,
+    queryClient,
+  ]);
 
   return {
     isApprovalNeeded,
     approve,
     approveConfig,
+    approveUsdtEthConfig,
+    isFetching,
   };
 };

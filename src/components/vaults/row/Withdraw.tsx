@@ -1,6 +1,6 @@
 import { Token, Vault } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Select,
   SelectTrigger,
@@ -34,9 +34,7 @@ export const Withdraw = ({
   );
 
   const { data: tokens } = useTokensQuery();
-  const gasToken = useMemo(() => {
-    return tokens?.find((token) => token.address === GAS_ADDRESS);
-  }, [tokens]);
+  const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
 
   const isETHCompatible =
     vault.metadata.wethGateway !== undefined && gasToken !== undefined;
@@ -46,7 +44,7 @@ export const Withdraw = ({
 
   const token = selection.find((token) => token.address === tokenAddress)!;
 
-  const isSelecedTokenYieldToken =
+  const isSelectedTokenYieldToken =
     token.address.toLowerCase() === yieldTokenData.address.toLowerCase();
 
   const { isApprovalNeeded, writeApprove, writeWithdraw, isFetching } =
@@ -77,7 +75,7 @@ export const Withdraw = ({
       <div className="space-y-4">
         <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
           <Select value={tokenAddress} onValueChange={onSelectChange}>
-            <SelectTrigger className="h-auto w-56">
+            <SelectTrigger className="h-auto w-24 sm:w-56">
               <SelectValue placeholder="Token" asChild>
                 <div className="flex items-center gap-4">
                   <img
@@ -85,7 +83,9 @@ export const Withdraw = ({
                     alt={token.symbol}
                     className="h-12 w-12"
                   />
-                  <span className="text-xl">{token.symbol}</span>
+                  <span className="hidden text-xl sm:inline">
+                    {token.symbol}
+                  </span>
                 </div>
               </SelectValue>
             </SelectTrigger>
@@ -102,11 +102,13 @@ export const Withdraw = ({
             setAmount={setAmount}
             tokenSymbol={token.symbol}
             tokenDecimals={token.decimals}
-            isSelectedTokenYieldToken={isSelecedTokenYieldToken}
+            isSelectedTokenYieldToken={isSelectedTokenYieldToken}
             vault={vault}
           />
         </div>
-        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        {!isSelectedTokenYieldToken && (
+          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        )}
         <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
           Current debt:{" "}
           {formatNumber(
@@ -115,7 +117,7 @@ export const Withdraw = ({
                 ? 0n
                 : vault.alchemist.position.debt,
             ),
-            4,
+            { decimals: 4 },
           )}{" "}
           {vault.alchemist.synthType}
         </p>
