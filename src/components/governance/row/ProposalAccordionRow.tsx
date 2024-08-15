@@ -1,5 +1,5 @@
 import { getAddress } from "viem";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
 import { toast } from "sonner";
 import {
@@ -7,7 +7,7 @@ import {
   ExternalLinkIcon,
   MessagesSquareIcon,
 } from "lucide-react";
-import { sanitize } from "dompurify";
+import Dompurify from "dompurify";
 
 import {
   AccordionContent,
@@ -286,7 +286,9 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
           <p className="mb-3 text-sm opacity-50">Description</p>
           <div
             className="w-full max-w-[calc(100vw-10rem)] overflow-x-auto whitespace-pre-wrap text-justify lg:max-w-[calc(100vw-32rem)]"
-            dangerouslySetInnerHTML={{ __html: sanitize(proposal.body) }}
+            dangerouslySetInnerHTML={{
+              __html: Dompurify.sanitize(proposal.body),
+            }}
           ></div>
         </div>
         <div className="flex min-w-max flex-col rounded border border-grey3inverse bg-grey15inverse p-4 dark:border-grey3 dark:bg-grey15">
@@ -361,7 +363,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
 
           <p className="mb-3 opacity-50">Results</p>
           {proposal.choices.map((choice, i) => (
-            <>
+            <Fragment key={choice + i}>
               <div className="wrapper mb-2">
                 <p>{choice}</p>
                 <p className="text-sm">
@@ -389,7 +391,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                   </div>
                 </div>
               </div>
-            </>
+            </Fragment>
           ))}
         </div>
       </AccordionContent>
