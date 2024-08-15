@@ -92,9 +92,9 @@ describe("Format number", () => {
   });
 
   describe("Compact notation", () => {
-    it("Should use compact notation if it is greater than 1_000_000_000", () => {
+    it("Should use compact notation if compact option passed", () => {
       const amount = "1000000000";
-      const formatted = formatNumber(amount);
+      const formatted = formatNumber(amount, { compact: true });
       expect(formatted).toBe("1.00B");
     });
   });
