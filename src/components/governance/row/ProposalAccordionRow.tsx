@@ -364,7 +364,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
           <p className="mb-3 opacity-50">Results</p>
           {proposal.choices.map((choice, i) => (
             <Fragment key={choice + i}>
-              <div className="wrapper mb-2">
+              <div className="mb-2">
                 <p>{choice}</p>
                 <p className="text-sm">
                   {formatNumber(proposal.scores?.[i])} ALCX{" "}
