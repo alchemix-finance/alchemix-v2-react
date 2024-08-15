@@ -212,7 +212,9 @@ export const ConnextBridgeWidget = () => {
         <div className="flex flex-col gap-2">
           <p>Relayer fee:</p>
           <Input
-            value={formatNumber(relayerFee, 5)}
+            value={formatNumber(relayerFee, {
+              decimals: 5,
+            })}
             readOnly
             aria-readonly
             type="text"
