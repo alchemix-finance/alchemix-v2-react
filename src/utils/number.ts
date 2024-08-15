@@ -46,6 +46,7 @@ interface BaseFormatNumberOptions {
   allowNegative?: boolean;
   dustToZero?: boolean;
   tokenDecimals?: number;
+  compact?: boolean;
 }
 
 interface DustToZeroTrue extends BaseFormatNumberOptions {
@@ -68,6 +69,7 @@ export function formatNumber(
     allowNegative = true,
     dustToZero = false,
     tokenDecimals = 18,
+    compact = false,
   }: FormatNumberOptions = {},
 ) {
   if (amount !== undefined && amount !== null && !!amount && !isNaN(+amount)) {
@@ -99,6 +101,10 @@ export function formatNumber(
       maximumFractionDigits: decimals,
     };
 
+    if (compact) {
+      intlOptions.notation = "compact";
+    }
+
     // Currency
     if (isCurrency) {
       const currency = "USD";
@@ -110,12 +116,6 @@ export function formatNumber(
 
     // We use only en-US locale
     const locale = "en-US";
-
-    if (+amount >= 1_000_000_000) {
-      intlOptions.notation = "compact";
-      const formatter = new Intl.NumberFormat(locale, intlOptions);
-      return formatter.format(+amount);
-    }
 
     const formatter = new Intl.NumberFormat(locale, intlOptions);
 

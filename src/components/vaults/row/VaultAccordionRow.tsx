@@ -362,7 +362,7 @@ const VaultCapacityCell = ({
         >
           {capacity?.isFull
             ? "Full"
-            : `${formatNumber(capacity?.currentValue ?? "0")}/${formatNumber(limitValue)} ${tokenSymbol}`}
+            : `${formatNumber(capacity?.currentValue ?? "0", { compact: true })}/${formatNumber(limitValue, { compact: true })} ${tokenSymbol}`}
         </p>
       </div>
     </>
