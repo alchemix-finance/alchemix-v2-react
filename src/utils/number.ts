@@ -121,7 +121,7 @@ export function formatNumber(
 
     // Small numbers
     if (+amount > 0 && +amount < comparator) {
-      const lessThanComparatorRepresentation = `< ${comparator.toFixed(decimals)}`;
+      const lessThanComparatorRepresentation = `< ${isCurrency ? "$" : ""}${comparator.toFixed(decimals)}`;
 
       const numStr = enforceToDecimalString(amount);
       const match = numStr.match(/0\.0*(\d+)/);
@@ -144,7 +144,7 @@ export function formatNumber(
 
     return formatter.format(+amount);
   } else {
-    return "0.00";
+    return `${isCurrency ? "$" : ""}0.00`;
   }
 }
 
