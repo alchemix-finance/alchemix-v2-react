@@ -44,7 +44,8 @@ export type MessageType = "info" | "warning" | "error";
 export interface VaultMetadata {
   label: string;
   synthAssetType: SynthAsset;
-  underlying: string;
+  underlyingSymbol: string;
+  yieldSymbol: string;
   messages: { message: string; type: MessageType }[];
   api: {
     apr: AprFn;

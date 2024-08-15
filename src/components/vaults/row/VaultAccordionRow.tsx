@@ -1,9 +1,14 @@
+import { useMemo, useState } from "react";
+import { formatEther, formatUnits } from "viem";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
+import { AnimatePresence } from "framer-motion";
+import { greaterThan, multiply, toString } from "dnum";
+
 import { useChain } from "@/hooks/useChain";
 import { SYNTH_ASSETS_METADATA } from "@/lib/config/synths";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { Vault } from "@/lib/types";
-import { useMemo, useState } from "react";
-import { formatEther, formatUnits } from "viem";
 import {
   AccordionContent,
   AccordionItem,
@@ -12,8 +17,6 @@ import {
 import { useGetTokenPrice } from "@/lib/queries/useTokenPrice";
 import { formatNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VaultMessage } from "@/components/vaults/row/VaultMessage";
 import { Info } from "@/components/vaults/row/Info";
@@ -25,7 +28,6 @@ import { useVaults } from "@/lib/queries/useVaults";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { AnimatePresence } from "framer-motion";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
@@ -121,8 +123,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <div className="text-left">
             <p className="font-bold">{vault.metadata.label}</p>
             <p className="text-sm text-lightgrey10">
-              {vaultYieldTokenData?.symbol ?? "..."}
-              {vaultUnderlyingTokenData?.symbol ?? "..."}
+              {vault.metadata.underlyingSymbol} / {vault.metadata.yieldSymbol}
             </p>
             <p className="text-sm text-lightgrey10">LTV: {vaultLtv}%</p>
           </div>
@@ -277,17 +278,28 @@ export const CurrencyCell = ({
 }) => {
   const tokenAmountFormated = formatUnits(tokenAmount, tokenDecimals);
   const { data: tokenPrice } = useGetTokenPrice(tokenAddress);
-  const amount = tokenPrice ? tokenPrice * parseFloat(tokenAmountFormated) : 0;
+
+  const isDust = !greaterThan([tokenAmount, tokenDecimals], [5n, 18]);
+  const amountInUsd =
+    tokenPrice && !isDust
+      ? toString(multiply(tokenPrice, [tokenAmount, tokenDecimals]))
+      : 0;
+
   return (
     <div className="flex flex-col items-center">
       <p>
-        {parseFloat(tokenAmountFormated) === 0
-          ? tokenAmountFormated
-          : formatNumber(parseFloat(tokenAmountFormated))}{" "}
+        {formatNumber(tokenAmountFormated, { dustToZero: true, tokenDecimals })}{" "}
         {tokenSymbol}
       </p>
       {tokenPrice && (
-        <p className="text-sm text-lightgrey10">${formatNumber(amount)}</p>
+        <p className="text-sm text-lightgrey10">
+          {formatNumber(amountInUsd, {
+            decimals: 2,
+            isCurrency: true,
+            dustToZero: true,
+            tokenDecimals,
+          })}
+        </p>
       )}
     </div>
   );
@@ -354,7 +366,7 @@ const VaultCapacityCell = ({
         >
           {capacity?.isFull
             ? "Full"
-            : `${formatNumber(capacity?.currentValue ?? "0")}/${formatNumber(limitValue)} ${tokenSymbol}`}
+            : `${formatNumber(capacity?.currentValue ?? "0", { compact: true })}/${formatNumber(limitValue, { compact: true })} ${tokenSymbol}`}
         </p>
       </div>
     </>

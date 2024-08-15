@@ -171,6 +171,7 @@ export const VaultWithdrawTokenInput = ({
       tokenSymbol={tokenSymbol}
       type="Available"
       overrideBalance={balance}
+      dustToZero={true}
     />
   );
 };

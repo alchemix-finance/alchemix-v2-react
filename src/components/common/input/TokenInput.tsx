@@ -18,6 +18,7 @@ export const TokenInput = ({
   type = "Balance",
   overrideBalance,
   externalMaximumAmount,
+  dustToZero,
 }: {
   amount: string;
   setAmount: (amount: string) => void;
@@ -27,6 +28,7 @@ export const TokenInput = ({
   type?: "Balance" | "Available" | "Claimable";
   overrideBalance?: string;
   externalMaximumAmount?: string;
+  dustToZero?: boolean;
 }) => {
   const chain = useChain();
   const { address } = useAccount();
@@ -95,11 +97,13 @@ export const TokenInput = ({
       ? gasBalance
       : tokenBalance;
 
+  const formatOptions = dustToZero ? { dustToZero, tokenDecimals } : {};
+
   return (
     <div className="flex flex-grow flex-col lg:flex-row">
       <div className="relative flex-grow">
         <p className="pointer-events-none absolute left-2 inline-block p-2 text-xs font-light text-lightgrey10 lg:text-sm">
-          {type}: {formatNumber(balance)}{" "}
+          {type}: {formatNumber(balance, formatOptions)}{" "}
           {tokenAddress === GAS_ADDRESS
             ? chain.nativeCurrency.symbol
             : tokenSymbol}

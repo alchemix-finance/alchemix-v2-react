@@ -33,9 +33,13 @@ export const Deposit = ({
 
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
-  const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
-    yieldTokenData.address,
-  );
+
+  const initTokenAddress = vault.metadata.disabledDepositTokens
+    .map((t) => t.toLowerCase())
+    .includes(underlyingTokenData.address.toLowerCase())
+    ? yieldTokenData.address
+    : underlyingTokenData.address;
+  const [tokenAddress, setTokenAddress] = useState(initTokenAddress);
 
   const { data: tokens } = useTokensQuery();
   const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);

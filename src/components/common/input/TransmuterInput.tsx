@@ -63,7 +63,11 @@ export const TransmuterInput = ({
       ],
       query: {
         enabled: !!address && type !== "Balance",
-        select: (balances) => balances.map((balance) => formatEther(balance)),
+        select: ([unexchangedBalance, claimableBalance]) =>
+          [
+            formatEther(unexchangedBalance),
+            formatUnits(claimableBalance, tokenDecimals),
+          ] as const,
       },
     });
   const [unexchangedBalance, claimableBalance] = transmuterBalance ?? [];

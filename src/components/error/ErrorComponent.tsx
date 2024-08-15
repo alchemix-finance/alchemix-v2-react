@@ -1,11 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { ErrorComponentProps } from "@tanstack/react-router";
+import { ErrorComponentProps, useLocation } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Page } from "@/components/common/Page";
 import { cn } from "@/utils/cn";
 
+/**
+ * NOTE: In production the error stack trace is minified.
+ * @link https://github.com/facebook/create-react-app/issues/3753#issuecomment-356998249
+ * The way to find an error is open React DevTools, and find the component using minified name.
+ */
+
 export const ErrorComponent = (props: ErrorComponentProps) => {
+  const location = useLocation();
+
   const [copied, setCopied] = useState(false);
   const timer = useRef<NodeJS.Timeout | undefined>();
 
@@ -28,7 +36,13 @@ export const ErrorComponent = (props: ErrorComponentProps) => {
       Object.getOwnPropertyNames(props.error),
       2,
     );
-    navigator.clipboard.writeText(errorStringified);
+    const locationStringified = JSON.stringify(location, null, 2);
+    const error = JSON.stringify(
+      { errorStr: errorStringified, location: locationStringified },
+      null,
+      2,
+    );
+    navigator.clipboard.writeText(error);
     setCopied(true);
     timer.current = setTimeout(() => setCopied(false), 2000);
   };
