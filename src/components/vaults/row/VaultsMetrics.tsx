@@ -52,7 +52,9 @@ export const VaultsMetrics = () => {
               Total Deposit
             </div>
             <div className="flex">
-              <div className="mr-2 flex">${formatNumber(totalDeposit)}</div>
+              <div className="mr-2 flex">
+                {formatNumber(totalDeposit, { decimals: 2, isCurrency: true })}
+              </div>
             </div>
           </div>
           <div className="flex-col">
@@ -60,7 +62,13 @@ export const VaultsMetrics = () => {
               Current Debt
             </div>
             <div className="flex">
-              <div className="mr-2 flex">${formatNumber(totalDebt)}</div>
+              <div className="mr-2 flex">
+                {formatNumber(totalDebt, {
+                  decimals: 2,
+                  isCurrency: true,
+                  allowNegative: false,
+                })}
+              </div>
             </div>
           </div>
           <div className="flex-col">
@@ -68,7 +76,13 @@ export const VaultsMetrics = () => {
               Available Credit
             </div>
             <div className="flex">
-              <div className="mr-2 flex">${formatNumber(availableCredit)}</div>
+              <div className="mr-2 flex">
+                {formatNumber(availableCredit, {
+                  decimals: 2,
+                  isCurrency: true,
+                  allowNegative: false,
+                })}
+              </div>
             </div>
           </div>
           <div className="flex-col border-t border-dashed border-bronze3 md:border-l md:border-t-0 md:pl-6 md:pt-0">
@@ -76,7 +90,9 @@ export const VaultsMetrics = () => {
               Global TVL
             </div>
             <div className="flex">
-              <div className="mr-2 flex">${formatNumber(globalTVL)}</div>
+              <div className="mr-2 flex">
+                {formatNumber(globalTVL, { decimals: 2, isCurrency: true })}
+              </div>
             </div>
           </div>
         </div>

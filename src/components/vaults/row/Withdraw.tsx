@@ -117,7 +117,7 @@ export const Withdraw = ({
                 ? 0n
                 : vault.alchemist.position.debt,
             ),
-            4,
+            { decimals: 4 },
           )}{" "}
           {vault.alchemist.synthType}
         </p>
