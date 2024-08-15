@@ -3,7 +3,7 @@ import { formatEther, formatUnits } from "viem";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
 import { AnimatePresence } from "framer-motion";
-import { multiply, toString } from "dnum";
+import { greaterThan, multiply, toString } from "dnum";
 
 import { useChain } from "@/hooks/useChain";
 import { SYNTH_ASSETS_METADATA } from "@/lib/config/synths";
@@ -278,9 +278,13 @@ export const CurrencyCell = ({
 }) => {
   const tokenAmountFormated = formatUnits(tokenAmount, tokenDecimals);
   const { data: tokenPrice } = useGetTokenPrice(tokenAddress);
-  const amountInUsd = tokenPrice
-    ? toString(multiply(tokenPrice, [tokenAmount, tokenDecimals]))
-    : 0;
+
+  const isDust = !greaterThan([tokenAmount, tokenDecimals], [5n, 18]);
+  const amountInUsd =
+    tokenPrice && !isDust
+      ? toString(multiply(tokenPrice, [tokenAmount, tokenDecimals]))
+      : 0;
+
   return (
     <div className="flex flex-col items-center">
       <p>
