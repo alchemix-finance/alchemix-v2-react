@@ -109,7 +109,7 @@ function Index() {
         }
       >
         <img
-          src="/images/landing-page/ad.jpg"
+          src="/images/landing-page/ad.webp"
           alt="Watch the Alchemix cinematic ad"
           className="w-full transition-all"
         />
