@@ -18,8 +18,8 @@ import { wethGatewayAbi } from "@/abi/wethGateway";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
-import { staticTokenAdapterAbi } from "@/abi/staticTokenAdapter";
 import { isInputZero } from "@/utils/inputNotZero";
+import { useStaticTokenAdapterWithdraw } from "@/hooks/useStaticTokenAdapterWithdraw";
 
 export const useWithdraw = ({
   vault,
@@ -49,23 +49,12 @@ export const useWithdraw = ({
 
   const { address } = useAccount();
 
-  /**
-   * Adjusted for Aave token adapters.
-   * So that when withdrawing Aave yield bearing token, you get exactly what you input.
-   * Used in conjunction with `staticToDynamic` read in `VaultWithdrawTokenInput.tsx`.
-   * It is safe to assume that static adapter has same decimals as yield token (it inherits from it).
-   */
-  const { data: aaveAdjustedAmount } = useReadContract({
-    address: vault.yieldToken,
-    abi: staticTokenAdapterAbi,
-    functionName: "dynamicToStaticAmount",
-    args: [parseUnits(amount, selectedToken.decimals)],
-    query: {
-      enabled:
-        !isInputZero(amount) &&
-        isSelectedTokenYieldToken &&
-        !!vault.metadata.yieldTokenOverride,
-    },
+  const { aaveAdjustedAmount } = useStaticTokenAdapterWithdraw({
+    typeGuard: "adjustedAmount",
+    amount,
+    selectedToken,
+    vault,
+    isSelectedTokenYieldToken,
   });
 
   const withdrawAmount =

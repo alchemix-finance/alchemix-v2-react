@@ -6,7 +6,7 @@ import { formatEther, formatUnits, parseUnits, zeroAddress } from "viem";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useMemo } from "react";
 import { TokenInput } from "./TokenInput";
-import { staticTokenAdapterAbi } from "@/abi/staticTokenAdapter";
+import { useStaticTokenAdapterWithdraw } from "@/hooks/useStaticTokenAdapterWithdraw";
 
 export const VaultWithdrawTokenInput = ({
   amount,
@@ -132,28 +132,11 @@ export const VaultWithdrawTokenInput = ({
     },
   });
 
-  /**
-   * Adjusted for Aave token adapters.
-   * So that when withdrawing Aave yield bearing token, you get exactly what you input.
-   * Used in conjunction with `dynamicToStaticAmount` read in `useWithdraw.tsx`.
-   * It is safe to assume that static adapter has same decimals as yield token (it inherits from it).
-   */
-  const { data: balanceForYieldTokenAdapter } = useReadContract({
-    address: vault.yieldToken,
-    chainId: chain.id,
-    abi: staticTokenAdapterAbi,
-    functionName: "staticToDynamicAmount",
-    args: [
-      parseUnits(balanceForYieldToken ?? "0", vault.yieldTokenParams.decimals),
-    ],
-    query: {
-      enabled:
-        balanceForYieldToken !== undefined &&
-        isSelectedTokenYieldToken &&
-        !!vault.metadata.yieldTokenOverride,
-      select: (balance) =>
-        formatUnits(balance, vault.yieldTokenParams.decimals),
-    },
+  const { balanceForYieldTokenAdapter } = useStaticTokenAdapterWithdraw({
+    typeGuard: "withdrawInput",
+    balanceForYieldToken,
+    isSelectedTokenYieldToken,
+    vault,
   });
 
   const balance = isSelectedTokenYieldToken
