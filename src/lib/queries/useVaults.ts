@@ -6,7 +6,7 @@ import { useAlchemists } from "@/lib/queries/useAlchemists";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { YieldTokenParams } from "@/lib/types";
 import { tokenAdapterAbi } from "@/abi/tokenAdapter";
-import { VAULTS } from "@/lib/config/vaults";
+import { MAX_LOSS_CHECKER_ADDRESSES, VAULTS } from "@/lib/config/vaults";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { ONE_MINUTE_IN_MS } from "@/lib/constants";
 import { QueryKeys } from "./queriesSchema";
@@ -188,10 +188,62 @@ export const useVaults = () => {
         };
       });
 
-      const vaultsWithTokenAdaptersAndMetadata = vaultsWithTokenAdapters
+      const maxLossCheckCalls = vaultsWithTokenAdapters.map((vault) => ({
+        address: MAX_LOSS_CHECKER_ADDRESSES[chain.id],
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "alchemixContract_",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "yieldToken_",
+                type: "address",
+              },
+            ],
+            name: "getCheckLossExceedsMaxLoss",
+            outputs: [
+              {
+                internalType: "bool",
+                name: "isLossGreaterThanMaxLoss",
+                type: "bool",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ] as const,
+        functionName: "getCheckLossExceedsMaxLoss",
+        args: [vault.alchemist.address, vault.yieldToken],
+      }));
+
+      const maxLossCheckResults = await publicClient.multicall({
+        contracts: maxLossCheckCalls,
+      });
+
+      const vaultsWithCheckedMaxLoss = vaultsWithTokenAdapters.map(
+        (vault, i) => ({
+          ...vault,
+          isLossGreaterThanMaxLoss: maxLossCheckResults[i].result,
+        }),
+      );
+
+      const vaultsWithTokenAdaptersAndMetadata = vaultsWithCheckedMaxLoss
         .filter((vault) => VAULTS[chain.id][vault.yieldToken] !== undefined)
         .map((vault) => {
           const metadata = VAULTS[chain.id][vault.yieldToken];
+          if (vault.isLossGreaterThanMaxLoss) {
+            metadata.messages.push({
+              type: "warning",
+              message:
+                "This vault has limited functionality due to experiencing a loss.",
+              learnMoreUrl:
+                "https://alchemix-finance.gitbook.io/user-docs/resources/guides/vault-losses-and-collateral-de-pegging",
+            });
+          }
           return {
             ...vault,
             metadata,
