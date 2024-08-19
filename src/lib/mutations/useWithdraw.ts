@@ -58,7 +58,9 @@ export const useWithdraw = ({
   });
 
   const withdrawAmount =
-    isSelectedTokenYieldToken && !!vault.metadata.yieldTokenOverride
+    vault.metadata.api.provider === "aave" &&
+    isSelectedTokenYieldToken &&
+    !!vault.metadata.yieldTokenOverride
       ? aaveAdjustedAmount
       : parseUnits(amount, selectedToken.decimals);
 

@@ -59,6 +59,7 @@ export const useStaticTokenAdapterWithdraw = ({
     ],
     query: {
       enabled:
+        vault.metadata.api.provider === "aave" &&
         typeGuard === "withdrawInput" &&
         balanceForYieldToken !== undefined &&
         isSelectedTokenYieldToken &&
@@ -79,6 +80,7 @@ export const useStaticTokenAdapterWithdraw = ({
     ],
     query: {
       enabled:
+        vault.metadata.api.provider === "aave" &&
         typeGuard === "adjustedAmount" &&
         !isInputZero(amount) &&
         isSelectedTokenYieldToken &&

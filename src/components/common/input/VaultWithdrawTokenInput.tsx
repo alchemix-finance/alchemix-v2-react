@@ -140,7 +140,8 @@ export const VaultWithdrawTokenInput = ({
   });
 
   const balance = isSelectedTokenYieldToken
-    ? vault.metadata.yieldTokenOverride
+    ? vault.metadata.api.provider === "aave" &&
+      vault.metadata.yieldTokenOverride
       ? balanceForYieldTokenAdapter
       : balanceForYieldToken
     : balanceForUnderlying;

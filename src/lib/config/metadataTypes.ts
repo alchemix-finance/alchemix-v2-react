@@ -41,6 +41,15 @@ export interface SynthAssetMetadata {
 
 export type MessageType = "info" | "warning" | "error";
 
+type ApiProvider =
+  | "meltedRewards"
+  | "aave"
+  | "yearn"
+  | "frax"
+  | "rocket"
+  | "vesper"
+  | "lido";
+
 export interface VaultMetadata {
   label: string;
   synthAssetType: SynthAsset;
@@ -50,7 +59,7 @@ export interface VaultMetadata {
   api: {
     apr: AprFn;
     yieldType: string;
-    cacheKey: string;
+    provider: ApiProvider;
     bonus: BonusFn;
   };
   disabledDepositTokens: Address[];
@@ -58,10 +67,10 @@ export interface VaultMetadata {
   gateway?: Address;
   migrator?: Address;
   /**
-   * This is the address of the actual yield bearing aave token,
-   * the regular yield token address in this case becomes a static token adapter,
+   * This is the address of the actual yield (bearing for aave) token,
+   * the regular yield token address in this case becomes a (static token adapter for aave or staking token for yearn),
    * that we use for the vaults.
-   * If it exists, means the vault is using static token adapter.
+   * If it exists, means the vault is using (static token adapter for aave or staking token for yearn).
    */
   yieldTokenOverride?: Address;
   strategy?: string;
