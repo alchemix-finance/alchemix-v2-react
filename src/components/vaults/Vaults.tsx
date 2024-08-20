@@ -56,7 +56,9 @@ export const Vaults = () => {
   const filteredVaults = useMemo(() => {
     const onlyEnabledVaults = vaults?.filter(
       (vault) =>
-        vault.yieldTokenParams.enabled !== false || vault.position.shares > 0,
+        (vault.isLossGreaterThanMaxLoss !== false &&
+          vault.yieldTokenParams.enabled !== false) ||
+        vault.position.shares > 0,
     );
     const synthFiltered =
       synthTab === "all"

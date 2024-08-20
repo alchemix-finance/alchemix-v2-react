@@ -1,4 +1,4 @@
-import { MessageType } from "@/lib/config/metadataTypes";
+import { VaultMessage as VaultMessageType } from "@/lib/config/metadataTypes";
 import { cn } from "@/utils/cn";
 
 const messageConfig = {
@@ -9,13 +9,8 @@ const messageConfig = {
     "M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z",
 } as const;
 
-export const VaultMessage = ({
-  message,
-  type,
-}: {
-  message: string;
-  type: MessageType;
-}) => {
+export const VaultMessage = (props: { message: VaultMessageType }) => {
+  const { message, type, learnMoreUrl } = props.message;
   return (
     <div
       className={cn(
@@ -39,7 +34,22 @@ export const VaultMessage = ({
           d={messageConfig[type]}
         ></path>
       </svg>
-      <p>{message}</p>
+      <p>
+        {message}
+        {learnMoreUrl && (
+          <>
+            <span> </span>
+            <a
+              href={learnMoreUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="underline hover:no-underline"
+            >
+              Learn more.
+            </a>
+          </>
+        )}
+      </p>
     </div>
   );
 };

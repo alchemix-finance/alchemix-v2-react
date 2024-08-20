@@ -184,8 +184,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             vault.metadata.messages.map((message) => (
               <VaultMessage
                 key={message.type + message.message.slice(0, 10)}
-                message={message.message}
-                type={message.type}
+                message={message}
               />
             ))}
 
