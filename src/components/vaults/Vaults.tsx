@@ -56,7 +56,7 @@ export const Vaults = () => {
   const filteredVaults = useMemo(() => {
     const onlyEnabledVaults = vaults?.filter(
       (vault) =>
-        (vault.isLossGreaterThanMaxLoss !== false &&
+        (vault.isLossGreaterThanMaxLoss !== true &&
           vault.yieldTokenParams.enabled !== false) ||
         vault.position.shares > 0,
     );
