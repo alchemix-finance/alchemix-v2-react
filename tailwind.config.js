@@ -125,7 +125,7 @@ module.exports = {
         white2inverse: "#0A0A0A",
         twitter: "#4CABFA",
         discord: "#7289DA",
-        iconsInverse: "#252736",
+        iconsInverse: "#003e63",
         fantom: "#1969ff",
         ethereum: "#647fe5",
         arbitrum: "#93b4d5",
