@@ -57,7 +57,7 @@ export const LiquidateTokenInput = ({
       },
     });
 
-  const { data: balance } = useReadContract({
+  const { data: debtInYield } = useReadContract({
     address: vault.alchemist.address,
     chainId: chain.id,
     abi: alchemistV2Abi,
@@ -70,14 +70,48 @@ export const LiquidateTokenInput = ({
     },
   });
 
+  const { data: sharesBalance, queryKey: sharesBalanceQueryKey } =
+    useReadContract({
+      address: vault.alchemist.address,
+      chainId: chain.id,
+      abi: alchemistV2Abi,
+      functionName: "positions",
+      args: [address ?? zeroAddress, vault.yieldToken],
+      query: {
+        enabled: !!address,
+        select: ([shares]) => shares,
+      },
+    });
+
+  const { data: balance, queryKey: balanceQueryKey } = useReadContract({
+    address: vault.alchemist.address,
+    chainId: chain.id,
+    abi: alchemistV2Abi,
+    functionName: "convertSharesToYieldTokens",
+    args: [vault.yieldToken, sharesBalance ?? 0n],
+    query: {
+      enabled: sharesBalance !== undefined,
+      select: (balance) =>
+        formatUnits(balance, vault.yieldTokenParams.decimals),
+    },
+  });
+
   /**
-   * NOTE: We only watch maximum shares query key,
-   * because we assume that only `convertUnderlyingTokensToShares` return can change while user is on the page for liquidation.
-   * This is because `convertUnderlyingTokensToShares` uses yield token adapter price, which can change.
+   * NOTE: Watch queries for changes in maximumShares, sharesBalance, and balance.
+   * maximumSharesQueryKey - because underlying tokens to shares uses price which changes each block;
+   * sharesBalanceQueryKey - if user deposited or withdrawed from vault for yield token;
+   * balanceQueryKey - because shares to yield token uses price which changes each block.
    */
   useWatchQuery({
-    queryKey: maximumSharesQueryKey,
+    queryKeys: [maximumSharesQueryKey, sharesBalanceQueryKey, balanceQueryKey],
   });
+
+  const externalMaximumAmount =
+    debtInYield !== undefined &&
+    balance !== undefined &&
+    +debtInYield < +balance
+      ? debtInYield
+      : undefined;
 
   return (
     <TokenInput
@@ -88,6 +122,7 @@ export const LiquidateTokenInput = ({
       tokenSymbol={tokenSymbol}
       type="Available"
       overrideBalance={balance}
+      externalMaximumAmount={externalMaximumAmount}
       dustToZero={true}
     />
   );
