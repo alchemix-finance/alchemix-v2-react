@@ -94,29 +94,27 @@ export const useAllowance = ({
     },
   });
 
-  const { writeContract: approve, data: approveTxHash } = useWriteContract({
+  const {
+    writeContract: approve,
+    data: approveTxHash,
+    reset: resetApprove,
+  } = useWriteContract({
     mutation: mutationCallback({
       action: "Approve",
     }),
   });
 
-  const { data: approvalReceipt, queryKey: approvalReceiptQueryKey } =
-    useWaitForTransactionReceipt({
-      chainId: chain.id,
-      hash: approveTxHash,
-    });
+  const { data: approvalReceipt } = useWaitForTransactionReceipt({
+    chainId: chain.id,
+    hash: approveTxHash,
+  });
 
   useEffect(() => {
     if (approvalReceipt) {
       queryClient.invalidateQueries({ queryKey: isApprovalNeededQueryKey });
-      queryClient.resetQueries({ queryKey: approvalReceiptQueryKey });
+      resetApprove();
     }
-  }, [
-    approvalReceipt,
-    isApprovalNeededQueryKey,
-    approvalReceiptQueryKey,
-    queryClient,
-  ]);
+  }, [approvalReceipt, isApprovalNeededQueryKey, resetApprove, queryClient]);
 
   return {
     isApprovalNeeded,

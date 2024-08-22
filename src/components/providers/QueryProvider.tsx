@@ -13,7 +13,6 @@ const queryClient = new QueryClient({
       console.log("Error in query", q.queryKey);
       if (e instanceof ContractFunctionExecutionError) {
         console.error(e.cause.message);
-        return;
       }
       console.error(e);
     },
