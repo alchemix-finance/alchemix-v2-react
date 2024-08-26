@@ -4,6 +4,7 @@ interface ImportMetaEnv {
   readonly VITE_WC_PROJECT_ID: string;
   readonly VITE_SUBGRAPH_API_KEY: string;
   readonly VITE_INFURA_API_KEY: string;
+  readonly VITE_DUNE_API_KEY: string;
   // more env variables...
 }
 
