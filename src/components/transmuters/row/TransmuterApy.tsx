@@ -43,6 +43,9 @@ interface TransmuterApyDuneQueryResponse {
   };
 }
 
+const DUNE_API_ENDPOINT = "https://api.dune.com/api/v1/query";
+const API_KEY = import.meta.env.VITE_DUNE_API_KEY;
+
 export const TransmuterApy = ({ transmuter }: { transmuter: Transmuter }) => {
   const { data, isError, isPending } = useQuery({
     queryKey: [
@@ -52,7 +55,7 @@ export const TransmuterApy = ({ transmuter }: { transmuter: Transmuter }) => {
     ],
     queryFn: async () => {
       const response = await fetch(
-        `${transmuter.metadata.apyQueryUri}/results?api_key=${import.meta.env.VITE_DUNE_API_KEY}`,
+        `${DUNE_API_ENDPOINT}/${transmuter.metadata.apyQueryUri}/results?api_key=${API_KEY}`,
       );
       const data = (await response.json()) as TransmuterApyDuneQueryResponse;
 

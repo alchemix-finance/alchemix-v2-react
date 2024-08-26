@@ -9,14 +9,14 @@ export const TRANSMUTERS = {
       address: "0xA840C73a004026710471F727252a9a2800a5197F",
       synthAsset: SYNTH_ASSETS.ALUSD,
       label: "Zosimos",
-      apyQueryUri: "https://api.dune.com/api/v1/query/3890313",
+      apyQueryUri: "3890313",
     },
     //USDC
     {
       address: "0x49930AD9eBbbc0EB120CCF1a318c3aE5Bb24Df55",
       synthAsset: SYNTH_ASSETS.ALUSD,
       label: "Ge Hong",
-      apyQueryUri: "https://api.dune.com/api/v1/query/3861243",
+      apyQueryUri: "3861243",
     },
     //USDT
     {
@@ -30,14 +30,14 @@ export const TRANSMUTERS = {
       address: "0xE107Fa35D775C77924926C0292a9ec1FC14262b2",
       synthAsset: SYNTH_ASSETS.ALUSD,
       label: "Flamel",
-      apyQueryUri: "https://api.dune.com/api/v1/query/3989525",
+      apyQueryUri: "3989525",
     },
     //WETH
     {
       address: "0x03323143a5f0D0679026C2a9fB6b0391e4D64811",
       synthAsset: SYNTH_ASSETS.ALETH,
       label: "Van Helmont",
-      apyQueryUri: "https://api.dune.com/api/v1/query/3849355",
+      apyQueryUri: "3849355",
     },
   ],
   [fantom.id]: [
@@ -90,7 +90,7 @@ export const TRANSMUTERS = {
       address: "0xb7C4250f83289ff3Ea9f21f01AAd0b02fb19491a",
       synthAsset: SYNTH_ASSETS.ALETH,
       label: "Van Helmont",
-      apyQueryUri: "https://api.dune.com/api/v1/query/3862748",
+      apyQueryUri: "3862748",
     },
   ],
   [arbitrum.id]: [
@@ -106,7 +106,7 @@ export const TRANSMUTERS = {
       address: "0xe7ec71B894583E9C1b07873fA86A7e81f3940eA8",
       synthAsset: SYNTH_ASSETS.ALUSD,
       label: "Ge Hong",
-      apyQueryUri: "https://api.dune.com/api/v1/query/3947029",
+      apyQueryUri: "3947029",
     },
     //USDT
     {
@@ -120,7 +120,7 @@ export const TRANSMUTERS = {
       address: "0x1EB7D78d7f6D73e5de67Fa62Fd8b55c54Aa9c0D4",
       synthAsset: SYNTH_ASSETS.ALETH,
       label: "Van Helmont",
-      apyQueryUri: "https://api.dune.com/api/v1/query/3888361",
+      apyQueryUri: "3888361",
     },
   ],
 } as const satisfies TransmutersMetadata;
