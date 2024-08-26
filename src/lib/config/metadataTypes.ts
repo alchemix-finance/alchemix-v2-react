@@ -40,6 +40,11 @@ export interface SynthAssetMetadata {
 }
 
 export type MessageType = "info" | "warning" | "error";
+export type VaultMessage = {
+  message: string;
+  type: MessageType;
+  learnMoreUrl?: string;
+};
 
 type ApiProvider =
   | "meltedRewards"
@@ -55,7 +60,7 @@ export interface VaultMetadata {
   synthAssetType: SynthAsset;
   underlyingSymbol: string;
   yieldSymbol: string;
-  messages: { message: string; type: MessageType }[];
+  messages: VaultMessage[];
   api: {
     apr: AprFn;
     yieldType: string;

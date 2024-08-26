@@ -1,3 +1,4 @@
+import { zeroAddress } from "viem";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
 import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
@@ -408,8 +409,10 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "yvUSDC",
       messages: [
         {
-          message: "Yearn yvUSDC is currently disabled for USDC.e deposits.",
+          message:
+            "Yearn yvUSDC is currently disabled for underlying token deposit and withdraw.",
           type: "warning",
+          learnMoreUrl: "https://discord.com/invite/yearn",
         },
       ],
       gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
@@ -429,8 +432,10 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "yvDAI",
       messages: [
         {
-          message: "Yearn yvDAI is currently disabled for DAI deposits.",
+          message:
+            "Yearn yvDAI is currently disabled for underlying token deposit and withdraw.",
           type: "warning",
+          learnMoreUrl: "https://discord.com/invite/yearn",
         },
       ],
       gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
@@ -485,8 +490,10 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "yvWETH",
       messages: [
         {
-          message: "Yearn yvWETH is currently disabled for WETH deposits.",
+          message:
+            "Yearn yvWETH is currently disabled for underlying token deposit and withdraw.",
           type: "warning",
+          learnMoreUrl: "https://discord.com/invite/yearn",
         },
       ],
       gateway: "0xedE36d3F423EF198abE82D2463E0a18bcF2d9397",
@@ -537,3 +544,10 @@ export const VAULTS: VaultsConfig = {
     },
   },
 };
+
+export const MAX_LOSS_CHECKER_ADDRESSES = {
+  [mainnet.id]: "0x29Cb761285C6DeD504526c77F25d1946F0D6e3D5",
+  [optimism.id]: "0x6b30f76CecE9F92D27f0e9Ad78312E77709E74A5",
+  [arbitrum.id]: "0x6b30f76CecE9F92D27f0e9Ad78312E77709E74A5",
+  [fantom.id]: zeroAddress,
+} as const;

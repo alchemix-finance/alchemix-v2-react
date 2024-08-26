@@ -1,3 +1,14 @@
+import { getAddress } from "viem";
+import { Fragment, useMemo, useState } from "react";
+import { useAccount, useWalletClient } from "wagmi";
+import { toast } from "sonner";
+import {
+  BadgeCheckIcon,
+  ExternalLinkIcon,
+  MessagesSquareIcon,
+} from "lucide-react";
+import Dompurify from "dompurify";
+
 import {
   AccordionContent,
   AccordionItem,
@@ -15,19 +26,10 @@ import { dayjs } from "@/lib/dayjs";
 import { useVotesForAddress } from "@/lib/queries/useProposals";
 import { Proposal } from "@/lib/types";
 import { cn } from "@/utils/cn";
-import { useMemo, useState } from "react";
 import { useChain } from "@/hooks/useChain";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAccount, useWalletClient } from "wagmi";
-import { toast } from "sonner";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
-import { getAddress } from "viem";
 import { windowOpen } from "@/utils/windowOpen";
-import {
-  BadgeCheckIcon,
-  ExternalLinkIcon,
-  MessagesSquareIcon,
-} from "lucide-react";
 import { formatNumber } from "@/utils/number";
 import SnapshotIcon from "@/assets/logos/snapshot.svg?react";
 
@@ -284,7 +286,9 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
           <p className="mb-3 text-sm opacity-50">Description</p>
           <div
             className="w-full max-w-[calc(100vw-10rem)] overflow-x-auto whitespace-pre-wrap text-justify lg:max-w-[calc(100vw-32rem)]"
-            dangerouslySetInnerHTML={{ __html: proposal.body }}
+            dangerouslySetInnerHTML={{
+              __html: Dompurify.sanitize(proposal.body),
+            }}
           ></div>
         </div>
         <div className="flex min-w-max flex-col rounded border border-grey3inverse bg-grey15inverse p-4 dark:border-grey3 dark:bg-grey15">
@@ -359,8 +363,8 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
 
           <p className="mb-3 opacity-50">Results</p>
           {proposal.choices.map((choice, i) => (
-            <>
-              <div className="wrapper mb-2">
+            <Fragment key={choice + i}>
+              <div className="mb-2">
                 <p>{choice}</p>
                 <p className="text-sm">
                   {formatNumber(proposal.scores?.[i])} ALCX{" "}
@@ -387,7 +391,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                   </div>
                 </div>
               </div>
-            </>
+            </Fragment>
           ))}
         </div>
       </AccordionContent>

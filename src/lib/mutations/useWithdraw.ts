@@ -167,16 +167,19 @@ export const useWithdraw = ({
     },
   });
 
-  const { writeContract: approve, data: approveHash } = useWriteContract({
+  const {
+    writeContract: approve,
+    data: approveHash,
+    reset: resetApprove,
+  } = useWriteContract({
     mutation: mutationCallback({
       action: "Approve",
     }),
   });
-  const { data: approvalReceipt, queryKey: approveQueryKey } =
-    useWaitForTransactionReceipt({
-      chainId: chain.id,
-      hash: approveHash,
-    });
+  const { data: approvalReceipt } = useWaitForTransactionReceipt({
+    chainId: chain.id,
+    hash: approveHash,
+  });
   useEffect(() => {
     if (approvalReceipt) {
       queryClient.invalidateQueries({
@@ -185,13 +188,13 @@ export const useWithdraw = ({
       queryClient.invalidateQueries({
         queryKey: isApprovalNeededWethGatewayQueryKey,
       });
-      queryClient.resetQueries({ queryKey: approveQueryKey });
+      resetApprove();
     }
   }, [
     approvalReceipt,
     isApprovalNeededAaveGatewayQueryKey,
     isApprovalNeededWethGatewayQueryKey,
-    approveQueryKey,
+    resetApprove,
     queryClient,
   ]);
 

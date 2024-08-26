@@ -85,6 +85,9 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
         args: [vault.yieldToken, vault.position.shares],
       },
     ] as const,
+    query: {
+      placeholderData: keepPreviousData,
+    },
   });
   const [tvl, sharesBalance] = vaultStats ?? [0n, 0n];
 
@@ -184,8 +187,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             vault.metadata.messages.map((message) => (
               <VaultMessage
                 key={message.type + message.message.slice(0, 10)}
-                message={message.message}
-                type={message.type}
+                message={message}
               />
             ))}
 

@@ -156,10 +156,6 @@ function calculateTotalDebt(
     }
   }
 
-  if (debt < 0) {
-    debt = 0;
-  }
-
   return debt;
 }
 
