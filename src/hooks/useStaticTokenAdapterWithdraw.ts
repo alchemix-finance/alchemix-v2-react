@@ -88,5 +88,8 @@ export const useStaticTokenAdapterWithdraw = ({
     },
   });
 
-  return { balanceForYieldTokenAdapter, aaveAdjustedAmount };
+  return {
+    balanceForYieldTokenAdapter,
+    aaveAdjustedAmount,
+  };
 };

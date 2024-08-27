@@ -75,10 +75,6 @@ export const VaultWithdrawTokenInput = ({
     },
   });
 
-  useWatchQuery({
-    queryKeys: [sharesBalanceQueryKey, totalCollateralInDebtTokenQueryKey],
-  });
-
   const otherCoverInDebt =
     totalCollateralInDebtToken !== undefined &&
     collateralInDebtToken !== undefined
@@ -113,30 +109,45 @@ export const VaultWithdrawTokenInput = ({
     },
   });
 
-  const { data: balanceForYieldToken } = useReadContract({
-    address: vault.alchemist.address,
-    chainId: chain.id,
-    abi: alchemistV2Abi,
-    functionName: "convertUnderlyingTokensToYield",
-    args: [
-      vault.yieldToken,
-      parseUnits(
-        balanceForUnderlying ?? "0",
-        vault.underlyingTokensParams.decimals,
-      ),
-    ],
-    query: {
-      enabled: balanceForUnderlying !== undefined,
-      select: (balance) =>
-        formatUnits(balance, vault.yieldTokenParams.decimals),
-    },
-  });
+  const { data: balanceForYieldToken, queryKey: balanceForYieldTokenQueryKey } =
+    useReadContract({
+      address: vault.alchemist.address,
+      chainId: chain.id,
+      abi: alchemistV2Abi,
+      functionName: "convertUnderlyingTokensToYield",
+      args: [
+        vault.yieldToken,
+        parseUnits(
+          balanceForUnderlying ?? "0",
+          vault.underlyingTokensParams.decimals,
+        ),
+      ],
+      query: {
+        enabled: balanceForUnderlying !== undefined,
+        select: (balance) =>
+          formatUnits(balance, vault.yieldTokenParams.decimals),
+      },
+    });
 
   const { balanceForYieldTokenAdapter } = useStaticTokenAdapterWithdraw({
     typeGuard: "withdrawInput",
     balanceForYieldToken,
     isSelectedTokenYieldToken,
     vault,
+  });
+
+  /**
+   * NOTE: Watch queries for changes in sharesBalance, totalCollateral, and balanceForYieldToken.
+   * sharesBalanceQueryKey - if user deposited or withdrawed from vault for yield token;
+   * totalCollateralInDebtTokenQueryKey - if user deposited or withdrawed from vault for yield token;
+   * balanceForYieldTokenQueryKey - because shares to yield token uses price which changes each block.
+   */
+  useWatchQuery({
+    queryKeys: [
+      sharesBalanceQueryKey,
+      totalCollateralInDebtTokenQueryKey,
+      balanceForYieldTokenQueryKey,
+    ],
   });
 
   const balance = isSelectedTokenYieldToken
