@@ -30,7 +30,9 @@ export const Delegation = () => {
         isAddress(delegateAddress) ? delegateAddress : zeroAddress,
       ],
       query: {
-        enabled: isAddress(delegateAddress),
+        enabled:
+          isAddress(delegateAddress) &&
+          userDelegations?.delegating.length === 0,
       },
     });
 
@@ -46,6 +48,9 @@ export const Delegation = () => {
     chainId: chain.id,
     functionName: "clearDelegate",
     args: [stringToHex("alchemixstakers.eth", { size: 32 })],
+    query: {
+      enabled: !!userDelegations?.delegating.length,
+    },
   });
 
   const { writeContract: revoke } = useWriteContract({
