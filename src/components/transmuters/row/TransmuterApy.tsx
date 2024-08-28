@@ -79,14 +79,17 @@ export const TransmuterApy = ({ transmuter }: { transmuter: Transmuter }) => {
     <div className="text-center">
       <p className="text-sm text-lightgrey10">APY</p>
       {isError || !transmuter.metadata.apyQueryUri ? (
-        <p>N/A</p>
+        <div className="flex items-center justify-center gap-2">
+          <p>N/A</p>
+          <NAPopover isError={isError} />
+        </div>
       ) : isPending ? (
         <p>...</p>
       ) : (
         <div className="flex items-center justify-center gap-2">
           <p>{formatNumber(data.apy)}%</p>
           {data.timeToTransmute > 0 && (
-            <TransmuterApyTooltip timeToTransmute={data.timeToTransmute} />
+            <TransmuterApyPopover timeToTransmute={data.timeToTransmute} />
           )}
         </div>
       )}
@@ -94,7 +97,7 @@ export const TransmuterApy = ({ transmuter }: { transmuter: Transmuter }) => {
   );
 };
 
-const TransmuterApyTooltip = ({
+const TransmuterApyPopover = ({
   timeToTransmute,
 }: {
   timeToTransmute: number;
@@ -121,6 +124,21 @@ const TransmuterApyTooltip = ({
           <strong>decrease</strong>, if more people deposit alTOKEN in the
           Transmuter.
         </p>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+const NAPopover = ({ isError }: { isError: boolean }) => {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button onClick={(e) => e.stopPropagation()}>
+          <InfoIcon className="h-4 w-4" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <p>{isError ? "Error. Report to Alchemix" : "Coming soon!"}</p>
       </PopoverContent>
     </Popover>
   );
