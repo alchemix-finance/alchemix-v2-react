@@ -1,10 +1,11 @@
+import { keepPreviousData } from "@tanstack/react-query";
 import { useReadContract } from "wagmi";
+import { formatUnits, parseUnits } from "viem";
 
 import { staticTokenAdapterAbi } from "@/abi/staticTokenAdapter";
-import { useChain } from "./useChain";
-import { formatUnits, parseUnits } from "viem";
 import { Token, Vault } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
+import { useChain } from "./useChain";
 
 interface UseStaticTokenAdapterWithdrawAmountArgs {
   typeGuard: "withdrawInput";
@@ -66,6 +67,7 @@ export const useStaticTokenAdapterWithdraw = ({
         !!vault.metadata.yieldTokenOverride,
       select: (balance) =>
         formatUnits(balance, vault.yieldTokenParams.decimals),
+      placeholderData: keepPreviousData,
     },
   });
 
