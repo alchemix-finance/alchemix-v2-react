@@ -23,7 +23,7 @@ export const TRANSMUTERS = {
       address: "0xfC30820ba6d045b95D13a5B8dF4fB0E6B5bdF5b9",
       synthAsset: SYNTH_ASSETS.ALUSD,
       label: "Paracelsus",
-      apyQueryUri: "",
+      apyQueryUri: "4026456",
     },
     //FRAX
     {
