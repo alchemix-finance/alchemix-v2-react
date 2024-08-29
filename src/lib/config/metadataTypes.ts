@@ -9,6 +9,7 @@ export interface TransmuterMetadata {
   address: Address;
   label: string;
   synthAsset: SynthAsset;
+  apyQueryUri: string;
 }
 
 export type TransmutersMetadata = {
