@@ -4,30 +4,25 @@ import { useAccount } from "wagmi";
 import { QueryKeys } from "./queriesSchema";
 
 const SNAPSHOT_HUB_URL = "https://hub.snapshot.org/graphql/";
-const SNAPSHOT_SUBGRAPH_URL =
-  "https://api.thegraph.com/subgraphs/name/snapshot-labs/snapshot";
+const SNAPSHOT_SUBGRAPH_URL = "https://subgrapher.snapshot.org/delegation/1";
 
 const VOTES_FOR_ADDRESS = gql`
-    query votesForAddress($userAddress: String!) {
-        {
-            votes (
-              first: 100
-              skip: 0
-              where: {
-                voter: $userAddress,
-                space: alchemixstakers.eth
-              }
-            ) {
-              id
-              voter
-              created
-              choice
-              proposal {
-                id
-              }
-            }
-          }
-        }`;
+  query votesForAddress($userAddress: String!) {
+    votes(
+      first: 100
+      skip: 0
+      where: { voter: $userAddress, space: "alchemixstakers.eth" }
+    ) {
+      id
+      voter
+      created
+      choice
+      proposal {
+        id
+      }
+    }
+  }
+`;
 
 interface Vote {
   id: string;
