@@ -62,7 +62,7 @@ export const TransmuterApy = ({ transmuter }: { transmuter: Transmuter }) => {
       const apy = data.result.rows[0].projected_yield_rate;
       const timeToTransmute = data.result.rows[0].time_to_transmute;
 
-      if (!apy || apy < 0) {
+      if (!apy) {
         throw new Error("APY is not available.");
       }
 
@@ -87,10 +87,8 @@ export const TransmuterApy = ({ transmuter }: { transmuter: Transmuter }) => {
         <p>...</p>
       ) : (
         <div className="flex items-center justify-center gap-2">
-          <p>{formatNumber(data.apy)}%</p>
-          {data.timeToTransmute > 0 && (
-            <TransmuterApyPopover timeToTransmute={data.timeToTransmute} />
-          )}
+          <p>{formatNumber(data.apy, { allowNegative: false })}%</p>
+          <TransmuterApyPopover timeToTransmute={data.timeToTransmute} />
         </div>
       )}
     </div>
@@ -110,15 +108,19 @@ const TransmuterApyPopover = ({
         </button>
       </PopoverTrigger>
       <PopoverContent>
+        {timeToTransmute > 0 && (
+          <p>
+            It will take approximately{" "}
+            <strong>
+              {formatNumber(
+                dayjs.duration({ years: timeToTransmute }).asDays(),
+              )}{" "}
+              days
+            </strong>{" "}
+            to transmute your deposit.
+          </p>
+        )}
         <p>
-          It will take approximately{" "}
-          <strong>
-            {formatNumber(dayjs.duration({ years: timeToTransmute }).asDays())}{" "}
-            days
-          </strong>{" "}
-          to transmute your deposit.
-          <br />
-          <br />
           Yield will <strong>increase</strong>, if more people deposit to
           Alchemix, or liquidate/repay their loans. Yield will{" "}
           <strong>decrease</strong>, if more people deposit alTOKEN in the
