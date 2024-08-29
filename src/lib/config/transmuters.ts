@@ -69,7 +69,7 @@ export const TRANSMUTERS = {
       address: "0xFCD619923456E20EAe298B35E3606277b391BBB4",
       synthAsset: SYNTH_ASSETS.ALUSD,
       label: "Zosimos",
-      apyQueryUri: "",
+      apyQueryUri: "4026735",
     },
     //USDC
     {

@@ -321,7 +321,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                   disabled={!isSupported || !!vote || isPending}
                 >
                   {isPending
-                    ? "Casting Vite"
+                    ? "Casting Vote"
                     : !isSupported
                       ? "Unsupported"
                       : vote
