@@ -69,58 +69,55 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
   const isSupported = supportedTypes.indexOf(proposal.type) !== -1;
 
   const message = useMemo(() => {
+    const choice = proposal.choices.indexOf(selectedChoice) + 1;
     return {
-      app: "alchemix",
+      choice,
       proposal: proposal.id,
-      choice: selectedChoice,
-      space: "alchemixstakers",
+      app: "alchemix",
+      space: "alchemixstakers.eth",
       type: proposal.type,
       metadata: "{}",
       reason: "",
     };
   }, [proposal, selectedChoice]);
 
-  const voteTypes = useMemo(() => {
-    const type2 = message.proposal.startsWith("0x");
-    const type = type2
-      ? {
-          Vote: [
-            { name: "from", type: "address" },
-            { name: "space", type: "string" },
-            { name: "timestamp", type: "uint64" },
-            { name: "proposal", type: "bytes32" },
-            { name: "choice", type: "uint32" },
-            { name: "reason", type: "string" },
-            { name: "app", type: "string" },
-            { name: "metadata", type: "string" },
-          ],
-        }
-      : {
-          Vote: [
-            { name: "from", type: "address" },
-            { name: "space", type: "string" },
-            { name: "timestamp", type: "uint64" },
-            { name: "proposal", type: "string" },
-            { name: "choice", type: "uint32" },
-            { name: "reason", type: "string" },
-            { name: "app", type: "string" },
-            { name: "metadata", type: "string" },
-          ],
-        };
-    return type;
-  }, [message.proposal]);
-
-  const { mutate: writeVote } = useMutation({
+  const { mutate: writeVote, isPending } = useMutation({
     mutationFn: async () => {
       if (!address) throw new Error("Not connected.");
       if (!walletClient) throw new Error("No wallet.");
 
+      const type2 = message.proposal.startsWith("0x");
+      const types = type2
+        ? {
+            Vote: [
+              { name: "from", type: "address" },
+              { name: "space", type: "string" },
+              { name: "timestamp", type: "uint64" },
+              { name: "proposal", type: "bytes32" },
+              { name: "choice", type: "uint32" },
+              { name: "reason", type: "string" },
+              { name: "app", type: "string" },
+              { name: "metadata", type: "string" },
+            ],
+          }
+        : {
+            Vote: [
+              { name: "from", type: "address" },
+              { name: "space", type: "string" },
+              { name: "timestamp", type: "uint64" },
+              { name: "proposal", type: "string" },
+              { name: "choice", type: "uint32" },
+              { name: "reason", type: "string" },
+              { name: "app", type: "string" },
+              { name: "metadata", type: "string" },
+            ],
+          };
+
       const checksumAddress = getAddress(address);
 
       const data = {
-        types: voteTypes,
+        types,
         domain: {
-          chainId: chain.id,
           name: "snapshot",
           version: "0.1.4",
         },
@@ -137,9 +134,9 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
         ...data,
       });
 
-      const envelop = { address: checksumAddress, signature, data };
+      const envelop = { address: checksumAddress, sig: signature, data };
 
-      const submitAddress = "https://hub.snapshot.org/";
+      const submitAddress = "https://seq.snapshot.org";
 
       const init = {
         method: "POST",
@@ -293,7 +290,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
         </div>
         <div className="flex min-w-max flex-col rounded border border-grey3inverse bg-grey15inverse p-4 dark:border-grey3 dark:bg-grey15">
           <p className="mb-3 opacity-50">Your vote</p>
-          <div id="selection" className="mb-6 w-auto">
+          <div id="selection" className="mb-6 w-auto space-y-1">
             {proposal.state !== "closed" && !isSupported && (
               <p>This voting type is not yet supported.</p>
             )}
@@ -321,13 +318,15 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                 <Button
                   variant="outline"
                   onClick={onVote}
-                  disabled={!isSupported || !!vote}
+                  disabled={!isSupported || !!vote || isPending}
                 >
-                  {!isSupported
-                    ? "Unsupported"
-                    : vote
-                      ? "Already Voted"
-                      : "Cast Vote"}
+                  {isPending
+                    ? "Casting Vite"
+                    : !isSupported
+                      ? "Unsupported"
+                      : vote
+                        ? "Already Voted"
+                        : "Cast Vote"}
                 </Button>
               )}
               {proposal.state === "closed" && (
