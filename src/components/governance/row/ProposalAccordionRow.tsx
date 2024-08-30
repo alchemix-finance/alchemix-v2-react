@@ -1,5 +1,5 @@
 import { getAddress } from "viem";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
 import { toast } from "sonner";
 import {
@@ -68,23 +68,20 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
 
   const isSupported = supportedTypes.indexOf(proposal.type) !== -1;
 
-  const message = useMemo(() => {
-    const choice = proposal.choices.indexOf(selectedChoice) + 1;
-    return {
-      choice,
-      proposal: proposal.id,
-      app: "alchemix",
-      space: "alchemixstakers.eth",
-      type: proposal.type,
-      metadata: "{}",
-      reason: "",
-    };
-  }, [proposal, selectedChoice]);
-
   const { mutate: writeVote, isPending } = useMutation({
     mutationFn: async () => {
       if (!address) throw new Error("Not connected.");
       if (!walletClient) throw new Error("No wallet.");
+
+      const message = {
+        choice: proposal.choices.indexOf(selectedChoice) + 1,
+        proposal: proposal.id,
+        app: "alchemix",
+        space: "alchemixstakers.eth",
+        type: proposal.type,
+        metadata: "{}",
+        reason: "",
+      };
 
       const type2 = message.proposal.startsWith("0x");
       const types = type2

@@ -1,13 +1,13 @@
 import { transmuterV2Abi } from "@/abi/transmuterV2";
+import { CtaButton } from "@/components/common/CtaButton";
 import { TransmuterInput } from "@/components/common/input/TransmuterInput";
-import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { parseEther } from "viem";
 import {
@@ -34,7 +34,7 @@ export const Withdraw = ({
 
   const {
     data: withdrawConfig,
-    isFetching,
+    isPending,
     error: withdrawConfigError,
   } = useSimulateContract({
     address: transmuter.address,
@@ -64,7 +64,7 @@ export const Withdraw = ({
     }
   }, [withdrawReceipt, queryClient]);
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (withdrawConfigError) {
       toast.error("Withdraw failed", {
         description:
@@ -81,7 +81,7 @@ export const Withdraw = ({
         description: "Unknown error occurred. Please contact Alchemix team.",
       });
     }
-  }, [withdraw, withdrawConfig, withdrawConfigError]);
+  };
 
   return (
     <>
@@ -95,13 +95,13 @@ export const Withdraw = ({
         tokenDecimals={syntheticToken.decimals}
       />
 
-      <Button
+      <CtaButton
         variant="outline"
         onClick={onCtaClick}
-        disabled={isFetching || isInputZero(withdrawAmount)}
+        disabled={isPending || isInputZero(withdrawAmount)}
       >
         Withdraw
-      </Button>
+      </CtaButton>
     </>
   );
 };

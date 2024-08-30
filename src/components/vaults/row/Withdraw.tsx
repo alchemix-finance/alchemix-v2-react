@@ -1,6 +1,5 @@
 import { Token, Vault } from "@/lib/types";
-import { Button } from "@/components/ui/button";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
   Select,
   SelectTrigger,
@@ -17,6 +16,7 @@ import { formatNumber } from "@/utils/number";
 import { formatEther } from "viem";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { VaultActionMotionDiv } from "./motion";
+import { CtaButton } from "@/components/common/CtaButton";
 
 export const Withdraw = ({
   vault,
@@ -47,7 +47,7 @@ export const Withdraw = ({
   const isSelectedTokenYieldToken =
     token.address.toLowerCase() === yieldTokenData.address.toLowerCase();
 
-  const { isApprovalNeeded, writeApprove, writeWithdraw, isFetching } =
+  const { isApprovalNeeded, writeApprove, writeWithdraw, isPending } =
     useWithdraw({
       vault,
       selectedToken: token,
@@ -58,13 +58,13 @@ export const Withdraw = ({
       isSelectedTokenYieldToken,
     });
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (isApprovalNeeded === true) {
       writeApprove();
     } else {
       writeWithdraw();
     }
-  }, [isApprovalNeeded, writeApprove, writeWithdraw]);
+  };
 
   const onSelectChange = (value: string) => {
     setAmount("");
@@ -122,18 +122,18 @@ export const Withdraw = ({
           )}{" "}
           {vault.alchemist.synthType}
         </p>
-        <Button
+        <CtaButton
           variant="outline"
           width="full"
-          disabled={isFetching || isInputZero(amount)}
+          disabled={isPending || isInputZero(amount)}
           onClick={onCtaClick}
         >
-          {isFetching
+          {isPending
             ? "Preparing"
             : isApprovalNeeded === true
               ? "Approve"
               : "Withdraw"}
-        </Button>
+        </CtaButton>
       </div>
     </VaultActionMotionDiv>
   );

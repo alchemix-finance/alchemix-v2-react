@@ -92,6 +92,8 @@ export const useMigrate = ({
 
   const {
     data: isApprovalNeededWithdraw,
+    isPending: isPendingApprovalWithdraw,
+    isFetching: isFetchingApprovalWithdraw,
     queryKey: isApprovalNeededWithdrawQueryKey,
   } = useReadContract({
     address: currentVault.alchemist.address,
@@ -106,20 +108,24 @@ export const useMigrate = ({
     },
   });
 
-  const { data: isApprovalNeededMint, queryKey: isApprovalNeededMintQueryKey } =
-    useReadContract({
-      address: currentVault.alchemist.address,
-      abi: alchemistV2Abi,
-      chainId: chain.id,
-      functionName: "mintAllowance",
-      args: [address!, migratorToolAddress],
-      query: {
-        enabled: !!address,
-        select: (allowance) =>
-          allowance === 0n ||
-          (underlyingInDebt !== undefined && allowance < underlyingInDebt),
-      },
-    });
+  const {
+    data: isApprovalNeededMint,
+    isPending: isPendingApprovalMint,
+    isFetching: isFetchingApprovalMint,
+    queryKey: isApprovalNeededMintQueryKey,
+  } = useReadContract({
+    address: currentVault.alchemist.address,
+    abi: alchemistV2Abi,
+    chainId: chain.id,
+    functionName: "mintAllowance",
+    args: [address!, migratorToolAddress],
+    query: {
+      enabled: !!address,
+      select: (allowance) =>
+        allowance === 0n ||
+        (underlyingInDebt !== undefined && allowance < underlyingInDebt),
+    },
+  });
 
   const { data: approveWithdrawConfig } = useSimulateContract({
     address: currentVault.alchemist.address,
@@ -138,6 +144,7 @@ export const useMigrate = ({
   const {
     writeContract: writeWithdrawApprovePrepared,
     data: approveWithdrawHash,
+    reset: resetApproveWithdraw,
   } = useWriteContract({
     mutation: mutationCallback({
       action: "Approve withdraw",
@@ -153,8 +160,14 @@ export const useMigrate = ({
       queryClient.invalidateQueries({
         queryKey: isApprovalNeededWithdrawQueryKey,
       });
+      resetApproveWithdraw();
     }
-  }, [approveWithdrawReceipt, isApprovalNeededWithdrawQueryKey, queryClient]);
+  }, [
+    resetApproveWithdraw,
+    approveWithdrawReceipt,
+    isApprovalNeededWithdrawQueryKey,
+    queryClient,
+  ]);
 
   const { data: approveMintConfig } = useSimulateContract({
     address: currentVault.alchemist.address,
@@ -166,12 +179,15 @@ export const useMigrate = ({
     },
   });
 
-  const { writeContract: writeMintApprovePrepared, data: approveMintHash } =
-    useWriteContract({
-      mutation: mutationCallback({
-        action: "Approve mint",
-      }),
-    });
+  const {
+    writeContract: writeMintApprovePrepared,
+    data: approveMintHash,
+    reset: resetApproveMint,
+  } = useWriteContract({
+    mutation: mutationCallback({
+      action: "Approve mint",
+    }),
+  });
 
   const { data: approveMintReceipt } = useWaitForTransactionReceipt({
     hash: approveMintHash,
@@ -182,12 +198,18 @@ export const useMigrate = ({
       queryClient.invalidateQueries({
         queryKey: isApprovalNeededMintQueryKey,
       });
+      resetApproveMint();
     }
-  }, [approveMintReceipt, isApprovalNeededMintQueryKey, queryClient]);
+  }, [
+    resetApproveMint,
+    approveMintReceipt,
+    isApprovalNeededMintQueryKey,
+    queryClient,
+  ]);
 
   const {
     data: migrateConfig,
-    isFetching,
+    isPending: isPendingConfig,
     error: migrateConfigError,
   } = useSimulateContract({
     address: migratorToolAddress,
@@ -271,12 +293,25 @@ export const useMigrate = ({
     writeMigratePrepared,
   ]);
 
+  const isPending = (() => {
+    if (!amount) return;
+    if (isApprovalNeededWithdraw === false && isApprovalNeededMint === false) {
+      return isPendingConfig;
+    }
+    return (
+      isPendingApprovalMint ||
+      isPendingApprovalWithdraw ||
+      isFetchingApprovalMint ||
+      isFetchingApprovalWithdraw
+    );
+  })();
+
   return {
     isApprovalNeededWithdraw,
     isApprovalNeededMint,
     writeWithdrawApprove,
     writeMintApprove,
     writeMigrate,
-    isFetching,
+    isPending,
   };
 };

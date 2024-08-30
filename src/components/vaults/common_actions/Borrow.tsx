@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BorrowInput } from "@/components/common/input/BorrowInput";
 import {
   Select,
@@ -29,6 +29,7 @@ import { Switch } from "@/components/ui/switch";
 import { AnimatePresence, m } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
+import { CtaButton } from "@/components/common/CtaButton";
 
 export const Borrow = () => {
   const queryClient = useQueryClient();
@@ -76,7 +77,7 @@ export const Borrow = () => {
   const {
     data: borrowConfig,
     error: borrowError,
-    isFetching,
+    isPending,
   } = useSimulateContract({
     address: alchemistForDebtTokenAddress,
     abi: alchemistV2Abi,
@@ -123,7 +124,7 @@ export const Borrow = () => {
     setConfirmedDifferentAddress(checked);
   };
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (borrowError) {
       toast.error("Borrow failed", {
         description:
@@ -141,7 +142,7 @@ export const Borrow = () => {
           "Borrow failed. Unexpected. Please contract Alchemix team.",
       });
     }
-  }, [borrow, borrowConfig, borrowError]);
+  };
 
   return (
     <div className="space-y-4 bg-grey15inverse p-4 dark:bg-grey15">
@@ -239,19 +240,19 @@ export const Borrow = () => {
               )}
             </AnimatePresence>
           </div>
-          <Button
+          <CtaButton
             variant="outline"
             width="full"
             onClick={onCtaClick}
             disabled={
-              isFetching ||
+              isPending ||
               isInputZero(amount) ||
               (isDifferentAddress && !isAddress(receipientAddress)) ||
               (isDifferentAddress && !confirmedDifferentAddress)
             }
           >
             Borrow {debtToken.symbol}
-          </Button>
+          </CtaButton>
         </>
       )}
     </div>

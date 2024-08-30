@@ -4,7 +4,6 @@ import { Vault } from "@/lib/types";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { formatEther, formatUnits, parseUnits, zeroAddress } from "viem";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
-import { useMemo } from "react";
 import { TokenInput } from "./TokenInput";
 import { useStaticTokenAdapterWithdraw } from "@/hooks/useStaticTokenAdapterWithdraw";
 
@@ -75,12 +74,7 @@ export const VaultWithdrawTokenInput = ({
     },
   });
 
-  const otherCoverInDebt =
-    totalCollateralInDebtToken !== undefined &&
-    collateralInDebtToken !== undefined
-      ? totalCollateralInDebtToken - collateralInDebtToken
-      : 0n;
-  const balanceInDebt = useMemo(() => {
+  const balanceInDebt = (() => {
     if (collateralInDebtToken === undefined) {
       return 0n;
     }
@@ -90,12 +84,18 @@ export const VaultWithdrawTokenInput = ({
 
     const maxWithdrawAmount = collateralInDebtToken - requiredCoverInDebt;
 
+    const otherCoverInDebt =
+      totalCollateralInDebtToken !== undefined &&
+      collateralInDebtToken !== undefined
+        ? totalCollateralInDebtToken - collateralInDebtToken
+        : 0n;
+
     if (otherCoverInDebt >= requiredCoverInDebt) {
       return collateralInDebtToken;
     } else {
       return maxWithdrawAmount;
     }
-  }, [collateralInDebtToken, otherCoverInDebt, vault]);
+  })();
 
   const { data: balanceForUnderlying } = useReadContract({
     address: vault.alchemist.address,

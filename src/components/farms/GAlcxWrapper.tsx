@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "../ui/switch";
 import { Button } from "../ui/button";
 import {
@@ -122,7 +122,7 @@ export const GAlcsWrapper = () => {
     setAmount("");
   };
 
-  const onWrap = useCallback(() => {
+  const onWrap = () => {
     if (isApprovalNeeded) {
       approveConfig && approve(approveConfig.request);
       return;
@@ -145,9 +145,9 @@ export const GAlcsWrapper = () => {
         description: "Unexpected error. Please contact Alchemix team.",
       });
     }
-  }, [approve, approveConfig, isApprovalNeeded, wrap, wrapConfig, wrapError]);
+  };
 
-  const onUnwrap = useCallback(() => {
+  const onUnwrap = () => {
     if (unwrapError) {
       toast.error("Error unwrapping ALCX", {
         description:
@@ -165,7 +165,7 @@ export const GAlcsWrapper = () => {
         description: "Unexpected error. Please contact Alchemix team.",
       });
     }
-  }, [unwrap, unwrapConfig, unwrapError]);
+  };
 
   const handleOpen = () => {
     setOpen((prev) => !prev);
