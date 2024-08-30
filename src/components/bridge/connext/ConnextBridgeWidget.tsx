@@ -1,6 +1,7 @@
 import { useSwitchChain } from "wagmi";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { isAddress, zeroAddress } from "viem";
+
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import {
   Select,
@@ -15,45 +16,91 @@ import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { Button } from "@/components/ui/button";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useChain } from "@/hooks/useChain";
+import { useAllowance } from "@/hooks/useAllowance";
 import { formatNumber } from "@/utils/number";
 import {
   useConnextRelayerFee,
   useConnextAmountOut,
-  useConnextApproval,
-  useConnextWriteApprove,
-  useConnextWriteBridge,
   chainIdToDomainMapping,
   bridgeChains,
   chainToAvailableTokensMapping,
+  SupportedBridgeChainIds,
+  targetMapping,
 } from "./lib/connext";
+
+const getIsConnectedChainNotSupportedForBridge = (chainId: number) => {
+  return !bridgeChains.some((c) => c.id === chainId);
+};
+
+const getOriginDomain = (chainId: number) => {
+  return getIsConnectedChainNotSupportedForBridge(chainId)
+    ? chainIdToDomainMapping[bridgeChains[0].id]
+    : chainIdToDomainMapping[chainId as SupportedBridgeChainIds];
+};
+
+const getInitialOriginTokenAddresses = (chainId: number) => {
+  return getIsConnectedChainNotSupportedForBridge(chainId)
+    ? chainToAvailableTokensMapping[bridgeChains[0].id]
+    : chainToAvailableTokensMapping[chainId as SupportedBridgeChainIds];
+};
+
+const getSpender = ({
+  originChainId,
+  originTokenAddress,
+}: {
+  originChainId: number;
+  originTokenAddress: `0x${string}`;
+}) => {
+  return getIsConnectedChainNotSupportedForBridge(originChainId)
+    ? targetMapping[bridgeChains[0].id][originTokenAddress]
+    : targetMapping[originChainId as SupportedBridgeChainIds][
+        originTokenAddress
+      ];
+};
 
 export const ConnextBridgeWidget = () => {
   const chain = useChain();
+  const { switchChain } = useSwitchChain();
 
-  const [originChainId, setOriginChainId] = useState(chain.id.toString());
-  const originDomain = chainIdToDomainMapping[originChainId];
-  const originChain = bridgeChains.find(
-    (c) => c.id.toString() === originChainId,
-  );
+  useEffect(() => {
+    const isConnectedChainNotSupportedForBridge =
+      getIsConnectedChainNotSupportedForBridge(chain.id);
+    if (isConnectedChainNotSupportedForBridge) {
+      switchChain({
+        chainId: bridgeChains[0].id,
+      });
+      setOriginChainId(bridgeChains[0].id);
+      const newDestinationChainId = bridgeChains.find(
+        (c) => c.id !== bridgeChains[0].id,
+      )?.id;
+      if (newDestinationChainId) {
+        setDestinationChainId(newDestinationChainId);
+      }
+    }
+  }, [chain.id, switchChain]);
+
+  const [originChainId, setOriginChainId] = useState(chain.id);
+  const originDomain = getOriginDomain(originChainId);
+  const originChain = bridgeChains.find((c) => c.id === originChainId);
 
   const [destinationChainId, setDestinationChainId] = useState(
-    bridgeChains.find((c) => c.id.toString() !== originChainId)!.id.toString(),
+    bridgeChains.find((c) => c.id !== originChainId)!.id,
   );
   const destinationDomain = chainIdToDomainMapping[destinationChainId];
   const destinationChain = bridgeChains.find(
-    (c) => c.id.toString() === destinationChainId,
+    (c) => c.id === destinationChainId,
   );
 
   const { data: tokens } = useTokensQuery();
   const [originTokenAddress, setOriginTokenAddress] = useState(
-    chainToAvailableTokensMapping[originChainId][0],
+    getInitialOriginTokenAddresses(originChainId)[0],
   );
   const token = tokens?.find(
     (t) => t.address.toLowerCase() === originTokenAddress.toLowerCase(),
   );
   const selection = tokens?.filter((t) =>
-    chainToAvailableTokensMapping[originChainId].includes(
-      t.address.toLowerCase(),
+    getInitialOriginTokenAddresses(originChainId).includes(
+      t.address.toLowerCase() as `0x${string}`,
     ),
   );
 
@@ -73,44 +120,33 @@ export const ConnextBridgeWidget = () => {
       amount,
     });
 
-  const { data: approveData } = useConnextApproval({
-    originDomain,
-    originTokenAddress,
+  const { isApprovalNeeded, approveConfig, approve } = useAllowance({
     amount,
-    originChainId: parseInt(originChainId),
+    tokenAddress: originTokenAddress,
+    spender: getSpender({ originChainId, originTokenAddress }),
+    decimals: token?.decimals,
   });
-
-  const notReady =
-    isFetchingAmountOut ||
-    approveData === undefined ||
-    relayerFee === undefined ||
-    amountOut === undefined;
-
-  const { mutate: writeApprove, isPending: isApproving } =
-    useConnextWriteApprove();
-  const { mutate: writeBridge, isPending: isBridging } =
-    useConnextWriteBridge();
-
-  const { switchChain } = useSwitchChain();
 
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
-      setOriginChainId(chainId);
-      const newChainTokenAddress = chainToAvailableTokensMapping[chainId][0];
+      const newChainId = Number(chainId) as SupportedBridgeChainIds;
+
+      setOriginChainId(newChainId);
+      const newChainTokenAddress = chainToAvailableTokensMapping[newChainId][0];
       if (isAddress(newChainTokenAddress)) {
         setOriginTokenAddress(newChainTokenAddress);
       }
       setAmount("");
-      if (chainId === destinationChainId) {
-        const newDestinationChainId = bridgeChains
-          .find((c) => c.id.toString() !== chainId)
-          ?.id.toString();
+      if (newChainId === destinationChainId) {
+        const newDestinationChainId = bridgeChains.find(
+          (c) => c.id !== newChainId,
+        )?.id;
         if (newDestinationChainId) {
           setDestinationChainId(newDestinationChainId);
         }
       }
       switchChain({
-        chainId: Number(chainId),
+        chainId: newChainId,
       });
     },
     [destinationChainId, switchChain],
@@ -118,16 +154,18 @@ export const ConnextBridgeWidget = () => {
 
   const handleDestinationChainSelect = useCallback(
     (chainId: string) => {
-      setDestinationChainId(chainId);
+      const newChainId = Number(chainId) as SupportedBridgeChainIds;
+
+      setDestinationChainId(newChainId);
       setAmount("");
-      if (chainId === originChainId) {
-        const newOriginChainId = bridgeChains
-          .find((c) => c.id.toString() !== chainId)
-          ?.id.toString();
+      if (newChainId === originChainId) {
+        const newOriginChainId = bridgeChains.find(
+          (c) => c.id !== newChainId,
+        )?.id;
         if (newOriginChainId) {
           setOriginChainId(newOriginChainId);
           switchChain({
-            chainId: Number(newOriginChainId),
+            chainId: newOriginChainId,
           });
           const newChainTokenAddress =
             chainToAvailableTokensMapping[newOriginChainId][0];
@@ -141,22 +179,11 @@ export const ConnextBridgeWidget = () => {
   );
 
   const onCtaClick = () => {
-    if (!approveData) return;
-    if (approveData?.isApprovalNeeded === true) {
-      writeApprove({ approveData });
+    if (isApprovalNeeded) {
+      approveConfig?.request && approve(approveConfig.request);
       return;
     }
-    if (!relayerFee) return;
-
-    writeBridge({
-      originDomain,
-      destinationDomain,
-      destinationChainId: parseInt(destinationChainId),
-      originTokenAddress,
-      amount,
-      slippage,
-      relayerFee,
-    });
+    // TODO: bridge
   };
 
   return (
@@ -164,7 +191,10 @@ export const ConnextBridgeWidget = () => {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-col gap-2">
           <p>Origin chain:</p>
-          <Select value={originChainId} onValueChange={handleOriginChainSelect}>
+          <Select
+            value={originChainId.toString()}
+            onValueChange={handleOriginChainSelect}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Origin chain">
                 {originChain?.name ?? "Error"}
@@ -182,7 +212,7 @@ export const ConnextBridgeWidget = () => {
         <div className="flex flex-col gap-2">
           <p>Target chain:</p>
           <Select
-            value={destinationChainId}
+            value={destinationChainId.toString()}
             onValueChange={handleDestinationChainSelect}
           >
             <SelectTrigger className="w-[180px]">
@@ -275,14 +305,10 @@ export const ConnextBridgeWidget = () => {
       <Button
         variant="outline"
         width="full"
-        disabled={isInputZero(amount) || notReady || isApproving || isBridging}
+        disabled={isInputZero(amount)}
         onClick={onCtaClick}
       >
-        {isApproving || isBridging
-          ? "Loading"
-          : approveData?.isApprovalNeeded === true
-            ? "Approve"
-            : "Bridge"}
+        {isApprovalNeeded ? "Approve" : "Bridge"}
       </Button>
     </div>
   );
