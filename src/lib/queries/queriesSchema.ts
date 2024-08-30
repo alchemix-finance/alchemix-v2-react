@@ -13,7 +13,7 @@ export const QueryKeys = {
   Delegate: "delegate",
   TokenPrice: "tokenPrice",
   Transmuters: "transmuters",
-  TransmuterApy: "transmuter-apy",
+  TransmuterApr: "transmuter-apr",
   Apr: "apr",
   Migration: (v: string) => `migrate-${v}`,
   VotesForAddress: "votesForAddress",

@@ -25,7 +25,7 @@ export function LeftBlock() {
           </Button>
           <a
             className="flex h-7 w-7 items-center justify-center rounded border border-iconsInverse/40 p-1 text-iconsInverse/40 transition-colors hover:border-iconsInverse hover:text-iconsInverse dark:border-orange4/40 dark:text-orange4/40 dark:hover:border-orange4 dark:hover:text-orange4"
-            href="https://alchemix-finance.gitbook.io/v2/"
+            href="https://alchemix-finance.gitbook.io/user-docs"
             target="_blank"
             rel="noreferrer noopener"
           >
