@@ -49,7 +49,7 @@ export const BorrowInput = ({
     args: [address!],
     query: {
       enabled: !!vaultForAlchemist && !!address,
-      select: (accounts) => (accounts[0] > 0n ? accounts[0] : 0n),
+      select: ([debt]) => debt,
     },
   });
 

@@ -9,6 +9,7 @@ export interface TransmuterMetadata {
   address: Address;
   label: string;
   synthAsset: SynthAsset;
+  apyQueryUri: string;
 }
 
 export type TransmutersMetadata = {
@@ -40,13 +41,18 @@ export interface SynthAssetMetadata {
 }
 
 export type MessageType = "info" | "warning" | "error";
+export type VaultMessage = {
+  message: string;
+  type: MessageType;
+  learnMoreUrl?: string;
+};
 
 export interface VaultMetadata {
   label: string;
   synthAssetType: SynthAsset;
   underlyingSymbol: string;
   yieldSymbol: string;
-  messages: { message: string; type: MessageType }[];
+  messages: VaultMessage[];
   api: {
     apr: AprFn;
     yieldType: string;

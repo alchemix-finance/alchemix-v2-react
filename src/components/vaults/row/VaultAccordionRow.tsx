@@ -29,6 +29,7 @@ import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 
 type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
 
@@ -85,6 +86,9 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
         args: [vault.yieldToken, vault.position.shares],
       },
     ] as const,
+    query: {
+      placeholderData: keepPreviousData,
+    },
   });
   const [tvl, sharesBalance] = vaultStats ?? [0n, 0n];
 
@@ -184,8 +188,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             vault.metadata.messages.map((message) => (
               <VaultMessage
                 key={message.type + message.message.slice(0, 10)}
-                message={message.message}
-                type={message.type}
+                message={message}
               />
             ))}
 
@@ -338,23 +341,16 @@ const VaultCapacityCell = ({
     },
   });
 
+  const progressValue = capacity?.isFull
+    ? 100
+    : (parseFloat(capacity?.currentValue ?? "0") / parseFloat(limitValue)) *
+      100;
+
   return (
     <>
       <div className="w-full self-start pt-2">
         <div className="relative">
-          <div className="flex h-2 overflow-hidden rounded border border-bronze1inverse bg-bronze4inverse text-xs dark:border-bronze1 dark:bg-bronze4">
-            <div
-              className={cn(
-                "flex flex-col justify-center whitespace-nowrap bg-bronze1inverse text-left text-white shadow-none dark:bg-bronze1 dark:text-black",
-                isPending && "animate-pulse",
-              )}
-              style={{
-                width: capacity?.isFull
-                  ? "100%"
-                  : `${(parseFloat(capacity?.currentValue ?? "0") / parseFloat(limitValue)) * 100}%`,
-              }}
-            ></div>
-          </div>
+          <Progress value={progressValue} />
         </div>
       </div>
       <div className="mt-2 flex flex-col items-center">
@@ -364,9 +360,17 @@ const VaultCapacityCell = ({
             isPending && "animate-pulse",
           )}
         >
-          {capacity?.isFull
-            ? "Full"
-            : `${formatNumber(capacity?.currentValue ?? "0", { compact: true })}/${formatNumber(limitValue, { compact: true })} ${tokenSymbol}`}
+          {capacity?.isFull ? (
+            <>
+              <span>Full</span>
+              <br />
+              <span>
+                {formatNumber(limitValue, { compact: true })} {tokenSymbol}
+              </span>
+            </>
+          ) : (
+            `${formatNumber(capacity?.currentValue ?? "0", { compact: true })}/${formatNumber(limitValue, { compact: true })} ${tokenSymbol}`
+          )}
         </p>
       </div>
     </>

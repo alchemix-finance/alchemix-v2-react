@@ -1,7 +1,6 @@
-# Alchemix v2 Alternative Frontend
+# Alchemix v2 Frontend
 
-This repo provides an alternative frontend for Alchemix v2.
-It is written from scratch looking at the existing public and private repo.
+This repo provides a frontend for Alchemix v2.
 
 # How to run
 

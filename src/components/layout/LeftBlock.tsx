@@ -14,7 +14,7 @@ export function LeftBlock() {
         <footer className="flex items-center justify-between px-4">
           <Button
             variant="ghost"
-            className="h-7 w-7 rounded border border-grey5inverse bg-transparent p-1 text-grey5inverse hover:border-grey1inverse hover:bg-transparent hover:text-grey1inverse dark:border-grey5 dark:bg-transparent dark:text-grey5 dark:hover:border-grey1 dark:hover:bg-transparent"
+            className="h-7 w-7 rounded border border-iconsInverse/40 bg-transparent p-1 text-iconsInverse/40 transition-colors hover:border-iconsInverse hover:bg-transparent hover:text-iconsInverse dark:border-orange4/40 dark:bg-transparent dark:text-orange4/40 dark:hover:border-orange4 dark:hover:bg-transparent dark:hover:text-orange4"
             onClick={handleDarkModeToggle}
           >
             {darkMode ? (
@@ -24,7 +24,7 @@ export function LeftBlock() {
             )}
           </Button>
           <a
-            className="flex h-7 w-7 items-center justify-center rounded border border-grey5inverse p-1 text-grey5inverse transition-colors hover:border-grey1inverse hover:text-grey1inverse dark:border-grey5 dark:text-grey5 dark:hover:border-grey1 dark:hover:text-grey1"
+            className="flex h-7 w-7 items-center justify-center rounded border border-iconsInverse/40 p-1 text-iconsInverse/40 transition-colors hover:border-iconsInverse hover:text-iconsInverse dark:border-orange4/40 dark:text-orange4/40 dark:hover:border-orange4 dark:hover:text-orange4"
             href="https://alchemix-finance.gitbook.io/v2/"
             target="_blank"
             rel="noreferrer noopener"
@@ -32,7 +32,7 @@ export function LeftBlock() {
             <FileIcon className="h-4 w-4" />
           </a>
           <a
-            className="flex h-7 w-7 items-center justify-center rounded border border-grey5inverse fill-grey5inverse p-1 transition-colors hover:border-grey1inverse hover:fill-grey1inverse dark:border-grey5 dark:fill-grey5 dark:hover:border-grey1 dark:hover:fill-grey1"
+            className="flex h-7 w-7 items-center justify-center rounded border border-iconsInverse/40 fill-iconsInverse/40 p-1 transition-colors hover:border-iconsInverse hover:fill-iconsInverse dark:border-orange4/40 dark:fill-orange4/40 dark:hover:border-orange4 dark:hover:fill-orange4"
             href="https://twitter.com/AlchemixFi"
             target="_blank"
             rel="noreferrer noopener"
