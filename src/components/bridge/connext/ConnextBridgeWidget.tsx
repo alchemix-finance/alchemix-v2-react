@@ -25,6 +25,9 @@ import {
   bridgeChains,
   chainToAvailableTokensMapping,
   SupportedBridgeChainIds,
+  useConnextWriteBridge,
+  useSubgraphOriginData,
+  useSubgraphDestinationData,
 } from "./lib/connext";
 import {
   getInitialOriginTokenAddresses,
@@ -100,6 +103,18 @@ export const ConnextBridgeWidget = () => {
     decimals: token?.decimals,
   });
 
+  const { mutate: writeBridge, data: transactionHash } =
+    useConnextWriteBridge();
+
+  const { data: transferId } = useSubgraphOriginData({ transactionHash });
+
+  const { data: bridgeStatus } = useSubgraphDestinationData({
+    transferId,
+    destinationChainId,
+  });
+
+  console.log({ bridgeStatus });
+
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
       const newChainId = Number(chainId) as SupportedBridgeChainIds;
@@ -156,7 +171,16 @@ export const ConnextBridgeWidget = () => {
       approveConfig?.request && approve(approveConfig.request);
       return;
     }
-    // TODO: bridge
+
+    writeBridge({
+      amount,
+      destinationDomain,
+      originDomain,
+      originChainId,
+      originTokenAddress,
+      slippage,
+      relayerFee,
+    });
   };
 
   return (

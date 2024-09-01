@@ -10,6 +10,8 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { arbitrum, mainnet, optimism } from "viem/chains";
 import { BigNumber } from "@ethersproject/bignumber";
+import request, { gql } from "graphql-request";
+
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
 import { isInputZero } from "@/utils/inputNotZero";
@@ -20,6 +22,7 @@ import {
 } from "@/lib/constants";
 import { useChain } from "@/hooks/useChain";
 import { getSpender } from "./utils";
+import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 
 type AvailableTokensMapping = Record<SupportedBridgeChainIds, `0x${string}`[]>;
 type TargetMapping = Record<
@@ -91,6 +94,13 @@ export const targetMapping: TargetMapping = {
     [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD]:
       "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
   },
+};
+
+const SUBGRAPH_API_KEY = import.meta.env.VITE_SUBGRAPH_API_KEY;
+const SUBGRAPH_URLS = {
+  [mainnet.id]: `https://gateway.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/Hd6Amg8XvcPRESqUtujxojk1gBEzRyoMfaP4Ue7Y1w3b`,
+  [optimism.id]: `https://gateway.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/691uswDfvWDSgpUCemetuKbNViAqJ1CkgopNmweYFHQY`,
+  [arbitrum.id]: `https://gateway.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/DoAaZ6zNFCbiZVDMZEgan7w9K5sJy8v6vvSCLDwyqodo`,
 };
 
 const CONNEXT_BASE_URI = "https://sdk-server.mainnet.connext.ninja";
@@ -226,11 +236,11 @@ export const useConnextWriteBridge = () => {
     }: {
       originDomain: string;
       destinationDomain: string;
-      originChainId: SupportedBridgeChainIds;
+      originChainId: SupportedChainId;
       originTokenAddress: `0x${string}`;
       amount: string; // uint256 in string
       slippage: string; // in %
-      relayerFee: string; // in wei
+      relayerFee: string | undefined; // in wei
     }) => {
       if (!publicClient) throw new Error("Public client not ready");
       if (!address) throw new Error("Not connected");
@@ -314,6 +324,190 @@ export const useConnextWriteBridge = () => {
         error: "Bridge failed.",
       });
       await executionPromise();
+
+      return hash;
+    },
+  });
+};
+
+export const useSubgraphOriginData = ({
+  transactionHash,
+}: {
+  transactionHash: `0x${string}` | undefined;
+}) => {
+  const chain = useChain();
+  return useQuery({
+    queryKey: [
+      QueryKeys.ConnextSdk("originTxSubgraph"),
+      chain.id,
+      transactionHash,
+    ],
+    queryFn: async () => {
+      if (!transactionHash) throw new Error("No transaction hash provided");
+
+      const query = gql`
+        query OriginTransfer {
+          originTransfers(where: { transactionHash: $transactionHash }) {
+            # Meta Data
+            chainId
+            nonce
+            transferId
+            to
+            delegate
+            receiveLocal
+            callData
+            slippage
+            originSender
+            originDomain
+            destinationDomain
+            transactionHash
+            bridgedAmt
+            status
+            timestamp
+            normalizedIn
+            # Asset Data
+            asset {
+              id
+              adoptedAsset
+              canonicalId
+              canonicalDomain
+            }
+          }
+        }
+      `;
+
+      const txFromSubgraph = await request<
+        {
+          originTransfers: {
+            chainId: string;
+            nonce: string;
+            transferId: string;
+            to: string;
+            delegate: string;
+            receiveLocal: string;
+            callData: string;
+            slippage: string;
+            originSender: string;
+            originDomain: string;
+            destinationDomain: string;
+            transactionHash: string;
+            bridgedAmt: string;
+            status: string;
+            timestamp: string;
+            normalizedIn: string;
+            asset: {
+              id: string;
+              adoptedAsset: string;
+              canonicalId: string;
+              canonicalDomain: string;
+            };
+          }[];
+        },
+        { transactionHash: string }
+      >(SUBGRAPH_URLS[chain.id as SupportedBridgeChainIds], query, {
+        transactionHash,
+      });
+
+      const tx = txFromSubgraph.originTransfers[0];
+
+      return tx.transferId;
+    },
+    enabled: !!transactionHash,
+  });
+};
+
+export const useSubgraphDestinationData = ({
+  transferId,
+  destinationChainId,
+}: {
+  transferId: string | undefined;
+  destinationChainId: SupportedBridgeChainIds;
+}) => {
+  return useQuery({
+    queryKey: [
+      QueryKeys.ConnextSdk("destinationTxSubgraph"),
+      destinationChainId,
+      transferId,
+    ],
+    queryFn: async () => {
+      if (!transferId) throw new Error("No transfer id provided");
+
+      const query = gql`
+        query OriginTransfer {
+          originTransfers(
+            where: {
+              transferId: ${transferId}
+            }
+          ) {
+            # Meta Data
+            chainId
+            nonce
+            transferId
+            to
+            delegate
+            receiveLocal
+            callData
+            slippage
+            originSender
+            originDomain
+            destinationDomain
+            transactionHash
+            bridgedAmt
+            status
+            timestamp
+            normalizedIn
+            # Asset Data
+            asset {
+              id
+              adoptedAsset
+              canonicalId
+              canonicalDomain
+            }
+          }
+        }
+      `;
+
+      const txFromSubgraph = await request<
+        {
+          originTransfers: {
+            chainId: string;
+            nonce: string;
+            transferId: string;
+            to: string;
+            delegate: string;
+            receiveLocal: string;
+            callData: string;
+            slippage: string;
+            originSender: string;
+            originDomain: string;
+            destinationDomain: string;
+            transactionHash: string;
+            bridgedAmt: string;
+            status: string;
+            timestamp: string;
+            normalizedIn: string;
+            asset: {
+              id: string;
+              adoptedAsset: string;
+              canonicalId: string;
+              canonicalDomain: string;
+            };
+          }[];
+        },
+        {
+          transferId: string;
+        }
+      >(SUBGRAPH_URLS[destinationChainId], query, { transferId });
+
+      const tx = txFromSubgraph.originTransfers[0];
+
+      return { status: tx.status, destinationHash: tx.transactionHash };
+    },
+    enabled: !!transferId,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (data && data.status !== "Executed") return 10000;
+      return false;
     },
   });
 };
