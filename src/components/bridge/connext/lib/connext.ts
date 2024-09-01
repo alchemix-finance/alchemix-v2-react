@@ -1,4 +1,4 @@
-import { useAccount, useWalletClient } from "wagmi";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { toast } from "sonner";
 import {
   encodeAbiParameters,
@@ -208,7 +208,10 @@ export const useConnextAmountOut = ({
 export const useConnextWriteBridge = () => {
   const chain = useChain();
   const { address } = useAccount();
-  const { data: wallet } = useWalletClient({
+  const publicClient = usePublicClient({
+    chainId: chain.id,
+  });
+  const { data: walletClient } = useWalletClient({
     chainId: chain.id,
   });
   return useMutation({
@@ -229,8 +232,9 @@ export const useConnextWriteBridge = () => {
       slippage: string; // in %
       relayerFee: string; // in wei
     }) => {
+      if (!publicClient) throw new Error("Public client not ready");
       if (!address) throw new Error("Not connected");
-      if (!wallet) throw new Error("Wallet not ready");
+      if (!walletClient) throw new Error("Wallet not ready");
       if (!relayerFee) throw new Error("Relayer fee not ready");
 
       const bridgeConfig: XCallParams = {
@@ -272,24 +276,38 @@ export const useConnextWriteBridge = () => {
         );
       }
 
-      const xcallTxReq = await response.json();
+      const xcallTxReq = (await response.json()) as {
+        to: `0x${string}`;
+        data: `0x${string}`;
+        chainId: number;
+      };
 
-      const xcallTx = await wallet.sendTransaction(xcallTxReq);
+      const request = await publicClient.prepareTransactionRequest({
+        ...xcallTxReq,
+        account: address,
+      });
 
-      toast.promise(
-        () =>
-          new Promise((resolve, reject) =>
-            xcallTx
-              .wait()
-              .then((receipt) => (receipt.status === 1 ? resolve : reject)),
-          ),
-        {
-          loading: "Bridging...",
-          success: "Bridge success!",
-          error: "Bridge failed.",
-        },
-      );
-      await xcallTx.wait();
+      const hash = await walletClient.sendTransaction(request);
+
+      const executionPromise = () =>
+        new Promise((resolve, reject) => {
+          publicClient
+            .waitForTransactionReceipt({
+              hash,
+            })
+            .then((receipt) =>
+              receipt.status === "success"
+                ? resolve(receipt)
+                : reject(new Error("Transaction reverted")),
+            );
+        });
+
+      toast.promise(executionPromise, {
+        loading: "Bridging...",
+        success: "Bridge success!",
+        error: "Bridge failed.",
+      });
+      await executionPromise();
     },
   });
 };
