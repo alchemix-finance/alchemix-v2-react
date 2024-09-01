@@ -115,8 +115,10 @@ const TransmuterAprPopover = () => {
           Users are credited with corresponding assets based on the deposited
           alAsset amount.
           <br />
-          <br />
           The alAsset is burned when user claims the transmuted token.
+          <br />
+          <br />
+          This APR assumes open-market alAsset buy and 1:1 transmute.
         </p>
         <br />
         <a
