@@ -25,38 +25,13 @@ import {
   bridgeChains,
   chainToAvailableTokensMapping,
   SupportedBridgeChainIds,
-  targetMapping,
 } from "./lib/connext";
-
-const getIsConnectedChainNotSupportedForBridge = (chainId: number) => {
-  return !bridgeChains.some((c) => c.id === chainId);
-};
-
-const getOriginDomain = (chainId: number) => {
-  return getIsConnectedChainNotSupportedForBridge(chainId)
-    ? chainIdToDomainMapping[bridgeChains[0].id]
-    : chainIdToDomainMapping[chainId as SupportedBridgeChainIds];
-};
-
-const getInitialOriginTokenAddresses = (chainId: number) => {
-  return getIsConnectedChainNotSupportedForBridge(chainId)
-    ? chainToAvailableTokensMapping[bridgeChains[0].id]
-    : chainToAvailableTokensMapping[chainId as SupportedBridgeChainIds];
-};
-
-const getSpender = ({
-  originChainId,
-  originTokenAddress,
-}: {
-  originChainId: number;
-  originTokenAddress: `0x${string}`;
-}) => {
-  return getIsConnectedChainNotSupportedForBridge(originChainId)
-    ? targetMapping[bridgeChains[0].id][originTokenAddress]
-    : targetMapping[originChainId as SupportedBridgeChainIds][
-        originTokenAddress
-      ];
-};
+import {
+  getInitialOriginTokenAddresses,
+  getIsConnectedChainNotSupportedForBridge,
+  getOriginDomain,
+  getSpender,
+} from "./lib/utils";
 
 export const ConnextBridgeWidget = () => {
   const chain = useChain();
@@ -99,9 +74,7 @@ export const ConnextBridgeWidget = () => {
     (t) => t.address.toLowerCase() === originTokenAddress.toLowerCase(),
   );
   const selection = tokens?.filter((t) =>
-    getInitialOriginTokenAddresses(originChainId).includes(
-      t.address.toLowerCase() as `0x${string}`,
-    ),
+    getInitialOriginTokenAddresses(originChainId).includes(t.address),
   );
 
   const [amount, setAmount] = useState("");
@@ -257,7 +230,7 @@ export const ConnextBridgeWidget = () => {
             value={
               isFetchingAmountOut
                 ? "Loading"
-                : formatNumber(amountOut?.amountReceived)
+                : formatNumber(amountOut?.amountReceived, { decimals: 4 })
             }
             readOnly
             aria-readonly

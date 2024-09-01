@@ -1,4 +1,4 @@
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import { toast } from "sonner";
 import {
   encodeAbiParameters,
@@ -9,11 +9,8 @@ import {
 } from "viem";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { arbitrum, mainnet, optimism } from "viem/chains";
-import type { SdkConfig } from "@connext/sdk";
-
+import { BigNumber } from "@ethersproject/bignumber";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
-import { useEthersSigner } from "@/hooks/useEthersSigner";
-import { CONNEXT_GATEWAY_ADDRESSES } from "@/lib/config/bridge";
 import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
 import { isInputZero } from "@/utils/inputNotZero";
 import {
@@ -21,10 +18,27 @@ import {
   ALCX_MAINNET_ADDRESS,
   ALCX_OPTIMISM_ADDRESS,
 } from "@/lib/constants";
+import { useChain } from "@/hooks/useChain";
+import { getSpender } from "./utils";
+
+type AvailableTokensMapping = Record<SupportedBridgeChainIds, `0x${string}`[]>;
+type TargetMapping = Record<
+  SupportedBridgeChainIds,
+  Record<`0x${string}`, `0x${string}`>
+>;
+interface XCallParams {
+  origin: string;
+  destination: string;
+  asset: `0x${string}`;
+  amount: string;
+  slippage: string;
+  relayerFee: string;
+
+  to?: `0x${string}`;
+  callData?: `0x${string}`;
+}
 
 const ETH_DOMAIN = 6648936;
-const OPTIMISM_DOMAIN = 1869640809;
-const ARBITRUM_DOMAIN = 1634886255;
 
 export const bridgeChains = [mainnet, optimism, arbitrum];
 export type SupportedBridgeChainIds = (typeof bridgeChains)[number]["id"];
@@ -35,80 +49,51 @@ export const chainIdToDomainMapping = {
   [arbitrum.id]: "1634886255",
 } as const;
 
-export const chainToAvailableTokensMapping = {
+export const chainToAvailableTokensMapping: AvailableTokensMapping = {
   [mainnet.id]: [
     ALCX_MAINNET_ADDRESS,
     SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH,
     SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD,
-  ].map((t) => t.toLowerCase() as `0x${string}`),
+  ],
 
   [optimism.id]: [
     ALCX_OPTIMISM_ADDRESS,
     SYNTH_ASSETS_ADDRESSES[optimism.id].alETH,
     SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD,
-  ].map((t) => t.toLowerCase() as `0x${string}`),
+  ],
 
   [arbitrum.id]: [
     ALCX_ARBITRUM_ADDRESS,
     SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
     SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
-  ].map((t) => t.toLowerCase() as `0x${string}`),
-} as const;
-
-type TargetMapping = Record<
-  SupportedBridgeChainIds,
-  Record<`0x${string}`, `0x${string}`>
->;
+  ],
+};
 
 export const targetMapping: TargetMapping = {
   [mainnet.id]: {
-    [ALCX_MAINNET_ADDRESS]: "0x0",
-    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]: "0x0",
-    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]: "0x0",
+    [ALCX_MAINNET_ADDRESS]: "0xcfe063a764EA04A9A1Dc6cf8B8978955f779fc9F",
+    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]:
+      "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68",
+    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]:
+      "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68",
   },
   [optimism.id]: {
-    [ALCX_OPTIMISM_ADDRESS]: "0x0",
-    [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]: "0x0",
-    [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]: "0x0",
+    [ALCX_OPTIMISM_ADDRESS]: "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]:
+      "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]:
+      "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
   },
   [arbitrum.id]: {
-    [ALCX_ARBITRUM_ADDRESS]: "0x0",
-    [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH]: "0x0",
-    [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD]: "0x0",
+    [ALCX_ARBITRUM_ADDRESS]: "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
+    [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH]:
+      "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
+    [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD]:
+      "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
   },
 };
 
-const sdkConfig = {
-  network: "mainnet",
-  chains: {
-    [ETH_DOMAIN]: {
-      chainId: 1,
-      providers: ["https://ethereum-rpc.publicnode.com"],
-    },
-    [OPTIMISM_DOMAIN]: {
-      chainId: 10,
-      providers: ["https://optimism-rpc.publicnode.com"],
-    },
-    [ARBITRUM_DOMAIN]: {
-      chainId: 42161,
-      providers: ["https://arbitrum-one.publicnode.com"],
-    },
-  },
-  logLevel: "silent",
-} as const satisfies SdkConfig;
-
-const useConnextSdk = () => {
-  const { address } = useAccount();
-  return useQuery({
-    queryKey: [QueryKeys.ConnextSdk("init"), address],
-    queryFn: async () => {
-      const create = await import("@connext/sdk").then((mod) => mod.create);
-      const sdk = await create({ ...sdkConfig, signerAddress: address });
-      return sdk.sdkBase;
-    },
-    staleTime: Infinity,
-  });
-};
+const CONNEXT_BASE_URI = "https://sdk-server.mainnet.connext.ninja";
 
 export const useConnextRelayerFee = ({
   originDomain,
@@ -117,24 +102,34 @@ export const useConnextRelayerFee = ({
   originDomain: string;
   destinationDomain: string;
 }) => {
-  const { data: connextSdk } = useConnextSdk();
   return useQuery({
     queryKey: [
       QueryKeys.ConnextSdk("relayerFee"),
-      connextSdk,
       originDomain,
       destinationDomain,
     ],
     queryFn: async () => {
-      if (!connextSdk) throw new Error("SDK not ready");
-      const relayerFeeBN = await connextSdk.estimateRelayerFee({
-        originDomain,
-        destinationDomain,
+      const response = await fetch(`${CONNEXT_BASE_URI}/estimateRelayerFee`, {
+        method: "POST",
+        body: JSON.stringify({
+          originDomain,
+          destinationDomain,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-      const relayerFee = formatEther(BigInt(relayerFeeBN.toString()));
+      if (!response.ok) {
+        throw new Error(
+          `Error calling estimateRelayerFee: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      const result = (await response.json()) as BigNumber;
+      const relayerFee = formatEther(BigInt(BigNumber.from(result).toString()));
+
       return relayerFee;
     },
-    enabled: !!connextSdk,
     staleTime: Infinity,
   });
 };
@@ -150,45 +145,77 @@ export const useConnextAmountOut = ({
   originTokenAddress: string;
   amount: string;
 }) => {
-  const { data: connextSdk } = useConnextSdk();
   return useQuery({
     queryKey: [
       QueryKeys.ConnextSdk("amountOut"),
-      connextSdk,
       originDomain,
       destinationDomain,
       originTokenAddress,
       amount,
     ],
     queryFn: async () => {
-      if (!connextSdk) throw new Error("SDK not ready");
-      const { amountReceived, routerFee } =
-        await connextSdk.calculateAmountReceived(
-          originDomain,
-          destinationDomain,
-          originTokenAddress,
-          // uint256 in string
-          parseEther(amount).toString(),
+      const response = await fetch(
+        `${CONNEXT_BASE_URI}/calculateAmountReceived`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            originDomain,
+            destinationDomain,
+            originTokenAddress,
+            amount: parseEther(amount).toString(),
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      if (!response.ok) {
+        throw new Error(
+          `Error calling estimateRelayerFee: ${response.status} ${response.statusText}`,
         );
+      }
 
-      return {
-        amountReceived: formatEther(BigInt(amountReceived.toString())),
-        routerFee: formatEther(BigInt(routerFee.toString())),
+      const result = (await response.json()) as {
+        amountReceived: BigNumber;
+        originSlippage: BigNumber;
+        routerFee: BigNumber;
+        destinationSlippage: BigNumber;
+        isFastPath: boolean;
       };
+
+      const formattedResult = {
+        amountReceived: formatEther(
+          BigInt(BigNumber.from(result.amountReceived).toString()),
+        ),
+        originSlippage: formatEther(
+          BigInt(BigNumber.from(result.originSlippage).toString()),
+        ),
+        routerFee: formatEther(
+          BigInt(BigNumber.from(result.routerFee).toString()),
+        ),
+        destinationSlippage: formatEther(
+          BigInt(BigNumber.from(result.destinationSlippage).toString()),
+        ),
+        isFastPath: result.isFastPath,
+      };
+
+      return formattedResult;
     },
-    enabled: !!connextSdk && !isInputZero(amount),
+    enabled: !isInputZero(amount),
   });
 };
 
 export const useConnextWriteBridge = () => {
+  const chain = useChain();
   const { address } = useAccount();
-  const signer = useEthersSigner();
-  const { data: connextSdk } = useConnextSdk();
+  const { data: wallet } = useWalletClient({
+    chainId: chain.id,
+  });
   return useMutation({
     mutationFn: async ({
       originDomain,
       destinationDomain,
-      destinationChainId,
+      originChainId,
       originTokenAddress,
       amount,
       slippage,
@@ -196,68 +223,73 @@ export const useConnextWriteBridge = () => {
     }: {
       originDomain: string;
       destinationDomain: string;
-      destinationChainId: number;
-      originTokenAddress: string;
+      originChainId: SupportedBridgeChainIds;
+      originTokenAddress: `0x${string}`;
       amount: string; // uint256 in string
       slippage: string; // in %
       relayerFee: string; // in wei
     }) => {
-      if (!connextSdk) throw new Error("SDK not ready");
       if (!address) throw new Error("Not connected");
-      if (!signer) throw new Error("Signer not ready");
+      if (!wallet) throw new Error("Wallet not ready");
       if (!relayerFee) throw new Error("Relayer fee not ready");
+
+      const bridgeConfig: XCallParams = {
+        origin: originDomain,
+        destination: destinationDomain,
+        asset: originTokenAddress,
+        amount: parseEther(amount).toString(),
+        relayerFee: parseEther(relayerFee).toString(),
+        slippage: parseUnits(slippage, 2).toString(), // BPS
+      };
 
       const isFromEth = +originDomain === ETH_DOMAIN;
       const isToEth = +destinationDomain === ETH_DOMAIN;
 
       if (isFromEth) {
-        // type guard
-        if (
-          destinationChainId !== optimism.id &&
-          destinationChainId !== arbitrum.id
-        ) {
-          throw new Error("UNEXPECTED: Invalid bridge route.");
-        }
-
-        const gatewayAddress = CONNEXT_GATEWAY_ADDRESSES[destinationChainId];
-        const bridgeTxParams = {
-          origin: originDomain,
-          destination: destinationDomain,
-          to: gatewayAddress,
-          asset: originTokenAddress,
-          delegate: address,
-          callData: encodeAbiParameters(parseAbiParameters("address"), [
-            address,
-          ]),
-          amount: parseEther(amount).toString(),
-          relayerFee: parseEther(relayerFee).toString(),
-          slippage: parseUnits(slippage, 2).toString(), // BPS
-        };
-        const xcallTxReq = await connextSdk.xcall(bridgeTxParams);
-        const xcallTx = await signer.sendTransaction(xcallTxReq);
-        toast.promise(
-          () =>
-            new Promise((resolve, reject) =>
-              xcallTx
-                .wait()
-                .then((receipt) => (receipt.status === 1 ? resolve : reject)),
-            ),
-          {
-            loading: "Bridging...",
-            success: "Bridge success!",
-            error: "Bridge failed.",
-          },
+        // TODO: Double check that this is correct (i scarped it from approve transactions in connext ui, but didn't see if the subsequent tx targets the spender)
+        bridgeConfig.to = getSpender({ originChainId, originTokenAddress });
+        bridgeConfig.callData = encodeAbiParameters(
+          parseAbiParameters("address"),
+          [address],
         );
-        await xcallTx.wait();
         return;
+      } else if (isToEth) {
+        // L2 to L1
+      } else {
+        // L2 to L2
       }
 
-      if (isToEth) {
-        // TODO: implement bridge from L2 to L1
-        return;
+      const response = await fetch(`${CONNEXT_BASE_URI}/xcall`, {
+        method: "POST",
+        body: JSON.stringify(bridgeConfig),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Error calling estimateRelayerFee: ${response.status} ${response.statusText}`,
+        );
       }
 
-      // L2 to L2
+      const xcallTxReq = await response.json();
+
+      const xcallTx = await wallet.sendTransaction(xcallTxReq);
+
+      toast.promise(
+        () =>
+          new Promise((resolve, reject) =>
+            xcallTx
+              .wait()
+              .then((receipt) => (receipt.status === 1 ? resolve : reject)),
+          ),
+        {
+          loading: "Bridging...",
+          success: "Bridge success!",
+          error: "Bridge failed.",
+        },
+      );
+      await xcallTx.wait();
     },
   });
 };
