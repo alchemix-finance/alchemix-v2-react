@@ -249,8 +249,8 @@ export const useConnextWriteBridge = () => {
       const isFromEth = +originDomain === ETH_DOMAIN;
       const isToEth = +destinationDomain === ETH_DOMAIN;
 
+      // TODO: Double check that this is correct (i scarped it from approve transactions in connext ui, but didn't see if the subsequent tx targets the spender)
       if (isFromEth) {
-        // TODO: Double check that this is correct (i scarped it from approve transactions in connext ui, but didn't see if the subsequent tx targets the spender)
         bridgeConfig.to = getSpender({ originChainId, originTokenAddress });
         bridgeConfig.callData = encodeAbiParameters(
           parseAbiParameters("address"),
@@ -258,9 +258,15 @@ export const useConnextWriteBridge = () => {
         );
         return;
       } else if (isToEth) {
-        // L2 to L1
+        bridgeConfig.to = getSpender({ originChainId, originTokenAddress });
+        bridgeConfig.callData = encodeAbiParameters(
+          parseAbiParameters("address"),
+          [address],
+        );
       } else {
         // L2 to L2
+        bridgeConfig.to = getSpender({ originChainId, originTokenAddress });
+        bridgeConfig.callData = "0x";
       }
 
       const response = await fetch(`${CONNEXT_BASE_URI}/xcall`, {
