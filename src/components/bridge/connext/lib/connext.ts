@@ -42,8 +42,6 @@ interface XCallParams {
   callData?: `0x${string}`;
 }
 
-const ETH_DOMAIN = 6648936;
-
 export const bridgeChains = [mainnet, optimism, arbitrum];
 export type SupportedBridgeChainIds = (typeof bridgeChains)[number]["id"];
 
@@ -257,8 +255,8 @@ export const useConnextWriteBridge = () => {
         slippage: parseUnits(slippage, 2), // BPS
       };
 
-      const isFromEth = +originDomain === ETH_DOMAIN;
-      const isToEth = +destinationDomain === ETH_DOMAIN;
+      const isFromEth = originDomain === chainIdToDomainMapping[mainnet.id];
+      const isToEth = destinationDomain === chainIdToDomainMapping[mainnet.id];
 
       if (isFromEth) {
         bridgeConfig.to = getSpender({ originChainId, originTokenAddress });
