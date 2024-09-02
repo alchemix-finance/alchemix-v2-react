@@ -296,7 +296,7 @@ export const useConnextWriteBridge = () => {
         );
       } else {
         // L2 to L2
-        bridgeConfig.to = getSpender({ originChainId, originTokenAddress });
+        bridgeConfig.to = address;
         bridgeConfig.callData = "0x";
       }
 
