@@ -26,8 +26,6 @@ import {
   chainToAvailableTokensMapping,
   SupportedBridgeChainIds,
   useConnextWriteBridge,
-  useSubgraphOriginData,
-  useSubgraphDestinationData,
 } from "./lib/connext";
 import {
   getInitialOriginTokenAddresses,
@@ -35,6 +33,7 @@ import {
   getOriginDomain,
   getSpender,
 } from "./lib/utils";
+import { StatusBox } from "./StatusBox";
 
 export const ConnextBridgeWidget = () => {
   const chain = useChain();
@@ -120,17 +119,11 @@ export const ConnextBridgeWidget = () => {
     decimals: token?.decimals,
   });
 
-  const { mutate: writeBridge, data: transactionHash } =
-    useConnextWriteBridge();
-
-  const { data: transferId } = useSubgraphOriginData({ transactionHash });
-
-  const { data: bridgeStatus } = useSubgraphDestinationData({
-    transferId,
-    destinationChainId,
-  });
-
-  console.log({ bridgeStatus });
+  const {
+    mutate: writeBridge,
+    data: transactionHash,
+    isPending: isWritingBridge,
+  } = useConnextWriteBridge();
 
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
@@ -285,7 +278,7 @@ export const ConnextBridgeWidget = () => {
             setOriginTokenAddress(value as `0x${string}`)
           }
         >
-          <SelectTrigger className="h-auto w-56">
+          <SelectTrigger className="h-auto w-24 sm:w-56">
             <SelectValue placeholder="Token" asChild>
               <div className="flex items-center gap-4">
                 <img
@@ -293,7 +286,9 @@ export const ConnextBridgeWidget = () => {
                   alt={token?.symbol}
                   className="h-12 w-12"
                 />
-                <span className="text-xl">{token?.symbol}</span>
+                <span className="hidden text-xl sm:inline">
+                  {token?.symbol}
+                </span>
               </div>
             </SelectValue>
           </SelectTrigger>
@@ -313,11 +308,17 @@ export const ConnextBridgeWidget = () => {
           tokenDecimals={18}
         />
       </div>
-      <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+      <div className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between">
+        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        <StatusBox
+          transactionHash={transactionHash}
+          destinationChainId={destinationChainId}
+        />
+      </div>
       <Button
         variant="outline"
         width="full"
-        disabled={isInputZero(amount)}
+        disabled={isInputZero(amount) || isWritingBridge}
         onClick={onCtaClick}
       >
         {isApprovalNeeded ? "Approve" : "Bridge"}

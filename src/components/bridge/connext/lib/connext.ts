@@ -2,7 +2,9 @@ import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { toast } from "sonner";
 import {
   encodeAbiParameters,
+  encodeFunctionData,
   formatEther,
+  parseAbi,
   parseAbiParameters,
   parseEther,
   parseUnits,
@@ -264,11 +266,11 @@ export const useConnextWriteBridge = () => {
         bridgeConfig.callData = toHex("");
       }
 
-      const xCallData = encodeAbiParameters(
-        parseAbiParameters(
-          "uint32,address,address,address,uint256,uint256,bytes",
-        ),
-        [
+      const xCallData = encodeFunctionData({
+        abi: parseAbi([
+          "function xcall(uint32 _destination, address _to, address _asset, address _delegate, uint256 _amount, uint256 _slippage, bytes calldata _callData) external payable returns (bytes32)",
+        ]),
+        args: [
           parseInt(bridgeConfig.destination),
           bridgeConfig.to,
           bridgeConfig.asset,
@@ -277,7 +279,7 @@ export const useConnextWriteBridge = () => {
           bridgeConfig.slippage,
           bridgeConfig.callData,
         ],
-      );
+      });
 
       const request = await publicClient.prepareTransactionRequest({
         account: address,
@@ -367,28 +369,7 @@ export const useSubgraphOriginData = ({
       const txFromSubgraph = await request<
         {
           originTransfers: {
-            chainId: string;
-            nonce: string;
-            transferId: string;
-            to: string;
-            delegate: string;
-            receiveLocal: string;
-            callData: string;
-            slippage: string;
-            originSender: string;
-            originDomain: string;
-            destinationDomain: string;
-            transactionHash: string;
-            bridgedAmt: string;
-            status: string;
-            timestamp: string;
-            normalizedIn: string;
-            asset: {
-              id: string;
-              adoptedAsset: string;
-              canonicalId: string;
-              canonicalDomain: string;
-            };
+            transferId: string | null;
           }[];
         },
         { transactionHash: string }
@@ -401,6 +382,12 @@ export const useSubgraphOriginData = ({
       return tx.transferId;
     },
     enabled: !!transactionHash,
+    refetchInterval: (query) => {
+      const transferId = query.state.data;
+      if (!transferId) return 10000;
+      return false;
+    },
+    staleTime: Infinity,
   });
 };
 
@@ -408,7 +395,7 @@ export const useSubgraphDestinationData = ({
   transferId,
   destinationChainId,
 }: {
-  transferId: string | undefined;
+  transferId: string | undefined | null;
   destinationChainId: SupportedBridgeChainIds;
 }) => {
   return useQuery({
@@ -458,28 +445,9 @@ export const useSubgraphDestinationData = ({
       const txFromSubgraph = await request<
         {
           originTransfers: {
-            chainId: string;
-            nonce: string;
-            transferId: string;
-            to: string;
-            delegate: string;
-            receiveLocal: string;
-            callData: string;
-            slippage: string;
-            originSender: string;
-            originDomain: string;
-            destinationDomain: string;
-            transactionHash: string;
-            bridgedAmt: string;
-            status: string;
-            timestamp: string;
-            normalizedIn: string;
-            asset: {
-              id: string;
-              adoptedAsset: string;
-              canonicalId: string;
-              canonicalDomain: string;
-            };
+            transferId: string | null;
+            transactionHash: string | null;
+            status: string | null;
           }[];
         },
         {
