@@ -1,6 +1,6 @@
 import { useSwitchChain } from "wagmi";
 import { useCallback, useEffect, useState } from "react";
-import { isAddress, zeroAddress } from "viem";
+import { zeroAddress } from "viem";
 
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import {
@@ -40,23 +40,6 @@ export const ConnextBridgeWidget = () => {
   const chain = useChain();
   const { switchChain } = useSwitchChain();
 
-  useEffect(() => {
-    const isConnectedChainNotSupportedForBridge =
-      getIsConnectedChainNotSupportedForBridge(chain.id);
-    if (isConnectedChainNotSupportedForBridge) {
-      switchChain({
-        chainId: bridgeChains[0].id,
-      });
-      setOriginChainId(bridgeChains[0].id);
-      const newDestinationChainId = bridgeChains.find(
-        (c) => c.id !== bridgeChains[0].id,
-      )?.id;
-      if (newDestinationChainId) {
-        setDestinationChainId(newDestinationChainId);
-      }
-    }
-  }, [chain.id, switchChain]);
-
   const [originChainId, setOriginChainId] = useState(chain.id);
   const originDomain = getOriginDomain(originChainId);
   const originChain = bridgeChains.find((c) => c.id === originChainId);
@@ -68,6 +51,37 @@ export const ConnextBridgeWidget = () => {
   const destinationChain = bridgeChains.find(
     (c) => c.id === destinationChainId,
   );
+
+  useEffect(() => {
+    const isConnectedChainNotSupportedForBridge =
+      getIsConnectedChainNotSupportedForBridge(chain.id);
+    if (isConnectedChainNotSupportedForBridge) {
+      switchChain({
+        chainId: bridgeChains[0].id,
+      });
+      setOriginChainId(bridgeChains[0].id);
+      const newChainTokenAddress =
+        chainToAvailableTokensMapping[bridgeChains[0].id][0];
+      setOriginTokenAddress(newChainTokenAddress);
+      const newDestinationChainId = bridgeChains.find(
+        (c) => c.id !== bridgeChains[0].id,
+      )?.id;
+      if (newDestinationChainId) {
+        setDestinationChainId(newDestinationChainId);
+      }
+    } else if (chain.id !== originChainId) {
+      setOriginChainId(chain.id);
+      const newChainTokenAddress =
+        chainToAvailableTokensMapping[chain.id as SupportedBridgeChainIds][0];
+      setOriginTokenAddress(newChainTokenAddress);
+      const newDestinationChainId = bridgeChains.find(
+        (c) => c.id !== chain.id,
+      )?.id;
+      if (newDestinationChainId) {
+        setDestinationChainId(newDestinationChainId);
+      }
+    }
+  }, [chain.id, originChainId, switchChain]);
 
   const { data: tokens } = useTokensQuery();
   const [originTokenAddress, setOriginTokenAddress] = useState(
@@ -121,9 +135,7 @@ export const ConnextBridgeWidget = () => {
 
       setOriginChainId(newChainId);
       const newChainTokenAddress = chainToAvailableTokensMapping[newChainId][0];
-      if (isAddress(newChainTokenAddress)) {
-        setOriginTokenAddress(newChainTokenAddress);
-      }
+      setOriginTokenAddress(newChainTokenAddress);
       setAmount("");
       if (newChainId === destinationChainId) {
         const newDestinationChainId = bridgeChains.find(
@@ -157,9 +169,7 @@ export const ConnextBridgeWidget = () => {
           });
           const newChainTokenAddress =
             chainToAvailableTokensMapping[newOriginChainId][0];
-          if (isAddress(newChainTokenAddress)) {
-            setOriginTokenAddress(newChainTokenAddress);
-          }
+          setOriginTokenAddress(newChainTokenAddress);
         }
       }
     },

@@ -37,11 +37,16 @@ interface XCallParams {
   slippage: string;
   relayerFee: string;
 
+  chains: Record<number, { chainId: number; providers: string[] }>;
+  signerAddress: `0x${string}`;
+
   to?: `0x${string}`;
   callData?: `0x${string}`;
 }
 
 const ETH_DOMAIN = 6648936;
+const OPTIMISM_DOMAIN = 1869640809;
+const ARBITRUM_DOMAIN = 1634886255;
 
 export const bridgeChains = [mainnet, optimism, arbitrum];
 export type SupportedBridgeChainIds = (typeof bridgeChains)[number]["id"];
@@ -54,21 +59,21 @@ export const chainIdToDomainMapping = {
 
 export const chainToAvailableTokensMapping: AvailableTokensMapping = {
   [mainnet.id]: [
-    ALCX_MAINNET_ADDRESS,
-    SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH,
     SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD,
+    SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH,
+    ALCX_MAINNET_ADDRESS,
   ],
 
   [optimism.id]: [
-    ALCX_OPTIMISM_ADDRESS,
-    SYNTH_ASSETS_ADDRESSES[optimism.id].alETH,
     SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD,
+    SYNTH_ASSETS_ADDRESSES[optimism.id].alETH,
+    ALCX_OPTIMISM_ADDRESS,
   ],
 
   [arbitrum.id]: [
-    ALCX_ARBITRUM_ADDRESS,
-    SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
     SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
+    SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
+    ALCX_ARBITRUM_ADDRESS,
   ],
 };
 
@@ -254,6 +259,22 @@ export const useConnextWriteBridge = () => {
         amount: parseEther(amount).toString(),
         relayerFee: parseEther(relayerFee).toString(),
         slippage: parseUnits(slippage, 2).toString(), // BPS
+
+        chains: {
+          [ETH_DOMAIN]: {
+            chainId: 1,
+            providers: ["https://ethereum-rpc.publicnode.com"],
+          },
+          [OPTIMISM_DOMAIN]: {
+            chainId: 10,
+            providers: ["https://optimism-rpc.publicnode.com"],
+          },
+          [ARBITRUM_DOMAIN]: {
+            chainId: 42161,
+            providers: ["https://arbitrum-one.publicnode.com"],
+          },
+        },
+        signerAddress: address,
       };
 
       const isFromEth = +originDomain === ETH_DOMAIN;
@@ -288,7 +309,7 @@ export const useConnextWriteBridge = () => {
       });
       if (!response.ok) {
         throw new Error(
-          `Error calling estimateRelayerFee: ${response.status} ${response.statusText}`,
+          `Error calling xcall: ${response.status} ${response.statusText}`,
         );
       }
 
@@ -327,6 +348,10 @@ export const useConnextWriteBridge = () => {
 
       return hash;
     },
+    onError: (error) =>
+      toast.error("Bridge failed.", {
+        description: error.message,
+      }),
   });
 };
 
