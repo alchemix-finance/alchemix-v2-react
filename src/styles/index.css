@@ -1,5 +1,4 @@
 @import "NeueKabel.css";
-@import "JosefinSans.css";
 @import "Montserrat.css";
 @import "ReemKufi.css";
 
@@ -8,5 +7,5 @@
 @tailwind utilities;
 
 body {
-  @apply dark:!bg-bodyGradientInverse !bg-bodyGradient bg-fixed bg-no-repeat text-white2inverse dark:text-white2;
+  @apply !bg-bodyGradient bg-fixed bg-no-repeat text-white2inverse dark:!bg-bodyGradientInverse dark:text-white2;
 }

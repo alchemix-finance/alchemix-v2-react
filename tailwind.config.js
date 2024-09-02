@@ -27,7 +27,7 @@ module.exports = {
     extend: {
       fontFamily: {
         alcxLogo: ["Reem Kufi", "sans-serif"],
-        alcxTitles: ["Neue Kabel", "Josefin Sans", "sans-serif"],
+        alcxTitles: ["Neue Kabel", "sans-serif"],
         alcxMono: ["monospace"],
       },
       keyframes: {
