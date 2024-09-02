@@ -34,20 +34,15 @@ interface XCallParams {
   origin: string;
   destination: string;
   asset: `0x${string}`;
-  amount: string;
-  slippage: string;
-  relayerFee: string;
-
-  chains: Record<number, { chainId: number; providers: string[] }>;
-  signerAddress: `0x${string}`;
+  amount: bigint;
+  slippage: bigint;
+  relayerFee: bigint;
 
   to?: `0x${string}`;
   callData?: `0x${string}`;
 }
 
 const ETH_DOMAIN = 6648936;
-const OPTIMISM_DOMAIN = 1869640809;
-const ARBITRUM_DOMAIN = 1634886255;
 
 export const bridgeChains = [mainnet, optimism, arbitrum];
 export type SupportedBridgeChainIds = (typeof bridgeChains)[number]["id"];
@@ -257,25 +252,9 @@ export const useConnextWriteBridge = () => {
         origin: originDomain,
         destination: destinationDomain,
         asset: originTokenAddress,
-        amount: parseEther(amount).toString(),
-        relayerFee: parseEther(relayerFee).toString(),
-        slippage: parseUnits(slippage, 2).toString(), // BPS
-
-        chains: {
-          [ETH_DOMAIN]: {
-            chainId: 1,
-            providers: ["https://ethereum-rpc.publicnode.com"],
-          },
-          [OPTIMISM_DOMAIN]: {
-            chainId: 10,
-            providers: ["https://optimism-rpc.publicnode.com"],
-          },
-          [ARBITRUM_DOMAIN]: {
-            chainId: 42161,
-            providers: ["https://arbitrum-one.publicnode.com"],
-          },
-        },
-        signerAddress: address,
+        amount: parseEther(amount),
+        relayerFee: parseEther(relayerFee),
+        slippage: parseUnits(slippage, 2), // BPS
       };
 
       const isFromEth = +originDomain === ETH_DOMAIN;
@@ -311,28 +290,27 @@ export const useConnextWriteBridge = () => {
         bridgeConfig.callData = toHex("");
       }
 
-      const response = await fetch(`${CONNEXT_BASE_URI}/xcall`, {
-        method: "POST",
-        body: JSON.stringify(bridgeConfig),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(
-          `Error calling xcall: ${response.status} ${response.statusText}`,
-        );
-      }
-
-      const xcallTxReq = (await response.json()) as {
-        to: `0x${string}`;
-        data: `0x${string}`;
-        chainId: number;
-      };
+      const xCallData = encodeAbiParameters(
+        parseAbiParameters(
+          "uint32,address,address,address,uint256,uint256,bytes",
+        ),
+        [
+          parseInt(bridgeConfig.destination),
+          bridgeConfig.to,
+          bridgeConfig.asset,
+          bridgeConfig.to, // delegate is the same as to https://github.com/connext/monorepo/blob/main/packages/agents/sdk/src/sdkBase.ts#L191
+          bridgeConfig.amount,
+          bridgeConfig.slippage,
+          bridgeConfig.callData,
+        ],
+      );
 
       const request = await publicClient.prepareTransactionRequest({
-        ...xcallTxReq,
         account: address,
+        to: getSpender({ originChainId, originTokenAddress }),
+        data: xCallData,
+        value: bridgeConfig.relayerFee,
+        chainId: originChainId,
       });
 
       const hash = await walletClient.sendTransaction(request);
