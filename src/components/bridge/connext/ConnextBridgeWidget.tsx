@@ -102,18 +102,21 @@ export const ConnextBridgeWidget = () => {
     destinationDomain,
   });
 
-  const { data: amountOut, isFetching: isFetchingAmountOut } =
-    useConnextAmountOut({
-      originDomain,
-      destinationDomain,
-      originTokenAddress,
-      amount,
-    });
+  const {
+    data: amountOut,
+    isFetching: isFetchingAmountOut,
+    isError,
+  } = useConnextAmountOut({
+    originDomain,
+    destinationDomain,
+    originTokenAddress,
+    amount,
+  });
 
   const { isApprovalNeeded, approveConfig, approve } = useAllowance({
     amount,
     tokenAddress: originTokenAddress,
-    spender: getSpender({ originChainId, originTokenAddress }),
+    spender: getSpender({ originChainId }),
     decimals: token?.decimals,
   });
 
@@ -262,9 +265,11 @@ export const ConnextBridgeWidget = () => {
           <p>You receive:</p>
           <Input
             value={
-              isFetchingAmountOut
-                ? "Loading"
-                : formatNumber(amountOut?.amountReceived, { decimals: 4 })
+              isError
+                ? "Error"
+                : isFetchingAmountOut
+                  ? "Loading"
+                  : formatNumber(amountOut?.amountReceived, { decimals: 4 })
             }
             readOnly
             aria-readonly

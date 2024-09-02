@@ -22,16 +22,8 @@ export const getInitialOriginTokenAddresses = (chainId: number) => {
     : chainToAvailableTokensMapping[chainId as SupportedBridgeChainIds];
 };
 
-export const getSpender = ({
-  originChainId,
-  originTokenAddress,
-}: {
-  originChainId: number;
-  originTokenAddress: `0x${string}`;
-}) => {
+export const getSpender = ({ originChainId }: { originChainId: number }) => {
   return getIsConnectedChainNotSupportedForBridge(originChainId)
-    ? targetMapping[bridgeChains[0].id][originTokenAddress]
-    : targetMapping[originChainId as SupportedBridgeChainIds][
-        originTokenAddress
-      ];
+    ? targetMapping[bridgeChains[0].id]
+    : targetMapping[originChainId as SupportedBridgeChainIds];
 };

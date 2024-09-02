@@ -26,10 +26,7 @@ import { getSpender } from "./utils";
 import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 
 type AvailableTokensMapping = Record<SupportedBridgeChainIds, `0x${string}`[]>;
-type TargetMapping = Record<
-  SupportedBridgeChainIds,
-  Record<`0x${string}`, `0x${string}`>
->;
+type TargetMapping = Record<SupportedBridgeChainIds, `0x${string}`>;
 interface XCallParams {
   origin: string;
   destination: string;
@@ -72,27 +69,9 @@ export const chainToAvailableTokensMapping: AvailableTokensMapping = {
 };
 
 export const targetMapping: TargetMapping = {
-  [mainnet.id]: {
-    [ALCX_MAINNET_ADDRESS]: "0xcfe063a764EA04A9A1Dc6cf8B8978955f779fc9F",
-    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]:
-      "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68",
-    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]:
-      "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68",
-  },
-  [optimism.id]: {
-    [ALCX_OPTIMISM_ADDRESS]: "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
-    [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]:
-      "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
-    [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]:
-      "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
-  },
-  [arbitrum.id]: {
-    [ALCX_ARBITRUM_ADDRESS]: "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
-    [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH]:
-      "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
-    [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD]:
-      "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
-  },
+  [mainnet.id]: "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68",
+  [optimism.id]: "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
+  [arbitrum.id]: "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
 };
 
 const SUBGRAPH_API_KEY = import.meta.env.VITE_SUBGRAPH_API_KEY;
@@ -259,11 +238,8 @@ export const useConnextWriteBridge = () => {
       const isToEth = destinationDomain === chainIdToDomainMapping[mainnet.id];
 
       if (isFromEth) {
-        bridgeConfig.to = getSpender({ originChainId, originTokenAddress });
-        bridgeConfig.callData = encodeAbiParameters(
-          parseAbiParameters("address"),
-          [address],
-        );
+        bridgeConfig.to = address;
+        bridgeConfig.callData = toHex("");
       } else if (isToEth) {
         // if we bridge ALCX to ETH we use alchemix lockbox adapter, for alusd and aleth we use connext lockbox adapter
         const isBridgingAlcx =
@@ -305,7 +281,7 @@ export const useConnextWriteBridge = () => {
 
       const request = await publicClient.prepareTransactionRequest({
         account: address,
-        to: getSpender({ originChainId, originTokenAddress }),
+        to: getSpender({ originChainId }),
         data: xCallData,
         value: bridgeConfig.relayerFee,
         chainId: originChainId,
