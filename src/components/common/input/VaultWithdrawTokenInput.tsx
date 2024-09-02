@@ -4,8 +4,8 @@ import { Vault } from "@/lib/types";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { formatEther, formatUnits, parseUnits, zeroAddress } from "viem";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
-import { useMemo } from "react";
 import { TokenInput } from "./TokenInput";
+import { useStaticTokenAdapterWithdraw } from "@/hooks/useStaticTokenAdapterWithdraw";
 
 export const VaultWithdrawTokenInput = ({
   amount,
@@ -74,16 +74,7 @@ export const VaultWithdrawTokenInput = ({
     },
   });
 
-  useWatchQuery({
-    queryKeys: [sharesBalanceQueryKey, totalCollateralInDebtTokenQueryKey],
-  });
-
-  const otherCoverInDebt =
-    totalCollateralInDebtToken !== undefined &&
-    collateralInDebtToken !== undefined
-      ? totalCollateralInDebtToken - collateralInDebtToken
-      : 0n;
-  const balanceInDebt = useMemo(() => {
+  const balanceInDebt = (() => {
     if (collateralInDebtToken === undefined) {
       return 0n;
     }
@@ -93,12 +84,18 @@ export const VaultWithdrawTokenInput = ({
 
     const maxWithdrawAmount = collateralInDebtToken - requiredCoverInDebt;
 
+    const otherCoverInDebt =
+      totalCollateralInDebtToken !== undefined &&
+      collateralInDebtToken !== undefined
+        ? totalCollateralInDebtToken - collateralInDebtToken
+        : 0n;
+
     if (otherCoverInDebt >= requiredCoverInDebt) {
       return collateralInDebtToken;
     } else {
       return maxWithdrawAmount;
     }
-  }, [collateralInDebtToken, otherCoverInDebt, vault]);
+  })();
 
   const { data: balanceForUnderlying } = useReadContract({
     address: vault.alchemist.address,
@@ -112,27 +109,52 @@ export const VaultWithdrawTokenInput = ({
     },
   });
 
-  const { data: balanceForYieldToken } = useReadContract({
-    address: vault.alchemist.address,
-    chainId: chain.id,
-    abi: alchemistV2Abi,
-    functionName: "convertUnderlyingTokensToYield",
-    args: [
-      vault.yieldToken,
-      parseUnits(
-        balanceForUnderlying ?? "0",
-        vault.underlyingTokensParams.decimals,
-      ),
+  const { data: balanceForYieldToken, queryKey: balanceForYieldTokenQueryKey } =
+    useReadContract({
+      address: vault.alchemist.address,
+      chainId: chain.id,
+      abi: alchemistV2Abi,
+      functionName: "convertUnderlyingTokensToYield",
+      args: [
+        vault.yieldToken,
+        parseUnits(
+          balanceForUnderlying ?? "0",
+          vault.underlyingTokensParams.decimals,
+        ),
+      ],
+      query: {
+        enabled: balanceForUnderlying !== undefined,
+        select: (balance) =>
+          formatUnits(balance, vault.yieldTokenParams.decimals),
+      },
+    });
+
+  const { balanceForYieldTokenAdapter } = useStaticTokenAdapterWithdraw({
+    typeGuard: "withdrawInput",
+    balanceForYieldToken,
+    isSelectedTokenYieldToken,
+    vault,
+  });
+
+  /**
+   * NOTE: Watch queries for changes in sharesBalance, totalCollateral, and balanceForYieldToken.
+   * sharesBalanceQueryKey - if user deposited or withdrawed from vault for yield token;
+   * totalCollateralInDebtTokenQueryKey - if user deposited or withdrawed from vault for yield token;
+   * balanceForYieldTokenQueryKey - because shares to yield token uses price which changes each block.
+   */
+  useWatchQuery({
+    queryKeys: [
+      sharesBalanceQueryKey,
+      totalCollateralInDebtTokenQueryKey,
+      balanceForYieldTokenQueryKey,
     ],
-    query: {
-      enabled: balanceForUnderlying !== undefined,
-      select: (balance) =>
-        formatUnits(balance, vault.yieldTokenParams.decimals),
-    },
   });
 
   const balance = isSelectedTokenYieldToken
-    ? balanceForYieldToken
+    ? vault.metadata.api.provider === "aave" &&
+      vault.metadata.yieldTokenOverride
+      ? balanceForYieldTokenAdapter
+      : balanceForYieldToken
     : balanceForUnderlying;
 
   return (

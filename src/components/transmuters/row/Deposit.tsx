@@ -1,6 +1,6 @@
 import { transmuterV2Abi } from "@/abi/transmuterV2";
+import { CtaButton } from "@/components/common/CtaButton";
 import { TransmuterInput } from "@/components/common/input/TransmuterInput";
-import { Button } from "@/components/ui/button";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
@@ -8,7 +8,7 @@ import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { parseEther } from "viem";
 import {
@@ -33,7 +33,13 @@ export const Deposit = ({
 
   const [depositAmount, setDepositAmount] = useState("");
 
-  const { isApprovalNeeded, approve, approveConfig } = useAllowance({
+  const {
+    isApprovalNeeded,
+    approve,
+    approveConfig,
+    isPending: isPendingAllowance,
+    isFetching: isFetchingAllowance,
+  } = useAllowance({
     tokenAddress: syntheticToken.address,
     spender: transmuter.address,
     amount: depositAmount,
@@ -42,7 +48,7 @@ export const Deposit = ({
 
   const {
     data: depositConfig,
-    isFetching,
+    isPending: isPendingDepositConfig,
     error: depositConfigError,
   } = useSimulateContract({
     address: transmuter.address,
@@ -73,7 +79,7 @@ export const Deposit = ({
     }
   }, [depositReceipt, queryClient]);
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (isApprovalNeeded === true) {
       approveConfig && approve(approveConfig.request);
       return;
@@ -96,14 +102,12 @@ export const Deposit = ({
         description: "Unkown error. Please contact Alchemix team.",
       });
     }
-  }, [
-    isApprovalNeeded,
-    depositConfigError,
-    depositConfig,
-    approveConfig,
-    approve,
-    deposit,
-  ]);
+  };
+
+  const isPending =
+    isApprovalNeeded === false
+      ? isPendingDepositConfig
+      : isPendingAllowance || isFetchingAllowance;
 
   return (
     <>
@@ -116,13 +120,14 @@ export const Deposit = ({
         type="Balance"
         transmuterAddress={transmuter.address}
       />
-      <Button
+
+      <CtaButton
         variant="outline"
         onClick={onCtaClick}
-        disabled={isFetching || isInputZero(depositAmount)}
+        disabled={isPending || isInputZero(depositAmount)}
       >
         {isApprovalNeeded ? "Approve" : "Deposit"}
-      </Button>
+      </CtaButton>
     </>
   );
 };

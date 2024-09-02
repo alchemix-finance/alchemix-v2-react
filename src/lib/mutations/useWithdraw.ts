@@ -3,7 +3,7 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useChain } from "@/hooks/useChain";
 import { Token, Vault } from "@/lib/types";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { parseUnits } from "viem";
 import {
@@ -18,6 +18,8 @@ import { wethGatewayAbi } from "@/abi/wethGateway";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { isInputZero } from "@/utils/inputNotZero";
+import { useStaticTokenAdapterWithdraw } from "@/hooks/useStaticTokenAdapterWithdraw";
 
 export const useWithdraw = ({
   vault,
@@ -26,6 +28,7 @@ export const useWithdraw = ({
   slippage,
   yieldToken,
   setAmount,
+  isSelectedTokenYieldToken,
 }: {
   amount: string;
   slippage: string;
@@ -33,6 +36,7 @@ export const useWithdraw = ({
   selectedToken: Token;
   yieldToken: Token;
   setAmount: (amount: string) => void;
+  isSelectedTokenYieldToken: boolean;
 }) => {
   const chain = useChain();
   const queryClient = useQueryClient();
@@ -45,17 +49,29 @@ export const useWithdraw = ({
 
   const { address } = useAccount();
 
-  const isSelectedTokenYieldToken =
-    selectedToken.address.toLowerCase() === yieldToken.address.toLowerCase();
+  const { aaveAdjustedAmount } = useStaticTokenAdapterWithdraw({
+    typeGuard: "adjustedAmount",
+    amount,
+    selectedToken,
+    vault,
+    isSelectedTokenYieldToken,
+  });
+
+  const withdrawAmount =
+    vault.metadata.api.provider === "aave" &&
+    isSelectedTokenYieldToken &&
+    !!vault.metadata.yieldTokenOverride
+      ? aaveAdjustedAmount
+      : parseUnits(amount, selectedToken.decimals);
 
   const { data: sharesFromYieldToken } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
     chainId: chain.id,
     functionName: "convertYieldTokensToShares",
-    args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
+    args: [vault.yieldToken, withdrawAmount ?? 0n],
     query: {
-      enabled: isSelectedTokenYieldToken,
+      enabled: isSelectedTokenYieldToken && !isInputZero(amount),
     },
   });
 
@@ -66,7 +82,7 @@ export const useWithdraw = ({
     functionName: "convertUnderlyingTokensToShares",
     args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
     query: {
-      enabled: !isSelectedTokenYieldToken,
+      enabled: !isSelectedTokenYieldToken && !isInputZero(amount),
     },
   });
 
@@ -84,7 +100,8 @@ export const useWithdraw = ({
   const {
     data: isApprovalNeededAaveGateway,
     queryKey: isApprovalNeededAaveGatewayQueryKey,
-    isFetching: isApprovalNeededAaveGatewayFetching,
+    isPending: isPendingApprovalAaveGateway,
+    isFetching: isFetchingApprovalAaveGateway,
   } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
@@ -106,7 +123,8 @@ export const useWithdraw = ({
   const {
     data: isApprovalNeededWethGateway,
     queryKey: isApprovalNeededWethGatewayQueryKey,
-    isFetching: isApprovalNeededWethGatewayFetching,
+    isPending: isPendingApprovalWethGateway,
+    isFetching: isFetchingApprovalWethGateway,
   } = useReadContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
@@ -185,7 +203,7 @@ export const useWithdraw = ({
   const {
     data: withdrawGatewayConfig,
     error: withdrawGatewayError,
-    isFetching: isWithdrawGatewayConfigFetching,
+    isPending: isWithdrawGatewayConfigPending,
   } = useSimulateContract({
     address: vault.metadata.gateway,
     abi: aaveTokenGatewayAbi,
@@ -224,7 +242,7 @@ export const useWithdraw = ({
   const {
     data: withdrawAlchemistConfig,
     error: withdrawAlchemistError,
-    isFetching: isWithdrawAlchemistConfigFetching,
+    isPending: isWithdrawAlchemistConfigPending,
   } = useSimulateContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
@@ -262,7 +280,7 @@ export const useWithdraw = ({
   const {
     data: withdrawGasConfig,
     error: withdrawGasError,
-    isFetching: isWithdrawGasConfigFetching,
+    isPending: isWithdrawGasConfigPending,
   } = useSimulateContract({
     address: vault.metadata.wethGateway,
     abi: wethGatewayAbi,
@@ -306,7 +324,7 @@ export const useWithdraw = ({
   const {
     data: withdrawUnderlyingConfig,
     error: withdrawUnderlyingError,
-    isFetching: isWithdrawUnderlyingConfigFetching,
+    isPending: isWithdrawUnderlyingConfigPending,
   } = useSimulateContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
@@ -480,7 +498,7 @@ export const useWithdraw = ({
     yieldToken.address,
   ]);
 
-  const isFetching = useMemo(() => {
+  const isPending = (() => {
     if (!amount) return;
     // withdraw gateway
     if (
@@ -489,9 +507,10 @@ export const useWithdraw = ({
       !!vault.metadata.gateway &&
       !!vault.metadata.yieldTokenOverride
     ) {
-      return (
-        isWithdrawGatewayConfigFetching || isApprovalNeededAaveGatewayFetching
-      );
+      if (isApprovalNeededAaveGateway === false) {
+        return isWithdrawGatewayConfigPending;
+      } else
+        return isPendingApprovalAaveGateway || isFetchingApprovalAaveGateway;
     }
 
     // withdraw alchemist
@@ -501,14 +520,15 @@ export const useWithdraw = ({
       !vault.metadata.gateway &&
       !vault.metadata.yieldTokenOverride
     ) {
-      return (
-        isWithdrawAlchemistConfigFetching || isApprovalNeededWethGatewayFetching
-      );
+      return isWithdrawAlchemistConfigPending;
     }
 
     // withdraw gas
     if (selectedToken.address === GAS_ADDRESS) {
-      return isWithdrawGasConfigFetching;
+      if (isApprovalNeededWethGateway === false) {
+        return isWithdrawGasConfigPending;
+      } else
+        return isPendingApprovalWethGateway || isFetchingApprovalWethGateway;
     }
 
     // withdraw underlying
@@ -516,26 +536,14 @@ export const useWithdraw = ({
       selectedToken.address !== GAS_ADDRESS &&
       selectedToken.address.toLowerCase() !== yieldToken.address.toLowerCase()
     ) {
-      return isWithdrawUnderlyingConfigFetching;
+      return isWithdrawUnderlyingConfigPending;
     }
-  }, [
-    amount,
-    isWithdrawAlchemistConfigFetching,
-    isWithdrawGasConfigFetching,
-    isWithdrawGatewayConfigFetching,
-    isWithdrawUnderlyingConfigFetching,
-    isApprovalNeededAaveGatewayFetching,
-    isApprovalNeededWethGatewayFetching,
-    selectedToken.address,
-    vault.metadata.gateway,
-    vault.metadata.yieldTokenOverride,
-    yieldToken.address,
-  ]);
+  })();
 
   return {
     isApprovalNeeded,
     writeApprove,
     writeWithdraw,
-    isFetching,
+    isPending,
   };
 };
