@@ -86,8 +86,8 @@ export const Landing = () => {
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center">
-        <h2 className="text-5xl font-semibold">Why Alchemix</h2>
+      <div className="flex flex-col gap-14 px-24">
+        <h2 className="text-5xl font-semibold">Why Alchemix?</h2>
         <div className="flex items-center gap-24">
           <div>
             <img />
