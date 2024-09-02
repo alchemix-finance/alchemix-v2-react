@@ -6,6 +6,7 @@ import {
   parseAbiParameters,
   parseEther,
   parseUnits,
+  toHex,
 } from "viem";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { arbitrum, mainnet, optimism } from "viem/chains";
@@ -280,16 +281,26 @@ export const useConnextWriteBridge = () => {
       const isFromEth = +originDomain === ETH_DOMAIN;
       const isToEth = +destinationDomain === ETH_DOMAIN;
 
-      // TODO: Double check that this is correct (i scarped it from approve transactions in connext ui, but didn't see if the subsequent tx targets the spender)
       if (isFromEth) {
         bridgeConfig.to = getSpender({ originChainId, originTokenAddress });
         bridgeConfig.callData = encodeAbiParameters(
           parseAbiParameters("address"),
           [address],
         );
-        return;
       } else if (isToEth) {
-        bridgeConfig.to = getSpender({ originChainId, originTokenAddress });
+        // if we bridge ALCX to ETH we use alchemix lockbox adapter, for alusd and aleth we use connext lockbox adapter
+        const isBridgingAlcx =
+          originTokenAddress.toLowerCase() ===
+            ALCX_OPTIMISM_ADDRESS.toLowerCase() ||
+          originTokenAddress.toLowerCase() ===
+            ALCX_ARBITRUM_ADDRESS.toLowerCase();
+        if (isBridgingAlcx) {
+          // alcx lockbox adapter
+          bridgeConfig.to = "0xcfe063a764EA04A9A1Dc6cf8B8978955f779fc9F";
+        } else {
+          // connext lockbox adapter "0xcfe063a764EA04A9A1Dc6cf8B8978955f779fc9F"
+          bridgeConfig.to = "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68";
+        }
         bridgeConfig.callData = encodeAbiParameters(
           parseAbiParameters("address"),
           [address],
@@ -297,7 +308,7 @@ export const useConnextWriteBridge = () => {
       } else {
         // L2 to L2
         bridgeConfig.to = address;
-        bridgeConfig.callData = "0x";
+        bridgeConfig.callData = toHex("");
       }
 
       const response = await fetch(`${CONNEXT_BASE_URI}/xcall`, {
