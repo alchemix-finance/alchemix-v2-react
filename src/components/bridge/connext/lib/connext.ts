@@ -9,10 +9,13 @@ import {
   parseEther,
   parseUnits,
   toHex,
+  TransactionNotFoundError,
+  WaitForTransactionReceiptTimeoutError,
 } from "viem";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { arbitrum, mainnet, optimism } from "viem/chains";
 import { BigNumber } from "@ethersproject/bignumber";
+import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
@@ -188,6 +191,7 @@ export const useConnextAmountOut = ({
 };
 
 export const useConnextWriteBridge = () => {
+  const addRecentTransaction = useAddRecentTransaction();
   const chain = useChain();
   const { address } = useAccount();
   const publicClient = usePublicClient({
@@ -283,8 +287,17 @@ export const useConnextWriteBridge = () => {
 
       const hash = await walletClient.sendTransaction(request);
 
+      return hash;
+    },
+    onSuccess: (hash) => {
+      addRecentTransaction({
+        hash,
+        description: "Bridge",
+      });
       const executionPromise = () =>
         new Promise((resolve, reject) => {
+          if (!publicClient)
+            return reject(new Error("Public client not ready"));
           publicClient
             .waitForTransactionReceipt({
               hash,
@@ -295,19 +308,31 @@ export const useConnextWriteBridge = () => {
                 : reject(new Error("Transaction reverted")),
             );
         });
-
       toast.promise(executionPromise, {
-        loading: "Bridging...",
-        success: "Bridge success!",
-        error: "Bridge failed.",
-      });
-      await executionPromise();
+        loading: `Pending Bridge...`,
+        success: `Bridge confirmed`,
+        error: (e) => {
+          if (
+            e instanceof WaitForTransactionReceiptTimeoutError ||
+            e instanceof TransactionNotFoundError
+          ) {
+            return `We could not confirm your bridge. Please check your wallet.`;
+          }
 
-      return hash;
+          if (e instanceof Error) {
+            return `Bridge failed: ${e.message}`;
+          }
+
+          return `Bridge failed`;
+        },
+      });
     },
-    onError: (error) =>
-      toast.error("Bridge failed.", {
-        description: error.message,
-      }),
+    onError: (error) => {
+      toast.error(`Bridge failed`, {
+        description: error.message.includes("User rejected the request")
+          ? "Transaction rejected by user"
+          : error.message,
+      });
+    },
   });
 };
