@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Select,
   SelectTrigger,
@@ -7,7 +7,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
-import { Button } from "@/components/ui/button";
 import {
   useReadContract,
   useSimulateContract,
@@ -32,6 +31,7 @@ import { Switch } from "@/components/ui/switch";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { MAX_UINT256_BN } from "@/lib/constants";
 import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { CtaButton } from "@/components/common/CtaButton";
 
 export const Liquidate = () => {
   const queryClient = useQueryClient();
@@ -121,7 +121,7 @@ export const Liquidate = () => {
 
   const {
     data: liquidateConfig,
-    isFetching,
+    isPending,
     error: liquidateError,
   } = useSimulateContract({
     address: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
@@ -194,7 +194,7 @@ export const Liquidate = () => {
     setConfirmedLiquidation(checked);
   };
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (liquidateError) {
       toast.error("Liquidate failed", {
         description:
@@ -212,7 +212,7 @@ export const Liquidate = () => {
         description: "Unknown error. Please contact Alchemix team.",
       });
     }
-  }, [liquidate, liquidateConfig, liquidateError]);
+  };
 
   return (
     <div className="space-y-4 bg-grey15inverse p-4 dark:bg-grey15">
@@ -278,16 +278,14 @@ export const Liquidate = () => {
               repay the outstanding debt
             </label>
           </div>
-          <Button
+          <CtaButton
             variant="outline"
             width="full"
             onClick={onCtaClick}
-            disabled={
-              isFetching || isInputZero(amount) || !confirmedLiquidation
-            }
+            disabled={isPending || isInputZero(amount) || !confirmedLiquidation}
           >
-            {isFetching ? "Preparing..." : "Liquidate"}
-          </Button>
+            {isPending ? "Preparing..." : "Liquidate"}
+          </CtaButton>
         </>
       )}
     </div>

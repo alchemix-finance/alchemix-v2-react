@@ -289,7 +289,7 @@ export const CurrencyCell = ({
       : 0;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center text-center">
       <p>
         {formatNumber(tokenAmountFormated, { dustToZero: true, tokenDecimals })}{" "}
         {tokenSymbol}

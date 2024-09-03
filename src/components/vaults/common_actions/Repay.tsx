@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Select,
   SelectTrigger,
@@ -7,7 +7,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
-import { Button } from "@/components/ui/button";
 import {
   useAccount,
   useSimulateContract,
@@ -29,6 +28,7 @@ import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { RepayInput } from "@/components/common/input/RepayInput";
 import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { CtaButton } from "@/components/common/CtaButton";
 
 export const Repay = () => {
   const queryClient = useQueryClient();
@@ -75,17 +75,23 @@ export const Repay = () => {
     (token) => token.address === repaymentTokenAddress,
   );
 
-  const { isApprovalNeeded, approve, approveConfig, approveUsdtEthConfig } =
-    useAllowance({
-      tokenAddress: repaymentToken?.address,
-      spender: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
-      amount,
-      decimals: repaymentToken?.decimals,
-    });
+  const {
+    isApprovalNeeded,
+    approve,
+    approveConfig,
+    approveUsdtEthConfig,
+    isPending: isPendingAllowance,
+    isFetching: isFetchingAllowance,
+  } = useAllowance({
+    tokenAddress: repaymentToken?.address,
+    spender: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
+    amount,
+    decimals: repaymentToken?.decimals,
+  });
 
   const {
     data: burnConfig,
-    isFetching: isFetchingBurnConfig,
+    isPending: isPendingBurnConfig,
     error: burnConfigError,
   } = useSimulateContract({
     address: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
@@ -106,7 +112,7 @@ export const Repay = () => {
 
   const {
     data: repayConfig,
-    isFetching: isFetchingRepayConfig,
+    isPending: isPendingRepayConfig,
     error: repayConfigError,
   } = useSimulateContract({
     address: ALCHEMISTS_METADATA[chain.id][selectedSynthAsset],
@@ -169,7 +175,7 @@ export const Repay = () => {
     setSelectedSynthAsset(newSynthAsset);
   };
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (isApprovalNeeded) {
       if (approveUsdtEthConfig?.request) {
         approve(approveUsdtEthConfig.request);
@@ -219,24 +225,15 @@ export const Repay = () => {
           "Repay failed. Unknown error. Please contact Alchemix team.",
       });
     }
-  }, [
-    approve,
-    approveConfig?.request,
-    approveUsdtEthConfig?.request,
-    burnConfig,
-    burnConfigError,
-    isApprovalNeeded,
-    repay,
-    repayConfig,
-    repayConfigError,
-    repaymentToken?.symbol,
-    selectedSynthAsset,
-  ]);
+  };
 
-  const isFetching =
-    repaymentToken?.symbol.toLowerCase() === selectedSynthAsset.toLowerCase()
-      ? isFetchingBurnConfig
-      : isFetchingRepayConfig;
+  const isPending =
+    isApprovalNeeded === false
+      ? repaymentToken?.symbol.toLowerCase() ===
+        selectedSynthAsset.toLowerCase()
+        ? isPendingBurnConfig
+        : isPendingRepayConfig
+      : isPendingAllowance || isFetchingAllowance;
 
   return (
     <div className="space-y-4 bg-grey15inverse p-4 dark:bg-grey15">
@@ -291,16 +288,16 @@ export const Repay = () => {
               }
             />
           </div>
-          <Button
+          <CtaButton
             variant="outline"
             width="full"
             onClick={onCtaClick}
-            disabled={isFetching || isInputZero(amount)}
+            disabled={isPending || isInputZero(amount)}
           >
             {isApprovalNeeded
               ? "Approve"
               : `Repay with ${repaymentToken.symbol}`}
-          </Button>
+          </CtaButton>
         </>
       )}
     </div>

@@ -38,7 +38,8 @@ export const useAllowance = ({
   const {
     data: allowanceData,
     queryKey: isApprovalNeededQueryKey,
-    isFetching,
+    isPending: isPendingAllowance,
+    isFetching: isFetchingAllowance,
   } = useReadContract({
     address: tokenAddress,
     abi: erc20Abi,
@@ -57,29 +58,33 @@ export const useAllowance = ({
 
   const { isApprovalNeeded, allowance } = allowanceData ?? {};
 
-  const { data: approveConfig } = useSimulateContract({
-    address: tokenAddress,
-    abi: erc20Abi,
-    functionName: "approve",
-    chainId: chain.id,
-    args: [
-      spender,
-      isInfiniteApproval ? MAX_UINT256_BN : parseUnits(amount, decimals),
-    ],
-    query: {
-      enabled:
-        !isInputZero(amount) &&
-        !!address &&
-        isApprovalNeeded === true &&
-        tokenAddress !== GAS_ADDRESS &&
-        tokenAddress?.toLowerCase() !== USDT_MAINNET_ADDRESS.toLowerCase(),
-    },
-  });
+  const { data: approveConfig, isPending: isPendingApproveConfigToken } =
+    useSimulateContract({
+      address: tokenAddress,
+      abi: erc20Abi,
+      functionName: "approve",
+      chainId: chain.id,
+      args: [
+        spender,
+        isInfiniteApproval ? MAX_UINT256_BN : parseUnits(amount, decimals),
+      ],
+      query: {
+        enabled:
+          !isInputZero(amount) &&
+          !!address &&
+          isApprovalNeeded === true &&
+          tokenAddress !== GAS_ADDRESS &&
+          tokenAddress?.toLowerCase() !== USDT_MAINNET_ADDRESS.toLowerCase(),
+      },
+    });
 
   /** USDT on Ethereum doesn't follow ERC20 standard.
    * https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7#code#L199
    */
-  const { data: approveUsdtEthConfig } = useSimulateContract({
+  const {
+    data: approveUsdtEthConfig,
+    isPending: isPendingApproveConfigUsdtEth,
+  } = useSimulateContract({
     address: tokenAddress,
     abi: parseAbi(["function approve(address _spender, uint _value) public"]),
     functionName: "approve",
@@ -116,11 +121,21 @@ export const useAllowance = ({
     }
   }, [approvalReceipt, isApprovalNeededQueryKey, resetApprove, queryClient]);
 
+  const isPending = (() => {
+    if (isApprovalNeeded) {
+      if (tokenAddress?.toLowerCase() === USDT_MAINNET_ADDRESS.toLowerCase()) {
+        return isPendingApproveConfigUsdtEth || isPendingAllowance;
+      }
+      return isPendingApproveConfigToken || isPendingAllowance;
+    } else return isPendingAllowance;
+  })();
+
   return {
     isApprovalNeeded,
     approve,
     approveConfig,
     approveUsdtEthConfig,
-    isFetching,
+    isPending,
+    isFetching: isFetchingAllowance,
   };
 };
