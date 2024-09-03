@@ -23,7 +23,7 @@ export const StaticExternalFarms = () => {
         {externalFarms.length > 0 ? (
           externalFarms.map((farm) => (
             <div
-              key={farm.name}
+              key={farm.name + farm.symbol}
               className="flex flex-col justify-between gap-2 rounded border border-grey5inverse bg-grey10inverse p-2 dark:bg-grey10"
             >
               <div className="space-y-1">
