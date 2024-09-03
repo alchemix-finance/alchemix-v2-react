@@ -178,15 +178,18 @@ export const ConnextBridgeWidget = () => {
       return;
     }
 
-    writeBridge({
-      amount,
-      destinationDomain,
-      originDomain,
-      originChainId,
-      originTokenAddress,
-      slippage,
-      relayerFee,
-    });
+    writeBridge(
+      {
+        amount,
+        destinationDomain,
+        originDomain,
+        originChainId,
+        originTokenAddress,
+        slippage,
+        relayerFee,
+      },
+      { onSuccess: () => setAmount("") },
+    );
   };
 
   return (
