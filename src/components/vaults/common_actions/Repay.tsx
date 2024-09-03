@@ -27,7 +27,7 @@ import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { RepayInput } from "@/components/common/input/RepayInput";
-import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
 
 export const Repay = () => {
@@ -153,7 +153,7 @@ export const Repay = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
       queryClient.invalidateQueries({
         predicate: (query) =>
-          invalidateWagmiUseQuery({
+          invalidateWagmiUseQueryPredicate({
             query,
             scopeKey: ScopeKeys.RepayInput,
           }),

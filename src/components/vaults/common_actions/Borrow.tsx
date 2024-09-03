@@ -29,7 +29,7 @@ import { Switch } from "@/components/ui/switch";
 import { AnimatePresence, m } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
-import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
 
 export const Borrow = () => {
@@ -107,7 +107,10 @@ export const Borrow = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
       queryClient.invalidateQueries({
         predicate: (query) =>
-          invalidateWagmiUseQuery({ query, scopeKey: ScopeKeys.BorrowInput }),
+          invalidateWagmiUseQueryPredicate({
+            query,
+            scopeKey: ScopeKeys.BorrowInput,
+          }),
       });
     }
   }, [borrowReceipt, queryClient]);

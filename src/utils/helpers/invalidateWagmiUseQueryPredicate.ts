@@ -6,7 +6,7 @@ interface InvalidateWagmiUseQueryArgs {
   scopeKey: ScopeKey;
 }
 
-export const invalidateWagmiUseQuery = ({
+export const invalidateWagmiUseQueryPredicate = ({
   query,
   scopeKey,
 }: InvalidateWagmiUseQueryArgs) => {

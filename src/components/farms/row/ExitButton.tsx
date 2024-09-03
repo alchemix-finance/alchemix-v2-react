@@ -7,7 +7,7 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { CURVE, STAKING_POOL_ADDRESSES, SUSHI } from "@/lib/config/farms";
 import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
-import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
@@ -58,7 +58,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
       });
       queryClient.invalidateQueries({
         predicate: (query) =>
-          invalidateWagmiUseQuery({
+          invalidateWagmiUseQueryPredicate({
             query,
             scopeKey: ScopeKeys.InternalFarmContent,
           }),
@@ -97,7 +97,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
       });
       queryClient.invalidateQueries({
         predicate: (query) =>
-          invalidateWagmiUseQuery({
+          invalidateWagmiUseQueryPredicate({
             query,
             scopeKey: ScopeKeys.SushiFarmContent,
           }),
@@ -136,7 +136,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
       });
       queryClient.invalidateQueries({
         predicate: (query) =>
-          invalidateWagmiUseQuery({
+          invalidateWagmiUseQueryPredicate({
             query,
             scopeKey: ScopeKeys.CurveFarmContent,
           }),

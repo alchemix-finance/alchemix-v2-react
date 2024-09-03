@@ -20,7 +20,7 @@ import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useStaticTokenAdapterWithdraw } from "@/hooks/useStaticTokenAdapterWithdraw";
-import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 
 export const useWithdraw = ({
   vault,
@@ -47,7 +47,7 @@ export const useWithdraw = ({
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
     queryClient.invalidateQueries({
       predicate: (query) =>
-        invalidateWagmiUseQuery({
+        invalidateWagmiUseQueryPredicate({
           query,
           scopeKey: ScopeKeys.VaultWithdrawInput,
         }),

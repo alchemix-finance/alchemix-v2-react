@@ -4,7 +4,7 @@ import { useBlockNumber } from "wagmi";
 
 import { useChain } from "./useChain";
 import { ScopeKey } from "@/lib/queries/queriesSchema";
-import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 
 interface UseWatchQueryArgs {
   scopeKey: ScopeKey;
@@ -20,7 +20,8 @@ export const useWatchQuery = ({ scopeKey }: UseWatchQueryArgs) => {
   useEffect(() => {
     if (document.visibilityState === "visible") {
       queryClient.invalidateQueries({
-        predicate: (query) => invalidateWagmiUseQuery({ query, scopeKey }),
+        predicate: (query) =>
+          invalidateWagmiUseQueryPredicate({ query, scopeKey }),
       });
     }
   }, [blockNumber, chain.id, queryClient, scopeKey]);

@@ -20,7 +20,7 @@ import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { QueryKeys, ScopeKeys } from "../queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
-import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 
 export const useDeposit = ({
   vault,
@@ -45,7 +45,7 @@ export const useDeposit = ({
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
     queryClient.invalidateQueries({
       predicate: (query) =>
-        invalidateWagmiUseQuery({
+        invalidateWagmiUseQueryPredicate({
           query,
           scopeKey: ScopeKeys.TokenInput,
         }),

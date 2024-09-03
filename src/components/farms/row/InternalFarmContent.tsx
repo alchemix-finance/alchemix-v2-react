@@ -19,7 +19,7 @@ import {
 } from "wagmi";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { FarmContent } from "./FarmContent";
-import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 
 export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const chain = useChain();
@@ -31,7 +31,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
     });
     queryClient.invalidateQueries({
       predicate: (query) =>
-        invalidateWagmiUseQuery({
+        invalidateWagmiUseQueryPredicate({
           query,
           scopeKey: ScopeKeys.InternalFarmContent,
         }),

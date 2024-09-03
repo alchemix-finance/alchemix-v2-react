@@ -30,7 +30,7 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { Switch } from "@/components/ui/switch";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { MAX_UINT256_BN } from "@/lib/constants";
-import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
 
 export const Liquidate = () => {
@@ -159,7 +159,7 @@ export const Liquidate = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
       queryClient.invalidateQueries({
         predicate: (query) =>
-          invalidateWagmiUseQuery({
+          invalidateWagmiUseQueryPredicate({
             query,
             scopeKey: ScopeKeys.LiquidateInput,
           }),

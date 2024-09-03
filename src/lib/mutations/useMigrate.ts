@@ -19,7 +19,7 @@ import { SYNTH_ASSETS } from "../config/synths";
 import { QueryKeys, ScopeKeys } from "../queries/queriesSchema";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
-import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 
 export const useMigrate = ({
   currentVault,
@@ -250,7 +250,7 @@ export const useMigrate = ({
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
       queryClient.invalidateQueries({
         predicate: (query) =>
-          invalidateWagmiUseQuery({
+          invalidateWagmiUseQueryPredicate({
             query,
             scopeKey: ScopeKeys.MigrateInput,
           }),
