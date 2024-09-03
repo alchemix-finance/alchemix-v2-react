@@ -310,10 +310,7 @@ export const ConnextBridgeWidget = () => {
       </div>
       <div className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between">
         <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-        <StatusBox
-          transactionHash={transactionHash}
-          destinationChainId={destinationChainId}
-        />
+        <StatusBox transactionHash={transactionHash} />
       </div>
       <Button
         variant="outline"

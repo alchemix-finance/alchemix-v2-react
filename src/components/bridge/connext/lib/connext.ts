@@ -13,7 +13,6 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { arbitrum, mainnet, optimism } from "viem/chains";
 import { BigNumber } from "@ethersproject/bignumber";
-import request, { gql } from "graphql-request";
 
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
@@ -74,13 +73,6 @@ export const targetMapping: TargetMapping = {
   [mainnet.id]: "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68",
   [optimism.id]: "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
   [arbitrum.id]: "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
-};
-
-const SUBGRAPH_API_KEY = import.meta.env.VITE_SUBGRAPH_API_KEY;
-const SUBGRAPH_URLS = {
-  [mainnet.id]: `https://gateway.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/Hd6Amg8XvcPRESqUtujxojk1gBEzRyoMfaP4Ue7Y1w3b`,
-  [optimism.id]: `https://gateway.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/691uswDfvWDSgpUCemetuKbNViAqJ1CkgopNmweYFHQY`,
-  [arbitrum.id]: `https://gateway.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/DoAaZ6zNFCbiZVDMZEgan7w9K5sJy8v6vvSCLDwyqodo`,
 };
 
 const CONNEXT_BASE_URI = "https://sdk-server.mainnet.connext.ninja";
@@ -317,153 +309,5 @@ export const useConnextWriteBridge = () => {
       toast.error("Bridge failed.", {
         description: error.message,
       }),
-  });
-};
-
-export const useSubgraphOriginData = ({
-  transactionHash,
-}: {
-  transactionHash: `0x${string}` | undefined;
-}) => {
-  const chain = useChain();
-  return useQuery({
-    queryKey: [
-      QueryKeys.ConnextSdk("originTxSubgraph"),
-      chain.id,
-      transactionHash,
-    ],
-    queryFn: async () => {
-      if (!transactionHash) throw new Error("No transaction hash provided");
-
-      const query = gql`
-        query OriginTransfer {
-          originTransfers(where: { transactionHash: $transactionHash }) {
-            # Meta Data
-            chainId
-            nonce
-            transferId
-            to
-            delegate
-            receiveLocal
-            callData
-            slippage
-            originSender
-            originDomain
-            destinationDomain
-            transactionHash
-            bridgedAmt
-            status
-            timestamp
-            normalizedIn
-            # Asset Data
-            asset {
-              id
-              adoptedAsset
-              canonicalId
-              canonicalDomain
-            }
-          }
-        }
-      `;
-
-      const txFromSubgraph = await request<
-        {
-          originTransfers: {
-            transferId: string | null;
-          }[];
-        },
-        { transactionHash: string }
-      >(SUBGRAPH_URLS[chain.id as SupportedBridgeChainIds], query, {
-        transactionHash,
-      });
-
-      const tx = txFromSubgraph.originTransfers[0];
-
-      return tx.transferId;
-    },
-    enabled: !!transactionHash,
-    refetchInterval: (query) => {
-      const transferId = query.state.data;
-      if (!transferId) return 10000;
-      return false;
-    },
-    staleTime: Infinity,
-  });
-};
-
-export const useSubgraphDestinationData = ({
-  transferId,
-  destinationChainId,
-}: {
-  transferId: string | undefined | null;
-  destinationChainId: SupportedBridgeChainIds;
-}) => {
-  return useQuery({
-    queryKey: [
-      QueryKeys.ConnextSdk("destinationTxSubgraph"),
-      destinationChainId,
-      transferId,
-    ],
-    queryFn: async () => {
-      if (!transferId) throw new Error("No transfer id provided");
-
-      const query = gql`
-        query OriginTransfer {
-          originTransfers(
-            where: {
-              transferId: ${transferId}
-            }
-          ) {
-            # Meta Data
-            chainId
-            nonce
-            transferId
-            to
-            delegate
-            receiveLocal
-            callData
-            slippage
-            originSender
-            originDomain
-            destinationDomain
-            transactionHash
-            bridgedAmt
-            status
-            timestamp
-            normalizedIn
-            # Asset Data
-            asset {
-              id
-              adoptedAsset
-              canonicalId
-              canonicalDomain
-            }
-          }
-        }
-      `;
-
-      const txFromSubgraph = await request<
-        {
-          originTransfers: {
-            transferId: string | null;
-            transactionHash: string | null;
-            status: string | null;
-          }[];
-        },
-        {
-          transferId: string;
-        }
-      >(SUBGRAPH_URLS[destinationChainId], query, { transferId });
-
-      const tx = txFromSubgraph.originTransfers[0];
-
-      return { status: tx.status, destinationHash: tx.transactionHash };
-    },
-    enabled: !!transferId,
-    refetchInterval: (query) => {
-      const data = query.state.data;
-      if (data && data.status !== "Executed") return 10000;
-      return false;
-    },
   });
 };
