@@ -23,12 +23,13 @@ import { useChain } from "@/hooks/useChain";
 import { useQueryClient } from "@tanstack/react-query";
 import { ALCHEMISTS_METADATA, SYNTH_ASSETS } from "@/lib/config/alchemists";
 import { isInputZero } from "@/utils/inputNotZero";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { Switch } from "@/components/ui/switch";
 import { AnimatePresence, m } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
+import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
 
 export const Borrow = () => {
   const queryClient = useQueryClient();
@@ -103,6 +104,10 @@ export const Borrow = () => {
       setAmount("");
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQuery({ query, scopeKey: ScopeKeys.BorrowInput }),
+      });
     }
   }, [borrowReceipt, queryClient]);
 

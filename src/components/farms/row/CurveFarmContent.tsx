@@ -1,7 +1,7 @@
 import { useAllowance } from "@/hooks/useAllowance";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { CURVE } from "@/lib/config/farms";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,6 +18,7 @@ import { curveGaugeAbi } from "@/abi/curveGauge";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { useChain } from "@/hooks/useChain";
 import { FarmContent } from "./FarmContent";
+import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
 
 export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
   const chain = useChain();
@@ -27,6 +28,13 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
     queryClient.invalidateQueries({
       queryKey: [QueryKeys.Farms("curve")],
     });
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        invalidateWagmiUseQuery({
+          query,
+          scopeKey: ScopeKeys.CurveFarmContent,
+        }),
+    });
   }, [queryClient]);
 
   const [depositAmount, setDepositAmount] = useState("");
@@ -34,18 +42,19 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
 
   const { address = zeroAddress } = useAccount();
 
-  const { data: withdrawBalance, queryKey: balanceQueryKey } = useReadContract({
+  const { data: withdrawBalance } = useReadContract({
     address: CURVE.gauge,
     abi: curveGaugeAbi,
     chainId: chain.id,
     functionName: "balanceOf",
     args: [address],
+    scopeKey: ScopeKeys.CurveFarmContent,
     query: {
       select: (data) => formatEther(data),
     },
   });
   useWatchQuery({
-    queryKey: balanceQueryKey,
+    scopeKey: ScopeKeys.CurveFarmContent,
   });
 
   //-- Deposit --//
@@ -79,6 +88,7 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
 
   useEffect(() => {
     if (depositReceipt) {
+      setDepositAmount("");
       receiptCallback();
     }
   }, [depositReceipt, queryClient, receiptCallback]);
@@ -115,6 +125,7 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
 
   useEffect(() => {
     if (withdrawReceipt) {
+      setWithdrawAmount("");
       receiptCallback();
     }
   }, [withdrawReceipt, queryClient, receiptCallback]);
@@ -133,7 +144,11 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
     args: [],
   });
 
-  const { writeContract: claim, data: claimHash } = useWriteContract({
+  const {
+    writeContract: claim,
+    data: claimHash,
+    reset: resetClaim,
+  } = useWriteContract({
     mutation: mutationCallback({
       action: "Claim",
     }),
@@ -145,9 +160,10 @@ export const CurveFarmContent = ({ farm }: { farm: Farm }) => {
 
   useEffect(() => {
     if (claimReceipt) {
+      resetClaim();
       receiptCallback();
     }
-  }, [claimReceipt, queryClient, receiptCallback]);
+  }, [claimReceipt, queryClient, receiptCallback, resetClaim]);
 
   const onClaim = () => {
     claimConfig && claim(claimConfig.request);

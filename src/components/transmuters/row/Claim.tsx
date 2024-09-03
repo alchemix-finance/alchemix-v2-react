@@ -3,8 +3,9 @@ import { TransmuterInput } from "@/components/common/input/TransmuterInput";
 import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
+import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
@@ -61,6 +62,13 @@ export const Claim = ({
     if (claimReceipt) {
       setAmount("");
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Transmuters] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQuery({
+            query,
+            scopeKey: ScopeKeys.TransmuterInput,
+          }),
+      });
     }
   }, [claimReceipt, queryClient]);
 

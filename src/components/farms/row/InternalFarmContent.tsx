@@ -3,7 +3,7 @@ import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { STAKING_POOL_ADDRESSES } from "@/lib/config/farms";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,6 +19,7 @@ import {
 } from "wagmi";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { FarmContent } from "./FarmContent";
+import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
 
 export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
   const chain = useChain();
@@ -28,6 +29,13 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
     queryClient.invalidateQueries({
       queryKey: [QueryKeys.Farms("internal")],
     });
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        invalidateWagmiUseQuery({
+          query,
+          scopeKey: ScopeKeys.InternalFarmContent,
+        }),
+    });
   }, [queryClient]);
 
   const [depositAmount, setDepositAmount] = useState("");
@@ -35,18 +43,19 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
 
   const { address = zeroAddress } = useAccount();
 
-  const { data: withdrawBalance, queryKey: balanceQueryKey } = useReadContract({
+  const { data: withdrawBalance } = useReadContract({
     address: STAKING_POOL_ADDRESSES[mainnet.id],
     abi: stakingPoolsAbi,
     chainId: chain.id,
     functionName: "getStakeTotalDeposited",
     args: [address, BigInt(farm.poolId)],
+    scopeKey: ScopeKeys.InternalFarmContent,
     query: {
       select: (data) => formatEther(data),
     },
   });
   useWatchQuery({
-    queryKey: balanceQueryKey,
+    scopeKey: ScopeKeys.InternalFarmContent,
   });
 
   //-- Deposit --//
@@ -80,6 +89,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
 
   useEffect(() => {
     if (depositReceipt) {
+      setDepositAmount("");
       receiptCallback();
     }
   }, [depositReceipt, queryClient, receiptCallback]);
@@ -116,6 +126,7 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
 
   useEffect(() => {
     if (withdrawReceipt) {
+      setWithdrawAmount("");
       receiptCallback();
     }
   }, [withdrawReceipt, queryClient, receiptCallback]);
@@ -133,7 +144,11 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
     args: [BigInt(farm.poolId)],
   });
 
-  const { writeContract: claim, data: claimHash } = useWriteContract({
+  const {
+    writeContract: claim,
+    data: claimHash,
+    reset: resetClaim,
+  } = useWriteContract({
     mutation: mutationCallback({
       action: "Claim",
     }),
@@ -145,9 +160,10 @@ export const InternalFarmContent = ({ farm }: { farm: Farm }) => {
 
   useEffect(() => {
     if (claimReceipt) {
+      resetClaim();
       receiptCallback();
     }
-  }, [claimReceipt, queryClient, receiptCallback]);
+  }, [claimReceipt, queryClient, receiptCallback, resetClaim]);
 
   const onClaim = () => {
     claimConfig && claim(claimConfig.request);

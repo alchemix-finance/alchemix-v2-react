@@ -16,9 +16,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { SYNTH_ASSETS } from "../config/synths";
-import { QueryKeys } from "../queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "../queries/queriesSchema";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
 
 export const useMigrate = ({
   currentVault,
@@ -138,6 +139,7 @@ export const useMigrate = ({
   const {
     writeContract: writeWithdrawApprovePrepared,
     data: approveWithdrawHash,
+    reset: resetApproveWithdraw,
   } = useWriteContract({
     mutation: mutationCallback({
       action: "Approve withdraw",
@@ -153,8 +155,14 @@ export const useMigrate = ({
       queryClient.invalidateQueries({
         queryKey: isApprovalNeededWithdrawQueryKey,
       });
+      resetApproveWithdraw();
     }
-  }, [approveWithdrawReceipt, isApprovalNeededWithdrawQueryKey, queryClient]);
+  }, [
+    approveWithdrawReceipt,
+    isApprovalNeededWithdrawQueryKey,
+    queryClient,
+    resetApproveWithdraw,
+  ]);
 
   const { data: approveMintConfig } = useSimulateContract({
     address: currentVault.alchemist.address,
@@ -166,12 +174,15 @@ export const useMigrate = ({
     },
   });
 
-  const { writeContract: writeMintApprovePrepared, data: approveMintHash } =
-    useWriteContract({
-      mutation: mutationCallback({
-        action: "Approve mint",
-      }),
-    });
+  const {
+    writeContract: writeMintApprovePrepared,
+    data: approveMintHash,
+    reset: resetApproveMint,
+  } = useWriteContract({
+    mutation: mutationCallback({
+      action: "Approve mint",
+    }),
+  });
 
   const { data: approveMintReceipt } = useWaitForTransactionReceipt({
     hash: approveMintHash,
@@ -182,8 +193,14 @@ export const useMigrate = ({
       queryClient.invalidateQueries({
         queryKey: isApprovalNeededMintQueryKey,
       });
+      resetApproveMint();
     }
-  }, [approveMintReceipt, isApprovalNeededMintQueryKey, queryClient]);
+  }, [
+    approveMintReceipt,
+    isApprovalNeededMintQueryKey,
+    queryClient,
+    resetApproveMint,
+  ]);
 
   const {
     data: migrateConfig,
@@ -225,6 +242,13 @@ export const useMigrate = ({
       setAmount("");
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQuery({
+            query,
+            scopeKey: ScopeKeys.MigrateInput,
+          }),
+      });
     }
   }, [migrateReceipt, chain.id, queryClient, setAmount]);
 

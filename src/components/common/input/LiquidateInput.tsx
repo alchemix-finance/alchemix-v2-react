@@ -5,6 +5,7 @@ import { Vault } from "@/lib/types";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { TokenInput } from "./TokenInput";
+import { ScopeKeys } from "@/lib/queries/queriesSchema";
 
 export const LiquidateTokenInput = ({
   amount,
@@ -45,17 +46,17 @@ export const LiquidateTokenInput = ({
     },
   });
 
-  const { data: maximumShares, queryKey: maximumSharesQueryKey } =
-    useReadContract({
-      address: vault.alchemist.address,
-      abi: alchemistV2Abi,
-      chainId: chain.id,
-      functionName: "convertUnderlyingTokensToShares",
-      args: [vault.yieldToken, normalizedDebtToUnderlying ?? 0n],
-      query: {
-        enabled: normalizedDebtToUnderlying !== undefined,
-      },
-    });
+  const { data: maximumShares } = useReadContract({
+    address: vault.alchemist.address,
+    abi: alchemistV2Abi,
+    chainId: chain.id,
+    functionName: "convertUnderlyingTokensToShares",
+    args: [vault.yieldToken, normalizedDebtToUnderlying ?? 0n],
+    scopeKey: ScopeKeys.LiquidateInput,
+    query: {
+      enabled: normalizedDebtToUnderlying !== undefined,
+    },
+  });
 
   const { data: debtInYield } = useReadContract({
     address: vault.alchemist.address,
@@ -70,25 +71,26 @@ export const LiquidateTokenInput = ({
     },
   });
 
-  const { data: sharesBalance, queryKey: sharesBalanceQueryKey } =
-    useReadContract({
-      address: vault.alchemist.address,
-      chainId: chain.id,
-      abi: alchemistV2Abi,
-      functionName: "positions",
-      args: [address ?? zeroAddress, vault.yieldToken],
-      query: {
-        enabled: !!address,
-        select: ([shares]) => shares,
-      },
-    });
+  const { data: sharesBalance } = useReadContract({
+    address: vault.alchemist.address,
+    chainId: chain.id,
+    abi: alchemistV2Abi,
+    functionName: "positions",
+    args: [address ?? zeroAddress, vault.yieldToken],
+    scopeKey: ScopeKeys.LiquidateInput,
+    query: {
+      enabled: !!address,
+      select: ([shares]) => shares,
+    },
+  });
 
-  const { data: balance, queryKey: balanceQueryKey } = useReadContract({
+  const { data: balance } = useReadContract({
     address: vault.alchemist.address,
     chainId: chain.id,
     abi: alchemistV2Abi,
     functionName: "convertSharesToYieldTokens",
     args: [vault.yieldToken, sharesBalance ?? 0n],
+    scopeKey: ScopeKeys.LiquidateInput,
     query: {
       enabled: sharesBalance !== undefined,
       select: (balance) =>
@@ -98,12 +100,12 @@ export const LiquidateTokenInput = ({
 
   /**
    * NOTE: Watch queries for changes in maximumShares, sharesBalance, and balance.
-   * maximumSharesQueryKey - because underlying tokens to shares uses price which changes each block;
-   * sharesBalanceQueryKey - if user deposited or withdrawed from vault for yield token;
-   * balanceQueryKey - because shares to yield token uses price which changes each block.
+   * maximumShares - because underlying tokens to shares uses price which changes each block;
+   * sharesBalance - if user deposited or withdrawed from vault for yield token;
+   * balance - because shares to yield token uses price which changes each block.
    */
   useWatchQuery({
-    queryKeys: [maximumSharesQueryKey, sharesBalanceQueryKey, balanceQueryKey],
+    scopeKey: ScopeKeys.LiquidateInput,
   });
 
   const externalMaximumAmount =

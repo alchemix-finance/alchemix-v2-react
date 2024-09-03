@@ -1,19 +1,16 @@
 import { useEffect } from "react";
-import { QueryKey, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useBlockNumber } from "wagmi";
+
 import { useChain } from "./useChain";
+import { ScopeKey } from "@/lib/queries/queriesSchema";
+import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
 
-export type UseWatchQueryArgs =
-  | {
-      queryKey: QueryKey;
-      queryKeys?: never;
-    }
-  | {
-      queryKeys: QueryKey[];
-      queryKey?: never;
-    };
+interface UseWatchQueryArgs {
+  scopeKey: ScopeKey;
+}
 
-export const useWatchQuery = ({ queryKey, queryKeys }: UseWatchQueryArgs) => {
+export const useWatchQuery = ({ scopeKey }: UseWatchQueryArgs) => {
   const queryClient = useQueryClient();
   const chain = useChain();
   const { data: blockNumber } = useBlockNumber({
@@ -22,13 +19,9 @@ export const useWatchQuery = ({ queryKey, queryKeys }: UseWatchQueryArgs) => {
   });
   useEffect(() => {
     if (document.visibilityState === "visible") {
-      if (queryKey) {
-        queryClient.invalidateQueries({ queryKey });
-        return;
-      }
-      queryKeys.forEach((key) => {
-        queryClient.invalidateQueries({ queryKey: key });
+      queryClient.invalidateQueries({
+        predicate: (query) => invalidateWagmiUseQuery({ query, scopeKey }),
       });
     }
-  }, [blockNumber, chain.id, queryClient, queryKey, queryKeys]);
+  }, [blockNumber, chain.id, queryClient, scopeKey]);
 };

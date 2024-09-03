@@ -86,7 +86,11 @@ export const Sentinel = () => {
     isPendingVaults ||
     isPendingTransmuters;
 
-  const { writeContract, data: hash } = useWriteContract({
+  const {
+    writeContract,
+    data: hash,
+    reset: resetSentinelTx,
+  } = useWriteContract({
     mutation: mutationCallback({
       action: "Sentinel",
     }),
@@ -107,8 +111,9 @@ export const Sentinel = () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.Vaults],
       });
+      resetSentinelTx();
     }
-  }, [pausedQueryKey, queryClient, receipt]);
+  }, [pausedQueryKey, queryClient, receipt, resetSentinelTx]);
 
   const toggleAlTokenState = ({
     address,

@@ -10,6 +10,7 @@ import { TokenInput } from "./TokenInput";
 import { useAccount, useReadContract } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
+import { ScopeKeys } from "@/lib/queries/queriesSchema";
 
 export const RepayInput = ({
   amount,
@@ -26,24 +27,23 @@ export const RepayInput = ({
 }) => {
   const { address = zeroAddress } = useAccount();
 
-  const {
-    data: repaymentTokenBalance,
-    queryKey: repaymentTokenBalanceQueryKey,
-  } = useReadContract({
+  const { data: repaymentTokenBalance } = useReadContract({
     address: repaymentToken.address,
     abi: erc20Abi,
     functionName: "balanceOf",
     args: [address],
+    scopeKey: ScopeKeys.RepayInput,
     query: {
       select: (balance) => formatUnits(balance, repaymentToken.decimals),
     },
   });
 
-  const { data: debtBalance, queryKey: debtQueryKey } = useReadContract({
+  const { data: debtBalance } = useReadContract({
     address: alchemistAddress,
     abi: alchemistV2Abi,
     functionName: "accounts",
     args: [address],
+    scopeKey: ScopeKeys.RepayInput,
     query: {
       select: (account) => (account[0] < 0n ? "0" : formatEther(account[0])),
     },
@@ -62,7 +62,7 @@ export const RepayInput = ({
   });
 
   useWatchQuery({
-    queryKeys: [repaymentTokenBalanceQueryKey, debtQueryKey],
+    scopeKey: ScopeKeys.RepayInput,
   });
 
   const debt = isSelectedSynthAsset ? debtBalance : debtInUnderlying;

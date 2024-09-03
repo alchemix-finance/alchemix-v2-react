@@ -6,6 +6,7 @@ import { formatEther, formatUnits, parseUnits, zeroAddress } from "viem";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useMemo } from "react";
 import { TokenInput } from "./TokenInput";
+import { ScopeKeys } from "@/lib/queries/queriesSchema";
 
 export const VaultWithdrawTokenInput = ({
   amount,
@@ -25,18 +26,18 @@ export const VaultWithdrawTokenInput = ({
   const chain = useChain();
   const { address } = useAccount();
 
-  const { data: sharesBalance, queryKey: sharesBalanceQueryKey } =
-    useReadContract({
-      address: vault.alchemist.address,
-      chainId: chain.id,
-      abi: alchemistV2Abi,
-      functionName: "positions",
-      args: [address!, vault.yieldToken],
-      query: {
-        enabled: !!address,
-        select: ([shares]) => shares,
-      },
-    });
+  const { data: sharesBalance } = useReadContract({
+    address: vault.alchemist.address,
+    chainId: chain.id,
+    abi: alchemistV2Abi,
+    functionName: "positions",
+    args: [address!, vault.yieldToken],
+    scopeKey: ScopeKeys.VaultWithdrawInput,
+    query: {
+      enabled: !!address,
+      select: ([shares]) => shares,
+    },
+  });
 
   const { data: underlyingTokenCollateral } = useReadContract({
     address: vault.alchemist.address,
@@ -60,22 +61,20 @@ export const VaultWithdrawTokenInput = ({
     },
   });
 
-  const {
-    data: totalCollateralInDebtToken,
-    queryKey: totalCollateralInDebtTokenQueryKey,
-  } = useReadContract({
+  const { data: totalCollateralInDebtToken } = useReadContract({
     address: vault.alchemist.address,
     chainId: chain.id,
     abi: alchemistV2Abi,
     functionName: "totalValue",
     args: [address!],
+    scopeKey: ScopeKeys.VaultWithdrawInput,
     query: {
       enabled: !!address,
     },
   });
 
   useWatchQuery({
-    queryKeys: [sharesBalanceQueryKey, totalCollateralInDebtTokenQueryKey],
+    scopeKey: ScopeKeys.VaultWithdrawInput,
   });
 
   const otherCoverInDebt =

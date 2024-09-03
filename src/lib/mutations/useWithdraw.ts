@@ -16,8 +16,9 @@ import {
 import { GAS_ADDRESS, MAX_UINT256_BN } from "@/lib/constants";
 import { wethGatewayAbi } from "@/abi/wethGateway";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { invalidateWagmiUseQuery } from "@/utils/helpers/invalidateWagmiUseQuery";
 
 export const useWithdraw = ({
   vault,
@@ -40,6 +41,13 @@ export const useWithdraw = ({
     setAmount("");
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        invalidateWagmiUseQuery({
+          query,
+          scopeKey: ScopeKeys.VaultWithdrawInput,
+        }),
+    });
   }, [queryClient, setAmount]);
   const mutationCallback = useWriteContractMutationCallback();
 
