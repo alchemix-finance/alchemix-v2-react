@@ -21,7 +21,7 @@ export const useWatchQuery = ({ queryKey, queryKeys }: UseWatchQueryArgs) => {
     watch: true,
   });
   useEffect(() => {
-    if (blockNumber) {
+    if (document.visibilityState === "visible") {
       if (queryKey) {
         queryClient.invalidateQueries({ queryKey });
         return;
