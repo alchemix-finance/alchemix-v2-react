@@ -30,6 +30,7 @@ import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
+import { useSettings } from "@/components/providers/SettingsProvider";
 
 type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
 
@@ -279,11 +280,13 @@ export const CurrencyCell = ({
   tokenDecimals: number | undefined;
   tokenSymbol: string | undefined;
 }) => {
+  const { currency } = useSettings();
+
   const tokenAmountFormated = formatUnits(tokenAmount, tokenDecimals);
   const { data: tokenPrice } = useGetTokenPrice(tokenAddress);
 
   const isDust = !greaterThan([tokenAmount, tokenDecimals], [5n, 18]);
-  const amountInUsd =
+  const amountInCurrency =
     tokenPrice && !isDust
       ? toString(multiply(tokenPrice, [tokenAmount, tokenDecimals]))
       : 0;
@@ -296,9 +299,10 @@ export const CurrencyCell = ({
       </p>
       {tokenPrice && (
         <p className="text-sm text-lightgrey10">
-          {formatNumber(amountInUsd, {
+          {formatNumber(amountInCurrency, {
             decimals: 2,
             isCurrency: true,
+            currency,
             dustToZero: true,
             tokenDecimals,
           })}

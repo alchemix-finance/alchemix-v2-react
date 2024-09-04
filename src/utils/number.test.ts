@@ -100,10 +100,23 @@ describe("Format number", () => {
   });
 
   describe("Currency", () => {
-    it("Should format number with currency symbol", () => {
+    it("Should format number with $ symbol, if currency unset", () => {
       const amount = "1000";
       const formatted = formatNumber(amount, { isCurrency: true });
       expect(formatted).toBe("$1,000.00");
+    });
+    it("Should format number with $ symbol, if currency set to USD", () => {
+      const amount = "1000";
+      const formatted = formatNumber(amount, { isCurrency: true });
+      expect(formatted).toBe("$1,000.00");
+    });
+    it("Should format number with currency name, if currency set to ETH", () => {
+      const amount = "1000";
+      const formatted = formatNumber(amount, {
+        isCurrency: true,
+        currency: "ETH",
+      });
+      expect(formatted).toBe("1,000.00 ETH");
     });
   });
 

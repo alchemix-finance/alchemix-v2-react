@@ -4,6 +4,7 @@ export const GAS_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 // Time constants
 export const ONE_MINUTE_IN_MS = 60 * 1000;
 export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+export const FIVE_MIN_IN_MS = 300000;
 
 // Addresses used in the app. These are the addresses of the contracts on the Ethereum mainnet,
 // so we do not create chain mappings for them.

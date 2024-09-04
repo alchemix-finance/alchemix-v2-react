@@ -1,12 +1,15 @@
+import { MoonIcon, SunIcon, FileIcon, DollarSignIcon } from "lucide-react";
+
 import { LeftNav } from "@/components/layout/LeftNav";
-import { Button } from "../ui/button";
-import { MoonIcon, SunIcon, FileIcon } from "lucide-react";
 import XPrevTwitterIcon from "@/assets/logos/x.svg?react";
+import { Button } from "../ui/button";
 import { MobileNav } from "./MobileNav";
 import { useTheme } from "../providers/ThemeProvider";
+import { useSettings } from "../providers/SettingsProvider";
 
 export function LeftBlock() {
   const { darkMode, handleDarkModeToggle } = useTheme();
+  const { currency, handleCurrencyChange } = useSettings();
   return (
     <>
       <div className="hidden max-h-screen min-w-[352px] flex-col gap-20 pl-8 pr-9 pt-8 lg:flex">
@@ -22,6 +25,13 @@ export function LeftBlock() {
             ) : (
               <SunIcon className="h-4 w-4" />
             )}
+          </Button>
+          <Button
+            variant="ghost"
+            className="h-7 w-7 rounded border border-iconsInverse/40 bg-transparent fill-iconsInverse/40 p-1 text-iconsInverse/40 transition-colors hover:border-iconsInverse hover:bg-transparent hover:fill-iconsInverse hover:text-iconsInverse dark:border-orange4/40 dark:bg-transparent dark:fill-orange4/40 dark:text-orange4/40 dark:hover:border-orange4 dark:hover:bg-transparent dark:hover:fill-orange4 dark:hover:text-orange4"
+            onClick={handleCurrencyChange}
+          >
+            {currency === "USD" ? <DollarSignIcon className="h-4 w-4" /> : "Ξ"}
           </Button>
           <a
             className="flex h-7 w-7 items-center justify-center rounded border border-iconsInverse/40 p-1 text-iconsInverse/40 transition-colors hover:border-iconsInverse hover:text-iconsInverse dark:border-orange4/40 dark:text-orange4/40 dark:hover:border-orange4 dark:hover:text-orange4"
