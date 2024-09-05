@@ -6,6 +6,7 @@ import { Web3Provider } from "@/components/providers/Web3Provider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { FramerMotionProvider } from "@/components/providers/FramerMotionProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { SettingsProvider } from "@/components/providers/SettingsProvider";
 
 // Import the generated route tree
 import { routeTree } from "@/routeTree.gen";
@@ -27,13 +28,15 @@ if (!rootElement.innerHTML) {
   root.render(
     <React.StrictMode>
       <ThemeProvider>
-        <QueryProvider>
-          <Web3Provider>
-            <FramerMotionProvider>
-              <RouterProvider router={router} />
-            </FramerMotionProvider>
-          </Web3Provider>
-        </QueryProvider>
+        <SettingsProvider>
+          <QueryProvider>
+            <Web3Provider>
+              <FramerMotionProvider>
+                <RouterProvider router={router} />
+              </FramerMotionProvider>
+            </Web3Provider>
+          </QueryProvider>
+        </SettingsProvider>
       </ThemeProvider>
     </React.StrictMode>,
   );

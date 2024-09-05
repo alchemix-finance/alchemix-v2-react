@@ -10,11 +10,14 @@ import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { useVaults } from "@/lib/queries/useVaults";
 import { Token, Vault } from "@/lib/types";
 import { formatNumber } from "@/utils/number";
+import { useSettings } from "@/components/providers/SettingsProvider";
 
 export const VaultsMetrics = () => {
+  const { currency } = useSettings();
+
   const { data: alchemists } = useAlchemists();
   const { data: vaults } = useVaults();
-  // TODO: DefiLlama has missing price for alETH on Arb. Possible somewhere else too. So we take underlying price. Which is more than real value, but better than 0.
+
   const debtTokenPrices = useGetMultipleTokenPrices(
     alchemists?.map((alchemist) => alchemist.underlyingTokens[0]),
   );
@@ -53,7 +56,11 @@ export const VaultsMetrics = () => {
             </div>
             <div className="flex">
               <div className="mr-2 flex">
-                {formatNumber(totalDeposit, { decimals: 2, isCurrency: true })}
+                {formatNumber(totalDeposit, {
+                  decimals: 2,
+                  isCurrency: true,
+                  currency,
+                })}
               </div>
             </div>
           </div>
@@ -67,6 +74,7 @@ export const VaultsMetrics = () => {
                   decimals: 2,
                   isCurrency: true,
                   allowNegative: false,
+                  currency,
                 })}
               </div>
             </div>
@@ -81,6 +89,7 @@ export const VaultsMetrics = () => {
                   decimals: 2,
                   isCurrency: true,
                   allowNegative: false,
+                  currency,
                 })}
               </div>
             </div>
@@ -91,7 +100,11 @@ export const VaultsMetrics = () => {
             </div>
             <div className="flex">
               <div className="mr-2 flex">
-                {formatNumber(globalTVL, { decimals: 2, isCurrency: true })}
+                {formatNumber(globalTVL, {
+                  decimals: 2,
+                  isCurrency: true,
+                  currency,
+                })}
               </div>
             </div>
           </div>

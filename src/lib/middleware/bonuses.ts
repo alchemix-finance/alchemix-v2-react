@@ -1,5 +1,4 @@
 import { fantom, mainnet, optimism } from "viem/chains";
-import { getTokenPriceInEth } from "@/lib/queries/useTokenPrice";
 import { formatEther, formatUnits } from "viem";
 import { rewardRouterAbi } from "@/abi/rewardRouter";
 import {
@@ -12,6 +11,11 @@ import { getAaveReserves } from "./aave";
 import { getVesperReserves } from "./vesper";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { dayjs } from "@/lib/dayjs";
+import { queryClient } from "@/components/providers/QueryProvider";
+import {
+  fetchPriceInEth,
+  useEthPriceQueryOptions,
+} from "../queries/useTokenPrice";
 
 const SPY = 31536000;
 
@@ -29,14 +33,19 @@ export const getAaveBonusData: BonusFn = async ({ chainId, vault }) => {
         (reward) => reward.emissionsPerSecond !== "0",
       ),
   );
-  const bonusYieldValue = await getTokenPriceInEth({
+
+  const ethPrice = await queryClient.ensureQueryData(useEthPriceQueryOptions);
+
+  const bonusYieldValue = await fetchPriceInEth({
     chainId,
     tokenAddress: "0x4200000000000000000000000000000000000042",
+    ethPrice,
   });
   const bonusYieldTokenSymbol = "OP";
-  const tokenPriceInEth = await getTokenPriceInEth({
+  const tokenPriceInEth = await fetchPriceInEth({
     chainId,
     tokenAddress: vault.underlyingToken,
+    ethPrice,
   });
 
   const emissionsPerSecond =
@@ -107,13 +116,17 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
 
   const distributionTimeUnit = distributionTimeAmount > 1 ? "days" : "day";
 
-  const bonusYieldValue = await getTokenPriceInEth({
+  const ethPrice = await queryClient.ensureQueryData(useEthPriceQueryOptions);
+
+  const bonusYieldValue = await fetchPriceInEth({
     chainId,
     tokenAddress: REWARD_TOKENS[chainId].rewardTokenAddress,
+    ethPrice,
   });
-  const tokenPriceInEth = await getTokenPriceInEth({
+  const tokenPriceInEth = await fetchPriceInEth({
     chainId,
     tokenAddress: vault.underlyingToken,
+    ethPrice,
   });
 
   let bonusYieldRate = 0;

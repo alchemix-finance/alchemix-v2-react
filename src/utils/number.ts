@@ -1,6 +1,8 @@
 import { from, toString, lessThan, equal, type Numberish } from "dnum";
 import { parseUnits } from "viem";
 
+import { SupportedCurrency } from "@/lib/types";
+
 const subscriptMap: Record<string, string> = {
   "0": "₀",
   "1": "₁",
@@ -43,6 +45,7 @@ const enforceToDecimalString = (value: Numberish) => toString(from(value));
 interface BaseFormatNumberOptions {
   decimals?: number;
   isCurrency?: boolean;
+  currency?: SupportedCurrency;
   allowNegative?: boolean;
   dustToZero?: boolean;
   tokenDecimals?: number;
@@ -70,12 +73,17 @@ export function formatNumber(
     dustToZero = false,
     tokenDecimals = 18,
     compact = false,
+    currency = "USD",
   }: FormatNumberOptions = {},
 ) {
+  const getManualFormat = (comparator?: string) => {
+    return `${isCurrency && currency === "USD" ? "$" : ""}${comparator ?? "0.00"}${isCurrency && currency === "ETH" ? " ETH" : ""}`;
+  };
+
   if (amount !== undefined && amount !== null && !!amount && !isNaN(+amount)) {
     // Negative numbers check
     if (!allowNegative && lessThan(amount, 0)) {
-      return `${isCurrency ? "$" : ""}0.00`;
+      return getManualFormat();
     }
 
     // Dust to zero check
@@ -86,7 +94,7 @@ export function formatNumber(
           tokenDecimals,
         );
         if (lessThan(amountBigInt, 5n) || equal(amountBigInt, 5n)) {
-          return `${isCurrency ? "$" : ""}0.00`;
+          return getManualFormat();
         }
       } catch (e) {
         console.error("Error parsing units", e);
@@ -107,7 +115,6 @@ export function formatNumber(
 
     // Currency
     if (isCurrency) {
-      const currency = "USD";
       intlOptions.style = "currency";
       intlOptions.currency = currency;
       intlOptions.currencyDisplay = getDisplayCurrency(currency);
@@ -121,7 +128,7 @@ export function formatNumber(
 
     // Small numbers
     if (+amount > 0 && +amount < comparator) {
-      const lessThanComparatorRepresentation = `< ${isCurrency ? "$" : ""}${comparator.toFixed(decimals)}`;
+      const lessThanComparatorRepresentation = `< ${getManualFormat(comparator.toFixed(decimals))}`;
 
       const numStr = enforceToDecimalString(amount);
       const match = numStr.match(/0\.0*(\d+)/);
@@ -144,7 +151,7 @@ export function formatNumber(
 
     return formatter.format(+amount);
   } else {
-    return `${isCurrency ? "$" : ""}0.00`;
+    return getManualFormat();
   }
 }
 

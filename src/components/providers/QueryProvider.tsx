@@ -6,7 +6,7 @@ import {
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ContractFunctionExecutionError } from "viem";
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (e, q) => {
       if (import.meta.env.PROD) return;

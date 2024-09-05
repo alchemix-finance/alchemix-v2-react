@@ -7,6 +7,8 @@ export type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
 };
 
+export type SupportedCurrency = "USD" | "ETH";
+
 export type TokenAdapter = {
   price: bigint;
   underlyingToken: Address;
