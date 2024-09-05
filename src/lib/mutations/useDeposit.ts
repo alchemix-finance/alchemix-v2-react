@@ -17,9 +17,10 @@ import {
 } from "wagmi";
 import { GAS_ADDRESS, MAX_UINT256_BN } from "@/lib/constants";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
-import { QueryKeys } from "../queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "../queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 
 export const useDeposit = ({
   vault,
@@ -42,6 +43,13 @@ export const useDeposit = ({
     setAmount("");
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        invalidateWagmiUseQueryPredicate({
+          query,
+          scopeKey: ScopeKeys.TokenInput,
+        }),
+    });
   }, [queryClient, setAmount]);
 
   const { address } = useAccount();

@@ -24,12 +24,13 @@ import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection"
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { useVaults } from "@/lib/queries/useVaults";
 import { isInputZero } from "@/utils/inputNotZero";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { LiquidateTokenInput } from "@/components/common/input/LiquidateInput";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { Switch } from "@/components/ui/switch";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { MAX_UINT256_BN } from "@/lib/constants";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
 
 export const Liquidate = () => {
@@ -156,6 +157,13 @@ export const Liquidate = () => {
       setAmount("");
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQueryPredicate({
+            query,
+            scopeKey: ScopeKeys.LiquidateInput,
+          }),
+      });
     }
   }, [liquidateReceipt, queryClient, chain.id]);
 

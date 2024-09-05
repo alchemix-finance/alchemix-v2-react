@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { CURVE, STAKING_POOL_ADDRESSES, SUSHI } from "@/lib/config/farms";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
@@ -38,12 +39,15 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
         enabled: farm.type === "internal",
       },
     });
-  const { writeContract: exitInternal, data: internalExitHash } =
-    useWriteContract({
-      mutation: mutationCallback({
-        action: "Exit",
-      }),
-    });
+  const {
+    writeContract: exitInternal,
+    data: internalExitHash,
+    reset: resetExitInternal,
+  } = useWriteContract({
+    mutation: mutationCallback({
+      action: "Exit",
+    }),
+  });
   const { data: internalExitReceipt } = useWaitForTransactionReceipt({
     hash: internalExitHash,
   });
@@ -52,8 +56,16 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.Farms("internal")],
       });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQueryPredicate({
+            query,
+            scopeKey: ScopeKeys.InternalFarmContent,
+          }),
+      });
+      resetExitInternal();
     }
-  }, [internalExitReceipt, queryClient]);
+  }, [internalExitReceipt, queryClient, resetExitInternal]);
 
   //-- Sushi --//
   const { data: sushiExitConfig, error: sushiError } = useSimulateContract({
@@ -66,7 +78,11 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
       enabled: !!address && farm.type === "external-sushi",
     },
   });
-  const { writeContract: exitSushi, data: sushiExitHash } = useWriteContract({
+  const {
+    writeContract: exitSushi,
+    data: sushiExitHash,
+    reset: resetExitSushi,
+  } = useWriteContract({
     mutation: mutationCallback({
       action: "Exit",
     }),
@@ -79,8 +95,16 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.Farms("sushi")],
       });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQueryPredicate({
+            query,
+            scopeKey: ScopeKeys.SushiFarmContent,
+          }),
+      });
+      resetExitSushi();
     }
-  }, [sushiExitReceipt, queryClient]);
+  }, [sushiExitReceipt, queryClient, resetExitSushi]);
 
   //-- Curve --//
   const { data: curveExitConfig, error: curveError } = useSimulateContract({
@@ -93,7 +117,11 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
       enabled: farm.type === "external-curve" && +farm.staked.amount > 0,
     },
   });
-  const { writeContract: exitCurve, data: curveExitHash } = useWriteContract({
+  const {
+    writeContract: exitCurve,
+    data: curveExitHash,
+    reset: resetExitCurve,
+  } = useWriteContract({
     mutation: mutationCallback({
       action: "Exit",
     }),
@@ -106,8 +134,16 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.Farms("curve")],
       });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQueryPredicate({
+            query,
+            scopeKey: ScopeKeys.CurveFarmContent,
+          }),
+      });
+      resetExitCurve();
     }
-  }, [curveExitReceipt, queryClient]);
+  }, [curveExitReceipt, queryClient, resetExitCurve]);
 
   const onExitFarm = useCallback(() => {
     if (farm.type === "internal") {

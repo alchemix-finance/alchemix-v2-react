@@ -24,9 +24,10 @@ import { useAlchemists } from "@/lib/queries/useAlchemists";
 import { useAllowance } from "@/hooks/useAllowance";
 import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection";
 import { isInputZero } from "@/utils/inputNotZero";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { RepayInput } from "@/components/common/input/RepayInput";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
 
 export const Repay = () => {
@@ -150,6 +151,13 @@ export const Repay = () => {
       setAmount("");
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQueryPredicate({
+            query,
+            scopeKey: ScopeKeys.RepayInput,
+          }),
+      });
     }
   }, [repayReceipt, queryClient]);
 

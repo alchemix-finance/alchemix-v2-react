@@ -4,8 +4,9 @@ import { TransmuterInput } from "@/components/common/input/TransmuterInput";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -76,6 +77,13 @@ export const Deposit = ({
     if (depositReceipt) {
       setDepositAmount("");
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Transmuters] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQueryPredicate({
+            query,
+            scopeKey: ScopeKeys.TransmuterInput,
+          }),
+      });
     }
   }, [depositReceipt, queryClient]);
 

@@ -8,6 +8,7 @@ import { GAS_ADDRESS } from "@/lib/constants";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { Button } from "@/components/ui/button";
 import { decimalNumberValidationRegex } from "@/utils/inputValidation";
+import { ScopeKeys } from "@/lib/queries/queriesSchema";
 
 export const TokenInput = ({
   amount,
@@ -33,33 +34,34 @@ export const TokenInput = ({
   const chain = useChain();
   const { address } = useAccount();
 
-  const { data: gasBalance, queryKey: gasBalanceQueryKey } = useBalance({
+  const { data: gasBalance } = useBalance({
     address,
     chainId: chain.id,
+    scopeKey: ScopeKeys.TokenInput,
     query: {
       enabled: !overrideBalance && tokenAddress === GAS_ADDRESS,
       select: (balance) => formatEther(balance.value),
     },
   });
-  const { data: tokenBalance, queryKey: tokenBalanceQueryKey } =
-    useReadContract({
-      address: tokenAddress,
-      chainId: chain.id,
-      abi: erc20Abi,
-      functionName: "balanceOf",
-      args: [address!],
-      query: {
-        enabled:
-          !!address &&
-          !overrideBalance &&
-          tokenAddress !== GAS_ADDRESS &&
-          tokenAddress !== zeroAddress,
-        select: (balance) => formatUnits(balance, tokenDecimals),
-      },
-    });
+  const { data: tokenBalance } = useReadContract({
+    address: tokenAddress,
+    chainId: chain.id,
+    abi: erc20Abi,
+    functionName: "balanceOf",
+    args: [address!],
+    scopeKey: ScopeKeys.TokenInput,
+    query: {
+      enabled:
+        !!address &&
+        !overrideBalance &&
+        tokenAddress !== GAS_ADDRESS &&
+        tokenAddress !== zeroAddress,
+      select: (balance) => formatUnits(balance, tokenDecimals),
+    },
+  });
 
   useWatchQuery({
-    queryKeys: [gasBalanceQueryKey, tokenBalanceQueryKey],
+    scopeKey: ScopeKeys.TokenInput,
   });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
