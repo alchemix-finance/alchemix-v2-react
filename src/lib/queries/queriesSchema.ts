@@ -18,6 +18,14 @@ export const QueryKeys = {
   Migration: (v: string) => `migrate-${v}`,
   VotesForAddress: "votesForAddress",
   Farms: (type: "internal" | "sushi" | "curve") => `farms-${type}`,
+  ConnextSdk: (
+    type:
+      | "relayerFee"
+      | "amountOut"
+      | "approval"
+      | "originTxSubgraph"
+      | "destinationTxSubgraph",
+  ) => `connextSdk-${type}`,
 } as const;
 
 /**
