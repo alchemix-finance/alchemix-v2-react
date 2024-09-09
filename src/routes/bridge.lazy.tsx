@@ -1,7 +1,6 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { Page } from "@/components/common/Page";
-import { Button } from "@/components/ui/button";
-import { windowOpen } from "@/utils/windowOpen";
+import { Bridge } from "@/components/bridge/Bridge";
 import { ErrorComponent } from "@/components/error/ErrorComponent";
 
 export const Route = createLazyFileRoute("/bridge")({
@@ -16,42 +15,7 @@ function BridgeRoute() {
       description="Transfer your tokens to other chains"
       iconUri="/images/icons/swap_thin.svg"
     >
-      <div className="space-y-2">
-        <p>We are integrating bridging into the Alchemix front end.</p>
-        <p>In the meantime, you may bridge directly through Connext:</p>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="action"
-            onClick={() =>
-              windowOpen(
-                "https://bridge.connext.network/ALCHEMIX-from-ethereum-to-arbitrum?symbol=ALCX",
-              )
-            }
-          >
-            ALCX
-          </Button>
-          <Button
-            variant="action"
-            onClick={() =>
-              windowOpen(
-                "https://bridge.connext.network/ALUSD-from-ethereum-to-arbitrum?symbol=alUSD",
-              )
-            }
-          >
-            alUSD
-          </Button>
-          <Button
-            variant="action"
-            onClick={() =>
-              windowOpen(
-                "https://bridge.connext.network/ALETH-from-ethereum-to-arbitrum?symbol=alETH",
-              )
-            }
-          >
-            alETH
-          </Button>
-        </div>
-      </div>
+      <Bridge />
     </Page>
   );
 }

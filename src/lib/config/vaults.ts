@@ -48,7 +48,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "yearn",
+        provider: "yearn",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -63,7 +63,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "yearn",
+        provider: "yearn",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -78,7 +78,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "yearn",
+        provider: "yearn",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -94,7 +94,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getAaveBonusData,
       },
       disabledDepositTokens: [],
@@ -110,7 +110,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getAaveBonusData,
       },
       disabledDepositTokens: [],
@@ -126,7 +126,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getAaveBonusData,
       },
       disabledDepositTokens: [],
@@ -141,7 +141,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "yearn",
+        provider: "yearn",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -156,7 +156,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getVesperApr,
         yieldType: "APR",
-        cacheKey: "vesper",
+        provider: "vesper",
         bonus: getVesperBonusData,
       },
       disabledDepositTokens: [],
@@ -171,7 +171,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getVesperApr,
         yieldType: "APR",
-        cacheKey: "vesper",
+        provider: "vesper",
         bonus: getVesperBonusData,
       },
       disabledDepositTokens: [],
@@ -186,7 +186,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getVesperApr,
         yieldType: "APR",
-        cacheKey: "vesper",
+        provider: "vesper",
         bonus: getVesperBonusData,
       },
       disabledDepositTokens: [],
@@ -202,7 +202,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getAaveBonusData,
       },
       disabledDepositTokens: [],
@@ -219,7 +219,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "yearn",
+        provider: "yearn",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -236,7 +236,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getLidoApy,
         yieldType: "APR",
-        cacheKey: "lido",
+        provider: "lido",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -252,7 +252,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getRocketApr,
         yieldType: "APR",
-        cacheKey: "rocket",
+        provider: "rocket",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [GAS_ADDRESS, WETH_MAINNET_ADDRESS],
@@ -269,7 +269,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getAaveBonusData,
       },
       disabledDepositTokens: [],
@@ -285,7 +285,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getVesperApr,
         yieldType: "APR",
-        cacheKey: "vesper",
+        provider: "vesper",
         bonus: getVesperBonusData,
       },
       disabledDepositTokens: [],
@@ -300,7 +300,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getFraxApy,
         yieldType: "APR",
-        cacheKey: "frax",
+        provider: "frax",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -317,7 +317,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "yearn",
+        provider: "yearn",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -331,7 +331,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "yearn",
+        provider: "yearn",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -345,7 +345,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "yearn",
+        provider: "yearn",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -364,7 +364,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -381,7 +381,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],
@@ -397,7 +397,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -420,7 +420,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "meltedRewards",
+        provider: "meltedRewards",
         bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],
@@ -443,7 +443,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "yearn",
+        provider: "yearn",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -462,7 +462,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -478,7 +478,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getLidoApy,
         yieldType: "APR",
-        cacheKey: "meltedRewards",
+        provider: "meltedRewards",
         bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],
@@ -502,7 +502,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        cacheKey: "meltedRewards",
+        provider: "meltedRewards",
         bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],
@@ -521,7 +521,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getAaveApr,
         yieldType: "APR",
-        cacheKey: "aave",
+        provider: "aave",
         bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],
@@ -537,7 +537,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getLidoApy,
         yieldType: "APR",
-        cacheKey: "lido",
+        provider: "lido",
         bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],

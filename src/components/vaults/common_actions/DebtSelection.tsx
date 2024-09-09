@@ -7,6 +7,7 @@ import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useChain } from "@/hooks/useChain";
 import { formatNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
+import { ScopeKeys } from "@/lib/queries/queriesSchema";
 
 export const DebtSelection = ({
   selectedSynthAsset,
@@ -20,7 +21,7 @@ export const DebtSelection = ({
   const chain = useChain();
   const { address } = useAccount();
 
-  const { data: debts, queryKey: debtsQueryKey } = useReadContracts({
+  const { data: debts } = useReadContracts({
     allowFailure: false,
     contracts: availableSynthAssets.map(
       (synthAsset) =>
@@ -32,6 +33,7 @@ export const DebtSelection = ({
           args: [address!],
         }) as const,
     ),
+    scopeKey: ScopeKeys.DebtSelection,
     query: {
       select: (accounts) => accounts.map(([debt]) => debt),
       enabled: !!address,
@@ -39,7 +41,7 @@ export const DebtSelection = ({
   });
 
   useWatchQuery({
-    queryKey: debtsQueryKey,
+    scopeKey: ScopeKeys.DebtSelection,
   });
 
   return (
