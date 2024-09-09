@@ -284,7 +284,7 @@ export const Liquidate = () => {
             onClick={onCtaClick}
             disabled={isPending || isInputZero(amount) || !confirmedLiquidation}
           >
-            {isPending ? "Preparing..." : "Liquidate"}
+            Liquidate
           </CtaButton>
         </>
       )}
