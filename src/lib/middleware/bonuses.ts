@@ -77,7 +77,7 @@ export const getVesperBonusData: BonusFn = async ({ vault }) => {
     (reserve) => reserve.address.toLowerCase() === vault.address.toLowerCase(),
   );
   const bonusYieldTokenSymbol = "VSP";
-  const bonusYieldRate = (vesperVault?.tokenDeltaRates?.["30"] ?? 0) * 100;
+  const bonusYieldRate = vesperVault?.tokenDeltaRates?.["30"] ?? 0;
   const hasBonus = true;
   return {
     hasBonus,
