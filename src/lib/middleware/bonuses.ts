@@ -131,7 +131,7 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
 
   let bonusYieldRate = 0;
 
-  if (rewardAmount > 0n) {
+  if (rewardAmount > 0n && distributionTimeAmount > 0) {
     const vaultUnderlyingTokenData = tokens.find(
       (token) =>
         token.address.toLowerCase() === vault.underlyingToken.toLowerCase(),

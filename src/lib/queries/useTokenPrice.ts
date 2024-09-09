@@ -73,7 +73,7 @@ export const useGetTokenPrice = (tokenAddress: `0x${string}` | undefined) => {
     ],
     queryFn: () =>
       fetchPrice({ chainId: chain.id, tokenAddress, currency, ethPrice }),
-    enabled: !!tokenAddress && !(ethPrice === undefined && currency === "ETH"),
+    enabled: !!tokenAddress && ethPrice !== undefined,
     refetchInterval: FIVE_MIN_IN_MS,
     staleTime: FIVE_MIN_IN_MS,
   });
