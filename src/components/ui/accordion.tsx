@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { MinusIcon, PlusIcon } from "lucide-react";
 
 import { cn } from "@/utils/cn";
 
@@ -21,13 +22,14 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger ref={ref} asChild {...props}>
       <div
         className={cn(
-          "relative flex flex-1 justify-between py-4 transition-all hover:cursor-pointer [&[data-state=open]>button]:rotate-90",
+          "group relative flex flex-1 justify-between py-4 transition-all hover:cursor-pointer [&[data-state=open]>button]:rotate-90",
           className,
         )}
       >
         {children}
         <button className="absolute -left-2 top-8 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-bronze3 bg-grey10inverse text-opacity-80 transition-transform duration-200 hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey10 dark:hover:bg-grey1">
-          +
+          <PlusIcon className="hidden h-3 w-3 animate-in fade-in-50 group-data-[state=closed]:block" />
+          <MinusIcon className="hidden h-3 w-3 -rotate-90 group-data-[state=open]:block" />
         </button>
       </div>
     </AccordionPrimitive.Trigger>
