@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useChain } from "@/hooks/useChain";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
+import { ScopeKeys } from "@/lib/queries/queriesSchema";
 import { cn } from "@/utils/cn";
 import { isInputZero } from "@/utils/inputNotZero";
 import { decimalNumberValidationRegex } from "@/utils/inputValidation";
@@ -42,12 +43,13 @@ export const FarmContent = ({
 }: FarmProps) => {
   const chain = useChain();
   const { address } = useAccount();
-  const { data: balance, queryKey: balanceQueryKey } = useReadContract({
+  const { data: balance } = useReadContract({
     address: poolTokenAddress,
     chainId: chain.id,
     abi: erc20Abi,
     functionName: "balanceOf",
     args: [address!],
+    scopeKey: ScopeKeys.FarmContent,
     query: {
       enabled: !!address,
       select: (balance) => formatEther(balance),
@@ -55,7 +57,7 @@ export const FarmContent = ({
   });
 
   useWatchQuery({
-    queryKey: balanceQueryKey,
+    scopeKey: ScopeKeys.FarmContent,
   });
 
   const onDepositChange = (e: React.ChangeEvent<HTMLInputElement>) => {

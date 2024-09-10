@@ -2,7 +2,7 @@ import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { SUSHI } from "@/lib/config/farms";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,6 +18,7 @@ import {
 import { sushiMasterchefAbi } from "@/abi/sushiMasterchef";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { FarmContent } from "./FarmContent";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 
 export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
   const chain = useChain();
@@ -27,6 +28,13 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
     queryClient.invalidateQueries({
       queryKey: [QueryKeys.Farms("curve")],
     });
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        invalidateWagmiUseQueryPredicate({
+          query,
+          scopeKey: ScopeKeys.SushiFarmContent,
+        }),
+    });
   }, [queryClient]);
 
   const [depositAmount, setDepositAmount] = useState("");
@@ -34,18 +42,19 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
 
   const { address = zeroAddress } = useAccount();
 
-  const { data: withdrawBalance, queryKey: balanceQueryKey } = useReadContract({
+  const { data: withdrawBalance } = useReadContract({
     address: SUSHI.masterchef,
     abi: sushiMasterchefAbi,
     chainId: chain.id,
     functionName: "userInfo",
     args: [0n, address],
+    scopeKey: ScopeKeys.SushiFarmContent,
     query: {
       select: ([balance]) => formatEther(balance),
     },
   });
   useWatchQuery({
-    queryKey: balanceQueryKey,
+    scopeKey: ScopeKeys.SushiFarmContent,
   });
 
   //-- Deposit --//
@@ -79,6 +88,7 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
 
   useEffect(() => {
     if (depositReceipt) {
+      setDepositAmount("");
       receiptCallback();
     }
   }, [depositReceipt, queryClient, receiptCallback]);
@@ -115,6 +125,7 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
 
   useEffect(() => {
     if (withdrawReceipt) {
+      setWithdrawAmount("");
       receiptCallback();
     }
   }, [withdrawReceipt, queryClient, receiptCallback]);
@@ -132,7 +143,11 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
     args: [0n, address],
   });
 
-  const { writeContract: claim, data: claimHash } = useWriteContract({
+  const {
+    writeContract: claim,
+    data: claimHash,
+    reset: resetClaim,
+  } = useWriteContract({
     mutation: mutationCallback({
       action: "Claim",
     }),
@@ -144,9 +159,10 @@ export const SushiFarmContent = ({ farm }: { farm: Farm }) => {
 
   useEffect(() => {
     if (claimReceipt) {
+      resetClaim();
       receiptCallback();
     }
-  }, [claimReceipt, queryClient, receiptCallback]);
+  }, [claimReceipt, queryClient, receiptCallback, resetClaim]);
 
   const onClaim = () => {
     claimConfig && claim(claimConfig.request);

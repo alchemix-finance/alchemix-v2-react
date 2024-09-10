@@ -8,6 +8,7 @@ import { formatInput, formatNumber, sanitizeNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
 import { Button } from "@/components/ui/button";
 import { decimalNumberValidationRegex } from "@/utils/inputValidation";
+import { ScopeKeys } from "@/lib/queries/queriesSchema";
 
 export const TransmuterInput = ({
   amount,
@@ -29,51 +30,51 @@ export const TransmuterInput = ({
   const chain = useChain();
   const { address } = useAccount();
 
-  const { data: tokenBalance, queryKey: tokenBalanceQueryKey } =
-    useReadContract({
-      address: tokenAddress,
-      chainId: chain.id,
-      abi: erc20Abi,
-      functionName: "balanceOf",
-      args: [address!],
-      query: {
-        enabled: !!address && type === "Balance",
-        select: (balance) => formatUnits(balance, tokenDecimals),
-      },
-    });
+  const { data: tokenBalance } = useReadContract({
+    address: tokenAddress,
+    chainId: chain.id,
+    abi: erc20Abi,
+    functionName: "balanceOf",
+    args: [address!],
+    scopeKey: ScopeKeys.TransmuterInput,
+    query: {
+      enabled: !!address && type === "Balance",
+      select: (balance) => formatUnits(balance, tokenDecimals),
+    },
+  });
 
-  const { data: transmuterBalance, queryKey: transmuterBalanceQueryKey } =
-    useReadContracts({
-      allowFailure: false,
-      contracts: [
-        {
-          address: transmuterAddress,
-          abi: transmuterV2Abi,
-          functionName: "getUnexchangedBalance",
-          args: [address!],
-          chainId: chain.id,
-        },
-        {
-          address: transmuterAddress,
-          abi: transmuterV2Abi,
-          functionName: "getClaimableBalance",
-          args: [address!],
-          chainId: chain.id,
-        },
-      ],
-      query: {
-        enabled: !!address && type !== "Balance",
-        select: ([unexchangedBalance, claimableBalance]) =>
-          [
-            formatEther(unexchangedBalance),
-            formatUnits(claimableBalance, tokenDecimals),
-          ] as const,
+  const { data: transmuterBalance } = useReadContracts({
+    allowFailure: false,
+    contracts: [
+      {
+        address: transmuterAddress,
+        abi: transmuterV2Abi,
+        functionName: "getUnexchangedBalance",
+        args: [address!],
+        chainId: chain.id,
       },
-    });
+      {
+        address: transmuterAddress,
+        abi: transmuterV2Abi,
+        functionName: "getClaimableBalance",
+        args: [address!],
+        chainId: chain.id,
+      },
+    ],
+    scopeKey: ScopeKeys.TransmuterInput,
+    query: {
+      enabled: !!address && type !== "Balance",
+      select: ([unexchangedBalance, claimableBalance]) =>
+        [
+          formatEther(unexchangedBalance),
+          formatUnits(claimableBalance, tokenDecimals),
+        ] as const,
+    },
+  });
   const [unexchangedBalance, claimableBalance] = transmuterBalance ?? [];
 
   useWatchQuery({
-    queryKeys: [tokenBalanceQueryKey, transmuterBalanceQueryKey],
+    scopeKey: ScopeKeys.TransmuterInput,
   });
 
   const balance =

@@ -1,7 +1,6 @@
 import { Token, Vault } from "@/lib/types";
 import { TokenInput } from "@/components/common/input/TokenInput";
-import { Button } from "@/components/ui/button";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
   Select,
   SelectTrigger,
@@ -19,6 +18,7 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useChain } from "@/hooks/useChain";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { VaultActionMotionDiv } from "./motion";
+import { CtaButton } from "@/components/common/CtaButton";
 
 export const Deposit = ({
   vault,
@@ -80,7 +80,7 @@ export const Deposit = ({
   const isSelectedTokenYieldToken =
     token.address.toLowerCase() === yieldTokenData.address.toLowerCase();
 
-  const { isApprovalNeeded, writeApprove, writeDeposit, isFetching } =
+  const { isApprovalNeeded, writeApprove, writeDeposit, isPending } =
     useDeposit({
       vault,
       selectedToken: token,
@@ -90,13 +90,13 @@ export const Deposit = ({
       setAmount,
     });
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (token.address !== GAS_ADDRESS && isApprovalNeeded === true) {
       writeApprove();
     } else {
       writeDeposit();
     }
-  }, [token, isApprovalNeeded, writeApprove, writeDeposit]);
+  };
 
   return (
     <VaultActionMotionDiv>
@@ -139,20 +139,20 @@ export const Deposit = ({
         {!isSelectedTokenYieldToken && (
           <SlippageInput slippage={slippage} setSlippage={setSlippage} />
         )}
-        <Button
+        <CtaButton
           variant="outline"
           width="full"
-          disabled={isFull || isFetching || isInputZero(amount)}
+          disabled={isFull || isPending || isInputZero(amount)}
           onClick={onCtaClick}
         >
           {isFull
             ? "Vault is full"
-            : isFetching
+            : isPending
               ? "Preparing"
               : token.address !== GAS_ADDRESS && isApprovalNeeded === true
                 ? "Approve"
                 : "Deposit"}
-        </Button>
+        </CtaButton>
       </div>
     </VaultActionMotionDiv>
   );

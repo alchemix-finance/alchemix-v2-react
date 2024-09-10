@@ -6,13 +6,13 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useMigrate } from "@/lib/mutations/useMigrate";
 import { MigrateTokenInput } from "@/components/common/input/MigrateTokenInput";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { VaultActionMotionDiv } from "./motion";
+import { CtaButton } from "@/components/common/CtaButton";
 
 export const Migrate = ({
   vault,
@@ -45,7 +45,7 @@ export const Migrate = ({
     writeWithdrawApprove,
     writeMintApprove,
     writeMigrate,
-    isFetching,
+    isPending,
   } = useMigrate({
     currentVault: vault,
     amount,
@@ -53,7 +53,7 @@ export const Migrate = ({
     selectedVault,
   });
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (isApprovalNeededWithdraw === true) {
       writeWithdrawApprove();
       return;
@@ -63,13 +63,7 @@ export const Migrate = ({
       return;
     }
     writeMigrate();
-  }, [
-    isApprovalNeededMint,
-    isApprovalNeededWithdraw,
-    writeMigrate,
-    writeMintApprove,
-    writeWithdrawApprove,
-  ]);
+  };
 
   return (
     <VaultActionMotionDiv>
@@ -120,20 +114,20 @@ export const Migrate = ({
             vault={vault}
           />
         </div>
-        <Button
+        <CtaButton
           variant="outline"
           width="full"
-          disabled={isFetching || isInputZero(amount)}
+          disabled={isPending || isInputZero(amount)}
           onClick={onCtaClick}
         >
-          {isFetching
+          {isPending
             ? "Preparing"
             : isApprovalNeededWithdraw === true
               ? "Approve Withdrawal"
               : isApprovalNeededMint === true
                 ? "Approve Mint"
                 : "Migrate"}
-        </Button>
+        </CtaButton>
       </div>
     </VaultActionMotionDiv>
   );

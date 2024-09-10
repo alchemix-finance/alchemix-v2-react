@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BorrowInput } from "@/components/common/input/BorrowInput";
 import {
   Select,
@@ -23,12 +23,14 @@ import { useChain } from "@/hooks/useChain";
 import { useQueryClient } from "@tanstack/react-query";
 import { ALCHEMISTS_METADATA, SYNTH_ASSETS } from "@/lib/config/alchemists";
 import { isInputZero } from "@/utils/inputNotZero";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { Switch } from "@/components/ui/switch";
 import { AnimatePresence, m } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
+import { CtaButton } from "@/components/common/CtaButton";
 
 export const Borrow = () => {
   const queryClient = useQueryClient();
@@ -76,7 +78,7 @@ export const Borrow = () => {
   const {
     data: borrowConfig,
     error: borrowError,
-    isFetching,
+    isPending,
   } = useSimulateContract({
     address: alchemistForDebtTokenAddress,
     abi: alchemistV2Abi,
@@ -103,6 +105,13 @@ export const Borrow = () => {
       setAmount("");
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
       queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          invalidateWagmiUseQueryPredicate({
+            query,
+            scopeKey: ScopeKeys.BorrowInput,
+          }),
+      });
     }
   }, [borrowReceipt, queryClient]);
 
@@ -123,7 +132,7 @@ export const Borrow = () => {
     setConfirmedDifferentAddress(checked);
   };
 
-  const onCtaClick = useCallback(() => {
+  const onCtaClick = () => {
     if (borrowError) {
       toast.error("Borrow failed", {
         description:
@@ -141,7 +150,7 @@ export const Borrow = () => {
           "Borrow failed. Unexpected. Please contract Alchemix team.",
       });
     }
-  }, [borrow, borrowConfig, borrowError]);
+  };
 
   return (
     <div className="space-y-4 bg-grey15inverse p-4 dark:bg-grey15">
@@ -239,19 +248,19 @@ export const Borrow = () => {
               )}
             </AnimatePresence>
           </div>
-          <Button
+          <CtaButton
             variant="outline"
             width="full"
             onClick={onCtaClick}
             disabled={
-              isFetching ||
+              isPending ||
               isInputZero(amount) ||
               (isDifferentAddress && !isAddress(receipientAddress)) ||
               (isDifferentAddress && !confirmedDifferentAddress)
             }
           >
             Borrow {debtToken.symbol}
-          </Button>
+          </CtaButton>
         </>
       )}
     </div>

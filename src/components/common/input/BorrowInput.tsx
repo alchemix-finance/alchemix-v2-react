@@ -6,6 +6,7 @@ import { useAccount, useReadContract } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useChain } from "@/hooks/useChain";
+import { ScopeKeys } from "@/lib/queries/queriesSchema";
 
 export const BorrowInput = ({
   amount,
@@ -27,26 +28,25 @@ export const BorrowInput = ({
 
   const { address } = useAccount();
 
-  const {
-    data: totalValueOfCollateralInDebtTokens,
-    queryKey: totalValueQueryKey,
-  } = useReadContract({
+  const { data: totalValueOfCollateralInDebtTokens } = useReadContract({
     address: vaultForAlchemist?.alchemist.address,
     abi: alchemistV2Abi,
     chainId: chain.id,
     functionName: "totalValue",
     args: [address!],
+    scopeKey: ScopeKeys.BorrowInput,
     query: {
       enabled: !!vaultForAlchemist && !!address,
     },
   });
 
-  const { data: debt, queryKey: accountsQueryKey } = useReadContract({
+  const { data: debt } = useReadContract({
     address: vaultForAlchemist?.alchemist.address,
     abi: alchemistV2Abi,
     chainId: chain.id,
     functionName: "accounts",
     args: [address!],
+    scopeKey: ScopeKeys.BorrowInput,
     query: {
       enabled: !!vaultForAlchemist && !!address,
       select: ([debt]) => debt,
@@ -69,7 +69,7 @@ export const BorrowInput = ({
   );
 
   useWatchQuery({
-    queryKeys: [totalValueQueryKey, accountsQueryKey],
+    scopeKey: ScopeKeys.BorrowInput,
   });
 
   return (

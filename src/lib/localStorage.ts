@@ -7,9 +7,13 @@ import { Token } from "@/lib/types";
 
 interface LocalStorageSchema {
   tokenListCache: { tokens: Token[]; timestamp: number };
+
   tenderlyForkRpc: string;
   tenderlyForkChainId: number;
+
   theme: "dark" | "light";
+
+  currency: "USD" | "ETH";
 }
 
 /**

@@ -5,7 +5,7 @@ import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { Token, Vault } from "@/lib/types";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { parseUnits } from "viem";
 import {
@@ -17,9 +17,10 @@ import {
 } from "wagmi";
 import { GAS_ADDRESS, MAX_UINT256_BN } from "@/lib/constants";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
-import { QueryKeys } from "../queries/queriesSchema";
+import { QueryKeys, ScopeKeys } from "../queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
+import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 
 export const useDeposit = ({
   vault,
@@ -42,6 +43,13 @@ export const useDeposit = ({
     setAmount("");
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Alchemists] });
     queryClient.invalidateQueries({ queryKey: [QueryKeys.Vaults] });
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        invalidateWagmiUseQueryPredicate({
+          query,
+          scopeKey: ScopeKeys.TokenInput,
+        }),
+    });
   }, [queryClient, setAmount]);
 
   const { address } = useAccount();
@@ -73,6 +81,7 @@ export const useDeposit = ({
     approveConfig,
     isApprovalNeeded,
     approveUsdtEthConfig,
+    isPending: isPendingAllowance,
     isFetching: isFetchingAllowance,
   } = useAllowance({
     amount,
@@ -84,7 +93,7 @@ export const useDeposit = ({
   const {
     data: depositGatewayConfig,
     error: depositGatewayError,
-    isFetching: isDepositGatewayConfigFetching,
+    isPending: isDepositGatewayConfigPending,
   } = useSimulateContract({
     address: vault.metadata.gateway,
     abi: aaveTokenGatewayAbi,
@@ -126,7 +135,7 @@ export const useDeposit = ({
   const {
     data: depositAlchemistConfig,
     error: depositAlchemistError,
-    isFetching: isDepositAlchemistConfigFetching,
+    isPending: isDepositAlchemistConfigPending,
   } = useSimulateContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
@@ -164,7 +173,7 @@ export const useDeposit = ({
   const {
     data: depositGasConfig,
     error: depositGasError,
-    isFetching: isDepositGasConfigFetching,
+    isPending: isDepositGasConfigPending,
   } = useSimulateContract({
     address: vault.metadata.wethGateway,
     abi: wethGatewayAbi,
@@ -206,7 +215,7 @@ export const useDeposit = ({
   const {
     data: depositUnderlyingConfig,
     error: depositUnderlyingError,
-    isFetching: isDepositUnderlyingConfigFetching,
+    isPending: isDepositUnderlyingConfigPending,
   } = useSimulateContract({
     address: vault.alchemist.address,
     abi: alchemistV2Abi,
@@ -374,7 +383,7 @@ export const useDeposit = ({
     approveConfig?.request && approve(approveConfig.request);
   }, [approve, approveConfig, approveUsdtEthConfig]);
 
-  const isFetching = useMemo(() => {
+  const isPending = (() => {
     if (!amount) return;
     // deposit gateway
     if (
@@ -383,7 +392,9 @@ export const useDeposit = ({
       !!vault.metadata.gateway &&
       !!vault.metadata.yieldTokenOverride
     ) {
-      return isDepositGatewayConfigFetching || isFetchingAllowance;
+      if (isApprovalNeeded === false) {
+        return isDepositGatewayConfigPending;
+      } else return isPendingAllowance || isFetchingAllowance;
     }
 
     // deposit alchemist
@@ -393,12 +404,14 @@ export const useDeposit = ({
       !vault.metadata.gateway &&
       !vault.metadata.yieldTokenOverride
     ) {
-      return isDepositAlchemistConfigFetching;
+      if (isApprovalNeeded === false) {
+        return isDepositAlchemistConfigPending;
+      } else return isPendingAllowance || isFetchingAllowance;
     }
 
     // deposit gas
     if (selectedToken.address === GAS_ADDRESS) {
-      return isDepositGasConfigFetching;
+      return isDepositGasConfigPending;
     }
 
     // if depositUnderlyingConfig is available, deposit using alchemist
@@ -406,20 +419,11 @@ export const useDeposit = ({
       selectedToken.address !== GAS_ADDRESS &&
       selectedToken.address.toLowerCase() !== yieldToken.address.toLowerCase()
     ) {
-      return isDepositUnderlyingConfigFetching;
+      if (isApprovalNeeded === false) {
+        return isDepositUnderlyingConfigPending;
+      } else return isPendingAllowance || isFetchingAllowance;
     }
-  }, [
-    amount,
-    isDepositAlchemistConfigFetching,
-    isDepositGasConfigFetching,
-    isDepositGatewayConfigFetching,
-    isDepositUnderlyingConfigFetching,
-    isFetchingAllowance,
-    selectedToken.address,
-    vault.metadata.gateway,
-    vault.metadata.yieldTokenOverride,
-    yieldToken.address,
-  ]);
+  })();
 
-  return { writeDeposit, writeApprove, isApprovalNeeded, isFetching };
+  return { writeDeposit, writeApprove, isApprovalNeeded, isPending };
 };
