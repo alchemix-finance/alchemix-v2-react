@@ -9,11 +9,11 @@ const copyrightYear = () => {
 
 export const Footer = () => {
   return (
-    <footer className="flex flex-col border-t border-grey5inverse py-12 pb-16 pl-8 dark:border-grey5 lg:pb-12">
+    <footer className="flex flex-col border-t border-grey5inverse py-12 pb-16 pl-8 lg:pb-12 dark:border-grey5">
       <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-11">
         <div className="w-60">
           <img
-            src="/images/icons/ALCX_Std_logo.svg"
+            src="/alchemix-v2-react/images/icons/ALCX_Std_logo.svg"
             className="mb-5 h-9 saturate-0"
             alt="The Alchemix logo"
           />
@@ -162,7 +162,7 @@ export const Footer = () => {
             <li className="opacity-50 transition-opacity hover:opacity-100">
               <a href="https://defillama.com/" target="_blank" rel="noreferrer">
                 <img
-                  src="./images/integrations/defillama.svg"
+                  src="./alchemix-v2-react/images/integrations/defillama.svg"
                   className="w-32"
                   alt="The logo of DefiLlama"
                 />
@@ -171,7 +171,7 @@ export const Footer = () => {
             <li className="opacity-50 transition-opacity hover:opacity-100">
               <a href="https://li.fi/" target="_blank" rel="noreferrer">
                 <img
-                  src="./images/integrations/lifi.svg"
+                  src="./alchemix-v2-react/images/integrations/lifi.svg"
                   className="w-32"
                   alt="The logo of Li.Fi"
                 />
@@ -180,7 +180,7 @@ export const Footer = () => {
             <li className="opacity-50 transition-opacity hover:opacity-100">
               <a href="https://snapshot.org/" target="_blank" rel="noreferrer">
                 <img
-                  src="./images/integrations/snapshot.svg"
+                  src="./alchemix-v2-react/images/integrations/snapshot.svg"
                   className="w-32"
                   alt="The logo of Snapshot"
                 />
@@ -198,7 +198,7 @@ export const Footer = () => {
                 rel="noreferrer"
               >
                 <img
-                  src="./images/integrations/klima.svg"
+                  src="./alchemix-v2-react/images/integrations/klima.svg"
                   className="w-32"
                   alt="Alchemix pledged to offset 4,390.96 Carbon Tonnes"
                 />

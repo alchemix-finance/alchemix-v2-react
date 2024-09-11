@@ -1,4 +1,5 @@
 @font-face {
   font-family: "Neue Kabel";
-  src: url("/fonts/Neue_Kabel/NeueKabel.otf") format("opentype");
+  src: url("/alchemix-v2-react/font/Neue_Kabel/NeueKabel.otf")
+    format("opentype");
 }

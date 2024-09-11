@@ -13,7 +13,7 @@ function BridgeRoute() {
     <Page
       title="Bridge"
       description="Transfer your tokens to other chains"
-      iconUri="/images/icons/swap_thin.svg"
+      iconUri="/alchemix-v2-react/images/icons/swap_thin.svg"
     >
       <Bridge />
     </Page>

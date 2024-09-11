@@ -3,8 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Canvas } from "@react-three/fiber";
 import { FileIcon } from "lucide-react";
 
-import XPrevTwitterIcon from "@/assets/logos/x.svg?react";
-import DiscordIcon from "@/assets/logos/discord.svg?react";
+import XPrevTwitterIcon from "@/alchemix-v2-react/assets/logos/x.svg?react";
+import DiscordIcon from "@/alchemix-v2-react/assets/logos/discord.svg?react";
 import { Button } from "@/components/ui/button";
 
 import { VideoModal } from "./VideoModal";
@@ -103,7 +103,7 @@ export const Landing = () => {
           </div>
           <div className="flex w-full items-center justify-center p-6">
             <img
-              src="/images/landing-page/liquidations.png"
+              src="/alchemix-v2-react/images/landing-page/liquidations.png"
               alt="Liquidations section image"
               className="h-64 w-64"
             />
@@ -123,7 +123,7 @@ export const Landing = () => {
           </div>
           <div className="flex w-full items-center justify-center p-6">
             <img
-              src="/images/landing-page/lock.svg"
+              src="/alchemix-v2-react/images/landing-page/lock.svg"
               alt="Lock vector image"
               className="h-64 w-64"
               loading="lazy"
@@ -146,7 +146,7 @@ export const Landing = () => {
             <img
               key={asset.name}
               alt={asset.name}
-              src={`/images/icons/${asset.name.toLowerCase()}.svg`}
+              src={`/alchemix-v2-react/images/icons/${asset.name.toLowerCase()}.svg`}
               className="w-20 rounded-full border border-lightgrey10inverse dark:border-lightgrey10"
             />
           ))}
@@ -164,7 +164,7 @@ export const Landing = () => {
             </p>
             <LandingCtaButton />
           </div>
-          <div className="pointer-events-none absolute left-64 top-0 -z-10 h-[120%] w-full bg-[url('/images/landing-page/big_placeholder.png')] bg-no-repeat"></div>
+          <div className="pointer-events-none absolute left-64 top-0 -z-10 h-[120%] w-full bg-[url('/alchemix-v2-react/images/landing-page/big_placeholder.png')] bg-no-repeat"></div>
         </div>
         <div className="flex items-stretch justify-between gap-20">
           <div className="flex flex-col items-center justify-between gap-10">
@@ -176,7 +176,7 @@ export const Landing = () => {
             </h5>
             <img
               alt="Placeholder image"
-              src="/images/landing-page/placeholder.png"
+              src="/alchemix-v2-react/images/landing-page/placeholder.png"
             />
           </div>
           <div className="flex flex-col items-center justify-between gap-10">
@@ -188,7 +188,7 @@ export const Landing = () => {
             </h5>
             <img
               alt="Placeholder image"
-              src="/images/landing-page/placeholder.png"
+              src="/alchemix-v2-react/images/landing-page/placeholder.png"
             />
           </div>
           <div className="flex flex-col items-center justify-between gap-10">
@@ -200,7 +200,7 @@ export const Landing = () => {
             </h5>
             <img
               alt="Placeholder image"
-              src="/images/landing-page/placeholder.png"
+              src="/alchemix-v2-react/images/landing-page/placeholder.png"
             />
           </div>
         </div>

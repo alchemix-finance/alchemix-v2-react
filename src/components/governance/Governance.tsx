@@ -2,7 +2,7 @@ import { useProposals } from "@/lib/queries/useProposals";
 import { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "../ui/button";
-import SnapshotIcon from "@/assets/logos/snapshot.svg?react";
+import SnapshotIcon from "@/alchemix-v2-react/assets/logos/snapshot.svg?react";
 import { Delegation } from "./Delegation";
 import { Accordion } from "../ui/accordion";
 import { ProposalsAccordionRow } from "./row/ProposalAccordionRow";
@@ -25,7 +25,7 @@ export const Governance = () => {
   return (
     <div className="space-y-5">
       <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-        <div className="flex w-full flex-col gap-2 bg-grey10inverse px-6 py-4 text-sm dark:bg-grey10 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+        <div className="flex w-full flex-col gap-2 bg-grey10inverse px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0 dark:bg-grey10">
           <p>Delegation Hub</p>
           <Button
             variant="action"
@@ -40,7 +40,7 @@ export const Governance = () => {
         <Delegation />
       </div>
       <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-        <div className="flex w-full flex-col gap-2 bg-grey10inverse px-6 py-4 text-sm dark:bg-grey10 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+        <div className="flex w-full flex-col gap-2 bg-grey10inverse px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0 dark:bg-grey10">
           <Tabs
             value={proposalsFilter}
             onValueChange={(value) =>

@@ -29,13 +29,13 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
         <div className="flex-2 flex w-full space-x-8">
           <div className="relative">
             <img
-              src={`/images/icons/${farm.metadata.farmIcon}`}
+              src={`/alchemix-v2-react/images/icons/${farm.metadata.farmIcon}`}
               alt={farm.metadata.title}
               className="h-12 w-12"
             />
             {farm.metadata.tokenIcon && (
               <img
-                src={`/images/icons/${farm.metadata.tokenIcon}.svg`}
+                src={`/alchemix-v2-react/images/icons/${farm.metadata.tokenIcon}.svg`}
                 alt={farm.metadata.title}
                 className="absolute left-6 top-6 h-9 w-9"
               />
@@ -68,7 +68,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
                   <Fragment key={reward.tokenAddress}>
                     <div className="flex flex-col items-center space-y-1">
                       <img
-                        src={`/images/icons/${reward.iconName}.svg`}
+                        src={`/alchemix-v2-react/images/icons/${reward.iconName}.svg`}
                         alt="{reward.tokenName}"
                         className="mx-auto h-7 w-7"
                       />

@@ -11,7 +11,7 @@ function SentinelRoute() {
     <Page
       title="Sentinel"
       description="Senatus Populusque Romanus"
-      iconUri="/images/icons/sentinel.svg"
+      iconUri="/alchemix-v2-react/images/icons/sentinel.svg"
     >
       <Sentinel />
     </Page>

@@ -11,7 +11,7 @@ export const MobileNav = () => {
   const matchRoute = useMatchRoute();
   const { data: isSentinel } = useSentinel();
   return (
-    <div className="fixed bottom-0 z-10 flex w-full justify-between space-x-4 bg-grey30inverse p-4 dark:bg-grey30 lg:hidden">
+    <div className="fixed bottom-0 z-10 flex w-full justify-between space-x-4 bg-grey30inverse p-4 lg:hidden dark:bg-grey30">
       {Object.keys(routeTitleToPathMapping).map((item) => (
         <Link
           key={item}
@@ -47,7 +47,7 @@ export const MobileNav = () => {
           )}
         >
           <img
-            src="/images/icons/sentinel_med.svg"
+            src="/alchemix-v2-react/images/icons/sentinel_med.svg"
             className="h-7 w-7 invert dark:filter-none"
             alt="vaults"
           />

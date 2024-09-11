@@ -145,17 +145,107 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexLazyRoute,
-  TransmutersRoute,
-  VaultsRoute,
-  BridgeLazyRoute,
-  DebugLazyRoute,
-  FarmsLazyRoute,
-  GovernanceLazyRoute,
-  SentinelLazyRoute,
-  UtilitiesLazyRoute,
-})
+export interface FileRoutesByFullPath {
+  '/': typeof IndexLazyRoute
+  '/transmuters': typeof TransmutersRoute
+  '/vaults': typeof VaultsRoute
+  '/bridge': typeof BridgeLazyRoute
+  '/debug': typeof DebugLazyRoute
+  '/farms': typeof FarmsLazyRoute
+  '/governance': typeof GovernanceLazyRoute
+  '/sentinel': typeof SentinelLazyRoute
+  '/utilities': typeof UtilitiesLazyRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexLazyRoute
+  '/transmuters': typeof TransmutersRoute
+  '/vaults': typeof VaultsRoute
+  '/bridge': typeof BridgeLazyRoute
+  '/debug': typeof DebugLazyRoute
+  '/farms': typeof FarmsLazyRoute
+  '/governance': typeof GovernanceLazyRoute
+  '/sentinel': typeof SentinelLazyRoute
+  '/utilities': typeof UtilitiesLazyRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexLazyRoute
+  '/transmuters': typeof TransmutersRoute
+  '/vaults': typeof VaultsRoute
+  '/bridge': typeof BridgeLazyRoute
+  '/debug': typeof DebugLazyRoute
+  '/farms': typeof FarmsLazyRoute
+  '/governance': typeof GovernanceLazyRoute
+  '/sentinel': typeof SentinelLazyRoute
+  '/utilities': typeof UtilitiesLazyRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/transmuters'
+    | '/vaults'
+    | '/bridge'
+    | '/debug'
+    | '/farms'
+    | '/governance'
+    | '/sentinel'
+    | '/utilities'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/transmuters'
+    | '/vaults'
+    | '/bridge'
+    | '/debug'
+    | '/farms'
+    | '/governance'
+    | '/sentinel'
+    | '/utilities'
+  id:
+    | '__root__'
+    | '/'
+    | '/transmuters'
+    | '/vaults'
+    | '/bridge'
+    | '/debug'
+    | '/farms'
+    | '/governance'
+    | '/sentinel'
+    | '/utilities'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexLazyRoute: typeof IndexLazyRoute
+  TransmutersRoute: typeof TransmutersRoute
+  VaultsRoute: typeof VaultsRoute
+  BridgeLazyRoute: typeof BridgeLazyRoute
+  DebugLazyRoute: typeof DebugLazyRoute
+  FarmsLazyRoute: typeof FarmsLazyRoute
+  GovernanceLazyRoute: typeof GovernanceLazyRoute
+  SentinelLazyRoute: typeof SentinelLazyRoute
+  UtilitiesLazyRoute: typeof UtilitiesLazyRoute
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexLazyRoute: IndexLazyRoute,
+  TransmutersRoute: TransmutersRoute,
+  VaultsRoute: VaultsRoute,
+  BridgeLazyRoute: BridgeLazyRoute,
+  DebugLazyRoute: DebugLazyRoute,
+  FarmsLazyRoute: FarmsLazyRoute,
+  GovernanceLazyRoute: GovernanceLazyRoute,
+  SentinelLazyRoute: SentinelLazyRoute,
+  UtilitiesLazyRoute: UtilitiesLazyRoute,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 

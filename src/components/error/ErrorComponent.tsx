@@ -51,7 +51,7 @@ export const ErrorComponent = (props: ErrorComponentProps) => {
     <Page
       title="Alchemix"
       description="There has been an error"
-      iconUri="/images/icons/alchemix.svg"
+      iconUri="/alchemix-v2-react/assets/icons/alchemix.svg"
     >
       <div className="space-y-5">
         <p className={cn("p-2", !isNewVersionError && "text-red-500")}>

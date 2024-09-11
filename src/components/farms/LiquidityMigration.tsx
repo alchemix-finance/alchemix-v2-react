@@ -183,7 +183,7 @@ export const LiquidityMigration = () => {
                     <SelectValue placeholder="Select From" asChild>
                       <div className="flex items-center gap-4">
                         <img
-                          src={`/images/token-icons/${selectedFrom}.svg`}
+                          src={`/alchemix-v2-react/assets/token-icons/${selectedFrom}.svg`}
                           alt={selectedFrom}
                           className="hidden h-12 w-12 sm:block"
                         />
@@ -216,7 +216,7 @@ export const LiquidityMigration = () => {
                     <SelectValue placeholder="Select To" asChild>
                       <div className="flex items-center gap-4">
                         <img
-                          src={`/images/token-icons/${selectedTarget}.svg`}
+                          src={`/alchemix-v2-react/assets/token-icons/${selectedTarget}.svg`}
                           alt={selectedTarget}
                           className="hidden h-12 w-12 sm:block"
                         />

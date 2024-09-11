@@ -96,7 +96,7 @@ export const Vaults = () => {
                 <TabsList>
                   <TabsTrigger value="all" className="space-x-4">
                     <img
-                      src="/images/icons/alcx_med.svg"
+                      src="/alchemix-v2-react/images/icons/alcx_med.svg"
                       className="h-5 w-5"
                       alt="All vaults filter"
                     />
@@ -104,7 +104,7 @@ export const Vaults = () => {
                   </TabsTrigger>
                   <TabsTrigger value={SYNTH_ASSETS.ALUSD} className="space-x-4">
                     <img
-                      src="/images/icons/alusd_med.svg"
+                      src="/alchemix-v2-react/images/icons/alusd_med.svg"
                       className="h-5 w-5"
                       alt="alUSD filter"
                     />
@@ -112,7 +112,7 @@ export const Vaults = () => {
                   </TabsTrigger>
                   <TabsTrigger value={SYNTH_ASSETS.ALETH} className="space-x-4">
                     <img
-                      src="/images/icons/aleth_med.svg"
+                      src="/alchemix-v2-react/images/icons/aleth_med.svg"
                       className="h-5 w-5"
                       alt="alETH filter"
                     />
@@ -130,15 +130,18 @@ export const Vaults = () => {
                       [
                         {
                           action: "Borrow",
-                          iconUri: "/images/icons/Icon_Borrow.svg",
+                          iconUri:
+                            "/alchemix-v2-react/images/icons/Icon_Borrow.svg",
                         },
                         {
                           action: "Repay",
-                          iconUri: "/images/icons/Icon_Repay.svg",
+                          iconUri:
+                            "/alchemix-v2-react/images/icons/Icon_Repay.svg",
                         },
                         {
                           action: "Liquidate",
-                          iconUri: "/images/icons/Icon_Liquidate.svg",
+                          iconUri:
+                            "/alchemix-v2-react/images/icons/Icon_Liquidate.svg",
                         },
                       ] as const
                     ).map(({ action, iconUri }) => (

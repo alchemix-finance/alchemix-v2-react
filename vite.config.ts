@@ -13,6 +13,7 @@ export default defineConfig({
     },
   },
 
+  base: "/alchemix-v2-react/",
   // NOTE: vesper pools endpoint and yearn doesn't have CORS set up ?
   server: {
     proxy: {

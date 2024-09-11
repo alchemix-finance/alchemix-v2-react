@@ -236,7 +236,7 @@ export const Liquidate = () => {
                 <SelectValue placeholder="Liquidation Token" asChild>
                   <div className="flex items-center gap-4">
                     <img
-                      src={`/images/token-icons/${liquidationToken.symbol}.svg`}
+                      src={`/alchemix-v2-react/images/token-icons/${liquidationToken.symbol}.svg`}
                       alt={liquidationToken.symbol}
                       className="h-12 w-12"
                     />
