@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Canvas } from "@react-three/fiber";
 import { FileIcon } from "lucide-react";
 
 import XPrevTwitterIcon from "@/assets/logos/x.svg?react";
@@ -8,8 +7,8 @@ import { Button } from "@/components/ui/button";
 
 import { VideoModal } from "./VideoModal";
 import { ActionsList } from "./ActionsList";
-import { Particles } from "./Particles";
-import { BlurInHeader } from "./BlurInHeader";
+import { Particles } from "./particles/Particles";
+import { BlurInHeader, BlurInParagraph } from "./BlurInText";
 
 const assets = [
   {
@@ -36,25 +35,21 @@ export const Landing = () => {
   return (
     <div className="relative flex flex-col space-y-14 pb-12 font-alcxTitles">
       <div className="pointer-events-none fixed inset-0 left-0 top-0 -z-10 h-full w-full lg:pl-[352px]">
-        <Canvas
-          camera={{ position: [0, 0, 6], fov: 50, far: 100, near: 0.1 }}
-          fallback={null}
-          gl={{ antialias: false }}
-          flat
-        >
-          <Particles />
-        </Canvas>
+        <Particles />
       </div>
       <div className="flex items-center justify-between gap-16 px-20 py-10">
         <div className="space-y-6">
           <BlurInHeader className="text-4xl font-extrabold" delay={0.1}>
             Self-Repaying Loans, Without The Liquidations
           </BlurInHeader>
-          <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
+          <BlurInParagraph
+            className="text-xl text-lightgrey10inverse dark:text-lightgrey10"
+            delay={0.2}
+          >
             Alchemix loans automatically pay themselves off without risk of
             liquidation. Unlock the potential of your assets with secure and
             stress-free borrowing.
-          </p>
+          </BlurInParagraph>
           <LandingCtaButton />
         </div>
         <VideoModal />

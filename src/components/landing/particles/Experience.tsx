@@ -2,7 +2,9 @@ import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 
-export const Particles = ({ count = 200 }: { count?: number }) => {
+const count = 200;
+
+export const Experience = () => {
   const points = useRef<React.ElementRef<typeof Points>>(null);
 
   const particlePositions = useMemo(() => {
@@ -13,7 +15,7 @@ export const Particles = ({ count = 200 }: { count?: number }) => {
       positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
     }
     return positions;
-  }, [count]);
+  }, []);
 
   useFrame((_state, delta) => {
     if (points.current) {
@@ -21,7 +23,6 @@ export const Particles = ({ count = 200 }: { count?: number }) => {
       points.current.rotation.y += delta * 0.01;
     }
   });
-
   return (
     <Points ref={points} positions={particlePositions} stride={3}>
       <PointMaterial

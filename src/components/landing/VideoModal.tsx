@@ -4,7 +4,7 @@ export const VideoModal = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="group relative flex cursor-pointer justify-center overflow-hidden text-orange4">
+        <div className="group relative flex h-[245px] w-[435px] cursor-pointer justify-center overflow-hidden text-orange4">
           <img
             src="/images/landing-page/ad_thumbnail.webp"
             alt="Watch the Alchemix cinematic ad"

@@ -2,7 +2,7 @@ import { m } from "framer-motion";
 
 import { cn } from "@/utils/cn";
 
-interface BlurInHeaderProps {
+interface BlurInProps {
   children: React.ReactNode;
   className?: string;
   delay?: number;
@@ -13,11 +13,7 @@ const variants = {
   visible: { filter: "blur(0px)", opacity: 1 },
 };
 
-export const BlurInHeader = ({
-  children,
-  className,
-  delay,
-}: BlurInHeaderProps) => {
+export const BlurInHeader = ({ children, className, delay }: BlurInProps) => {
   return (
     <m.h1
       initial="hidden"
@@ -29,5 +25,24 @@ export const BlurInHeader = ({
     >
       {children}
     </m.h1>
+  );
+};
+
+export const BlurInParagraph = ({
+  children,
+  className,
+  delay,
+}: BlurInProps) => {
+  return (
+    <m.p
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={variants}
+      transition={{ duration: 1.1, delay }}
+      className={cn(className)}
+    >
+      {children}
+    </m.p>
   );
 };
