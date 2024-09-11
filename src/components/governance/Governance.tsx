@@ -2,7 +2,7 @@ import { useProposals } from "@/lib/queries/useProposals";
 import { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "../ui/button";
-import SnapshotIcon from "@assets/logos/snapshot.svg?react";
+import SnapshotIcon from "@/assets/logos/snapshot.svg?react";
 import { Delegation } from "./Delegation";
 import { Accordion } from "../ui/accordion";
 import { ProposalsAccordionRow } from "./row/ProposalAccordionRow";
