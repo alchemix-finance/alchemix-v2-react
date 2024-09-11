@@ -1,12 +1,5 @@
-import React, {
-  ReactElement,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { AnimatePresence, m } from "framer-motion";
-import { cn } from "@/utils/cn";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export interface AnimatedListProps {
   className?: string;
@@ -33,7 +26,7 @@ export const AnimatedList = React.memo(
     );
 
     return (
-      <div className={cn("flex flex-col items-center gap-4", className)}>
+      <div className={`flex flex-col items-center gap-4 ${className}`}>
         <AnimatePresence>
           {itemsToShow.map((item) => (
             <AnimatedListItem key={(item as ReactElement).key}>
@@ -49,27 +42,16 @@ export const AnimatedList = React.memo(
 AnimatedList.displayName = "AnimatedList";
 
 export function AnimatedListItem({ children }: { children: React.ReactNode }) {
-  const ref = useRef(null);
-
   const animations = {
     initial: { scale: 0, opacity: 0 },
     animate: { scale: 1, opacity: 1, originY: 0 },
     exit: { scale: 0, opacity: 0 },
-    transition: { type: "spring", stiffness: 500, damping: 40 },
+    transition: { type: "spring", stiffness: 350, damping: 40, delay: 1 },
   };
 
   return (
-    <m.div
-      ref={ref}
-      initial="initial"
-      whileInView="animate"
-      viewport={{ once: false }}
-      exit="exit"
-      variants={animations}
-      layout
-      className="mx-auto w-full"
-    >
+    <motion.div {...animations} layout className="mx-auto w-full">
       {children}
-    </m.div>
+    </motion.div>
   );
 }
