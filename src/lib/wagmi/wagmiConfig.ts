@@ -12,7 +12,7 @@ import {
 import { tenderlyForkChain } from "./tenderly";
 import { chains } from "./chains";
 
-const projectId = import.meta.env.VITE_WC_PROJECT_ID;
+const projectId = "YOUR_PROJECT_ID"; //Dummy proj ID for local testing
 
 const connectors = connectorsForWallets(
   [
