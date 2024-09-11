@@ -3,8 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Canvas } from "@react-three/fiber";
 import { FileIcon } from "lucide-react";
 
-import XPrevTwitterIcon from "@/alchemix-v2-react/assets/logos/x.svg?react";
-import DiscordIcon from "@/alchemix-v2-react/assets/logos/discord.svg?react";
+import XPrevTwitterIcon from "@/assets/logos/x.svg?react";
+import DiscordIcon from "@/assets/logos/discord.svg?react";
 import { Button } from "@/components/ui/button";
 
 import { VideoModal } from "./VideoModal";
@@ -164,7 +164,7 @@ export const Landing = () => {
             </p>
             <LandingCtaButton />
           </div>
-          <div className="pointer-events-none absolute left-64 top-0 -z-10 h-[120%] w-full bg-[url('/alchemix-v2-react/images/landing-page/big_placeholder.png')] bg-no-repeat"></div>
+          <div className="pointer-events-none absolute left-64 top-0 -z-10 h-[120%] w-full bg-[url('/images/landing-page/big_placeholder.png')] bg-no-repeat"></div>
         </div>
         <div className="flex items-stretch justify-between gap-20">
           <div className="flex flex-col items-center justify-between gap-10">

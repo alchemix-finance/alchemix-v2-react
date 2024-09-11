@@ -31,7 +31,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { windowOpen } from "@/utils/windowOpen";
 import { formatNumber } from "@/utils/number";
-import SnapshotIcon from "@/alchemix-v2-react/assets/logos/snapshot.svg?react";
+import SnapshotIcon from "@assets/logos/snapshot.svg?react";
 
 const votingTypeMapping: Record<string, string> = {
   "single-choice": "Single Choice",

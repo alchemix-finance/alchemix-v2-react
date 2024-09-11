@@ -1,7 +1,7 @@
 import { MoonIcon, SunIcon, FileIcon, DollarSignIcon } from "lucide-react";
 
 import { LeftNav } from "@/components/layout/LeftNav";
-import XPrevTwitterIcon from "@/alchemix-v2-react/assets/logos/x.svg?react";
+import XPrevTwitterIcon from "@/assets/logos/x.svg?react";
 import { Button } from "../ui/button";
 import { MobileNav } from "./MobileNav";
 import { useTheme } from "../providers/ThemeProvider";
