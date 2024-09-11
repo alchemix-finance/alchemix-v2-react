@@ -5,6 +5,7 @@ import { cn } from "@/utils/cn";
 interface BlurInHeaderProps {
   children: React.ReactNode;
   className?: string;
+  delay?: number;
 }
 
 const variants = {
@@ -12,14 +13,18 @@ const variants = {
   visible: { filter: "blur(0px)", opacity: 1 },
 };
 
-export const BlurInHeader = ({ children, className }: BlurInHeaderProps) => {
+export const BlurInHeader = ({
+  children,
+  className,
+  delay,
+}: BlurInHeaderProps) => {
   return (
     <m.h1
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
       variants={variants}
-      transition={{ duration: 1 }}
+      transition={{ duration: 1, delay }}
       className={cn(className)}
     >
       {children}

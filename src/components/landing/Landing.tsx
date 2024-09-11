@@ -47,7 +47,7 @@ export const Landing = () => {
       </div>
       <div className="flex items-center justify-between gap-16 px-20 py-10">
         <div className="space-y-6">
-          <BlurInHeader className="text-4xl font-extrabold">
+          <BlurInHeader className="text-4xl font-extrabold" delay={0.1}>
             Self-Repaying Loans, Without The Liquidations
           </BlurInHeader>
           <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
@@ -60,7 +60,7 @@ export const Landing = () => {
         <VideoModal />
       </div>
       <div className="flex flex-col gap-14 px-20">
-        <BlurInHeader className="text-3xl font-semibold">
+        <BlurInHeader className="text-3xl font-semibold" delay={0.5}>
           Why Alchemix?
         </BlurInHeader>
         <div className="flex items-center gap-24">

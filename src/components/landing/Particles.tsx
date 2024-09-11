@@ -26,7 +26,7 @@ export const Particles = ({ count = 200 }: { count?: number }) => {
     <Points ref={points} positions={particlePositions} stride={3}>
       <PointMaterial
         transparent
-        color="#F5C59F"
+        color="#F7C19B"
         size={0.05}
         sizeAttenuation={true}
         depthWrite={false}
