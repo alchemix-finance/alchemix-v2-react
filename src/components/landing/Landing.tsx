@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Canvas } from "@react-three/fiber";
 import { FileIcon } from "lucide-react";
@@ -34,27 +33,17 @@ const assets = [
 ];
 
 export const Landing = () => {
-  const [height, setHeight] = useState<number>();
-  const ref = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    if (ref.current && !height) {
-      setHeight(ref.current.scrollHeight);
-    }
-  }, [height]);
   return (
     <div className="relative flex flex-col space-y-14 pb-12 font-alcxTitles">
-      <div
-        ref={ref}
-        className="pointer-events-none absolute inset-0 left-0 top-0 -z-10 size-full"
-      >
-        {!!height && (
-          <Canvas
-            camera={{ position: [0, 0, 6], fov: 50, far: 100, near: 0.1 }}
-            fallback={null}
-          >
-            <Particles height={height} />
-          </Canvas>
-        )}
+      <div className="pointer-events-none fixed inset-0 left-0 top-0 -z-10 h-full w-full lg:pl-[352px]">
+        <Canvas
+          camera={{ position: [0, 0, 6], fov: 50, far: 100, near: 0.1 }}
+          fallback={null}
+          gl={{ antialias: false }}
+          flat
+        >
+          <Particles />
+        </Canvas>
       </div>
       <div className="flex items-center justify-between gap-16 px-20 py-10">
         <div className="space-y-6">
@@ -70,7 +59,6 @@ export const Landing = () => {
         </div>
         <VideoModal />
       </div>
-
       <div className="flex flex-col gap-14 px-20">
         <BlurInHeader className="text-3xl font-semibold">
           Why Alchemix?
@@ -131,7 +119,6 @@ export const Landing = () => {
           </div>
         </div>
       </div>
-
       <div className="flex flex-col gap-14 px-20 text-center">
         <div>
           <BlurInHeader className="text-3xl font-bold">
