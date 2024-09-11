@@ -57,7 +57,7 @@ const Action = ({
 
 export const ActionsList = () => {
   return (
-    <div className="flex h-64 w-full flex-col overflow-hidden rounded-lg border border-bronze2 p-6">
+    <div className="flex h-64 w-full flex-col overflow-hidden rounded-lg border border-bronze2 bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
       <AnimatedList delay={2000}>
         {actions.map((item, idx) => (
           <Action {...item} key={idx} />
