@@ -22,7 +22,7 @@ export const useWatchQuery = ({ scopeKey }: UseWatchQueryArgs) => {
     if (document.visibilityState === "visible") {
       const isEth = chain.id === mainnet.id;
       const isBlockNumberEven = !!blockNumber && Number(blockNumber) % 2 === 0;
-      if (isEth || (!isEth && isBlockNumberEven)) {
+      if (isEth || isBlockNumberEven) {
         queryClient.invalidateQueries({
           predicate: (query) =>
             invalidateWagmiUseQueryPredicate({ query, scopeKey }),
