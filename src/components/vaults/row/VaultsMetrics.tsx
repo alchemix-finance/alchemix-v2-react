@@ -2,7 +2,6 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { formatEther, formatUnits } from "viem";
 import { multiply, toNumber } from "dnum";
-
 import { VaultHelper } from "@/utils/helpers/vaultHelper";
 import { useAlchemists } from "@/lib/queries/useAlchemists";
 import { useGetMultipleTokenPrices } from "@/lib/queries/useTokenPrice";
@@ -11,16 +10,13 @@ import { Token, Vault } from "@/lib/types";
 import { formatNumber } from "@/utils/number";
 import { useSettings } from "@/components/providers/SettingsProvider";
 import { SynthFilter } from "../Vaults";
-import { useChain } from "@/hooks/useChain";
-import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 
 export interface VaultsMetricsProps {
   filteredVaults: Vault[] | undefined,
   selectedSynth: SynthFilter
 }
 
-export const VaultsMetrics = ({ filteredVaults: vaults, selectedSynth }: VaultsMetricsProps) => {
-  const chain = useChain();
+export const VaultsMetrics = ({ filteredVaults, selectedSynth }: VaultsMetricsProps) => {
   const { currency } = useSettings();
 
   const { data: alchemists } = useAlchemists();
@@ -30,24 +26,24 @@ export const VaultsMetrics = ({ filteredVaults: vaults, selectedSynth }: VaultsM
       ? alchemists
       : alchemists?.filter(
         (alchemist) => {
-          return ALCHEMISTS_METADATA[chain.id][selectedSynth].toLowerCase() ===
-            alchemist.address.toLowerCase()
+          return alchemist.synthType ===
+            selectedSynth
         },
       );
-  }, [alchemists, selectedSynth, chain.id])
+  }, [alchemists, selectedSynth])
 
   const debtTokenPrices = useGetMultipleTokenPrices(
     filteredAlchemists?.map((alchemist) => alchemist.underlyingTokens[0]),
   );
   const underlyingTokensPrices = useGetMultipleTokenPrices(
-    vaults?.map((vault) => vault.underlyingToken),
+    filteredVaults?.map((vault) => vault.underlyingToken),
   );
 
   const { data: tokens } = useTokensQuery();
 
   const totalDeposit = useMemo(
-    () => calculateTotalDeposit(tokens, vaults, underlyingTokensPrices),
-    [tokens, underlyingTokensPrices, vaults],
+    () => calculateTotalDeposit(tokens, filteredVaults, underlyingTokensPrices),
+    [tokens, underlyingTokensPrices, filteredVaults],
   );
 
   const totalDebt = useMemo(() => {
@@ -60,8 +56,8 @@ export const VaultsMetrics = ({ filteredVaults: vaults, selectedSynth }: VaultsM
   );
 
   const globalTVL = useMemo(
-    () => calculateGlobalTVL(tokens, vaults, underlyingTokensPrices),
-    [tokens, underlyingTokensPrices, vaults],
+    () => calculateGlobalTVL(tokens, filteredVaults, underlyingTokensPrices),
+    [tokens, underlyingTokensPrices, filteredVaults],
   );
 
   return (
