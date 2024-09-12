@@ -7,19 +7,37 @@ import { VaultHelper } from "@/utils/helpers/vaultHelper";
 import { useAlchemists } from "@/lib/queries/useAlchemists";
 import { useGetMultipleTokenPrices } from "@/lib/queries/useTokenPrice";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
-import { useVaults } from "@/lib/queries/useVaults";
 import { Token, Vault } from "@/lib/types";
 import { formatNumber } from "@/utils/number";
 import { useSettings } from "@/components/providers/SettingsProvider";
+import { SynthFilter } from "../Vaults";
+import { useChain } from "@/hooks/useChain";
+import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 
-export const VaultsMetrics = () => {
+export interface VaultsMetricsProps {
+  filteredVaults: Vault[] | undefined,
+  selectedSynth: SynthFilter
+}
+
+export const VaultsMetrics = ({ filteredVaults: vaults, selectedSynth }: VaultsMetricsProps) => {
+  const chain = useChain();
   const { currency } = useSettings();
 
   const { data: alchemists } = useAlchemists();
-  const { data: vaults } = useVaults();
+
+  const filteredAlchemists = useMemo(() => {
+    return selectedSynth === "all"
+      ? alchemists
+      : alchemists?.filter(
+        (alchemist) => {
+          return ALCHEMISTS_METADATA[chain.id][selectedSynth].toLowerCase() ===
+            alchemist.address.toLowerCase()
+        },
+      );
+  }, [alchemists, selectedSynth, chain.id])
 
   const debtTokenPrices = useGetMultipleTokenPrices(
-    alchemists?.map((alchemist) => alchemist.underlyingTokens[0]),
+    filteredAlchemists?.map((alchemist) => alchemist.underlyingTokens[0]),
   );
   const underlyingTokensPrices = useGetMultipleTokenPrices(
     vaults?.map((vault) => vault.underlyingToken),
@@ -33,12 +51,12 @@ export const VaultsMetrics = () => {
   );
 
   const totalDebt = useMemo(() => {
-    return calculateTotalDebt(alchemists, debtTokenPrices);
-  }, [alchemists, debtTokenPrices]);
+    return calculateTotalDebt(filteredAlchemists, debtTokenPrices);
+  }, [filteredAlchemists, debtTokenPrices]);
 
   const availableCredit = useMemo(
-    () => calculateAvailableCredit(alchemists, debtTokenPrices, totalDebt),
-    [alchemists, debtTokenPrices, totalDebt],
+    () => calculateAvailableCredit(filteredAlchemists, debtTokenPrices, totalDebt),
+    [filteredAlchemists, debtTokenPrices, totalDebt],
   );
 
   const globalTVL = useMemo(
