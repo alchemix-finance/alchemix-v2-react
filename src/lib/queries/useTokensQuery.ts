@@ -4,8 +4,8 @@ import { lsService } from "@/lib/localStorage";
 import { useAlchemists } from "./useAlchemists";
 import { VAULTS } from "@/lib/config/vaults";
 import { arbitrum, mainnet, optimism } from "viem/chains";
-import { erc20Abi, zeroAddress } from "viem";
-import { useAccount, usePublicClient } from "wagmi";
+import { erc20Abi } from "viem";
+import { usePublicClient } from "wagmi";
 import { Token } from "@/lib/types";
 import {
   ALCX_ARBITRUM_ADDRESS,
@@ -19,7 +19,6 @@ import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "./queriesSchema";
 
 export const useTokensQuery = () => {
-  const { address: userAddress = zeroAddress } = useAccount();
   const chain = useChain();
   const publicClient = usePublicClient<typeof wagmiConfig>({
     chainId: chain.id,
@@ -31,7 +30,6 @@ export const useTokensQuery = () => {
       chain.id,
       publicClient,
       alchemists,
-      userAddress,
       chain.nativeCurrency.symbol,
       chain.nativeCurrency.name,
     ],
@@ -76,12 +74,6 @@ export const useTokensQuery = () => {
               abi: erc20Abi,
               functionName: "name",
             },
-            {
-              address,
-              abi: erc20Abi,
-              functionName: "balanceOf",
-              args: [userAddress!],
-            },
           ] as const,
       );
 
@@ -95,7 +87,6 @@ export const useTokensQuery = () => {
           number,
           string,
           string,
-          bigint,
         ];
 
         const isUsdcE = [
