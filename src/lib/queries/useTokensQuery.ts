@@ -83,7 +83,7 @@ export const useTokensQuery = () => {
       });
 
       const tokens = tokensAddresses.map((address, i) => {
-        const [decimals, _symbol, name] = results.slice(i * 4, i * 4 + 4) as [
+        const [decimals, _symbol, name] = results.slice(i * 3, i * 3 + 3) as [
           number,
           string,
           string,
