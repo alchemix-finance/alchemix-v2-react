@@ -28,7 +28,7 @@ export const Experience = () => {
       <PointMaterial
         transparent
         color="#F7C19B"
-        size={0.05}
+        size={0.02}
         sizeAttenuation={true}
         depthWrite={false}
       />
