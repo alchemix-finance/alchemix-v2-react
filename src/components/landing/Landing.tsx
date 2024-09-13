@@ -31,9 +31,9 @@ const assets = [
   },
 ];
 
-const Particles = lazy(() =>
-  import("./particles/Particles").then((module) => ({
-    default: module.Particles,
+const Scene = lazy(() =>
+  import("./particles/Scene").then((module) => ({
+    default: module.Scene,
   })),
 );
 
@@ -43,7 +43,7 @@ export const Landing = () => {
       {/* Particles canvas renders to parent div */}
       <div className="pointer-events-none fixed inset-0 left-0 top-0 -z-10 h-full w-full lg:pl-[352px]">
         <Suspense fallback={null}>
-          <Particles />
+          <Scene />
         </Suspense>
       </div>
 
