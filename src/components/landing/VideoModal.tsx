@@ -13,7 +13,8 @@ export const VideoModal = ({ animateInDelay }: { animateInDelay: number }) => {
       <DialogTrigger>
         <m.div
           initial="initial"
-          animate="animate"
+          whileInView="animate"
+          viewport={{ once: true }}
           variants={variants}
           transition={{ duration: 1.1, delay: animateInDelay }}
           className="group relative flex h-[245px] w-[435px] cursor-pointer justify-center overflow-hidden text-orange4"

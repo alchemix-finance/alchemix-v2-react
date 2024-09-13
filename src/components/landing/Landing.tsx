@@ -147,8 +147,15 @@ export const Landing = () => {
               />
             ))}
           </div>
-          <div className="relative text-start">
-            <div className="my-[10%] flex max-w-xl flex-col gap-6">
+          <div className="relative -mr-20 grid text-start *:col-start-1 *:row-start-1">
+            <div className="pointer-events-none -z-10 w-full pl-64">
+              <img
+                src="/images/landing-page/big_placeholder.png"
+                alt="Placeholder image"
+                className="h-full w-full"
+              />
+            </div>
+            <div className="flex size-full max-w-xl flex-col justify-center gap-6">
               <BlurInHeader className="text-3xl font-semibold">
                 Get Started With Alchemix
               </BlurInHeader>
@@ -159,13 +166,6 @@ export const Landing = () => {
                 enjoy the ability to spend and save at the same time.
               </p>
               <LandingCtaButton />
-            </div>
-            <div className="pointer-events-none absolute left-64 top-0 -z-10 h-[120%] w-full pr-20">
-              <img
-                src="/images/landing-page/big_placeholder.png"
-                alt="Placeholder image"
-                className="h-full w-full"
-              />
             </div>
           </div>
           <div className="flex items-stretch justify-between gap-20">

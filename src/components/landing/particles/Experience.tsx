@@ -2,9 +2,13 @@ import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 
+import { useTheme } from "@/components/providers/ThemeProvider";
+
 const count = 200;
 
 export const Experience = () => {
+  const { darkMode } = useTheme();
+
   const points = useRef<React.ElementRef<typeof Points>>(null);
 
   const particlePositions = useMemo(() => {
@@ -23,11 +27,12 @@ export const Experience = () => {
       points.current.rotation.y += delta * 0.01;
     }
   });
+
   return (
     <Points ref={points} positions={particlePositions} stride={3}>
       <PointMaterial
         transparent
-        color="#F7C19B"
+        color={darkMode ? "#F7C19B" : "#113D61"}
         size={0.02}
         sizeAttenuation={true}
         depthWrite={false}
