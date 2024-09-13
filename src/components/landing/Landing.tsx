@@ -31,9 +31,24 @@ const assets = [
   },
 ];
 
+const View = lazy(() =>
+  import("@react-three/drei").then((module) => ({
+    default: module.View,
+  })),
+);
+const Scene = lazy(() =>
+  import("./r3f/Scene").then((module) => ({
+    default: module.Scene,
+  })),
+);
 const Particles = lazy(() =>
-  import("./particles/Particles").then((module) => ({
+  import("./r3f/Particles").then((module) => ({
     default: module.Particles,
+  })),
+);
+const Tokens = lazy(() =>
+  import("./r3f/Tokens").then((module) => ({
+    default: module.Tokens,
   })),
 );
 
@@ -43,9 +58,16 @@ export const Landing = () => {
       {/* Particles canvas renders to parent div */}
       <div className="pointer-events-none fixed inset-0 left-0 top-0 -z-10 h-full w-full lg:pl-[352px]">
         <Suspense fallback={null}>
-          <Particles />
+          <Scene />
         </Suspense>
       </div>
+
+      {/* Particles will be tracked by the View */}
+      <Suspense fallback={null}>
+        <View className="pointer-events-none fixed inset-0 left-0 top-0 -z-10 h-full w-full lg:pl-[352px]">
+          <Particles />
+        </View>
+      </Suspense>
 
       <div className="relative flex flex-col space-y-14 pb-12 font-alcxTitles">
         <div className="flex items-center justify-between gap-16 px-20 py-10">
@@ -137,6 +159,11 @@ export const Landing = () => {
               Borrow up to 50% of your collateral
             </BlurInParagraph>
           </div>
+          <Suspense fallback={null}>
+            <View className="h-20 w-full">
+              <Tokens />
+            </View>
+          </Suspense>
           <div className="flex items-center justify-between">
             {assets.map((asset) => (
               <img

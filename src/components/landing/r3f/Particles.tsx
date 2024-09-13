@@ -6,7 +6,7 @@ import { useTheme } from "@/components/providers/ThemeProvider";
 
 const count = 200;
 
-export const Experience = () => {
+export const Particles = () => {
   const { darkMode } = useTheme();
 
   const points = useRef<React.ElementRef<typeof Points>>(null);
