@@ -63,7 +63,7 @@ export const Landing = () => {
             </BlurInParagraph>
             <LandingCtaButton />
           </div>
-          <VideoModal />
+          <VideoModal animateInDelay={0.3} />
         </div>
         <div className="flex flex-col gap-14 px-20">
           <BlurInHeader className="text-3xl font-semibold" delay={0.5}>
@@ -130,9 +130,12 @@ export const Landing = () => {
             <BlurInHeader className="text-3xl font-bold">
               Your Favorite Tokens
             </BlurInHeader>
-            <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
+            <BlurInParagraph
+              className="text-xl text-lightgrey10inverse dark:text-lightgrey10"
+              delay={0.2}
+            >
               Borrow up to 50% of your collateral
-            </p>
+            </BlurInParagraph>
           </div>
           <div className="flex items-center justify-between">
             {assets.map((asset) => (
