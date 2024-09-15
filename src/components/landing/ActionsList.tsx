@@ -57,7 +57,7 @@ const Action = ({
   );
 };
 
-export const AnimatedList = React.memo(
+const AnimatedList = React.memo(
   ({ children }: { children: React.ReactNode }) => {
     const [index, setIndex] = useState(0);
     const childrenArray = React.Children.toArray(children);
