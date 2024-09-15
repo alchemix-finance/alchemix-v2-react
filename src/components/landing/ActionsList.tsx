@@ -1,4 +1,6 @@
-import { AnimatedList } from "@/components/ui/animated-list";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+
 import { cn } from "@/utils/cn";
 
 let actions = [
@@ -20,7 +22,7 @@ let actions = [
   },
 ];
 
-actions = Array.from({ length: 10 }, () => actions).flat();
+actions = Array.from({ length: 2 }, () => actions).flat();
 
 const Action = ({
   name,
@@ -55,10 +57,57 @@ const Action = ({
   );
 };
 
+export const AnimatedList = React.memo(
+  ({ children }: { children: React.ReactNode }) => {
+    const [index, setIndex] = useState(0);
+    const childrenArray = React.Children.toArray(children);
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setIndex((prevIndex) => (prevIndex + 1) % childrenArray.length);
+      }, 2000);
+
+      return () => clearInterval(interval);
+    }, [childrenArray.length]);
+
+    const itemsToShow = useMemo(
+      () => childrenArray.slice(0, index + 1).reverse(),
+      [index, childrenArray],
+    );
+
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <AnimatePresence>
+          {itemsToShow.map((item) => (
+            <motion.div
+              layout
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, originY: 0 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 350,
+                damping: 40,
+                delay: 1,
+              }}
+              className="mx-auto w-full"
+              key={(item as ReactElement).key}
+            >
+              {item}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    );
+  },
+);
+
+AnimatedList.displayName = "AnimatedList";
+
 export const ActionsList = () => {
   return (
     <div className="flex h-64 w-full flex-col overflow-hidden rounded-lg border border-bronze2 bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
-      <AnimatedList delay={2000}>
+      <AnimatedList>
         {actions.map((item, idx) => (
           <Action {...item} key={idx} />
         ))}
