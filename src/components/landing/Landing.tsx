@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import { Link } from "@tanstack/react-router";
 import { FileIcon } from "lucide-react";
 
 import XPrevTwitterIcon from "@/assets/logos/x.svg?react";
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { VideoModal } from "./VideoModal";
 import { ActionsList } from "./ActionsList";
 import { BlurInHeader, BlurInParagraph } from "./BlurInText";
+import { LandingCtaButton } from "./LandingCtaButton";
 
 const assets = [
   {
@@ -61,7 +61,7 @@ export const Landing = () => {
               liquidation. Unlock the potential of your assets with secure and
               stress-free borrowing.
             </BlurInParagraph>
-            <LandingCtaButton />
+            <LandingCtaButton delay={0.3} />
           </div>
           <VideoModal animateInDelay={0.3} />
         </div>
@@ -159,12 +159,12 @@ export const Landing = () => {
               <BlurInHeader className="text-3xl font-semibold">
                 Get Started With Alchemix
               </BlurInHeader>
-              <p className="text-xl font-semibold text-lightgrey10inverse dark:text-lightgrey10">
+              <BlurInParagraph className="text-xl font-semibold text-lightgrey10inverse dark:text-lightgrey10">
                 Alchemix&apos;s self-repaying loans automatically pay themselves
                 off using the interest earned on your initial deposit. Borrow
                 against your assets, earn yield on the full deposit amount, and
                 enjoy the ability to spend and save at the same time.
-              </p>
+              </BlurInParagraph>
               <LandingCtaButton />
             </div>
           </div>
@@ -213,9 +213,9 @@ export const Landing = () => {
             </div>
           </div>
           <div className="space-y-8 text-start">
-            <BlurInHeader className="text-center text-4xl font-semibold">
+            <h2 className="text-center text-4xl font-semibold">
               A Thriving Ecosystem
-            </BlurInHeader>
+            </h2>
             <div className="flex items-stretch justify-between gap-7">
               <div className="flex w-full flex-col justify-between gap-10 rounded-2xl border border-lightgrey10inverse p-9 dark:border-lightgrey10">
                 <div className="flex items-center justify-center">
@@ -261,16 +261,5 @@ export const Landing = () => {
         </div>
       </div>
     </>
-  );
-};
-
-const LandingCtaButton = () => {
-  return (
-    <Link
-      to="/vaults"
-      className="block w-max rounded-lg border-2 border-orange4 bg-bronze1 px-4 py-2 text-xl font-bold tracking-wider text-black2 shadow-glow transition-all hover:shadow-hoveredGlow"
-    >
-      Get your first Self-Repaying Loan
-    </Link>
   );
 };
