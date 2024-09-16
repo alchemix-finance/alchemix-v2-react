@@ -6,35 +6,19 @@ import DiscordIcon from "@/assets/logos/discord.svg?react";
 import { Button } from "@/components/ui/button";
 
 import { VideoModal } from "./VideoModal";
-import { ActionsList } from "./ActionsList";
 import { BlurInHeader, BlurInParagraph } from "./BlurInText";
 import { LandingCtaButton } from "./LandingCtaButton";
-
-const assets = [
-  {
-    name: "ETH",
-  },
-  {
-    name: "WSTETH",
-  },
-  {
-    name: "RETH",
-  },
-  {
-    name: "DAI",
-  },
-  {
-    name: "USDC",
-  },
-  {
-    name: "USDT",
-  },
-];
+import { SlideBox } from "./SlideBox";
+import { Tokens } from "./Tokens";
 
 const Scene = lazy(() =>
   import("./particles/Scene").then((module) => ({
     default: module.Scene,
   })),
+);
+
+const ActionsList = lazy(() =>
+  import("./ActionsList").then((module) => ({ default: module.ActionsList })),
 );
 
 export const Landing = () => {
@@ -70,8 +54,12 @@ export const Landing = () => {
             Why Alchemix?
           </BlurInHeader>
           <div className="flex items-center gap-24">
-            <ActionsList />
-            <div className="space-y-6">
+            <SlideBox direction="left" className="w-full" delay={0.6}>
+              <Suspense fallback={<div className="h-64 w-full" />}>
+                <ActionsList />
+              </Suspense>
+            </SlideBox>
+            <SlideBox className="space-y-6" direction="bottom" delay={0.6}>
               <h2 className="text-2xl font-semibold">Completely Flexible</h2>
               <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
                 Alchemix gives you full control of your finances with no hidden
@@ -81,10 +69,10 @@ export const Landing = () => {
               <Button size="sm" className="uppercase">
                 Exlore our vaults
               </Button>
-            </div>
+            </SlideBox>
           </div>
           <div className="flex items-center gap-24">
-            <div className="space-y-6">
+            <SlideBox className="space-y-6" direction="bottom">
               <h2 className="text-2xl font-semibold">Zero Liquidations</h2>
               <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
                 With Alchemix, market volatility won&apos;t touch your vault.
@@ -94,17 +82,20 @@ export const Landing = () => {
               <Button size="sm" className="uppercase">
                 Learn more
               </Button>
-            </div>
-            <div className="flex w-full items-center justify-center p-6">
+            </SlideBox>
+            <SlideBox
+              className="flex w-full items-center justify-center p-6"
+              direction="right"
+            >
               <img
                 src="/images/landing-page/liquidations.png"
                 alt="Liquidations section image"
                 className="h-64 w-64"
               />
-            </div>
+            </SlideBox>
           </div>
           <div className="flex items-center gap-24">
-            <div className="space-y-6">
+            <SlideBox className="space-y-6" direction="bottom">
               <h2 className="text-2xl font-semibold">Security First</h2>
               <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
                 We are the original battle-tested DeFi platform with a priority
@@ -114,15 +105,18 @@ export const Landing = () => {
               <Button size="sm" className="uppercase">
                 Explore our audits
               </Button>
-            </div>
-            <div className="flex w-full items-center justify-center p-6">
+            </SlideBox>
+            <SlideBox
+              className="flex w-full items-center justify-center p-6"
+              direction="right"
+            >
               <img
                 src="/images/landing-page/lock.svg"
                 alt="Lock vector image"
                 className="h-64 w-64"
                 loading="lazy"
               />
-            </div>
+            </SlideBox>
           </div>
         </div>
         <div className="flex flex-col gap-14 px-20 text-center">
@@ -137,16 +131,7 @@ export const Landing = () => {
               Borrow up to 50% of your collateral
             </BlurInParagraph>
           </div>
-          <div className="flex items-center justify-between">
-            {assets.map((asset) => (
-              <img
-                key={asset.name}
-                alt={asset.name}
-                src={`/images/icons/${asset.name.toLowerCase()}.svg`}
-                className="h-20 w-20 rounded-full border border-lightgrey10inverse dark:border-lightgrey10"
-              />
-            ))}
-          </div>
+          <Tokens />
           <div className="relative -mr-20 grid text-start *:col-start-1 *:row-start-1">
             <div className="pointer-events-none -z-10 w-full pl-64">
               <img

@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LazyMotion, domMax, m } from "framer-motion";
 
 import { cn } from "@/utils/cn";
 
@@ -76,28 +76,30 @@ const AnimatedList = React.memo(
     );
 
     return (
-      <div className="flex flex-col items-center gap-4">
-        <AnimatePresence>
-          {itemsToShow.map((item) => (
-            <motion.div
-              layout
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1, originY: 0 }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{
-                type: "spring",
-                stiffness: 350,
-                damping: 40,
-                delay: 1,
-              }}
-              className="mx-auto w-full"
-              key={(item as ReactElement).key}
-            >
-              {item}
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
+      <LazyMotion features={domMax}>
+        <div className="flex flex-col items-center gap-4">
+          <AnimatePresence>
+            {itemsToShow.map((item) => (
+              <m.div
+                layout
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1, originY: 0 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 350,
+                  damping: 40,
+                  delay: 1,
+                }}
+                className="mx-auto w-full"
+                key={(item as ReactElement).key}
+              >
+                {item}
+              </m.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </LazyMotion>
     );
   },
 );

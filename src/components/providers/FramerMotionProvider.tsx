@@ -8,5 +8,9 @@ export const FramerMotionProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  return <LazyMotion features={domAnimation}>{children}</LazyMotion>;
+  return (
+    <LazyMotion features={domAnimation} strict>
+      {children}
+    </LazyMotion>
+  );
 };
