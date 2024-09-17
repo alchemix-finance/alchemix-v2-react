@@ -9,6 +9,7 @@ import { SlideBox } from "./SlideBox";
 import { Tokens } from "./Tokens";
 import { EcosystemGrid } from "./EcosystemGrid";
 import { Step } from "./Step";
+import { useBreakpoints } from "@/hooks/useBreakpoints";
 
 const Scene = lazy(() =>
   import("./particles/Scene").then((module) => ({
@@ -21,13 +22,16 @@ const ActionsList = lazy(() =>
 );
 
 export const Landing = () => {
+  const { belowBreakpoint } = useBreakpoints();
   return (
     <>
       {/* Particles canvas renders to parent div */}
       <div className="pointer-events-none fixed inset-0 left-0 top-0 -z-10 h-full w-full lg:pl-[352px]">
-        <Suspense fallback={null}>
-          <Scene />
-        </Suspense>
+        {!belowBreakpoint("xl") && (
+          <Suspense fallback={null}>
+            <Scene />
+          </Suspense>
+        )}
       </div>
 
       <div className="relative flex flex-col space-y-14 pb-12 font-alcxTitles">
