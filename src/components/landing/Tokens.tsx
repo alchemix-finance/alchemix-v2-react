@@ -31,10 +31,10 @@ const assets = [
 export const Tokens = () => {
   const container = useRef<HTMLDivElement>(null);
 
-  const [hoveredIndex, setHoveredIndex] = useState<number>();
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const [isHovering, setIsHovering] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
   const isInView = useInView(container, {
     once: true,
@@ -42,35 +42,33 @@ export const Tokens = () => {
   });
 
   useEffect(() => {
-    if (hoveredIndex === undefined && isInView) {
-      setHoveredIndex(0);
-      return;
-    }
-  }, [hoveredIndex, isInView]);
+    if (!isInView) return;
 
-  useEffect(() => {
-    if (!isInView) {
-      return;
-    }
-
-    const startInterval = () => {
-      intervalRef.current = setInterval(() => {
+    const scheduleNextToken = () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
         if (!isHovering) {
           setHoveredIndex((prevIndex) =>
-            prevIndex === undefined ? 0 : (prevIndex + 1) % assets.length,
+            prevIndex === null ? 0 : (prevIndex + 1) % assets.length,
           );
         }
       }, 2000);
     };
 
-    startInterval();
+    if (hoveredIndex === null) {
+      setHoveredIndex(0);
+    } else {
+      scheduleNextToken();
+    }
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      if (timeoutRef.current) {
+        clearInterval(timeoutRef.current);
       }
     };
-  }, [isHovering, isInView]);
+  }, [hoveredIndex, isInView, isHovering]);
 
   const onHoverStart = (index: number) => {
     setIsHovering(true);

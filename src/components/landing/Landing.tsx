@@ -1,8 +1,5 @@
 import { lazy, Suspense } from "react";
-import { FileIcon } from "lucide-react";
 
-import XPrevTwitterIcon from "@/assets/logos/x.svg?react";
-import DiscordIcon from "@/assets/logos/discord.svg?react";
 import { Button } from "@/components/ui/button";
 
 import { VideoModal } from "./VideoModal";
@@ -10,6 +7,8 @@ import { BlurInHeader, BlurInParagraph } from "./BlurInText";
 import { LandingCtaButton } from "./LandingCtaButton";
 import { SlideBox } from "./SlideBox";
 import { Tokens } from "./Tokens";
+import { EcosystemGrid } from "./EcosystemGrid";
+import { Step } from "./Step";
 
 const Scene = lazy(() =>
   import("./particles/Scene").then((module) => ({
@@ -154,94 +153,27 @@ export const Landing = () => {
             </div>
           </div>
           <div className="flex items-stretch justify-between gap-20">
-            <div className="flex flex-col items-center justify-between gap-10">
-              <h5 className="inline-flex items-center gap-2">
-                <span className="text-3xl font-semibold">01</span>
-                <span className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
-                  Deposit your assets
-                </span>
-              </h5>
-              <img
-                alt="Placeholder image"
-                src="/images/landing-page/placeholder.png"
-                loading="lazy"
-                className="h-40 w-64"
-              />
-            </div>
-            <div className="flex flex-col items-center justify-between gap-10">
-              <h5 className="inline-flex items-center gap-2">
-                <span className="text-3xl font-semibold">02</span>
-                <span className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
-                  Automatically earn yield
-                </span>
-              </h5>
-              <img
-                alt="Placeholder image"
-                src="/images/landing-page/placeholder.png"
-                loading="lazy"
-                className="h-40 w-64"
-              />
-            </div>
-            <div className="flex flex-col items-center justify-between gap-10">
-              <h5 className="inline-flex items-center gap-2">
-                <span className="text-3xl font-semibold">03</span>
-                <span className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
-                  Access your future yield
-                </span>
-              </h5>
-              <img
-                alt="Placeholder image"
-                src="/images/landing-page/placeholder.png"
-                loading="lazy"
-                className="h-40 w-64"
-              />
-            </div>
+            <Step
+              number="01"
+              title="Deposit your assets"
+              src="/images/landing-page/1.png"
+            />
+            <Step
+              number="02"
+              title="Automatically earn yield"
+              src="/images/landing-page/2.png"
+            />
+            <Step
+              number="03"
+              title="Access your future yield"
+              src="/images/landing-page/3.png"
+            />
           </div>
           <div className="space-y-8 text-start">
             <h2 className="text-center text-4xl font-semibold">
               A Thriving Ecosystem
             </h2>
-            <div className="flex items-stretch justify-between gap-7">
-              <div className="flex w-full flex-col justify-between gap-10 rounded-2xl border border-lightgrey10inverse p-9 dark:border-lightgrey10">
-                <div className="flex items-center justify-center">
-                  <DiscordIcon className="h-28 w-28 fill-black2 dark:fill-white2" />
-                </div>
-                <h5 className="text-3xl font-semibold">Discord</h5>
-                <p className="text-lg text-lightgrey10inverse dark:text-lightgrey10">
-                  Participate in active Alchemix community discussions and get
-                  user support.
-                </p>
-                <a href="#" className="uppercase">
-                  Join Discord
-                </a>
-              </div>
-              <div className="flex w-full flex-col justify-between gap-10 rounded-2xl border border-lightgrey10inverse p-9 dark:border-lightgrey10">
-                <div className="flex items-center justify-center">
-                  <XPrevTwitterIcon className="h-28 w-28 fill-black2 dark:fill-white2" />
-                </div>
-                <h5 className="text-3xl font-semibold">Twitter</h5>
-                <p className="text-lg text-lightgrey10inverse dark:text-lightgrey10">
-                  Stay up to date with the latest Alchemix news and community
-                  updates.
-                </p>
-                <a href="#" className="uppercase">
-                  Follow Twitter
-                </a>
-              </div>
-              <div className="flex w-full flex-col justify-between gap-10 rounded-2xl border border-lightgrey10inverse p-9 dark:border-lightgrey10">
-                <div className="flex items-center justify-center">
-                  <FileIcon className="h-28 w-28" />
-                </div>
-                <h5 className="text-3xl font-semibold">Documentation</h5>
-                <p className="text-lg text-lightgrey10inverse dark:text-lightgrey10">
-                  Build with us! Our documentation offers everything you need to
-                  get started.
-                </p>
-                <a href="#" className="uppercase">
-                  Read docs
-                </a>
-              </div>
-            </div>
+            <EcosystemGrid />
           </div>
         </div>
       </div>

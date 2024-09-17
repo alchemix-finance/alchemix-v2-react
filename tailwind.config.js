@@ -136,10 +136,6 @@ module.exports = {
         bodyGradientInverse:
           "linear-gradient(171.08deg, #010101 -11.16%, #141921 6.1%, #0a0d11 49.05%, #000000 93.22%)",
       },
-      boxShadow: {
-        glow: "0 0 15px #f5c09a80",
-        hoveredGlow: "0 0 15px 9px #f5c09a99",
-      },
     },
   },
   plugins: [require("tailwindcss-animate")],

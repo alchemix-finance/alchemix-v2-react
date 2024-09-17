@@ -1,26 +1,42 @@
-import { Link } from "@tanstack/react-router";
+import { createLink } from "@tanstack/react-router";
 import { m, type Variants } from "framer-motion";
 
-const variants = {
-  initial: { opacity: 0, filter: "blur(10px)" },
-  animate: { opacity: 1, filter: "blur(0)" },
+const wrapperVariants = {
+  initial: {
+    opacity: 0,
+    filter: "blur(10px)",
+  },
+  tap: { scale: 0.95 },
+  animateIn: (delay) => ({
+    opacity: 1,
+    filter: "blur(0)",
+    transition: { duration: 1.1, delay },
+  }),
+  applyShadow: (delay) => ({
+    boxShadow: "10px 5px 12px #f5c09a",
+    transition: { duration: 1.1, delay },
+  }),
+  hover: {
+    boxShadow: "none",
+  },
 } as const satisfies Variants;
 
-export const LandingCtaButton = ({ delay }: { delay?: number }) => {
+const MLink = createLink(m.a);
+
+export const LandingCtaButton = ({ delay = 0 }: { delay?: number }) => {
   return (
-    <m.div
+    <MLink
+      custom={delay}
       initial="initial"
-      whileInView="animate"
+      whileInView={["animateIn", "applyShadow"]}
+      whileHover="hover"
+      whileTap="tap"
       viewport={{ once: true }}
-      variants={variants}
-      transition={{ duration: 1.1, delay }}
+      variants={wrapperVariants}
+      to="/vaults"
+      className="relative inline-flex w-max items-center rounded-lg border border-lightgrey10inverse bg-bronze1 px-4 py-2 text-xl font-bold tracking-wider text-black2 dark:border-lightgrey10"
     >
-      <Link
-        to="/vaults"
-        className="block w-max rounded-lg border-2 border-orange4 bg-bronze1 px-4 py-2 text-xl font-bold tracking-wider text-black2 shadow-glow transition-all hover:shadow-hoveredGlow"
-      >
-        Get your first Self-Repaying Loan
-      </Link>
-    </m.div>
+      Get your first Self-Repaying Loan
+    </MLink>
   );
 };
