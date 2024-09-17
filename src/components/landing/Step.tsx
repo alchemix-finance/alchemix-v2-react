@@ -1,5 +1,3 @@
-import { m } from "framer-motion";
-
 export const Step = ({
   number,
   title,
@@ -10,10 +8,7 @@ export const Step = ({
   src: string;
 }) => {
   return (
-    <m.div
-      whileHover="hover"
-      className="relative flex flex-col items-center justify-between gap-10"
-    >
+    <div className="group relative flex flex-col items-center justify-between gap-10">
       <h5 className="inline-flex items-center gap-2">
         <span className="text-3xl font-semibold">{number}</span>
         <span className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
@@ -27,16 +22,7 @@ export const Step = ({
         className="h-96 w-96 transition-all hover:outline hover:outline-2 hover:outline-cyan-500"
       />
 
-      <m.div
-        initial={{ opacity: 0 }}
-        variants={{
-          hover: {
-            opacity: 0.8,
-            transition: { ease: "linear", duration: 0.2 },
-          },
-        }}
-        className="pointer-events-none absolute -top-1/3 size-full rounded-full bg-cyan-500 blur-[128px]"
-      />
-    </m.div>
+      <div className="pointer-events-none absolute -top-1/3 size-full rounded-full bg-cyan-500 opacity-0 blur-[128px] transition-opacity duration-300 group-hover:opacity-80" />
+    </div>
   );
 };
