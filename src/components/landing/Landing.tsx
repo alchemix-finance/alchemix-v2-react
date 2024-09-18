@@ -25,14 +25,15 @@ export const Landing = () => {
   const { belowBreakpoint } = useBreakpoints();
   return (
     <>
-      {/* Particles canvas renders to parent div */}
-      <div className="pointer-events-none fixed inset-0 left-0 top-0 -z-10 h-full w-full lg:pl-[352px]">
-        {!belowBreakpoint("xl") && (
+      {/* Only render Particles on desktop */}
+      {!belowBreakpoint("xl") && (
+        // Particles canvas renders to parent div
+        <div className="pointer-events-none fixed inset-0 left-0 top-0 -z-10 h-full w-full lg:pl-[352px]">
           <Suspense fallback={null}>
             <Scene />
           </Suspense>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="relative flex flex-col space-y-14 pb-12 font-alcxTitles">
         <div className="flex items-center justify-between gap-16 px-20 py-10">
