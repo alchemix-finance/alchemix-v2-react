@@ -9,12 +9,12 @@ export const Step = ({
 }) => {
   return (
     <div className="group relative flex flex-col items-center justify-between gap-10">
-      <h5 className="inline-flex items-center gap-2">
+      <h3 className="inline-flex items-center gap-2">
         <span className="text-3xl font-semibold">{number}</span>
         <span className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
           {title}
         </span>
-      </h5>
+      </h3>
       <img
         alt="Step 1. Deposit Image"
         src={src}
