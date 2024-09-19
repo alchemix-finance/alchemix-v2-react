@@ -157,18 +157,21 @@ export const Landing = () => {
               <LandingCtaButton />
             </div>
           </div>
-          <div className="flex items-stretch justify-between gap-20">
+          <div className="flex flex-col items-stretch justify-between gap-20 lg:flex-row">
             <Step
               src="/images/landing-page/1.png"
               srcHover="/images/landing-page/1-hover.png"
+              alt="Deposit"
             />
             <Step
               src="/images/landing-page/2.png"
               srcHover="/images/landing-page/2-hover.png"
+              alt="Earn"
             />
             <Step
               src="/images/landing-page/3.png"
               srcHover="/images/landing-page/3-hover.png"
+              alt="Access"
             />
           </div>
           <div className="space-y-8 text-start">
