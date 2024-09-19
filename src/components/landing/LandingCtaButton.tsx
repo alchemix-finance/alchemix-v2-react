@@ -34,7 +34,7 @@ export const LandingCtaButton = ({ delay = 0 }: { delay?: number }) => {
       viewport={{ once: true }}
       variants={wrapperVariants}
       to="/vaults"
-      className="relative inline-flex w-max items-center rounded-lg border border-lightgrey10inverse bg-bronze1 px-4 py-2 text-xl font-bold tracking-wider text-black2 dark:border-lightgrey10"
+      className="relative inline-flex w-max items-center rounded-lg border border-lightgrey10inverse bg-bronze1 px-4 py-2 text-2xl font-bold tracking-wider text-black2 dark:border-lightgrey10"
     >
       Get your first Self-Repaying Loan
     </MLink>

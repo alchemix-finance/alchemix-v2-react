@@ -32,7 +32,7 @@ export const SlideBox = ({
     <m.div
       initial="hidden"
       whileInView="animate"
-      viewport={{ once: true, amount: 0.5 }}
+      viewport={{ once: true }}
       variants={variants[direction]}
       transition={{ duration: 1, delay }}
       className={className}

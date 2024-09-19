@@ -108,7 +108,7 @@ AnimatedList.displayName = "AnimatedList";
 
 export const ActionsList = () => {
   return (
-    <div className="flex h-64 w-full flex-col overflow-hidden rounded-lg border border-bronze2 bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
+    <div className="flex aspect-video h-52 w-full flex-col overflow-hidden rounded-lg border border-bronze2 bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
       <AnimatedList>
         {actions.map((item, idx) => (
           <Action {...item} key={idx} />

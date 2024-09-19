@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { ArrowRightIcon, FileIcon } from "lucide-react";
+import { ArrowRightIcon, FileIcon, NewspaperIcon } from "lucide-react";
 
 import XPrevTwitterIcon from "@/assets/logos/x.svg?react";
 import DiscordIcon from "@/assets/logos/discord.svg?react";
@@ -16,7 +16,7 @@ const socials = [
     cta: "Follow us on X",
     Icon: XPrevTwitterIcon,
     background: null,
-    className: "lg:col-span-2 lg:row-span-1",
+    className: "lg:col-span-1 lg:row-span-1",
   },
   {
     title: "Discord",
@@ -26,7 +26,7 @@ const socials = [
     cta: "Join Discord",
     Icon: DiscordIcon,
     background: null,
-    className: "lg:col-span-1 lg:row-span-2",
+    className: "lg:col-span-2 lg:row-span-1",
   },
   {
     title: "Documentation",
@@ -38,11 +38,20 @@ const socials = [
     background: null,
     className: "lg:col-span-2",
   },
+  {
+    title: "Newsletter",
+    description: "News, stats and reports concocted by the Alchemix community.",
+    href: "https://alchemixfi.substack.com/",
+    cta: "Subscribe",
+    Icon: NewspaperIcon,
+    background: null,
+    className: "lg:col-span-1",
+  },
 ];
 
 export const EcosystemGrid = () => {
   return (
-    <div className="grid w-full auto-rows-[22rem] grid-cols-3 gap-4">
+    <div className="grid w-full auto-rows-[15rem] grid-cols-3 gap-4">
       {socials.map((social) => (
         <BentoCard key={social.title} {...social} />
       ))}
