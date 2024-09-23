@@ -1,5 +1,8 @@
 import { zeroAddress } from "viem";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
+
+import { GAS_ADDRESS, WETH_MAINNET_ADDRESS } from "@/lib/constants";
+
 import { SYNTH_ASSETS } from "@/lib/config/synths";
 import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 import { VaultMetadata } from "@/lib/config/metadataTypes";
@@ -15,7 +18,8 @@ import {
   getNoBonus,
   getVesperBonusData,
 } from "@/lib/middleware/bonuses";
-import { GAS_ADDRESS, WETH_MAINNET_ADDRESS } from "../constants";
+import { getGearboxApy } from "@/lib/middleware/gearbox";
+import { getJonesApy } from "@/lib/middleware/jones";
 
 // @dev some vaults are broken so we need to ignore them from processing
 export const IGNORED_VAULTS: `0x${string}`[] = [
@@ -44,7 +48,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "DAI",
       yieldSymbol: "yvDAI",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       api: {
         apr: getYearnApy,
         yieldType: "APY",
@@ -59,7 +62,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "USDC",
       yieldSymbol: "yvUSDC",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       api: {
         apr: getYearnApy,
         yieldType: "APY",
@@ -74,7 +76,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "USDT",
       yieldSymbol: "yvUSDT",
       messages: [{ message: "Vault is disabled.", type: "warning" }],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       api: {
         apr: getYearnApy,
         yieldType: "APY",
@@ -89,7 +90,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "DAI",
       yieldSymbol: "aDAI",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       yieldTokenOverride: "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
       api: {
         apr: getAaveApr,
@@ -105,7 +105,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "USDC",
       yieldSymbol: "aUSDC",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       yieldTokenOverride: "0xBcca60bB61934080951369a648Fb03DF4F96263C",
       api: {
         apr: getAaveApr,
@@ -121,7 +120,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "USDT",
       yieldSymbol: "aUSDT",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       yieldTokenOverride: "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
       api: {
         apr: getAaveApr,
@@ -137,7 +135,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "USDT",
       yieldSymbol: "yvUSDT",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       api: {
         apr: getYearnApy,
         yieldType: "APY",
@@ -152,7 +149,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "USDC",
       yieldSymbol: "vaUSDC",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       api: {
         apr: getVesperApr,
         yieldType: "APR",
@@ -167,7 +163,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "DAI",
       yieldSymbol: "vaDAI",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       api: {
         apr: getVesperApr,
         yieldType: "APR",
@@ -182,7 +177,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "FRAX",
       yieldSymbol: "vaFRAX",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       api: {
         apr: getVesperApr,
         yieldType: "APR",
@@ -197,7 +191,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "FRAX",
       yieldSymbol: "aFRAX",
       messages: [],
-      migrator: "0xE1F27adD45652812BAD02E26EEc588F0EF97e1d3",
       yieldTokenOverride: "0xd4937682df3C8aEF4FE912A96A74121C0829E664",
       api: {
         apr: getAaveApr,
@@ -215,7 +208,6 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "yvWETH",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
-      migrator: "0xb4E7cc74e004F95AEe7565a97Dbfdea9c1761b24",
       api: {
         apr: getYearnApy,
         yieldType: "APY",
@@ -232,7 +224,6 @@ export const VAULTS: VaultsConfig = {
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
       gateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
-      migrator: "0xb4E7cc74e004F95AEe7565a97Dbfdea9c1761b24",
       api: {
         apr: getLidoApy,
         yieldType: "APR",
@@ -248,7 +239,6 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "rETH",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
-      migrator: "0xb4E7cc74e004F95AEe7565a97Dbfdea9c1761b24",
       api: {
         apr: getRocketApr,
         yieldType: "APR",
@@ -264,7 +254,6 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "aWETH",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
-      migrator: "0xb4E7cc74e004F95AEe7565a97Dbfdea9c1761b24",
       yieldTokenOverride: "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
       api: {
         apr: getAaveApr,
@@ -281,7 +270,6 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "vaETH",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
-      migrator: "0xb4E7cc74e004F95AEe7565a97Dbfdea9c1761b24",
       api: {
         apr: getVesperApr,
         yieldType: "APR",
@@ -296,7 +284,6 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "FRXETH",
       yieldSymbol: "sfrxETH",
       messages: [],
-      migrator: "0xb4E7cc74e004F95AEe7565a97Dbfdea9c1761b24",
       api: {
         apr: getFraxApy,
         yieldType: "APR",
@@ -457,7 +444,6 @@ export const VAULTS: VaultsConfig = {
       messages: [],
       wethGateway: "0xDB3fE4Da32c2A79654D98e5a41B22173a0AF3933",
       gateway: "0xBa3e8437a06397430036E23fF9153408a3203aFD",
-      migrator: "0x00E33722ba54545667E76a18CE9D544130eEAbcC",
       yieldTokenOverride: "0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8",
       api: {
         apr: getAaveApr,
@@ -474,7 +460,6 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "wstETH",
       messages: [],
       wethGateway: "0xDB3fE4Da32c2A79654D98e5a41B22173a0AF3933",
-      migrator: "0x00E33722ba54545667E76a18CE9D544130eEAbcC",
       api: {
         apr: getLidoApy,
         yieldType: "APR",
@@ -497,7 +482,6 @@ export const VAULTS: VaultsConfig = {
         },
       ],
       gateway: "0xedE36d3F423EF198abE82D2463E0a18bcF2d9397",
-      migrator: "0x00E33722ba54545667E76a18CE9D544130eEAbcC",
       yieldTokenOverride: "0x5B977577Eb8a480f63e11FC615D6753adB8652Ae",
       api: {
         apr: getYearnApy,
@@ -526,6 +510,20 @@ export const VAULTS: VaultsConfig = {
       },
       disabledDepositTokens: [],
     },
+    "0xB0BDE111812EAC913b392D80D51966eC977bE3A2": {
+      label: "Jones jUSDC",
+      synthAssetType: SYNTH_ASSETS.ALUSD,
+      underlyingSymbol: "USDC",
+      yieldSymbol: "jUSDC",
+      messages: [],
+      api: {
+        apr: getJonesApy,
+        yieldType: "APY",
+        provider: "jones",
+        bonus: getNoBonus,
+      },
+      disabledDepositTokens: [],
+    },
     //alETH
     "0x5979D7b546E38E414F7E9822514be443A4800529": {
       label: "Lido wstETH",
@@ -539,6 +537,20 @@ export const VAULTS: VaultsConfig = {
         yieldType: "APR",
         provider: "lido",
         bonus: getMeltedRewardsBonusData,
+      },
+      disabledDepositTokens: [],
+    },
+    "0xf3b7994e4dA53E04155057Fd61dc501599d57877": {
+      label: "Gearbox WETH",
+      synthAssetType: SYNTH_ASSETS.ALETH,
+      underlyingSymbol: "WETH",
+      yieldSymbol: "farmdWETH",
+      messages: [],
+      api: {
+        apr: getGearboxApy,
+        yieldType: "APY",
+        provider: "gearbox",
+        bonus: getNoBonus,
       },
       disabledDepositTokens: [],
     },
