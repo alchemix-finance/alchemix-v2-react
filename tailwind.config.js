@@ -52,12 +52,21 @@ module.exports = {
             right: "-90%",
           },
         },
+        scroll: {
+          "0%": {
+            transform: "translateX(0px)",
+          },
+          "100%": {
+            transform: "translateX(-100%)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "loading-bar":
           "loading-bar 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal none running",
+        scroll: "scroll 30s linear infinite",
       },
       colors: {
         black1: "#0E251D",
