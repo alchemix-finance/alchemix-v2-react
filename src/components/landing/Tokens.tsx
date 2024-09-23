@@ -28,7 +28,7 @@ const assets = [
 export const Tokens = () => {
   return (
     <div className="flex items-center overflow-x-clip">
-      <div className="lg:animate-scroll flex min-w-full items-center justify-between pl-20">
+      <div className="lg:animate-scroll flex min-w-full items-center justify-between lg:pl-20">
         {assets.map(({ name, color }) => (
           <div key={name} className="relative">
             <img
@@ -45,7 +45,7 @@ export const Tokens = () => {
           </div>
         ))}
       </div>
-      <div className="animate-scroll hidden min-w-full items-center justify-between pl-20 lg:flex">
+      <div className="animate-scroll hidden min-w-full items-center justify-between lg:flex lg:pl-20">
         {assets.map(({ name, color }) => (
           <div key={name} className="relative">
             <img
