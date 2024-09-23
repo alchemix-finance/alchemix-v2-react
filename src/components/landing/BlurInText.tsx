@@ -1,4 +1,5 @@
-import { m } from "framer-motion";
+import { useRef } from "react";
+import { useInView } from "framer-motion";
 
 import { cn } from "@/utils/cn";
 
@@ -8,23 +9,23 @@ interface BlurInProps {
   delay?: number;
 }
 
-const variants = {
-  hidden: { filter: "blur(10px)", opacity: 0 },
-  visible: { filter: "blur(0px)", opacity: 1 },
-};
-
 export const BlurInHeader = ({ children, className, delay }: BlurInProps) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
   return (
-    <m.h1
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      variants={variants}
-      transition={{ duration: 1, delay }}
-      className={cn(className)}
+    <h1
+      ref={ref}
+      style={{
+        transitionDelay: `${delay}s`,
+      }}
+      className={cn(
+        "transition-all duration-1000",
+        isInView ? "blur(0px) opacity-100" : "blur(10px) opacity-0",
+        className,
+      )}
     >
       {children}
-    </m.h1>
+    </h1>
   );
 };
 
@@ -33,16 +34,21 @@ export const BlurInParagraph = ({
   className,
   delay,
 }: BlurInProps) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
   return (
-    <m.p
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      variants={variants}
-      transition={{ duration: 1.1, delay }}
-      className={cn(className)}
+    <p
+      ref={ref}
+      style={{
+        transitionDelay: `${delay}s`,
+      }}
+      className={cn(
+        "transition-all [transition-duration:1.1s]",
+        isInView ? "blur(0px) opacity-100" : "blur(10px) opacity-0",
+        className,
+      )}
     >
       {children}
-    </m.p>
+    </p>
   );
 };
