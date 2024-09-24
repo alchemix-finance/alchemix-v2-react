@@ -78,7 +78,10 @@ export const useWithdraw = ({
     functionName: "convertYieldTokensToShares",
     args: [vault.yieldToken, withdrawAmount ?? 0n],
     query: {
-      enabled: isSelectedTokenYieldToken && !isInputZero(amount),
+      enabled:
+        isSelectedTokenYieldToken &&
+        !isInputZero(amount) &&
+        withdrawAmount !== undefined,
     },
   });
 
@@ -87,9 +90,12 @@ export const useWithdraw = ({
     abi: alchemistV2Abi,
     chainId: chain.id,
     functionName: "convertUnderlyingTokensToShares",
-    args: [vault.yieldToken, parseUnits(amount, selectedToken.decimals)],
+    args: [vault.yieldToken, withdrawAmount ?? 0n],
     query: {
-      enabled: !isSelectedTokenYieldToken && !isInputZero(amount),
+      enabled:
+        !isSelectedTokenYieldToken &&
+        !isInputZero(amount) &&
+        withdrawAmount !== undefined,
     },
   });
 
@@ -98,10 +104,7 @@ export const useWithdraw = ({
     : sharesFromUnderlyingToken;
 
   const minimumOutUnderlying = !isSelectedTokenYieldToken
-    ? calculateMinimumOut(
-        parseUnits(amount, selectedToken.decimals),
-        parseUnits(slippage, 2),
-      )
+    ? calculateMinimumOut(withdrawAmount, parseUnits(slippage, 2))
     : undefined;
 
   const {
