@@ -3,7 +3,7 @@ import { useReadContract } from "wagmi";
 import { formatUnits, parseUnits } from "viem";
 
 import { staticTokenAdapterAbi } from "@/abi/staticTokenAdapter";
-import { Token, Vault } from "@/lib/types";
+import { Vault } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useChain } from "./useChain";
 
@@ -15,14 +15,12 @@ interface UseStaticTokenAdapterWithdrawAmountArgs {
   vault: Vault;
 
   amount?: never;
-  selectedToken?: never;
 }
 
 interface UseStaticTokenAdapterAdjustedAmountArgs {
   typeGuard: "adjustedAmount";
 
   amount: string;
-  selectedToken: Token;
   vault: Vault;
   isSelectedTokenYieldToken: boolean;
 
@@ -46,7 +44,6 @@ export const useStaticTokenAdapterWithdraw = ({
   isSelectedTokenYieldToken,
   vault,
   amount,
-  selectedToken,
 }: UseStaticTokenAdapterWithdrawArgs) => {
   const chain = useChain();
 
@@ -77,7 +74,7 @@ export const useStaticTokenAdapterWithdraw = ({
     functionName: "dynamicToStaticAmount",
     args: [
       typeGuard === "adjustedAmount"
-        ? parseUnits(amount, selectedToken.decimals)
+        ? parseUnits(amount, vault.yieldTokenParams.decimals)
         : 0n,
     ],
     query: {

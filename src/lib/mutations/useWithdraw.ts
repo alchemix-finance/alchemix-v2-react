@@ -60,7 +60,6 @@ export const useWithdraw = ({
   const { aaveAdjustedAmount } = useStaticTokenAdapterWithdraw({
     typeGuard: "adjustedAmount",
     amount,
-    selectedToken,
     vault,
     isSelectedTokenYieldToken,
   });
