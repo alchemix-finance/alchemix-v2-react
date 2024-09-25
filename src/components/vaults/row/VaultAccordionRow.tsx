@@ -383,10 +383,14 @@ const VaultCapacityCell = ({
 
 const VaultYieldCell = ({ vault }: { vault: Vault }) => {
   const chain = useChain();
+  const publicClient = usePublicClient<typeof wagmiConfig>({
+    chainId: chain.id,
+  });
   const { data: apr, isPending } = useQuery({
     queryKey: [
       QueryKeys.Apr,
       chain.id,
+      publicClient,
       vault.underlyingToken,
       vault.address,
       vault.metadata.yieldTokenOverride,
@@ -397,6 +401,7 @@ const VaultYieldCell = ({ vault }: { vault: Vault }) => {
         underlyingToken: vault.underlyingToken,
         vaultAddress: vault.address,
         yieldTokenOverride: vault.metadata.yieldTokenOverride,
+        publicClient,
       }),
     placeholderData: keepPreviousData,
   });

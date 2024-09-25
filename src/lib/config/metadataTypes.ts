@@ -94,6 +94,7 @@ interface AprFnParams {
   vaultAddress: Address;
   yieldTokenOverride: Address | undefined;
   chainId: SupportedChainId;
+  publicClient: UsePublicClientReturnType<typeof wagmiConfig>;
 }
 export type AprFn = (params: AprFnParams) => Promise<number>;
 
