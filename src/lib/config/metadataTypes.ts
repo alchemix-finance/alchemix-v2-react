@@ -60,6 +60,7 @@ type ApiProvider =
 
 export interface VaultMetadata {
   label: string;
+  image: string;
   synthAssetType: SynthAsset;
   underlyingSymbol: string;
   yieldSymbol: string;

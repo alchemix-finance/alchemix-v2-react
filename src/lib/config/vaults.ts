@@ -47,6 +47,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "DAI",
       yieldSymbol: "yvDAI",
+      image: "yvdai.svg",
       messages: [],
       api: {
         apr: getYearnApy,
@@ -61,6 +62,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDC",
       yieldSymbol: "yvUSDC",
+      image: "yvusdc.svg",
       messages: [],
       api: {
         apr: getYearnApy,
@@ -75,6 +77,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDT",
       yieldSymbol: "yvUSDT",
+      image: "yvusdt.svg",
       messages: [{ message: "Vault is disabled.", type: "warning" }],
       api: {
         apr: getYearnApy,
@@ -89,6 +92,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "DAI",
       yieldSymbol: "aDAI",
+      image: "adai.svg",
       messages: [],
       yieldTokenOverride: "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
       api: {
@@ -104,6 +108,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDC",
       yieldSymbol: "aUSDC",
+      image: "ausdc.svg",
       messages: [],
       yieldTokenOverride: "0xBcca60bB61934080951369a648Fb03DF4F96263C",
       api: {
@@ -119,6 +124,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDT",
       yieldSymbol: "aUSDT",
+      image: "ausdt.svg",
       messages: [],
       yieldTokenOverride: "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
       api: {
@@ -134,6 +140,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDT",
       yieldSymbol: "yvUSDT",
+      image: "yvusdt.svg",
       messages: [],
       api: {
         apr: getYearnApy,
@@ -148,6 +155,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDC",
       yieldSymbol: "vaUSDC",
+      image: "vausdc.svg",
       messages: [],
       api: {
         apr: getVesperApr,
@@ -162,6 +170,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "DAI",
       yieldSymbol: "vaDAI",
+      image: "vadai.svg",
       messages: [],
       api: {
         apr: getVesperApr,
@@ -176,6 +185,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "FRAX",
       yieldSymbol: "vaFRAX",
+      image: "vafrax.svg",
       messages: [],
       api: {
         apr: getVesperApr,
@@ -190,6 +200,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "FRAX",
       yieldSymbol: "aFRAX",
+      image: "afrax.svg",
       messages: [],
       yieldTokenOverride: "0xd4937682df3C8aEF4FE912A96A74121C0829E664",
       api: {
@@ -206,6 +217,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "yvWETH",
+      image: "yvweth.svg",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
       api: {
@@ -221,6 +233,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "wstETH",
+      image: "wsteth.svg",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
       gateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
@@ -237,6 +250,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "rETH",
+      image: "reth.svg",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
       api: {
@@ -252,6 +266,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "aWETH",
+      image: "aweth.svg",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
       yieldTokenOverride: "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
@@ -268,6 +283,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "vaETH",
+      image: "vaeth.svg",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
       api: {
@@ -283,6 +299,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "FRXETH",
       yieldSymbol: "sfrxETH",
+      image: "sfrxeth.svg",
       messages: [],
       api: {
         apr: getFraxApy,
@@ -300,6 +317,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "DAI",
       yieldSymbol: "yDAI",
+      image: "ydai.svg",
       messages: [{ message: "Vault is disabled.", type: "warning" }],
       api: {
         apr: getYearnApy,
@@ -314,6 +332,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDC",
       yieldSymbol: "yUSDC",
+      image: "yusdc.svg",
       messages: [{ message: "Vault is disabled.", type: "warning" }],
       api: {
         apr: getYearnApy,
@@ -328,6 +347,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDT",
       yieldSymbol: "fUSDT",
+      image: "fusdt.svg",
       messages: [{ message: "Vault is disabled.", type: "warning" }],
       api: {
         apr: getYearnApy,
@@ -345,6 +365,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "DAI",
       yieldSymbol: "aDAI",
+      image: "adai.svg",
       messages: [],
       gateway: "0x6076A6B474F336c566E4Ba551a5934E3ba5e7193",
       yieldTokenOverride: "0x82E64f49Ed5EC1bC6e43DAD4FC8Af9bb3A2312EE",
@@ -362,6 +383,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDC",
       yieldSymbol: "aUSDC",
+      image: "ausdc.svg",
       messages: [],
       gateway: "0x6076A6B474F336c566E4Ba551a5934E3ba5e7193",
       yieldTokenOverride: "0x625E7708f30cA75bfd92586e17077590C60eb4cD",
@@ -378,6 +400,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDT",
       yieldSymbol: "aUSDT",
+      image: "ausdt.svg",
       messages: [],
       gateway: "0x6076A6B474F336c566E4Ba551a5934E3ba5e7193",
       yieldTokenOverride: "0x6ab707Aca953eDAeFBc4fD23bA73294241490620",
@@ -394,6 +417,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDC",
       yieldSymbol: "yvUSDC",
+      image: "yvusdc.svg",
       messages: [
         {
           message:
@@ -417,6 +441,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "DAI",
       yieldSymbol: "yvDAI",
+      image: "yvdai.svg",
       messages: [
         {
           message:
@@ -441,6 +466,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "aWETH",
+      image: "aweth.svg",
       messages: [],
       wethGateway: "0xDB3fE4Da32c2A79654D98e5a41B22173a0AF3933",
       gateway: "0xBa3e8437a06397430036E23fF9153408a3203aFD",
@@ -458,6 +484,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "wstETH",
+      image: "wsteth.svg",
       messages: [],
       wethGateway: "0xDB3fE4Da32c2A79654D98e5a41B22173a0AF3933",
       api: {
@@ -473,6 +500,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "yvWETH",
+      image: "yvweth.svg",
       messages: [
         {
           message:
@@ -499,6 +527,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDC",
       yieldSymbol: "aUSDC",
+      image: "ausdc.svg",
       messages: [],
       gateway: "0x3e1ccc66c755Fdbc7fbf7D667aA843c062Daf304",
       yieldTokenOverride: "0x724dc807b04555b71ed48a6896b6F41593b8C637",
@@ -515,6 +544,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALUSD,
       underlyingSymbol: "USDC",
       yieldSymbol: "jUSDC",
+      image: "jusdc.webp",
       messages: [],
       api: {
         apr: getJonesApy,
@@ -530,6 +560,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "wstETH",
+      image: "wsteth.svg",
       messages: [],
       wethGateway: "0x7C679D851688072e23fE41d1753004eb11E98D8c",
       api: {
@@ -545,6 +576,7 @@ export const VAULTS: VaultsConfig = {
       synthAssetType: SYNTH_ASSETS.ALETH,
       underlyingSymbol: "WETH",
       yieldSymbol: "farmdWETH",
+      image: "eth.svg",
       messages: [],
       api: {
         apr: getGearboxApy,
