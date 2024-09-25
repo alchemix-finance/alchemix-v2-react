@@ -120,7 +120,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               className="h-12 w-12"
             />
             <img
-              src={`/images/icons/${vault.metadata.image}`}
+              src={`/images/token-icons/${vault.metadata.image}`}
               alt={`${vault.metadata.image} logo`}
               className="absolute left-6 top-6 h-9 w-9"
             />

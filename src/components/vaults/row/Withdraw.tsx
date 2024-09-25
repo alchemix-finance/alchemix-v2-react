@@ -17,6 +17,7 @@ import { formatEther } from "viem";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { VaultActionMotionDiv } from "./motion";
 import { CtaButton } from "@/components/common/CtaButton";
+import { getTokenLogoUrl } from "@/utils/getTokenLogoUrl";
 
 export const Withdraw = ({
   vault,
@@ -80,7 +81,7 @@ export const Withdraw = ({
               <SelectValue placeholder="Token" asChild>
                 <div className="flex items-center gap-4">
                   <img
-                    src={`/images/token-icons/${token.symbol}.svg`}
+                    src={getTokenLogoUrl(token.symbol)}
                     alt={token.symbol}
                     className="h-12 w-12"
                   />

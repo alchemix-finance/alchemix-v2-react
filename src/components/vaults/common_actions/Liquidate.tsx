@@ -32,6 +32,7 @@ import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { MAX_UINT256_BN } from "@/lib/constants";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
+import { getTokenLogoUrl } from "@/utils/getTokenLogoUrl";
 
 export const Liquidate = () => {
   const queryClient = useQueryClient();
@@ -236,7 +237,7 @@ export const Liquidate = () => {
                 <SelectValue placeholder="Liquidation Token" asChild>
                   <div className="flex items-center gap-4">
                     <img
-                      src={`/images/token-icons/${liquidationToken.symbol}.svg`}
+                      src={getTokenLogoUrl(liquidationToken.symbol)}
                       alt={liquidationToken.symbol}
                       className="h-12 w-12"
                     />

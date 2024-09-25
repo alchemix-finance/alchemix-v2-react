@@ -10,7 +10,6 @@ import { useMemo, useState } from "react";
 import { useMigrate } from "@/lib/mutations/useMigrate";
 import { MigrateTokenInput } from "@/components/common/input/MigrateTokenInput";
 import { isInputZero } from "@/utils/inputNotZero";
-import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { VaultActionMotionDiv } from "./motion";
 import { CtaButton } from "@/components/common/CtaButton";
 
@@ -30,14 +29,6 @@ export const Migrate = ({
   const selectedVault = useMemo(() => {
     return selection.find((v) => v.address === selectedVaultAddress)!;
   }, [selectedVaultAddress, selection]);
-
-  const { data: tokens } = useTokensQuery();
-  const tokenOfSelectedVault = tokens?.find((t) =>
-    selectedVault.metadata.yieldTokenOverride
-      ? t.address.toLowerCase() ===
-        selectedVault.metadata.yieldTokenOverride.toLowerCase()
-      : t.address.toLowerCase() === selectedVault.yieldToken.toLowerCase(),
-  );
 
   const {
     isApprovalNeededWithdraw,
@@ -80,8 +71,8 @@ export const Migrate = ({
               <SelectValue placeholder="Vault" asChild>
                 <div className="flex items-center gap-4">
                   <img
-                    src={`/images/token-icons/${tokenOfSelectedVault?.symbol}.svg`}
-                    alt={tokenOfSelectedVault?.symbol}
+                    src={`/images/token-icons/${selectedVault.metadata.image}`}
+                    alt={`${selectedVault.metadata.yieldSymbol} icon`}
                     className="hidden h-4 w-4 sm:block"
                   />
                   {selectedVault.metadata.label}
