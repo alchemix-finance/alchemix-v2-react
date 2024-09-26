@@ -6,31 +6,21 @@ import { cn } from "@/utils/cn";
 let actions = [
   {
     name: "Deposit",
-    description: "Deposited wstETH",
   },
   {
     name: "Borrow",
-    description: "Borrowed alETH",
   },
   {
     name: "Withdraw",
-    description: "Withdrew wstETH",
   },
   {
     name: "Liquidate",
-    description: "Liquidated alETH",
   },
 ];
 
 actions = Array.from({ length: 2 }, () => actions).flat();
 
-const Action = ({
-  name,
-  description,
-}: {
-  name: string;
-  description: string;
-}) => {
+const Action = ({ name }: { name: string }) => {
   return (
     <figure
       className={cn(
@@ -48,9 +38,6 @@ const Action = ({
           <figcaption className="flex flex-row items-center whitespace-pre text-lg font-medium dark:text-white">
             <span className="text-sm sm:text-lg">{name}</span>
           </figcaption>
-          <p className="text-sm font-normal dark:text-white/60">
-            {description}
-          </p>
         </div>
       </div>
     </figure>
