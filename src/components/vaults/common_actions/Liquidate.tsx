@@ -22,7 +22,7 @@ import { SynthAsset } from "@/lib/config/synths";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
-import { useVaults } from "@/lib/queries/useVaults";
+import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { LiquidateTokenInput } from "@/components/common/input/LiquidateInput";

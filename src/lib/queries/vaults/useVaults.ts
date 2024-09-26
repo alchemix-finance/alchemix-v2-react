@@ -9,7 +9,7 @@ import { tokenAdapterAbi } from "@/abi/tokenAdapter";
 import { MAX_LOSS_CHECKER_ADDRESSES, VAULTS } from "@/lib/config/vaults";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { ONE_MINUTE_IN_MS } from "@/lib/constants";
-import { QueryKeys } from "./queriesSchema";
+import { QueryKeys } from "../queriesSchema";
 
 export const useVaults = () => {
   const chain = useChain();

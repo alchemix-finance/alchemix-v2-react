@@ -1,5 +1,5 @@
 import { Accordion } from "@/components/ui/accordion";
-import { useVaults } from "@/lib/queries/useVaults";
+import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SYNTH_ASSETS, SynthAsset } from "@/lib/config/synths";
 import { useMemo, useState } from "react";

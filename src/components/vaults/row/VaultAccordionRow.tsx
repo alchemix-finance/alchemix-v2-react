@@ -24,7 +24,7 @@ import { Deposit } from "@/components/vaults/row/Deposit";
 import { Withdraw } from "@/components/vaults/row/Withdraw";
 import { Migrate } from "@/components/vaults/row/Migrate";
 import { mainnet, optimism } from "viem/chains";
-import { useVaults } from "@/lib/queries/useVaults";
+import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";

@@ -99,9 +99,34 @@ export const useWithdraw = ({
     },
   });
 
-  const shares = isSelectedTokenYieldToken
+  const { data: depositedSharesBalance } = useReadContract({
+    address: vault.alchemist.address,
+    abi: alchemistV2Abi,
+    chainId: chain.id,
+    functionName: "positions",
+    args: [address!, vault.yieldToken],
+    query: {
+      enabled: !!address,
+      select: ([shares]) => shares,
+    },
+  });
+
+  let shares = isSelectedTokenYieldToken
     ? sharesFromYieldToken
     : sharesFromUnderlyingToken;
+
+  /**
+   * When we using yield token for withdrawal amount, we need to convert it back to shares for `withdraw` function.
+   * Because in input we use conversion rate at the time of input (shares -> yield token).
+   * And here we use conversion rate at the time of crafting withdrawal tx (yield token -> shares).
+   */
+  if (
+    depositedSharesBalance !== undefined &&
+    shares !== undefined &&
+    depositedSharesBalance < shares
+  ) {
+    shares = depositedSharesBalance;
+  }
 
   const minimumOutUnderlying = !isSelectedTokenYieldToken
     ? calculateMinimumOut(withdrawAmount, parseUnits(slippage, 2))
