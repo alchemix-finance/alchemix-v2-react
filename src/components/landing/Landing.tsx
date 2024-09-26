@@ -38,7 +38,10 @@ export const Landing = () => {
       <div className="relative flex flex-col space-y-14 pb-12 font-alcxTitles">
         <div className="flex items-center justify-center gap-16 px-20 py-10">
           <div className="w-1/3 space-y-6">
-            <BlurInHeader className="text-6xl font-extrabold" delay={0.1}>
+            <BlurInHeader
+              className="inline-flex bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-6xl font-extrabold text-transparent dark:bg-gradient-to-r dark:from-bronze3 dark:via-bronze2 dark:to-bronze3"
+              delay={0.1}
+            >
               Self-Repaying Loans, Without The Liquidations
             </BlurInHeader>
             <BlurInParagraph
