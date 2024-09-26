@@ -234,16 +234,23 @@ export const useVaults = () => {
       const vaultsWithTokenAdaptersAndMetadata = vaultsWithCheckedMaxLoss
         .filter((vault) => VAULTS[chain.id][vault.yieldToken] !== undefined)
         .map((vault) => {
-          const metadata = VAULTS[chain.id][vault.yieldToken];
-          if (vault.isLossGreaterThanMaxLoss) {
-            metadata.messages.push({
-              type: "warning",
-              message:
-                "This vault has limited functionality due to experiencing a loss.",
-              learnMoreUrl:
-                "https://alchemix-finance.gitbook.io/user-docs/resources/guides/vault-losses-and-collateral-de-pegging",
-            });
-          }
+          const metadata = {
+            ...VAULTS[chain.id][vault.yieldToken],
+            messages: [
+              ...VAULTS[chain.id][vault.yieldToken].messages,
+              ...(vault.isLossGreaterThanMaxLoss
+                ? [
+                    {
+                      type: "warning",
+                      message:
+                        "This vault has limited functionality due to experiencing a loss.",
+                      learnMoreUrl:
+                        "https://alchemix-finance.gitbook.io/user-docs/resources/guides/vault-losses-and-collateral-de-pegging",
+                    },
+                  ]
+                : []),
+            ],
+          };
           return {
             ...vault,
             metadata,
