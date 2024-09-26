@@ -19,7 +19,7 @@ export const getTokenLogoUrl = (symbol: string | undefined) => {
   const tokenLogoUrl = tokenLogoUrlsMapping.find(
     (token) => token.symbol === symbol,
   )?.image;
-  console.log(symbol);
+
   return tokenLogoUrl
     ? `/images/token-icons/${tokenLogoUrl}`
     : `/images/token-icons/${symbol}.svg`;
