@@ -246,7 +246,7 @@ export const useVaults = () => {
                         "This vault has limited functionality due to experiencing a loss.",
                       learnMoreUrl:
                         "https://alchemix-finance.gitbook.io/user-docs/resources/guides/vault-losses-and-collateral-de-pegging",
-                    },
+                    } as const,
                   ]
                 : []),
             ],
