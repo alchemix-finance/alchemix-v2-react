@@ -94,13 +94,13 @@ export const Landing = () => {
               </Button>
             </SlideBox>
             <SlideBox
-              className="flex w-full items-center justify-center p-6"
+              className="flex w-full items-center justify-center"
               direction="right"
             >
               <img
                 src="/images/landing-page/liquidations.png"
                 alt="Liquidations section image"
-                className="h-64 w-64"
+                className="aspect-video h-52 object-cover"
               />
             </SlideBox>
           </div>
