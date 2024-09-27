@@ -60,6 +60,10 @@ module.exports = {
             transform: "translateX(-100%)",
           },
         },
+        buttonMovingGradientBg: {
+          "0%": { "background-position": "0%" },
+          "100%": { "background-position": "200%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -67,6 +71,8 @@ module.exports = {
         "loading-bar":
           "loading-bar 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal none running",
         scroll: "scroll 30s linear infinite",
+        buttonMovingGradientBg:
+          "buttonMovingGradientBg var(--speed, 2s) infinite linear",
       },
       colors: {
         black1: "#0E251D",
