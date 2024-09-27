@@ -93,9 +93,22 @@ const AnimatedList = React.memo(
 
 AnimatedList.displayName = "AnimatedList";
 
-export const ActionsList = () => {
+export const ActionsList = ({
+  color = "#F7C19B",
+}: {
+  color?: string | string[];
+}) => {
   return (
-    <div className="flex aspect-video h-52 w-full flex-col overflow-hidden rounded-lg border border-bronze2 bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
+    <div className="relative flex aspect-video h-52 w-full flex-col overflow-hidden rounded-lg bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
+      <div
+        style={
+          {
+            "--mask-linear-gradient": `linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)`,
+            "--background-radial-gradient": `radial-gradient(transparent,transparent, ${color instanceof Array ? color.join(",") : color},transparent,transparent)`,
+          } as React.CSSProperties
+        }
+        className="motion-safe:before:animate-shine before:pointer-events-none before:absolute before:inset-0 before:z-10 before:size-full before:rounded-lg before:p-[2px] before:will-change-[background-position] before:content-[''] before:![-webkit-mask-composite:xor] before:[background-image:--background-radial-gradient] before:[background-size:300%_300%] before:![mask-composite:exclude] before:[mask:--mask-linear-gradient]"
+      />
       <AnimatedList>
         {actions.map((item, idx) => (
           <Action {...item} key={idx} />

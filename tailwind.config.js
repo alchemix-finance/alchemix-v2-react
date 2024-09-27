@@ -60,9 +60,22 @@ module.exports = {
             transform: "translateX(-100%)",
           },
         },
+        // cta button at landing page
         buttonMovingGradientBg: {
           "0%": { "background-position": "0%" },
           "100%": { "background-position": "200%" },
+        },
+        // shine border effect at els at landing page
+        shine: {
+          "0%": {
+            "background-position": "0% 0%",
+          },
+          "50%": {
+            "background-position": "100% 100%",
+          },
+          to: {
+            "background-position": "0% 0%",
+          },
         },
       },
       animation: {
@@ -73,6 +86,7 @@ module.exports = {
         scroll: "scroll 30s linear infinite",
         buttonMovingGradientBg:
           "buttonMovingGradientBg var(--speed, 2s) infinite linear",
+        shine: "shine 14s infinite linear",
       },
       colors: {
         black1: "#0E251D",
