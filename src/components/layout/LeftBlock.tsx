@@ -19,6 +19,7 @@ export function LeftBlock() {
             variant="ghost"
             className="h-7 w-7 rounded border border-iconsInverse/40 bg-transparent p-1 text-iconsInverse/40 transition-colors hover:border-iconsInverse hover:bg-transparent hover:text-iconsInverse dark:border-orange4/40 dark:bg-transparent dark:text-orange4/40 dark:hover:border-orange4 dark:hover:bg-transparent dark:hover:text-orange4"
             onClick={handleDarkModeToggle}
+            aria-label="Theme toggle (light or dark)"
           >
             {darkMode ? (
               <MoonIcon className="h-4 w-4" />
@@ -30,6 +31,7 @@ export function LeftBlock() {
             variant="ghost"
             className="h-7 w-7 rounded border border-iconsInverse/40 bg-transparent fill-iconsInverse/40 p-1 text-iconsInverse/40 transition-colors hover:border-iconsInverse hover:bg-transparent hover:fill-iconsInverse hover:text-iconsInverse dark:border-orange4/40 dark:bg-transparent dark:fill-orange4/40 dark:text-orange4/40 dark:hover:border-orange4 dark:hover:bg-transparent dark:hover:fill-orange4 dark:hover:text-orange4"
             onClick={handleCurrencyChange}
+            aria-label="Currency toggle (USD or ETH)"
           >
             {currency === "USD" ? <DollarSignIcon className="h-4 w-4" /> : "Ξ"}
           </Button>
@@ -38,6 +40,7 @@ export function LeftBlock() {
             href="https://alchemix-finance.gitbook.io/user-docs"
             target="_blank"
             rel="noreferrer noopener"
+            aria-label="Documentation"
           >
             <FileIcon className="h-4 w-4" />
           </a>
@@ -46,6 +49,7 @@ export function LeftBlock() {
             href="https://twitter.com/AlchemixFi"
             target="_blank"
             rel="noreferrer noopener"
+            aria-label="Twitter"
           >
             <XPrevTwitterIcon className="h-4 w-4" />
           </a>
