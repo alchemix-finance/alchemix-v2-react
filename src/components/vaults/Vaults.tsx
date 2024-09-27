@@ -17,7 +17,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
 
-type SynthFilter = "all" | SynthAsset;
+export type SynthFilter = "all" | SynthAsset;
 type UsedFilter = "all" | "used" | "unused";
 type Action = "Borrow" | "Repay" | "Liquidate";
 
@@ -64,10 +64,10 @@ export const Vaults = () => {
       synthTab === "all"
         ? onlyEnabledVaults
         : onlyEnabledVaults?.filter(
-            (vault) =>
-              ALCHEMISTS_METADATA[chain.id][synthTab].toLowerCase() ===
-              vault.alchemist.address.toLowerCase(),
-          );
+          (vault) =>
+            ALCHEMISTS_METADATA[chain.id][synthTab].toLowerCase() ===
+            vault.alchemist.address.toLowerCase(),
+        );
     if (usedTab === "all") return synthFiltered;
     if (usedTab === "used")
       return synthFiltered?.filter((vault) => vault.position.shares > 0n);
@@ -122,7 +122,7 @@ export const Vaults = () => {
               </Tabs>
             </div>
             <div className="space-y-4">
-              <VaultsMetrics />
+              <VaultsMetrics filteredVaults={filteredVaults} selectedSynth={synthTab} />
               <div className="rounded border border-grey3inverse dark:border-grey3">
                 <div className="flex space-x-4 bg-grey10inverse p-4 dark:bg-grey10">
                   <div className="flex flex-grow flex-col gap-4 sm:flex-row">
