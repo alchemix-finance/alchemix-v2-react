@@ -18,7 +18,7 @@ let actions = [
   },
 ];
 
-actions = Array.from({ length: 2 }, () => actions).flat();
+actions = Array.from({ length: 3 }, () => actions).flat();
 
 const Action = ({ name }: { name: string }) => {
   return (
