@@ -42,6 +42,9 @@ export const wagmiConfig = createConfig({
       transport: fallback(
         chain.rpcUrls.default.http.map((rpcUrl) => http(rpcUrl)),
       ),
+      batch: {
+        multicall: true,
+      },
     });
   },
 });

@@ -2,4 +2,5 @@
   font-family: "Montserrat";
   src: url("/alchemix-v2-react/font/Montserrat/Montserrat-VariableFont_wght.ttf")
     format("truetype");
+  font-display: block;
 }

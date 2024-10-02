@@ -9,13 +9,14 @@ const copyrightYear = () => {
 
 export const Footer = () => {
   return (
-    <footer className="flex flex-col border-t border-grey5inverse py-12 pb-16 pl-8 lg:pb-12 dark:border-grey5">
+    <footer className="flex flex-col border-t border-grey5inverse bg-grey30inverse py-12 pb-16 pl-8 lg:pb-12 dark:border-grey5 dark:bg-grey30">
       <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-11">
         <div className="w-60">
           <img
             src="/alchemix-v2-react/images/icons/ALCX_Std_logo.svg"
             className="mb-5 h-9 saturate-0"
             alt="The Alchemix logo"
+            loading="lazy"
           />
 
           <p className="mb-3 text-sm opacity-50">
@@ -165,6 +166,7 @@ export const Footer = () => {
                   src="./alchemix-v2-react/images/integrations/defillama.svg"
                   className="w-32"
                   alt="The logo of DefiLlama"
+                  loading="lazy"
                 />
               </a>
             </li>
@@ -174,6 +176,7 @@ export const Footer = () => {
                   src="./alchemix-v2-react/images/integrations/lifi.svg"
                   className="w-32"
                   alt="The logo of Li.Fi"
+                  loading="lazy"
                 />
               </a>
             </li>
@@ -183,6 +186,7 @@ export const Footer = () => {
                   src="./alchemix-v2-react/images/integrations/snapshot.svg"
                   className="w-32"
                   alt="The logo of Snapshot"
+                  loading="lazy"
                 />
               </a>
             </li>
@@ -201,6 +205,7 @@ export const Footer = () => {
                   src="./alchemix-v2-react/images/integrations/klima.svg"
                   className="w-32"
                   alt="Alchemix pledged to offset 4,390.96 Carbon Tonnes"
+                  loading="lazy"
                 />
               </a>
             </li>
