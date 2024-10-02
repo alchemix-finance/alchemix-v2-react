@@ -13,7 +13,7 @@ function GovernanceRoute() {
     <Page
       title="Governance"
       description="Alchemix Improvement Proposals"
-      iconUri="/alchemix-v2-react/images/icons/alcx_thin.svg"
+      iconUri="./images/icons/alcx_thin.svg"
     >
       <Governance />
     </Page>

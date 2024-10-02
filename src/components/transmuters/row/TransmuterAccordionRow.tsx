@@ -39,7 +39,7 @@ export const TransmuterAccordionRow = ({
               />
               <img
                 src={
-                  "/alchemix-v2-react/images/icons/" +
+                  "./images/icons/" +
                   underlyingToken?.symbol.toLowerCase() +
                   ".svg"
                 }

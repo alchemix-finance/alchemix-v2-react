@@ -62,7 +62,7 @@ export const Transmuters = () => {
                   onClick={() => windowOpen(provider.url)}
                 >
                   <img
-                    src={`./alchemix-v2-react/images/icons/${provider.icon}`}
+                    src={`./images/icons/${provider.icon}`}
                     className="h-5 w-5"
                     alt={`${provider.label} logo`}
                   />
@@ -79,7 +79,7 @@ export const Transmuters = () => {
                     <TabsList className="absolute h-auto">
                       <TabsTrigger value="all" className="space-x-4">
                         <img
-                          src="/alchemix-v2-react/images/icons/alcx_med.svg"
+                          src="./images/icons/alcx_med.svg"
                           className="h-5 w-5"
                           alt="All transmuters filter"
                         />
@@ -90,7 +90,7 @@ export const Transmuters = () => {
                         className="space-x-4"
                       >
                         <img
-                          src="/alchemix-v2-react/images/icons/alusd_med.svg"
+                          src="./images/icons/alusd_med.svg"
                           className="h-5 w-5"
                           alt="alUSD filter"
                         />
@@ -101,7 +101,7 @@ export const Transmuters = () => {
                         className="space-x-4"
                       >
                         <img
-                          src="/alchemix-v2-react/images/icons/aleth_med.svg"
+                          src="./images/icons/aleth_med.svg"
                           className="h-5 w-5"
                           alt="alETH filter"
                         />

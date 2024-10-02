@@ -28,7 +28,7 @@ export const VideoModal = ({
       >
         <DialogTrigger className="group relative inline-flex w-full items-center justify-center text-orange4">
           <img
-            src="/alchemix-v2-react/images/landing-page/ad_thumbnail.webp"
+            src="./images/landing-page/ad_thumbnail.webp"
             alt="Watch the Alchemix cinematic ad"
             className="aspect-video w-full object-cover"
           />

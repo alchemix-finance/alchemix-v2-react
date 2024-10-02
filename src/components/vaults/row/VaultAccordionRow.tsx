@@ -103,7 +103,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <div className="relative">
             {vault.metadata.beta && (
               <img
-                src="/alchemix-v2-react/images/icons/beta.svg"
+                src="./images/icons/beta.svg"
                 alt="Experimental Vault"
                 className="absolute left-0 top-0 w-8"
               />
@@ -111,7 +111,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             <img
               src={
                 SYNTH_ASSETS_METADATA[vault.metadata.synthAssetType]?.icon ??
-                "./alchemix-v2-react/images/icons/alusd_med.svg"
+                "./images/icons/alusd_med.svg"
               }
               alt={
                 SYNTH_ASSETS_METADATA[vault.metadata.synthAssetType]?.icon ??
@@ -120,7 +120,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               className="h-12 w-12"
             />
             <img
-              src={`/alchemix-v2-react/images/icons/${vaultYieldTokenData?.symbol.toLowerCase()}.svg`}
+              src={`./images/icons/${vaultYieldTokenData?.symbol.toLowerCase()}.svg`}
               alt={vaultYieldTokenData?.symbol ?? vault.metadata.label}
               className="absolute left-6 top-6 h-9 w-9"
             />

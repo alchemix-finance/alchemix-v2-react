@@ -12,7 +12,7 @@ function FarmsRoute() {
     <Page
       title="Farms"
       description="Earn yield on your deposits"
-      iconUri="/alchemix-v2-react/images/icons/farm_thin.svg"
+      iconUri="./images/icons/farm_thin.svg"
     >
       <Farms />
     </Page>

@@ -11,11 +11,11 @@ export type SynthAsset = (typeof SYNTH_ASSETS)[keyof typeof SYNTH_ASSETS];
 export const SYNTH_ASSETS_METADATA = {
   [SYNTH_ASSETS.ALUSD]: {
     label: "alUSD",
-    icon: "/alchemix-v2-react/images/icons/alusd_med.svg",
+    icon: "./images/icons/alusd_med.svg",
   },
   [SYNTH_ASSETS.ALETH]: {
     label: "alETH",
-    icon: "/alchemix-v2-react/images/icons/aleth_med.svg",
+    icon: "./images/icons/aleth_med.svg",
   },
 } as const satisfies SynthAssetMetadata;
 

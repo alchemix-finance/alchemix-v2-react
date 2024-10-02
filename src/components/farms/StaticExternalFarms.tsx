@@ -30,13 +30,13 @@ export const StaticExternalFarms = () => {
                 <p className="font-semibold tracking-tight">{farm.symbol}</p>
                 <div className="flex items-center gap-2">
                   <img
-                    src={`./alchemix-v2-react/images/icons/${farm.icon}`}
+                    src={`./images/icons/${farm.icon}`}
                     className="h-5 w-5 rounded-full"
                     alt={`${farm.name} logo`}
                   />
                   {farm.collabicon && (
                     <img
-                      src={`./alchemix-v2-react/images/icons/${farm.collabicon}`}
+                      src={`./images/icons/${farm.collabicon}`}
                       className="h-5 w-5 rounded-full"
                       alt={`${farm.name} logo`}
                     />

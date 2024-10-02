@@ -98,7 +98,7 @@ export const Landing = () => {
               direction="right"
             >
               <img
-                src="/images/landing-page/liquidations.png"
+                src="./images/landing-page/liquidations.png"
                 alt="Liquidations section image"
                 className="aspect-video h-52 object-cover"
               />
@@ -118,7 +118,7 @@ export const Landing = () => {
             </div>
             <div className="flex w-full items-center justify-center p-6">
               <img
-                src="/images/landing-page/lock.svg"
+                src="./images/landing-page/lock.svg"
                 alt="Lock vector image"
                 className="h-64 w-64"
                 loading="lazy"
@@ -142,7 +142,7 @@ export const Landing = () => {
           <div className="relative -mr-20 grid text-start *:col-start-1 *:row-start-1">
             <div className="pointer-events-none -z-10 w-full pl-64">
               <img
-                src="/images/landing-page/big_placeholder.png"
+                src="./images/landing-page/big_placeholder.png"
                 alt="Placeholder image"
                 className="h-full w-full"
               />
@@ -162,18 +162,18 @@ export const Landing = () => {
           </div>
           <div className="flex flex-col items-stretch justify-between gap-20 lg:flex-row">
             <Step
-              src="/images/landing-page/1.png"
-              srcHover="/images/landing-page/1-hover.png"
+              src="./images/landing-page/1.png"
+              srcHover="./images/landing-page/1-hover.png"
               alt="Deposit"
             />
             <Step
-              src="/images/landing-page/2.png"
-              srcHover="/images/landing-page/2-hover.png"
+              src="./images/landing-page/2.png"
+              srcHover="./images/landing-page/2-hover.png"
               alt="Earn"
             />
             <Step
-              src="/images/landing-page/3.png"
-              srcHover="/images/landing-page/3-hover.png"
+              src="./images/landing-page/3.png"
+              srcHover="./images/landing-page/3-hover.png"
               alt="Access"
             />
           </div>

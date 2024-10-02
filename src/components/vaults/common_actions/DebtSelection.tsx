@@ -58,7 +58,7 @@ export const DebtSelection = ({
           onClick={() => handleSynthAssetChange(synthAsset)}
         >
           <img
-            src={`/alchemix-v2-react/images/token-icons/${synthAsset}.svg`}
+            src={`./images/token-icons/${synthAsset}.svg`}
             alt={synthAsset}
             className="h-16 w-16"
           />

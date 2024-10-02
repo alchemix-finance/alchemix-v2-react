@@ -28,12 +28,12 @@ const assets = [
 export const Tokens = () => {
   return (
     <div className="flex items-center overflow-x-clip">
-      <div className="lg:animate-scroll flex min-w-full items-center justify-between lg:pl-20">
+      <div className="flex min-w-full items-center justify-between lg:animate-scroll lg:pl-20">
         {assets.map(({ name, color }) => (
           <div key={name} className="relative">
             <img
               alt={name}
-              src={`/images/icons/${name.toLowerCase()}.svg`}
+              src={`./images/icons/${name.toLowerCase()}.svg`}
               className="h-20 w-20 min-w-full rounded-full border border-lightgrey10inverse dark:border-lightgrey10"
             />
             <div
@@ -45,12 +45,12 @@ export const Tokens = () => {
           </div>
         ))}
       </div>
-      <div className="animate-scroll hidden min-w-full items-center justify-between lg:flex lg:pl-20">
+      <div className="hidden min-w-full animate-scroll items-center justify-between lg:flex lg:pl-20">
         {assets.map(({ name, color }) => (
           <div key={name} className="relative">
             <img
               alt={name}
-              src={`/images/icons/${name.toLowerCase()}.svg`}
+              src={`./images/icons/${name.toLowerCase()}.svg`}
               className="h-20 w-20 min-w-full rounded-full border border-lightgrey10inverse dark:border-lightgrey10"
             />
             <div

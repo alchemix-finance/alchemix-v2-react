@@ -163,7 +163,7 @@ export const Borrow = () => {
                 <SelectValue placeholder="Debt Token" asChild>
                   <div className="flex items-center gap-4">
                     <img
-                      src={`/alchemix-v2-react/images/token-icons/${debtToken.symbol}.svg`}
+                      src={`./images/token-icons/${debtToken.symbol}.svg`}
                       alt={debtToken.symbol}
                       className="h-12 w-12"
                     />

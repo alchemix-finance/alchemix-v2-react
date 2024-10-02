@@ -1,5 +1,5 @@
 @font-face {
   font-family: "Reem Kufi";
-  src: url("/alchemix-v2-react/font/Reem_Kufi/ReemKufi-VariableFont_wght.ttf")
+  src: url("./fonts/Reem_Kufi/ReemKufi-VariableFont_wght.ttf")
     format("truetype");
 }

@@ -15,7 +15,7 @@ function TransmutersRoute() {
     <Page
       title="Transmuter"
       description="Convert your synthetic tokens to their counterpart at a 1:1 ratio"
-      iconUri="/alchemix-v2-react/images/icons/transmuter_thin.svg"
+      iconUri="./images/icons/transmuter_thin.svg"
     >
       <Transmuters key={chain.id} />
     </Page>

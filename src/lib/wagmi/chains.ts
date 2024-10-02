@@ -89,7 +89,7 @@ const fantomWithRpcsAndIcon = {
       ],
     },
   },
-  iconUrl: "/alchemix-v2-react/images/icons/fantom_blue.svg",
+  iconUrl: "./images/icons/fantom_blue.svg",
 } as const satisfies Chain;
 
 export const chains = [

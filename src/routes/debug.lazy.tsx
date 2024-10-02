@@ -11,7 +11,7 @@ function DebugRoute() {
     <Page
       title="Debug"
       description="Tenderly Fork debugging"
-      iconUri="/alchemix-v2-react/images/icons/alchemix.svg"
+      iconUri="./images/icons/alchemix.svg"
     >
       <Debug />
     </Page>

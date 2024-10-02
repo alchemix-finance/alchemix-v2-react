@@ -64,10 +64,10 @@ export const Vaults = () => {
       synthTab === "all"
         ? onlyEnabledVaults
         : onlyEnabledVaults?.filter(
-          (vault) =>
-            ALCHEMISTS_METADATA[chain.id][synthTab].toLowerCase() ===
-            vault.alchemist.address.toLowerCase(),
-        );
+            (vault) =>
+              ALCHEMISTS_METADATA[chain.id][synthTab].toLowerCase() ===
+              vault.alchemist.address.toLowerCase(),
+          );
     if (usedTab === "all") return synthFiltered;
     if (usedTab === "used")
       return synthFiltered?.filter((vault) => vault.position.shares > 0n);
@@ -96,7 +96,7 @@ export const Vaults = () => {
                 <TabsList>
                   <TabsTrigger value="all" className="space-x-4">
                     <img
-                      src="/alchemix-v2-react/images/icons/alcx_med.svg"
+                      src="./images/icons/alcx_med.svg"
                       className="h-5 w-5"
                       alt="All vaults filter"
                     />
@@ -104,7 +104,7 @@ export const Vaults = () => {
                   </TabsTrigger>
                   <TabsTrigger value={SYNTH_ASSETS.ALUSD} className="space-x-4">
                     <img
-                      src="/alchemix-v2-react/images/icons/alusd_med.svg"
+                      src="./images/icons/alusd_med.svg"
                       className="h-5 w-5"
                       alt="alUSD filter"
                     />
@@ -112,7 +112,7 @@ export const Vaults = () => {
                   </TabsTrigger>
                   <TabsTrigger value={SYNTH_ASSETS.ALETH} className="space-x-4">
                     <img
-                      src="/alchemix-v2-react/images/icons/aleth_med.svg"
+                      src="./images/icons/aleth_med.svg"
                       className="h-5 w-5"
                       alt="alETH filter"
                     />
@@ -122,7 +122,10 @@ export const Vaults = () => {
               </Tabs>
             </div>
             <div className="space-y-4">
-              <VaultsMetrics filteredVaults={filteredVaults} selectedSynth={synthTab} />
+              <VaultsMetrics
+                filteredVaults={filteredVaults}
+                selectedSynth={synthTab}
+              />
               <div className="rounded border border-grey3inverse dark:border-grey3">
                 <div className="flex space-x-4 bg-grey10inverse p-4 dark:bg-grey10">
                   <div className="flex flex-grow flex-col gap-4 sm:flex-row">
@@ -130,18 +133,15 @@ export const Vaults = () => {
                       [
                         {
                           action: "Borrow",
-                          iconUri:
-                            "/alchemix-v2-react/images/icons/Icon_Borrow.svg",
+                          iconUri: "./images/icons/Icon_Borrow.svg",
                         },
                         {
                           action: "Repay",
-                          iconUri:
-                            "/alchemix-v2-react/images/icons/Icon_Repay.svg",
+                          iconUri: "./images/icons/Icon_Repay.svg",
                         },
                         {
                           action: "Liquidate",
-                          iconUri:
-                            "/alchemix-v2-react/images/icons/Icon_Liquidate.svg",
+                          iconUri: "./images/icons/Icon_Liquidate.svg",
                         },
                       ] as const
                     ).map(({ action, iconUri }) => (

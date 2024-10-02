@@ -54,7 +54,7 @@ export function LeftNav() {
         >
           Sentinel
           <img
-            src="/alchemix-v2-react/images/icons/sentinel_med.svg"
+            src="./images/icons/sentinel_med.svg"
             className="h-7 w-7 invert dark:filter-none"
             alt="Sentinel icon"
           />

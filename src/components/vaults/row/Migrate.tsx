@@ -80,7 +80,7 @@ export const Migrate = ({
               <SelectValue placeholder="Vault" asChild>
                 <div className="flex items-center gap-4">
                   <img
-                    src={`/alchemix-v2-react/images/token-icons/${tokenOfSelectedVault?.symbol}.svg`}
+                    src={`./images/token-icons/${tokenOfSelectedVault?.symbol}.svg`}
                     alt={tokenOfSelectedVault?.symbol}
                     className="hidden h-4 w-4 sm:block"
                   />
@@ -103,7 +103,7 @@ export const Migrate = ({
         <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
           <div className="flex items-center py-4 pl-4 pr-2">
             <img
-              src="/alchemix-v2-react/images/token-icons/Shares.svg"
+              src="./images/token-icons/Shares.svg"
               alt="Shares icon"
               className="h-12 w-12"
             />

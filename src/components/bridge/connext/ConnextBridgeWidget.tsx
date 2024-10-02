@@ -285,7 +285,7 @@ export const ConnextBridgeWidget = () => {
             <SelectValue placeholder="Token" asChild>
               <div className="flex items-center gap-4">
                 <img
-                  src={`/alchemix-v2-react/assets/token-icons/${token?.symbol}.svg`}
+                  src={`./assets/token-icons/${token?.symbol}.svg`}
                   alt={token?.symbol}
                   className="h-12 w-12"
                 />
