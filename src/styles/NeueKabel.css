@@ -1,5 +1,20 @@
 @font-face {
   font-family: "Neue Kabel";
   src: url("/fonts/Neue_Kabel/NeueKabel.otf") format("opentype");
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Neue Kabel";
+  src: url("/fonts/Neue_Kabel/NeueKabel.otf") format("opentype");
+  font-weight: 600;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Neue Kabel";
+  src: url("/fonts/Neue_Kabel/NeueKabel.otf") format("opentype");
+  font-weight: 700;
   font-display: block;
 }
