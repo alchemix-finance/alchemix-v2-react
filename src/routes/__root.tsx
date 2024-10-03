@@ -6,6 +6,7 @@ import "@/styles/index.css";
 import { Layout } from "@/components/layout/Layout";
 import { Toaster } from "@/components/ui/sonner";
 import { ErrorComponent } from "@/components/error/ErrorComponent";
+import { useLocation } from "@tanstack/react-router";
 
 const TanStackRouterDevtools = import.meta.env.PROD
   ? () => null // Render nothing in production
@@ -20,9 +21,12 @@ const TanStackRouterDevtools = import.meta.env.PROD
 
 export const Route = createRootRoute({
   component: () => {
+    const location = useLocation();
+
+    const isLandingPage = location.pathname === "/";
     return (
       <>
-        <Layout>
+        <Layout isLandingPage={isLandingPage}>
           <Outlet />
         </Layout>
         <Toaster position="top-center" />
