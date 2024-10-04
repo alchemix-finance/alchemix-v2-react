@@ -19,7 +19,7 @@ import {
   getVesperBonusData,
 } from "@/lib/middleware/bonuses";
 import { getGearboxApy } from "@/lib/middleware/gearbox";
-import { getJonesApy } from "@/lib/middleware/jones";
+// import { getJonesApy } from "@/lib/middleware/jones";
 
 // @dev some vaults are broken so we need to ignore them from processing
 export const IGNORED_VAULTS: `0x${string}`[] = [
@@ -539,21 +539,21 @@ export const VAULTS: VaultsConfig = {
       },
       disabledDepositTokens: [],
     },
-    "0xB0BDE111812EAC913b392D80D51966eC977bE3A2": {
-      label: "Jones jUSDC",
-      synthAssetType: SYNTH_ASSETS.ALUSD,
-      underlyingSymbol: "USDC",
-      yieldSymbol: "jUSDC",
-      image: "jUSDC.webp",
-      messages: [],
-      api: {
-        apr: getJonesApy,
-        yieldType: "APY",
-        provider: "jones",
-        bonus: getNoBonus,
-      },
-      disabledDepositTokens: [],
-    },
+    // "0xB0BDE111812EAC913b392D80D51966eC977bE3A2": {
+    //   label: "Jones jUSDC",
+    //   synthAssetType: SYNTH_ASSETS.ALUSD,
+    //   underlyingSymbol: "USDC",
+    //   yieldSymbol: "jUSDC",
+    //   image: "jUSDC.webp",
+    //   messages: [],
+    //   api: {
+    //     apr: getJonesApy,
+    //     yieldType: "APY",
+    //     provider: "jones",
+    //     bonus: getNoBonus,
+    //   },
+    //   disabledDepositTokens: [],
+    // },
     //alETH
     "0x5979D7b546E38E414F7E9822514be443A4800529": {
       label: "Lido wstETH",
