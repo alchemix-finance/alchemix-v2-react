@@ -125,7 +125,7 @@ export const useWithdraw = ({
     shares !== undefined &&
     depositedSharesBalance < shares
   ) {
-    shares = depositedSharesBalance;
+    shares = depositedSharesBalance - 1n;
   }
 
   const minimumOutUnderlying = !isSelectedTokenYieldToken
