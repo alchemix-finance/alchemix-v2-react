@@ -1,5 +1,7 @@
-import { Token, Vault } from "@/lib/types";
 import { useState } from "react";
+import { formatEther } from "viem";
+
+import { Token, Vault } from "@/lib/types";
 import {
   Select,
   SelectTrigger,
@@ -7,16 +9,17 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { SlippageInput } from "@/components/common/input/SlippageInput";
+import { CtaButton } from "@/components/common/CtaButton";
+import { VaultWithdrawTokenInput } from "@/components/common/input/VaultWithdrawTokenInput";
+import { VaultActionMotionDiv } from "./motion";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { GAS_ADDRESS } from "@/lib/constants";
 import { useWithdraw } from "@/lib/mutations/useWithdraw";
-import { VaultWithdrawTokenInput } from "@/components/common/input/VaultWithdrawTokenInput";
+import { useVaultsWithdrawAvailableBalance } from "@/lib/queries/vaults/useVaultsWithdrawAvailableBalance";
 import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
-import { formatEther } from "viem";
-import { SlippageInput } from "@/components/common/input/SlippageInput";
-import { VaultActionMotionDiv } from "./motion";
-import { CtaButton } from "@/components/common/CtaButton";
+import { getTokenLogoUrl } from "@/utils/getTokenLogoUrl";
 
 export const Withdraw = ({
   vault,
@@ -71,6 +74,15 @@ export const Withdraw = ({
     setTokenAddress(value as `0x${string}`);
   };
 
+  const { balance } = useVaultsWithdrawAvailableBalance({
+    vault,
+    isSelectedTokenYieldToken,
+  });
+
+  const isInsufficientBalance = balance !== undefined && +amount > +balance;
+  const isDisabledCta =
+    isPending || isInputZero(amount) || isInsufficientBalance;
+
   return (
     <VaultActionMotionDiv>
       <div className="space-y-4">
@@ -80,7 +92,7 @@ export const Withdraw = ({
               <SelectValue placeholder="Token" asChild>
                 <div className="flex items-center gap-4">
                   <img
-                    src={`/images/token-icons/${token.symbol}.svg`}
+                    src={getTokenLogoUrl(token.symbol)}
                     alt={token.symbol}
                     className="h-12 w-12"
                   />
@@ -125,14 +137,16 @@ export const Withdraw = ({
         <CtaButton
           variant="outline"
           width="full"
-          disabled={isPending || isInputZero(amount)}
+          disabled={isDisabledCta}
           onClick={onCtaClick}
         >
-          {isPending
-            ? "Preparing"
-            : isApprovalNeeded === true
-              ? "Approve"
-              : "Withdraw"}
+          {isInsufficientBalance
+            ? "Insufficient balance"
+            : isPending
+              ? "Preparing"
+              : isApprovalNeeded === true
+                ? "Approve"
+                : "Withdraw"}
         </CtaButton>
       </div>
     </VaultActionMotionDiv>

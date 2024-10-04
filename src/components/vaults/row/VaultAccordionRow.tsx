@@ -24,7 +24,7 @@ import { Deposit } from "@/components/vaults/row/Deposit";
 import { Withdraw } from "@/components/vaults/row/Withdraw";
 import { Migrate } from "@/components/vaults/row/Migrate";
 import { mainnet, optimism } from "viem/chains";
-import { useVaults } from "@/lib/queries/useVaults";
+import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
@@ -120,8 +120,8 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               className="h-12 w-12"
             />
             <img
-              src={`/images/icons/${vaultYieldTokenData?.symbol.toLowerCase()}.svg`}
-              alt={vaultYieldTokenData?.symbol ?? vault.metadata.label}
+              src={`/images/token-icons/${vault.metadata.image}`}
+              alt={`${vault.metadata.image} logo`}
               className="absolute left-6 top-6 h-9 w-9"
             />
           </div>
@@ -383,10 +383,14 @@ const VaultCapacityCell = ({
 
 const VaultYieldCell = ({ vault }: { vault: Vault }) => {
   const chain = useChain();
+  const publicClient = usePublicClient<typeof wagmiConfig>({
+    chainId: chain.id,
+  });
   const { data: apr, isPending } = useQuery({
     queryKey: [
       QueryKeys.Apr,
       chain.id,
+      publicClient,
       vault.underlyingToken,
       vault.address,
       vault.metadata.yieldTokenOverride,
@@ -397,6 +401,7 @@ const VaultYieldCell = ({ vault }: { vault: Vault }) => {
         underlyingToken: vault.underlyingToken,
         vaultAddress: vault.address,
         yieldTokenOverride: vault.metadata.yieldTokenOverride,
+        publicClient,
       }),
     placeholderData: keepPreviousData,
   });

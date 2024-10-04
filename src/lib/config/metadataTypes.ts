@@ -54,10 +54,13 @@ type ApiProvider =
   | "frax"
   | "rocket"
   | "vesper"
-  | "lido";
+  | "lido"
+  | "gearbox"
+  | "jones";
 
 export interface VaultMetadata {
   label: string;
+  image: string;
   synthAssetType: SynthAsset;
   underlyingSymbol: string;
   yieldSymbol: string;
@@ -71,7 +74,6 @@ export interface VaultMetadata {
   disabledDepositTokens: Address[];
   wethGateway?: Address;
   gateway?: Address;
-  migrator?: Address;
   /**
    * This is the address of the actual yield (bearing for aave) token,
    * the regular yield token address in this case becomes a (static token adapter for aave or staking token for yearn),
@@ -92,6 +94,7 @@ interface AprFnParams {
   vaultAddress: Address;
   yieldTokenOverride: Address | undefined;
   chainId: SupportedChainId;
+  publicClient: UsePublicClientReturnType<typeof wagmiConfig>;
 }
 export type AprFn = (params: AprFnParams) => Promise<number>;
 
