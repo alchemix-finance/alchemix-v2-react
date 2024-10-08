@@ -36,7 +36,7 @@ export const Landing = () => {
       )}
 
       <div className="relative flex flex-col space-y-0 pb-20 font-alcxTitles">
-        <div className="flex items-stretch justify-center gap-16 px-20 py-12">
+        <div className="flex items-stretch justify-center gap-16 bg-grey10inverse bg-opacity-70 px-20 py-16 dark:bg-grey10 dark:bg-opacity-70">
           <div className="flex w-[40%] flex-col justify-between space-y-6 py-8">
             <BlurInHeader
               className="inline-flex bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-6xl font-black leading-tight tracking-wide text-transparent dark:bg-gradient-to-r dark:from-bronze3 dark:via-bronze2 dark:to-bronze3"
@@ -59,7 +59,7 @@ export const Landing = () => {
             className="flex w-full items-center justify-center p-8"
           />
         </div>
-        <div className="flex flex-col gap-20">
+        <div className="flex flex-col gap-10 pt-8">
           <BlurInHeader className="pl-20 text-5xl font-semibold" delay={0.3}>
             Why Alchemix?
           </BlurInHeader>
@@ -104,7 +104,7 @@ export const Landing = () => {
               />
             </SlideBox>
           </div>
-          <div className="flex w-full max-w-none items-center gap-24 rounded-sm bg-grey10inverse px-20 dark:bg-grey10">
+          <div className="flex w-full max-w-none items-center gap-24 rounded-sm bg-grey10inverse bg-opacity-70 px-20 dark:bg-grey10 dark:bg-opacity-70">
             <div className="space-y-6">
               <h2 className="text-2xl font-semibold">Security First</h2>
               <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
