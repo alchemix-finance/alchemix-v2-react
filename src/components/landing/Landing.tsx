@@ -59,7 +59,7 @@ export const Landing = () => {
             className="flex w-full items-center justify-center p-8"
           />
         </div>
-        <div className="flex flex-col gap-10 bg-lightgrey5inverse bg-opacity-70 pt-8 dark:bg-grey10 dark:bg-opacity-70">
+        <div className="flex flex-col gap-12 bg-lightgrey5inverse bg-opacity-70 pt-12 dark:bg-grey10 dark:bg-opacity-70">
           <BlurInHeader className="pl-20 text-5xl font-semibold" delay={0.3}>
             Why Alchemix?
           </BlurInHeader>
@@ -81,6 +81,7 @@ export const Landing = () => {
               </Button>
             </SlideBox>
           </div>
+          <div className="pl-20 text-5xl"></div>
           <div className="flex items-center gap-24 px-20">
             <SlideBox className="space-y-6" direction="bottom">
               <h2 className="text-2xl font-semibold">Zero Liquidations</h2>
@@ -104,6 +105,7 @@ export const Landing = () => {
               />
             </SlideBox>
           </div>
+          <div className="pl-20 text-5xl">‎</div>
         </div>
         <div className="flex w-full max-w-none items-center gap-24 rounded-sm px-20">
           <div className="space-y-6">
