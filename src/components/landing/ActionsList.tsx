@@ -24,7 +24,7 @@ const Action = ({ name }: { name: string }) => {
   return (
     <figure
       className={cn(
-        "relative mx-auto min-h-fit w-full max-w-64 overflow-hidden rounded-2xl p-4",
+        "max-w-128 relative mx-auto min-h-fit w-full overflow-hidden rounded-2xl p-4",
         // animation styles
         "transition-all duration-200 ease-in-out",
         // light styles
@@ -99,7 +99,7 @@ export const ActionsList = ({
   color?: string | string[];
 }) => {
   return (
-    <div className="relative flex aspect-video h-52 w-full flex-col overflow-hidden rounded-lg bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
+    <div className="relative flex aspect-square w-full flex-col overflow-hidden rounded-lg bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
       <div
         style={
           {
@@ -107,7 +107,7 @@ export const ActionsList = ({
             "--background-radial-gradient": `radial-gradient(transparent,transparent, ${color instanceof Array ? color.join(",") : color},transparent,transparent)`,
           } as React.CSSProperties
         }
-        className="motion-safe:before:animate-shine before:pointer-events-none before:absolute before:inset-0 before:z-10 before:size-full before:rounded-lg before:p-[2px] before:will-change-[background-position] before:content-[''] before:![-webkit-mask-composite:xor] before:[background-image:--background-radial-gradient] before:[background-size:300%_300%] before:![mask-composite:exclude] before:[mask:--mask-linear-gradient]"
+        className="before:pointer-events-none before:absolute before:inset-0 before:z-10 before:size-full before:rounded-lg before:p-[2px] before:will-change-[background-position] before:content-[''] before:![-webkit-mask-composite:xor] before:[background-image:--background-radial-gradient] before:[background-size:300%_300%] before:![mask-composite:exclude] before:[mask:--mask-linear-gradient] motion-safe:before:animate-shine"
       />
       <AnimatedList>
         {actions.map((item, idx) => (

@@ -37,9 +37,9 @@ export const Landing = () => {
 
       <div className="relative flex flex-col space-y-0 font-alcxTitles">
         <div className="flex items-stretch justify-center gap-16 px-20 py-16">
-          <div className="flex w-[40%] flex-col justify-between space-y-6 py-8">
+          <div className="flex w-[50%] flex-col justify-between space-y-6 py-8">
             <BlurInHeader
-              className="inline-flex bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-6xl font-black leading-tight tracking-normal text-transparent dark:bg-gradient-to-r dark:from-bronze3 dark:via-bronze2 dark:to-bronze3"
+              className="inline-flex bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-6xl font-extrabold leading-snug tracking-normal text-transparent dark:bg-gradient-to-r dark:from-bronze1 dark:via-bronze2 dark:to-bronze2"
               delay={0.1}
             >
               Self-Repaying Loans, Without The Liquidations
@@ -56,15 +56,15 @@ export const Landing = () => {
           </div>
           <VideoModal
             delay={0.3}
-            className="flex w-full items-center justify-center p-8"
+            className="flex w-full items-center justify-center py-8 pl-8"
           />
         </div>
-        <div className="flex flex-col gap-12 bg-lightgrey5inverse bg-opacity-70 pt-12 dark:bg-grey10 dark:bg-opacity-70">
+        <div className="flex flex-col gap-12 bg-lightgrey5inverse pt-12 dark:bg-grey10">
           <BlurInHeader className="pl-20 text-5xl font-semibold" delay={0.3}>
             Why Alchemix?
           </BlurInHeader>
           <div className="flex items-center gap-24 px-20">
-            <SlideBox direction="left" className="w-full">
+            <SlideBox direction="left" className="w-[50%] max-w-sm">
               <Suspense fallback={<div className="h-64 w-full" />}>
                 <ActionsList />
               </Suspense>
@@ -76,7 +76,7 @@ export const Landing = () => {
                 fees. Repay on your terms, keep your assets working for you, and
                 borrow against your collateral to secure future yield.
               </p>
-              <Button size="md" className="text-xl uppercase">
+              <Button size="md" className="text-xl font-extrabold uppercase">
                 Explore our vaults
               </Button>
             </SlideBox>
@@ -84,25 +84,21 @@ export const Landing = () => {
           <div className="pl-20 text-5xl"></div>
           <div className="flex items-center gap-24 px-20">
             <SlideBox className="space-y-6" direction="bottom">
-              <h2 className="text-2xl font-semibold">Zero Liquidations</h2>
+              <h2 className="text-4xl font-semibold">Zero Liquidations</h2>
               <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
                 With Alchemix, market volatility won&apos;t touch your vault.
                 Your debt is securely tied to your collateral, ensuring that
                 price swings never put you at risk.
               </p>
-              <Button size="sm" className="uppercase">
+              <Button size="md" className="text-xl font-extrabold uppercase">
                 Learn more
               </Button>
             </SlideBox>
-            <SlideBox
-              className="flex w-full items-center justify-center"
-              direction="right"
-            >
-              <img
-                src="/alchemix-v2-react/images/landing-page/liquidations.png"
-                alt="Liquidations section image"
-                className="aspect-video h-52 object-cover"
-              />
+
+            <SlideBox direction="left" className="w-[50%] max-w-sm">
+              <Suspense fallback={<div className="h-64 w-full" />}>
+                <ActionsList />
+              </Suspense>
             </SlideBox>
           </div>
           <div className="pl-20 text-5xl">‎</div>
@@ -128,7 +124,7 @@ export const Landing = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col gap-14 bg-lightgrey5inverse bg-opacity-70 px-20 text-center dark:bg-grey10 dark:bg-opacity-70">
+        <div className="flex flex-col gap-14 bg-lightgrey5inverse px-20 text-center dark:bg-grey10">
           <div>
             <BlurInHeader className="text-4xl font-bold">
               Your Favorite Tokens
