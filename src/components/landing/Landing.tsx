@@ -9,7 +9,6 @@ import { LandingCtaButton } from "./LandingCtaButton";
 import { SlideBox } from "./SlideBox";
 import { Tokens } from "./Tokens";
 import { EcosystemGrid } from "./EcosystemGrid";
-import { Step } from "./Step";
 import { useBreakpoints } from "@/hooks/useBreakpoints";
 
 const Scene = lazy(() =>
@@ -40,7 +39,7 @@ export const Landing = () => {
         <div className="flex items-stretch justify-center gap-16 px-20 py-16">
           <div className="flex w-[50%] flex-col justify-between space-y-6 py-8">
             <BlurInHeader
-              className="inline-flex bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-6xl font-extrabold leading-snug tracking-normal text-transparent dark:bg-gradient-to-r dark:from-bronze1 dark:via-bronze2 dark:to-bronze2"
+              className="inline-flex bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-6xl font-extrabold leading-tight tracking-normal text-transparent dark:bg-gradient-to-r dark:from-bronze1 dark:via-bronze2 dark:to-bronze2"
               delay={0.1}
             >
               Self-Repaying Loans, Without The Liquidations
