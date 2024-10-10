@@ -27,7 +27,7 @@ const assets = [
 
 export const Tokens = () => {
   return (
-    <div className="flex items-center overflow-x-clip">
+    <div className="-mx-20 flex items-center overflow-x-clip">
       <div className="flex min-w-full items-center justify-between lg:animate-scroll lg:pl-48">
         {assets.map(({ name, color }) => (
           <div key={name} className="relative">

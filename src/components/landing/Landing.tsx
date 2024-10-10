@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 
 import { Button } from "@/components/ui/button";
 
+import { GridPattern } from "./GridPattern";
 import { VideoModal } from "./VideoModal";
 import { BlurInHeader, BlurInParagraph } from "./BlurInText";
 import { LandingCtaButton } from "./LandingCtaButton";
@@ -124,9 +125,9 @@ export const Landing = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col gap-14 bg-lightgrey5inverse py-12 text-center dark:bg-grey10">
+        <div className="z-0 flex flex-col gap-14 bg-lightgrey5inverse px-20 py-12 pt-12 text-center dark:bg-grey10">
           <div>
-            <BlurInHeader className="text-4xl font-bold">
+            <BlurInHeader className="text-5xl font-bold">
               Your Favorite Tokens
             </BlurInHeader>
             <BlurInParagraph
@@ -137,16 +138,18 @@ export const Landing = () => {
             </BlurInParagraph>
           </div>
           <Tokens />
-          <div className="relative -mr-20 grid text-start *:col-start-1 *:row-start-1">
-            <div className="pointer-events-none -z-10 w-full pl-64">
-              <img
-                src="/alchemix-v2-react/images/landing-page/big_placeholder.png"
-                alt="Placeholder image"
-                className="h-full w-full"
-              />
-            </div>
-            <div className="flex size-full max-w-xl flex-col justify-center gap-6">
-              <BlurInHeader className="text-4xl font-semibold">
+          <div className="relative -mx-20">
+            <GridPattern className="absolute left-1/2 -z-10 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2"></GridPattern>
+            <img
+              src="./images/landing-page/AlchemixLogoPlaceholder.png"
+              alt="Alchemix"
+              className="absolute left-[70%] -translate-x-1/2 -translate-y-[-75%]"
+              style={{ width: "300px", height: "300px" }}
+            />
+          </div>
+          <div className="relative -mr-20 grid pr-20 text-start *:col-start-1 *:row-start-1">
+            <div className="flex size-full max-w-xl flex-col justify-center gap-6 py-48">
+              <BlurInHeader className="text-5xl font-semibold">
                 Get Started With Alchemix
               </BlurInHeader>
               <BlurInParagraph className="text-xl font-semibold text-lightgrey10inverse dark:text-lightgrey10">
@@ -158,28 +161,51 @@ export const Landing = () => {
               <LandingCtaButton />
             </div>
           </div>
-          <div className="flex flex-col items-stretch justify-between gap-20 lg:flex-row">
-            <Step
-              src="/alchemix-v2-react/images/landing-page/1.png"
-              srcHover="/alchemix-v2-react/images/landing-page/1-hover.png"
-              alt="Deposit"
-            />
-            <Step
-              src="/alchemix-v2-react/images/landing-page/2.png"
-              srcHover="/alchemix-v2-react/images/landing-page/2-hover.png"
-              alt="Earn"
-            />
-            <Step
-              src="/alchemix-v2-react/images/landing-page/3.png"
-              srcHover="/alchemix-v2-react/images/landing-page/3-hover.png"
-              alt="Access"
-            />
+          <div className="-mt-36 flex flex-col items-stretch justify-center gap-40 lg:flex-row">
+            <div className="h-70 relative w-60">
+              <img
+                src="/alchemix-v2-react/images/landing-page/1.png"
+                alt="Deposit"
+                className="h-full w-full object-contain transition-opacity duration-300 ease-in-out"
+              />
+              <img
+                src="/alchemix-v2-react/images/landing-page/1-hover.png"
+                alt="Deposit Hover"
+                className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
+              />
+            </div>
+            <div className="h-70 relative w-60">
+              <img
+                src="/alchemix-v2-react/images/landing-page/2.png"
+                alt="Earn"
+                className="h-full w-full object-contain transition-opacity duration-300 ease-in-out"
+              />
+              <img
+                src="/alchemix-v2-react/images/landing-page/2-hover.png"
+                alt="Earn Hover"
+                className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
+              />
+            </div>
+            <div className="h-70 relative w-60">
+              <img
+                src="/alchemix-v2-react/images/landing-page/3.png"
+                alt="Access"
+                className="h-full w-full object-contain transition-opacity duration-300 ease-in-out"
+              />
+              <img
+                src="/alchemix-v2-react/images/landing-page/3-hover.png"
+                alt="Access Hover"
+                className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
+              />
+            </div>
           </div>
           <div className="space-y-8 text-start">
-            <h2 className="text-center text-4xl font-semibold">
+            <h2 className="text-center text-5xl font-semibold">
               A Thriving Ecosystem
             </h2>
-            <EcosystemGrid />
+            <div className="px-40">
+              <EcosystemGrid />
+            </div>
           </div>
         </div>
       </div>
