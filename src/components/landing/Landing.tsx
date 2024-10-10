@@ -103,28 +103,28 @@ export const Landing = () => {
           </div>
           <div className="pl-20 text-5xl">‎</div>
         </div>
-        <div className="flex w-full max-w-none items-center gap-24 rounded-sm px-20">
+        <div className="flex w-full max-w-none items-center gap-24 rounded-sm px-20 py-12">
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold">Security First</h2>
+            <h2 className="text-4xl font-semibold">Security First</h2>
             <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
               We are the original battle-tested DeFi platform with a priority of
               asset protection. As a pioneer in DeFi, we ensure your assets are
               preserved at every step.
             </p>
-            <Button size="sm" className="uppercase">
+            <Button size="md" className="text-xl font-extrabold uppercase">
               Explore our audits
             </Button>
           </div>
-          <div className="flex w-full items-center justify-center p-6">
+          <div className="flex aspect-square w-full max-w-sm items-center justify-center p-6">
             <img
               src="/alchemix-v2-react/images/landing-page/lock.svg"
               alt="Lock vector image"
-              className="h-64 w-64"
+              className="h-64 w-full"
               loading="lazy"
             />
           </div>
         </div>
-        <div className="flex flex-col gap-14 bg-lightgrey5inverse px-20 text-center dark:bg-grey10">
+        <div className="flex flex-col gap-14 bg-lightgrey5inverse py-12 text-center dark:bg-grey10">
           <div>
             <BlurInHeader className="text-4xl font-bold">
               Your Favorite Tokens
