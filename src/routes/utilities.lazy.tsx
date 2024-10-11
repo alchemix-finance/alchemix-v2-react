@@ -16,6 +16,18 @@ const utilities = [
     url: "https://ens.alchemix.fi/",
     image: "srens.png",
   },
+  {
+    label: "AMO Harvest Tool",
+    author: "Amrit & Theblockdudes",
+    url: "https://alchemix-multisig.netlify.app/",
+    image: "amo_harvester.png", 
+  },
+  {
+    label: "Contract Params Dashboard",
+    author: "Build3rsLabs",
+    url: "https://alchemix-dashboard-frontend-lovat.vercel.app/",
+    image: "contract_params_dashboard.png", 
+  },
 ];
 
 export const Route = createLazyFileRoute("/utilities")({
