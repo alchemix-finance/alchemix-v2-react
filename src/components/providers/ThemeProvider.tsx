@@ -1,6 +1,6 @@
 import { lsService } from "@/lib/localStorage";
 import { Theme, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 interface ThemeStore {
   rainbowTheme: Theme;
@@ -82,40 +82,31 @@ export const useTheme = () => {
   return useContext(ThemeContext);
 };
 
-// Whenever the user explicitly chooses to respect the OS preference
-// localStorage.removeItem("theme");
-
-let initialHandled = false;
-
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const initialDark =
-    lsService.getItem(0, "theme") === "dark" ||
-    (!lsService.getItem(0, "theme") &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches);
-  if (initialDark && !initialHandled) {
-    document.documentElement.classList.add("dark");
-    initialHandled = true;
-  }
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [rainbowTheme, setRainbowTheme] = useState<Theme>(rainbowLightTheme);
 
-  const [darkMode, setDarkMode] = useState<boolean>(initialDark);
-
-  const [rainbowTheme, setRainbowTheme] = useState<Theme>(
-    initialDark ? rainbowDarkTheme : rainbowLightTheme,
-  );
+  useEffect(() => {
+    const initialDark =
+      lsService.getItem(0, "theme") === "dark" ||
+      (!lsService.getItem(0, "theme") &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
+    setDarkMode(initialDark);
+    setRainbowTheme(initialDark ? rainbowDarkTheme : rainbowLightTheme);
+    if (initialDark) {
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
 
   const handleDarkModeToggle = useCallback(() => {
-    if (darkMode === false) {
-      setDarkMode(true);
-      setRainbowTheme(rainbowDarkTheme);
-      document.documentElement.classList.add("dark");
-      lsService.setItem(0, "theme", "dark");
-      return;
-    }
-    setDarkMode(false);
-    setRainbowTheme(rainbowLightTheme);
-    document.documentElement.classList.remove("dark");
-    lsService.setItem(0, "theme", "light");
-  }, [darkMode]);
+    setDarkMode((prevDarkMode) => {
+      const newDarkMode = !prevDarkMode;
+      setRainbowTheme(newDarkMode ? rainbowDarkTheme : rainbowLightTheme);
+      document.documentElement.classList.toggle("dark", newDarkMode);
+      lsService.setItem(0, "theme", newDarkMode ? "dark" : "light");
+      return newDarkMode;
+    });
+  }, []);
 
   return (
     <ThemeContext.Provider
