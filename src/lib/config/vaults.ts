@@ -552,7 +552,7 @@ export const VAULTS: VaultsConfig = {
         provider: "jones",
         bonus: getNoBonus,
       },
-      disabledDepositTokens: [],
+      disabledDepositTokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831"], // Jones have geo-blocking, so we disable deposit of USDC -> let folks go to Jones directly
     },
     //alETH
     "0x5979D7b546E38E414F7E9822514be443A4800529": {
