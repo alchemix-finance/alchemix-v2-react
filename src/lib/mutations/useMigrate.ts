@@ -93,30 +93,27 @@ export const useMigrate = ({
     },
   });
   // debt skipped
-  const [doesMigrationSucceed, reason, , minShares, minUnderlying] =
+  const [doesMigrationSucceed, reason, , minOrNewShares, minOrNewUnderlying] =
     migrationParams ?? [];
-  console.log({
-    doesMigrationSucceed,
-    reason,
-    minShares,
-    minUnderlying,
-  });
+
+  // new op migrator tool returns not minShares and minUnderlying but newShares and newUnderlying
   let minSharesForSlippage = MAX_UINT256_BN,
     minUnderlyingForSlippage = MAX_UINT256_BN;
-  if (chain.id === optimism.id) {
+  if (
+    chain.id === optimism.id &&
+    minOrNewShares !== undefined &&
+    minOrNewUnderlying !== undefined
+  ) {
     minSharesForSlippage = calculateMinimumOut(
-      parseUnits(amount, currentVault.yieldTokenParams.decimals),
+      minOrNewShares,
       parseUnits(slippage, 2),
     );
     minUnderlyingForSlippage = calculateMinimumOut(
-      underlyingTokens,
+      minOrNewUnderlying,
       parseUnits(slippage, 2),
     );
   }
-  console.log({
-    minSharesForSlippage,
-    minUnderlyingForSlippage,
-  });
+
   const {
     data: isApprovalNeededWithdraw,
     isPending: isPendingApprovalWithdraw,
@@ -246,17 +243,13 @@ export const useMigrate = ({
       currentVault.address,
       selectedVault.address,
       parseUnits(amount, currentVault.yieldTokenParams.decimals),
-      minSharesForSlippage === MAX_UINT256_BN
-        ? minShares!
-        : minSharesForSlippage,
-      minUnderlyingForSlippage === MAX_UINT256_BN
-        ? minUnderlying!
-        : minUnderlyingForSlippage,
+      chain.id === optimism.id ? minSharesForSlippage : minOrNewShares!,
+      chain.id === optimism.id ? minUnderlyingForSlippage : minOrNewUnderlying!,
     ],
     query: {
       enabled:
-        minShares !== undefined &&
-        minUnderlying !== undefined &&
+        minOrNewShares !== undefined &&
+        minOrNewUnderlying !== undefined &&
         isApprovalNeededMint === false &&
         isApprovalNeededWithdraw === false,
     },
@@ -351,6 +344,6 @@ export const useMigrate = ({
     writeMintApprove,
     writeMigrate,
     isPending,
-    minUnderlying,
+    minOrNewUnderlying,
   };
 };

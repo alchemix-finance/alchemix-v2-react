@@ -46,7 +46,7 @@ export const Migrate = ({
     writeMintApprove,
     writeMigrate,
     isPending,
-    minUnderlying,
+    minOrNewUnderlying,
   } = useMigrate({
     currentVault: vault,
     amount,
@@ -123,7 +123,7 @@ export const Migrate = ({
             Minimum underlying after migration:{" "}
             {formatNumber(
               formatUnits(
-                minUnderlying ?? 0n,
+                minOrNewUnderlying ?? 0n,
                 selectedVault.underlyingTokensParams.decimals,
               ),
             )}{" "}
