@@ -1,3 +1,7 @@
+import { useMemo, useState } from "react";
+import { optimism } from "viem/chains";
+
+import { VaultActionMotionDiv } from "./motion";
 import { Vault } from "@/lib/types";
 import {
   Select,
@@ -6,12 +10,12 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useMemo, useState } from "react";
-import { useMigrate } from "@/lib/mutations/useMigrate";
 import { MigrateTokenInput } from "@/components/common/input/MigrateTokenInput";
-import { isInputZero } from "@/utils/inputNotZero";
-import { VaultActionMotionDiv } from "./motion";
 import { CtaButton } from "@/components/common/CtaButton";
+import { SlippageInput } from "@/components/common/input/SlippageInput";
+import { useChain } from "@/hooks/useChain";
+import { useMigrate } from "@/lib/mutations/useMigrate";
+import { isInputZero } from "@/utils/inputNotZero";
 
 export const Migrate = ({
   vault,
@@ -20,7 +24,10 @@ export const Migrate = ({
   vault: Vault;
   selection: Vault[];
 }) => {
+  const chain = useChain();
+
   const [amount, setAmount] = useState("");
+  const [slippage, setSlippage] = useState("2");
 
   const [selectedVaultAddress, setSelectedVaultAddress] = useState(
     selection[0].address,
@@ -42,6 +49,7 @@ export const Migrate = ({
     amount,
     setAmount,
     selectedVault,
+    slippage,
   });
 
   const onCtaClick = () => {
@@ -105,6 +113,9 @@ export const Migrate = ({
             vault={vault}
           />
         </div>
+        {chain.id === optimism.id && (
+          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        )}
         <CtaButton
           variant="outline"
           width="full"
