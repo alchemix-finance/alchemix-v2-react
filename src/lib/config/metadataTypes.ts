@@ -72,6 +72,7 @@ export interface VaultMetadata {
     bonus: BonusFn;
   };
   disabledDepositTokens: Address[];
+  disabledWithdrawTokens: Address[];
   wethGateway?: Address;
   gateway?: Address;
   /**

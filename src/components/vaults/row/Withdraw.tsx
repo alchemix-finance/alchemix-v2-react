@@ -32,18 +32,29 @@ export const Withdraw = ({
 }) => {
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
-  const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
-    underlyingTokenData.address,
-  );
+
+  const initTokenAddress = vault.metadata.disabledWithdrawTokens
+    .map((t) => t.toLowerCase())
+    .includes(underlyingTokenData.address.toLowerCase())
+    ? yieldTokenData.address
+    : underlyingTokenData.address;
+  const [tokenAddress, setTokenAddress] = useState(initTokenAddress);
 
   const { data: tokens } = useTokensQuery();
   const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
 
   const isETHCompatible =
     vault.metadata.wethGateway !== undefined && gasToken !== undefined;
-  const selection = isETHCompatible
-    ? [underlyingTokenData, yieldTokenData, gasToken]
-    : [underlyingTokenData, yieldTokenData];
+  const selection = [
+    ...(isETHCompatible
+      ? [underlyingTokenData, yieldTokenData, gasToken]
+      : [underlyingTokenData, yieldTokenData]),
+  ].filter(
+    (t) =>
+      !vault.metadata.disabledWithdrawTokens
+        .map((t) => t.toLowerCase())
+        .includes(t.address.toLowerCase()),
+  );
 
   const token = selection.find((token) => token.address === tokenAddress)!;
 
