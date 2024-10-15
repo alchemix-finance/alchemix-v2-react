@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { optimism } from "viem/chains";
+import { formatUnits } from "viem";
 
 import { VaultActionMotionDiv } from "./motion";
 import { Vault } from "@/lib/types";
@@ -16,6 +17,7 @@ import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { useChain } from "@/hooks/useChain";
 import { useMigrate } from "@/lib/mutations/useMigrate";
 import { isInputZero } from "@/utils/inputNotZero";
+import { formatNumber } from "@/utils/number";
 
 export const Migrate = ({
   vault,
@@ -44,6 +46,7 @@ export const Migrate = ({
     writeMintApprove,
     writeMigrate,
     isPending,
+    minUnderlying,
   } = useMigrate({
     currentVault: vault,
     amount,
@@ -113,8 +116,19 @@ export const Migrate = ({
             vault={vault}
           />
         </div>
-        {chain.id === optimism.id && (
+        {chain.id === optimism.id ? (
           <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        ) : (
+          <p className="whitespace-nowrap text-sm text-lightgrey10inverse dark:text-lightgrey10">
+            Minimum underlying after migration:{" "}
+            {formatNumber(
+              formatUnits(
+                minUnderlying ?? 0n,
+                selectedVault.underlyingTokensParams.decimals,
+              ),
+            )}{" "}
+            {selectedVault.metadata.underlyingSymbol}
+          </p>
         )}
         <CtaButton
           variant="outline"

@@ -351,5 +351,6 @@ export const useMigrate = ({
     writeMintApprove,
     writeMigrate,
     isPending,
+    minUnderlying,
   };
 };
