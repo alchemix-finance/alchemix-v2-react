@@ -29,7 +29,7 @@ export const Migrate = ({
   const chain = useChain();
 
   const [amount, setAmount] = useState("");
-  const [slippage, setSlippage] = useState("2");
+  const [slippage, setSlippage] = useState("0.5");
 
   const [selectedVaultAddress, setSelectedVaultAddress] = useState(
     selection[0].address,
