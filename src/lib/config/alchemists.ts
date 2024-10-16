@@ -21,5 +21,3 @@ export const ALCHEMISTS_METADATA = {
     [SYNTH_ASSETS.ALETH]: "0x654e16a0b161b150F5d1C8a5ba6E7A7B7760703A",
   },
 } as const satisfies AlchemistsMetadata;
-
-export { SYNTH_ASSETS };
