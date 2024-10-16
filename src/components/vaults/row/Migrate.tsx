@@ -1,3 +1,8 @@
+import { useMemo, useState } from "react";
+import { optimism } from "viem/chains";
+import { formatUnits } from "viem";
+
+import { VaultActionMotionDiv } from "./motion";
 import { Vault } from "@/lib/types";
 import {
   Select,
@@ -6,12 +11,13 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useMemo, useState } from "react";
-import { useMigrate } from "@/lib/mutations/useMigrate";
 import { MigrateTokenInput } from "@/components/common/input/MigrateTokenInput";
-import { isInputZero } from "@/utils/inputNotZero";
-import { VaultActionMotionDiv } from "./motion";
 import { CtaButton } from "@/components/common/CtaButton";
+import { SlippageInput } from "@/components/common/input/SlippageInput";
+import { useChain } from "@/hooks/useChain";
+import { useMigrate } from "@/lib/mutations/useMigrate";
+import { isInputZero } from "@/utils/inputNotZero";
+import { formatNumber } from "@/utils/number";
 
 export const Migrate = ({
   vault,
@@ -20,7 +26,10 @@ export const Migrate = ({
   vault: Vault;
   selection: Vault[];
 }) => {
+  const chain = useChain();
+
   const [amount, setAmount] = useState("");
+  const [slippage, setSlippage] = useState("0.5");
 
   const [selectedVaultAddress, setSelectedVaultAddress] = useState(
     selection[0].address,
@@ -37,11 +46,13 @@ export const Migrate = ({
     writeMintApprove,
     writeMigrate,
     isPending,
+    minOrNewUnderlying,
   } = useMigrate({
     currentVault: vault,
     amount,
     setAmount,
     selectedVault,
+    slippage,
   });
 
   const onCtaClick = () => {
@@ -105,6 +116,20 @@ export const Migrate = ({
             vault={vault}
           />
         </div>
+        {chain.id === optimism.id ? (
+          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        ) : (
+          <p className="whitespace-nowrap text-sm text-lightgrey10inverse dark:text-lightgrey10">
+            Minimum underlying after migration:{" "}
+            {formatNumber(
+              formatUnits(
+                minOrNewUnderlying ?? 0n,
+                selectedVault.underlyingTokensParams.decimals,
+              ),
+            )}{" "}
+            {selectedVault.metadata.underlyingSymbol}
+          </p>
+        )}
         <CtaButton
           variant="outline"
           width="full"
