@@ -39,7 +39,6 @@ export const useVaultsWithdrawAvailableBalance = ({
     abi: alchemistV2Abi,
     functionName: "convertSharesToUnderlyingTokens",
     args: [vault.yieldToken, sharesBalance ?? 0n],
-    scopeKey: ScopeKeys.VaultWithdrawInput,
     query: {
       enabled: sharesBalance !== undefined,
     },
@@ -115,7 +114,6 @@ export const useVaultsWithdrawAvailableBalance = ({
         vault.underlyingTokensParams.decimals,
       ),
     ],
-    scopeKey: ScopeKeys.VaultWithdrawInput,
     query: {
       enabled: balanceForUnderlying !== undefined,
       select: (balance) =>
@@ -131,11 +129,9 @@ export const useVaultsWithdrawAvailableBalance = ({
   });
 
   /**
-   * NOTE: Watch queries for changes in sharesBalance, totalCollateral, and balanceForYieldToken.
+   * NOTE: Watch queries for changes in sharesBalance, totalCollateral.
    * sharesBalance - if user deposited or withdrawed from vault for yield token;
    * totalCollateralInDebtToken - if user deposited or withdrawed from vault for yield token;
-   * underlyingTokenCollateral - because shares to underlying token uses price which changes each block;
-   * balanceForYieldToken - because shares to yield token uses price which changes each block.
    */
   useWatchQuery({
     scopeKey: ScopeKeys.VaultWithdrawInput,
