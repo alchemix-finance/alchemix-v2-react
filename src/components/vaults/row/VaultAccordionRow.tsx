@@ -166,7 +166,8 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <p className="text-center text-sm text-lightgrey10">TVL / Cap</p>
           <VaultCapacityCell
             vault={vault}
-            tokenDecimals={vaultUnderlyingTokenData?.decimals}
+            yieldTokenDecimals={vaultYieldTokenData?.decimals}
+            underlyingTokenDecimals={vaultUnderlyingTokenData?.decimals}
             tokenSymbol={vaultUnderlyingTokenData?.symbol}
           />
         </div>
@@ -314,18 +315,20 @@ export const CurrencyCell = ({
 
 const VaultCapacityCell = ({
   vault,
-  tokenDecimals = 18,
+  yieldTokenDecimals = 18,
+  underlyingTokenDecimals = 18,
   tokenSymbol,
 }: {
   vault: Vault;
-  tokenDecimals: number | undefined;
+  yieldTokenDecimals: number | undefined;
+  underlyingTokenDecimals: number | undefined;
   tokenSymbol: string | undefined;
 }) => {
   const chain = useChain();
 
   const limitValue = formatUnits(
     vault.yieldTokenParams.maximumExpectedValue,
-    tokenDecimals,
+    yieldTokenDecimals,
   );
 
   const { data: capacity, isPending } = useReadContract({
@@ -336,7 +339,10 @@ const VaultCapacityCell = ({
     args: [vault.yieldToken, vault.yieldTokenParams.totalShares],
     query: {
       select: (currentValueBn) => {
-        const currentValue = formatUnits(currentValueBn, tokenDecimals);
+        const currentValue = formatUnits(
+          currentValueBn,
+          underlyingTokenDecimals,
+        );
         const isFull =
           (parseFloat(currentValue) / parseFloat(limitValue)) * 100 >= 99;
         return { currentValue, isFull };

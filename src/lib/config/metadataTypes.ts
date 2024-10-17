@@ -44,7 +44,8 @@ export type MessageType = "info" | "warning" | "error";
 export type VaultMessage = {
   message: string;
   type: MessageType;
-  learnMoreUrl?: string;
+  linkHref?: string;
+  linkLabel?: string;
 };
 
 type ApiProvider =
