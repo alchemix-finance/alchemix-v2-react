@@ -446,7 +446,7 @@ export const VAULTS: VaultsConfig = {
           message:
             "Yearn yvUSDC is currently disabled for underlying token deposit and withdraw.",
           type: "warning",
-          learnMoreUrl: "https://discord.com/invite/yearn",
+          linkHref: "https://discord.com/invite/yearn",
         },
       ],
       gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
@@ -471,7 +471,7 @@ export const VAULTS: VaultsConfig = {
           message:
             "Yearn yvDAI is currently disabled for underlying token deposit and withdraw.",
           type: "warning",
-          learnMoreUrl: "https://discord.com/invite/yearn",
+          linkHref: "https://discord.com/invite/yearn",
         },
       ],
       gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
@@ -533,7 +533,7 @@ export const VAULTS: VaultsConfig = {
           message:
             "Yearn yvWETH is currently disabled for underlying token deposit and withdraw.",
           type: "warning",
-          learnMoreUrl: "https://discord.com/invite/yearn",
+          linkHref: "https://discord.com/invite/yearn",
         },
       ],
       gateway: "0xedE36d3F423EF198abE82D2463E0a18bcF2d9397",
@@ -574,7 +574,15 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "USDC",
       yieldSymbol: "jUSDC",
       image: "jUSDC.webp",
-      messages: [],
+      messages: [
+        {
+          type: "info",
+          message:
+            "Only jUSDC deposit and withdraw are available. Get jUSDC from Jones.",
+          linkHref: "https://app.jonesdao.io/vaults/leveraged/usdc",
+          linkLabel: "Get jUSDC.",
+        },
+      ],
       api: {
         apr: getJonesApy,
         yieldType: "APY",

@@ -10,12 +10,12 @@ const messageConfig = {
 } as const;
 
 export const VaultMessage = (props: { message: VaultMessageType }) => {
-  const { message, type, learnMoreUrl } = props.message;
+  const { message, type, linkHref, linkLabel } = props.message;
   return (
     <div
       className={cn(
         "text-l flex w-full flex-row items-center space-x-4 rounded border p-2 pl-4 text-grey15",
-        type === "info" && "border-blue2 bg-blue1",
+        type === "info" && "border-blue1 bg-blue1/50",
         type === "warning" && "border-orange2 bg-orange1",
         type === "error" && "border-red3 bg-red1",
       )}
@@ -36,16 +36,16 @@ export const VaultMessage = (props: { message: VaultMessageType }) => {
       </svg>
       <p>
         {message}
-        {learnMoreUrl && (
+        {linkHref && (
           <>
             <span> </span>
             <a
-              href={learnMoreUrl}
+              href={linkHref}
               target="_blank"
               rel="noreferrer"
               className="underline hover:no-underline"
             >
-              Learn more.
+              {linkLabel ?? "Learn more."}
             </a>
           </>
         )}
