@@ -16,6 +16,18 @@ const utilities = [
     url: "https://ens.alchemix.fi/",
     image: "srens.png",
   },
+  {
+    label: "AMO Harvest Tool",
+    author: "Amrit & Theblockdudes",
+    url: "https://alchemix-multisig.netlify.app/",
+    image: "amo_harvester.png", 
+  },
+  {
+    label: "Contract Params Dashboard",
+    author: "Build3rsLabs",
+    url: "https://alchemix-dashboard-frontend-lovat.vercel.app/",
+    image: "contract_params_dashboard.png", 
+  },
 ];
 
 export const Route = createLazyFileRoute("/utilities")({
@@ -37,7 +49,7 @@ function Utilities() {
         {utilities.map((utility) => (
           <div
             key={utility.label}
-            className="w-1/4 rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15"
+            className="w-full md:w-1/4 rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15"
           >
             <p className="border-b border-grey10inverse px-4 py-2 dark:border-grey10">
               {utility.label}
@@ -54,7 +66,7 @@ function Utilities() {
               </div>
               <Button
                 variant="ghost"
-                className="h-8 w-full border border-bronze1 text-base lg:w-max"
+                className="h-8 w-20 sm:w-32 md:w-40 lg:w-max border border-bronze1 text-base"
                 onClick={() => windowOpen(utility.url)}
               >
                 Open
