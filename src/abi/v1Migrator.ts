@@ -1,4 +1,4 @@
-export const transferAdapterAbi = [
+export const v1MigratorAbi = [
   {
     inputs: [
       {
