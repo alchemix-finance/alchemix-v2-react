@@ -76,7 +76,7 @@ export const TRANSMUTERS = {
       address: "0xA7ea9ef9E2b5e15971040230F5d6b75C68Aab723",
       synthAsset: SYNTH_ASSETS.ALUSD,
       label: "Ge Hong",
-      aprQueryUri: "",
+      aprQueryUri: "4037405",
     },
     //USDT
     {
