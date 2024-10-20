@@ -11,6 +11,8 @@ import { EXTERNAL_LIQUIDITY_PROVIDERS } from "@/lib/config/externalLiquidityProv
 import { windowOpen } from "@/utils/windowOpen";
 import { LoadingBar } from "../common/LoadingBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import {EthTransmuterLooper} from "@/components/farms/EthTransmuterLooper";
+import {TRANSMUTER_LOOPERS_VAULTS} from "@/lib/config/transmuters";
 
 export const Transmuters = () => {
   const chain = useChain();
@@ -30,6 +32,10 @@ export const Transmuters = () => {
           (transmuter) => transmuter.metadata.synthAsset === synthTab,
         );
   }, [synthTab, transmuters]);
+
+  const filteredTransmuterLoopers = useMemo(() => {
+    return TRANSMUTER_LOOPERS_VAULTS[chain.id];
+  }, [chain]);
 
   return (
     <>
@@ -71,6 +77,19 @@ export const Transmuters = () => {
               ))}
             </div>
           </div>
+          {filteredTransmuterLoopers && filteredTransmuterLoopers.length > 0
+            ? (
+                filteredTransmuterLoopers.map((transmuterLooper) => {
+                    if (transmuterLooper.synthAsset === SYNTH_ASSETS.ALETH) {
+                      return <EthTransmuterLooper/>
+                    } else {
+                      return <></>
+                    }
+                })
+              )
+            : (
+                <div>No transmuters for selected chain and synth asset</div>
+            )}
           <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
               <Tabs value={synthTab} onValueChange={onSynthTabChange}>
