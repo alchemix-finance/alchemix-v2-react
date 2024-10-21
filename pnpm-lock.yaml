@@ -154,11 +154,11 @@ importers:
         specifier: ^0.6.6
         version: 0.6.6(prettier@3.3.3)
       tailwindcss:
-        specifier: ^3.4.9
-        version: 3.4.9
+        specifier: ^3.4.14
+        version: 3.4.14
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.9)
+        version: 1.0.7(tailwindcss@3.4.14)
       typescript:
         specifier: ^5.5.4
         version: 5.5.4
@@ -3272,6 +3272,7 @@ packages:
 
   eciesjs@0.3.19:
     resolution: {integrity: sha512-b+PkRDZ3ym7HEcnbxc22CMVCpgsnr8+gGgST3U5PtgeX1luvINgfXW7efOyUtmn/jFtA/lg5ywBi/Uazf4oeaA==}
+    deprecated: Please upgrade to v0.4+
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
@@ -3410,6 +3411,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -5480,8 +5482,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
-  tailwindcss@3.4.9:
-    resolution: {integrity: sha512-1SEOvRr6sSdV5IDf9iC+NU4dhwdqzF4zKKq3sAbasUWHEM6lsMhX+eNN5gkPx1BvLFEnZQEUFbXnGj8Qlp83Pg==}
+  tailwindcss@3.4.14:
+    resolution: {integrity: sha512-IcSvOcTRcUtQQ7ILQL5quRDg7Xs93PdJEk1ZLbhhvJc7uj/OAhYOnruEiwnGgBvUtaUAJ8/mhSw1o8L2jCiENA==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -12527,11 +12529,11 @@ snapshots:
 
   tailwind-merge@2.4.0: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@3.4.9):
+  tailwindcss-animate@1.0.7(tailwindcss@3.4.14):
     dependencies:
-      tailwindcss: 3.4.9
+      tailwindcss: 3.4.14
 
-  tailwindcss@3.4.9:
+  tailwindcss@3.4.14:
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
