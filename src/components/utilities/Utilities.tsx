@@ -45,7 +45,7 @@ export const Utilities = () => {
         {utilities.map((utility) => (
           <div
             key={utility.label}
-            className="w-1/4 rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15"
+            className="w-full sm:w-[48%] lg:w-1/4 rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15"
           >
             <p className="border-b border-grey10inverse px-4 py-2 dark:border-grey10">
               {utility.label}
@@ -62,7 +62,7 @@ export const Utilities = () => {
               </div>
               <Button
                 variant="ghost"
-                className="h-8 w-full border border-bronze1 text-base lg:w-max"
+                className="h-8 min-w-[5rem] max-w-[6rem] border border-bronze1 text-base"
                 onClick={() => windowOpen(utility.url)}
               >
                 Open
