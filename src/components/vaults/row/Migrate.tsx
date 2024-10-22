@@ -1,3 +1,8 @@
+import { useMemo, useState } from "react";
+import { optimism } from "viem/chains";
+import { formatUnits } from "viem";
+
+import { VaultActionMotionDiv } from "./motion";
 import { Vault } from "@/lib/types";
 import {
   Select,
@@ -6,13 +11,13 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useMemo, useState } from "react";
-import { useMigrate } from "@/lib/mutations/useMigrate";
 import { MigrateTokenInput } from "@/components/common/input/MigrateTokenInput";
-import { isInputZero } from "@/utils/inputNotZero";
-import { useTokensQuery } from "@/lib/queries/useTokensQuery";
-import { VaultActionMotionDiv } from "./motion";
 import { CtaButton } from "@/components/common/CtaButton";
+import { SlippageInput } from "@/components/common/input/SlippageInput";
+import { useChain } from "@/hooks/useChain";
+import { useMigrate } from "@/lib/mutations/useMigrate";
+import { isInputZero } from "@/utils/inputNotZero";
+import { formatNumber } from "@/utils/number";
 
 export const Migrate = ({
   vault,
@@ -21,7 +26,10 @@ export const Migrate = ({
   vault: Vault;
   selection: Vault[];
 }) => {
+  const chain = useChain();
+
   const [amount, setAmount] = useState("");
+  const [slippage, setSlippage] = useState("0.5");
 
   const [selectedVaultAddress, setSelectedVaultAddress] = useState(
     selection[0].address,
@@ -31,14 +39,6 @@ export const Migrate = ({
     return selection.find((v) => v.address === selectedVaultAddress)!;
   }, [selectedVaultAddress, selection]);
 
-  const { data: tokens } = useTokensQuery();
-  const tokenOfSelectedVault = tokens?.find((t) =>
-    selectedVault.metadata.yieldTokenOverride
-      ? t.address.toLowerCase() ===
-        selectedVault.metadata.yieldTokenOverride.toLowerCase()
-      : t.address.toLowerCase() === selectedVault.yieldToken.toLowerCase(),
-  );
-
   const {
     isApprovalNeededWithdraw,
     isApprovalNeededMint,
@@ -46,11 +46,13 @@ export const Migrate = ({
     writeMintApprove,
     writeMigrate,
     isPending,
+    minOrNewUnderlying,
   } = useMigrate({
     currentVault: vault,
     amount,
     setAmount,
     selectedVault,
+    slippage,
   });
 
   const onCtaClick = () => {
@@ -80,8 +82,8 @@ export const Migrate = ({
               <SelectValue placeholder="Vault" asChild>
                 <div className="flex items-center gap-4">
                   <img
-                    src={`/images/token-icons/${tokenOfSelectedVault?.symbol}.svg`}
-                    alt={tokenOfSelectedVault?.symbol}
+                    src={`/images/token-icons/${selectedVault.metadata.image}`}
+                    alt={`${selectedVault.metadata.yieldSymbol} icon`}
                     className="hidden h-4 w-4 sm:block"
                   />
                   {selectedVault.metadata.label}
@@ -114,6 +116,20 @@ export const Migrate = ({
             vault={vault}
           />
         </div>
+        {chain.id === optimism.id ? (
+          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+        ) : (
+          <p className="whitespace-nowrap text-sm text-lightgrey10inverse dark:text-lightgrey10">
+            Minimum underlying after migration:{" "}
+            {formatNumber(
+              formatUnits(
+                minOrNewUnderlying ?? 0n,
+                selectedVault.underlyingTokensParams.decimals,
+              ),
+            )}{" "}
+            {selectedVault.metadata.underlyingSymbol}
+          </p>
+        )}
         <CtaButton
           variant="outline"
           width="full"

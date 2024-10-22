@@ -1,5 +1,5 @@
 import { Address } from "viem";
-import { useVaults } from "./queries/useVaults";
+import { useVaults } from "./queries/vaults/useVaults";
 import { useTransmuters } from "./queries/useTransmuters";
 import { useProposals } from "./queries/useProposals";
 
