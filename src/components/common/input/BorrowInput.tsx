@@ -1,5 +1,5 @@
 import { Token } from "@/lib/types";
-import { useVaults } from "@/lib/queries/useVaults";
+import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { formatEther } from "viem";
 import { TokenInput } from "./TokenInput";
 import { useAccount, useReadContract } from "wagmi";

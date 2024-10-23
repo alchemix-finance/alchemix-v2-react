@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import {
+  useAccount,
   useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -22,7 +23,7 @@ import { SynthAsset } from "@/lib/config/synths";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { DebtSelection } from "@/components/vaults/common_actions/DebtSelection";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
-import { useVaults } from "@/lib/queries/useVaults";
+import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { LiquidateTokenInput } from "@/components/common/input/LiquidateInput";
@@ -32,11 +33,15 @@ import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { MAX_UINT256_BN } from "@/lib/constants";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
+import { getTokenLogoUrl } from "@/utils/getTokenLogoUrl";
+import { useVaultsLiquidateAvailableBalance } from "@/lib/queries/vaults/useVaultsLiquidateAvailableBalance";
 
 export const Liquidate = () => {
   const queryClient = useQueryClient();
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
+
+  const { address } = useAccount();
 
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
@@ -89,7 +94,7 @@ export const Liquidate = () => {
       v.yieldToken.toLowerCase() === liquidationTokenAddress?.toLowerCase(),
   );
 
-  const { data: shares } = useReadContract({
+  let { data: shares } = useReadContract({
     address: vault?.alchemist.address,
     abi: alchemistV2Abi,
     chainId: chain.id,
@@ -102,6 +107,33 @@ export const Liquidate = () => {
       enabled: !!vault && !isInputZero(amount),
     },
   });
+
+  const { data: depositedSharesBalance } = useReadContract({
+    address: vault?.alchemist.address,
+    abi: alchemistV2Abi,
+    chainId: chain.id,
+    functionName: "positions",
+    args: [address!, vault?.yieldToken ?? zeroAddress],
+    query: {
+      enabled: !!address,
+      select: ([shares]) => shares,
+    },
+  });
+
+  const { balance } = useVaultsLiquidateAvailableBalance({ vault });
+
+  /**
+   * Guard against dynamic yield token price changes.
+   * When initially calculated max yield tokens amount from static shares,
+   * converts back to shares higher than deposited shares balance
+   */
+  if (
+    depositedSharesBalance !== undefined &&
+    shares !== undefined &&
+    depositedSharesBalance < shares
+  ) {
+    shares = depositedSharesBalance - 1n;
+  }
 
   const { data: minimumOut } = useReadContract({
     address: vault?.alchemist.address,
@@ -214,6 +246,13 @@ export const Liquidate = () => {
     }
   };
 
+  const isInsufficientBalance = balance !== undefined && +amount > +balance;
+  const isDisabledCta =
+    isPending ||
+    isInputZero(amount) ||
+    !confirmedLiquidation ||
+    isInsufficientBalance;
+
   return (
     <div className="space-y-4 bg-grey15inverse p-4 dark:bg-grey15">
       <DebtSelection
@@ -236,7 +275,7 @@ export const Liquidate = () => {
                 <SelectValue placeholder="Liquidation Token" asChild>
                   <div className="flex items-center gap-4">
                     <img
-                      src={`/images/token-icons/${liquidationToken.symbol}.svg`}
+                      src={getTokenLogoUrl(liquidationToken.symbol)}
                       alt={liquidationToken.symbol}
                       className="h-12 w-12"
                     />
@@ -282,9 +321,9 @@ export const Liquidate = () => {
             variant="outline"
             width="full"
             onClick={onCtaClick}
-            disabled={isPending || isInputZero(amount) || !confirmedLiquidation}
+            disabled={isDisabledCta}
           >
-            Liquidate
+            {isInsufficientBalance ? "Insufficient Balance" : "Liquidate"}
           </CtaButton>
         </>
       )}
