@@ -29,6 +29,7 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { RepayInput } from "@/components/common/input/RepayInput";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
+import { getTokenLogoUrl } from "@/utils/getTokenLogoUrl";
 
 export const Repay = () => {
   const queryClient = useQueryClient();
@@ -256,7 +257,7 @@ export const Repay = () => {
                 <SelectValue placeholder="Repayment Token" asChild>
                   <div className="flex items-center gap-4">
                     <img
-                      src={`/images/token-icons/${repaymentToken.symbol}.svg`}
+                      src={getTokenLogoUrl(repaymentToken.symbol)}
                       alt={repaymentToken.symbol}
                       className="h-12 w-12"
                     />

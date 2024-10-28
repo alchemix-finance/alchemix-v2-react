@@ -1,7 +1,4 @@
-import { Vault } from "@/lib/types";
-import { MIGRATORS } from "../config/migrators";
-import { useChain } from "@/hooks/useChain";
-import { arbitrum, fantom } from "viem/chains";
+import { useCallback, useEffect } from "react";
 import {
   useAccount,
   useReadContract,
@@ -9,25 +6,33 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { vaultMigrationToolAbi } from "@/abi/vaultMigrationTool";
 import { parseUnits } from "viem";
-import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect } from "react";
+import { arbitrum, fantom, optimism } from "viem/chains";
 import { toast } from "sonner";
-import { SYNTH_ASSETS } from "../config/synths";
-import { QueryKeys, ScopeKeys } from "../queries/queriesSchema";
-import { isInputZero } from "@/utils/inputNotZero";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { Vault } from "@/lib/types";
+import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { vaultMigrationToolAbi } from "@/abi/vaultMigrationTool";
+import { alchemistV2Abi } from "@/abi/alchemistV2";
+import { MIGRATORS } from "@/lib/config/migrators";
+import { SYNTH_ASSETS } from "@/lib/config/synths";
+import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
+import { MAX_UINT256_BN } from "@/lib/constants";
+import { isInputZero } from "@/utils/inputNotZero";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
+import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 
 export const useMigrate = ({
   currentVault,
   selectedVault,
   amount,
   setAmount,
+  slippage,
 }: {
   amount: string;
+  slippage: string;
   setAmount: (amount: string) => void;
   currentVault: Vault;
   selectedVault: Vault;
@@ -88,8 +93,26 @@ export const useMigrate = ({
     },
   });
   // debt skipped
-  const [doesMigrationSucceed, reason, , minShares, minUnderlying] =
+  const [doesMigrationSucceed, reason, , minOrNewShares, minOrNewUnderlying] =
     migrationParams ?? [];
+
+  // new op migrator tool returns not minShares and minUnderlying but newShares and newUnderlying
+  let minSharesForSlippage = MAX_UINT256_BN,
+    minUnderlyingForSlippage = MAX_UINT256_BN;
+  if (
+    chain.id === optimism.id &&
+    minOrNewShares !== undefined &&
+    minOrNewUnderlying !== undefined
+  ) {
+    minSharesForSlippage = calculateMinimumOut(
+      minOrNewShares,
+      parseUnits(slippage, 2),
+    );
+    minUnderlyingForSlippage = calculateMinimumOut(
+      minOrNewUnderlying,
+      parseUnits(slippage, 2),
+    );
+  }
 
   const {
     data: isApprovalNeededWithdraw,
@@ -220,13 +243,13 @@ export const useMigrate = ({
       currentVault.address,
       selectedVault.address,
       parseUnits(amount, currentVault.yieldTokenParams.decimals),
-      minShares!,
-      minUnderlying!,
+      chain.id === optimism.id ? minSharesForSlippage : minOrNewShares!,
+      chain.id === optimism.id ? minUnderlyingForSlippage : minOrNewUnderlying!,
     ],
     query: {
       enabled:
-        minShares !== undefined &&
-        minUnderlying !== undefined &&
+        minOrNewShares !== undefined &&
+        minOrNewUnderlying !== undefined &&
         isApprovalNeededMint === false &&
         isApprovalNeededWithdraw === false,
     },
@@ -321,5 +344,6 @@ export const useMigrate = ({
     writeMintApprove,
     writeMigrate,
     isPending,
+    minOrNewUnderlying,
   };
 };
