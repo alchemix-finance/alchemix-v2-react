@@ -6,31 +6,31 @@ import { useChain } from "@/hooks/useChain";
 import { windowOpen } from "@/utils/windowOpen";
 
 const utilities = [
-    {
-      label: "Alchemix Stats",
-      author: "Barree",
-      url: "https://alchemix-stats.com/",
-      image: "alchemix_stats.png",
-    },
-    {
-      label: "Self-Repaying-ENS",
-      author: "Wary",
-      url: "https://ens.alchemix.fi/",
-      image: "srens.png",
-    },
-    {
-      label: "AMO Harvest Tool",
-      author: "Amrit & TBD",
-      url: "https://alchemix-multisig.netlify.app/",
-      image: "amo_harvester.png", 
-    },
-    {
-      label: "Contract Params Dashboard",
-      author: "Build3rsLabs",
-      url: "https://alchemix-dashboard-frontend-lovat.vercel.app/",
-      image: "contract_params_dashboard.png", 
-    }
-  ];
+  {
+    label: "Alchemix Stats",
+    author: "Barree",
+    url: "https://alchemix-stats.com/",
+    image: "alchemix_stats.png",
+  },
+  {
+    label: "Self-Repaying-ENS",
+    author: "Wary",
+    url: "https://ens.alchemix.fi/",
+    image: "srens.png",
+  },
+  {
+    label: "AMO Harvest Tool",
+    author: "Amrit & TBD",
+    url: "https://alchemix-multisig.netlify.app/",
+    image: "amo_harvester.png",
+  },
+  {
+    label: "Contract Params Dashboard",
+    author: "Build3rsLabs",
+    url: "https://alchemix-dashboard-frontend-lovat.vercel.app/",
+    image: "contract_params_dashboard.png",
+  },
+];
 
 export const Utilities = () => {
   const chain = useChain();
@@ -45,7 +45,7 @@ export const Utilities = () => {
         {utilities.map((utility) => (
           <div
             key={utility.label}
-            className="w-full sm:w-[48%] lg:w-1/4 rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15"
+            className="w-full rounded border border-grey10inverse bg-grey15inverse sm:w-[48%] lg:w-1/4 dark:border-grey10 dark:bg-grey15"
           >
             <p className="border-b border-grey10inverse px-4 py-2 dark:border-grey10">
               {utility.label}
