@@ -9,7 +9,7 @@ import { tokenAdapterAbi } from "@/abi/tokenAdapter";
 import { MAX_LOSS_CHECKER_ADDRESSES, VAULTS } from "@/lib/config/vaults";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { ONE_MINUTE_IN_MS } from "@/lib/constants";
-import { QueryKeys } from "./queriesSchema";
+import { QueryKeys } from "../queriesSchema";
 
 export const useVaults = () => {
   const chain = useChain();
@@ -234,16 +234,23 @@ export const useVaults = () => {
       const vaultsWithTokenAdaptersAndMetadata = vaultsWithCheckedMaxLoss
         .filter((vault) => VAULTS[chain.id][vault.yieldToken] !== undefined)
         .map((vault) => {
-          const metadata = VAULTS[chain.id][vault.yieldToken];
-          if (vault.isLossGreaterThanMaxLoss) {
-            metadata.messages.push({
-              type: "warning",
-              message:
-                "This vault has limited functionality due to experiencing a loss.",
-              learnMoreUrl:
-                "https://alchemix-finance.gitbook.io/user-docs/resources/guides/vault-losses-and-collateral-de-pegging",
-            });
-          }
+          const metadata = {
+            ...VAULTS[chain.id][vault.yieldToken],
+            messages: [
+              ...VAULTS[chain.id][vault.yieldToken].messages,
+              ...(vault.isLossGreaterThanMaxLoss
+                ? [
+                    {
+                      type: "warning",
+                      message:
+                        "This vault has limited functionality due to experiencing a loss.",
+                      learnMoreUrl:
+                        "https://alchemix-finance.gitbook.io/user-docs/resources/guides/vault-losses-and-collateral-de-pegging",
+                    } as const,
+                  ]
+                : []),
+            ],
+          };
           return {
             ...vault,
             metadata,
