@@ -30,7 +30,7 @@ const wethMapping = {
   [optimism.id]: "0x4200000000000000000000000000000000000006",
 };
 
-export const useEthPriceQueryOptions = queryOptions({
+export const ethPriceQueryOptions = queryOptions({
   queryKey: [QueryKeys.TokenPrice, LLAMA_API_URL],
   queryFn: async () => {
     const ethPriceRes = await fetch(`${LLAMA_API_URL}coingecko:ethereum`);
@@ -54,7 +54,7 @@ export const useEthPriceQueryOptions = queryOptions({
 });
 
 const useEthPrice = () => {
-  return useQuery(useEthPriceQueryOptions);
+  return useQuery(ethPriceQueryOptions);
 };
 
 export const useGetTokenPrice = (tokenAddress: `0x${string}` | undefined) => {
