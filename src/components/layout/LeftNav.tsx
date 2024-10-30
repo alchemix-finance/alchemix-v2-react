@@ -34,7 +34,7 @@ export function LeftNav() {
           <img
             src={routeTitleToPathMapping[item as RouteTitle].icon}
             className="h-7 w-7 invert dark:filter-none"
-            alt="vaults"
+            alt={`${item} icon`}
           />
         </Link>
       ))}
@@ -56,7 +56,7 @@ export function LeftNav() {
           <img
             src="/images/icons/sentinel_med.svg"
             className="h-7 w-7 invert dark:filter-none"
-            alt="vaults"
+            alt="Sentinel icon"
           />
         </Link>
       )}
