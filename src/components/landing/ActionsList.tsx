@@ -99,7 +99,7 @@ export const ActionsList = ({
   color?: string | string[];
 }) => {
   return (
-    <div className="relative flex aspect-square w-full flex-col overflow-hidden rounded-lg bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
+    <div className="relative flex h-[466px] w-full flex-col overflow-hidden rounded-lg bg-bodyGradient p-6 dark:bg-bodyGradientInverse">
       <div
         style={
           {

@@ -30,7 +30,7 @@ export const VideoModal = ({
           <img
             src="./images/landing-page/ad_thumbnail.webp"
             alt="Watch the Alchemix cinematic ad"
-            className="aspect-video w-full object-cover"
+            className="aspect-video w-full rounded-3xl object-cover"
           />
           <svg
             role="img"

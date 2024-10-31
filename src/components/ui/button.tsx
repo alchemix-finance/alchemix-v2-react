@@ -22,12 +22,14 @@ const buttonVariants = cva(
         link: "text-neutral-900 underline-offset-4 underline hover:no-underline dark:text-neutral-50",
         action:
           "border border-bronze3 bg-grey10inverse dark:bg-grey10 dark:hover:bg-grey1 hover:bg-grey1inverse dark:data-[state=active]:bg-grey1 data-[state=active]:bg-grey1inverse data-[state=active]:text-bronze4 dark:data-[state=active]:text-bronze4inverse",
+        cta: "border border-[#F3BF99] bg-[#0B0D12] text-[#F3BF99] hover:bg-[#0B0D12] hover:text-[#F3BF99]",
       },
       size: {
         default: "h-12 px-3 py-1",
         sm: "h-8 rounded px-3 py-1",
         md: "h-10 rounded px-4 py-2",
         lg: "h-14 rounded px-8",
+        cta: "h-10 rounded px-6 py-5",
         icon: "h-10 w-10",
       },
       shadow: {
