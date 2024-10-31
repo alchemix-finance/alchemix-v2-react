@@ -17,9 +17,9 @@ const Scene = lazy(() =>
   })),
 );
 
-const ActionsList = lazy(() =>
-  import("./ActionsList").then((module) => ({ default: module.ActionsList })),
-);
+// const ActionsList = lazy(() =>
+//   import("./ActionsList").then((module) => ({ default: module.ActionsList })),
+// );
 
 export const Landing = () => {
   const { belowBreakpoint } = useBreakpoints();
