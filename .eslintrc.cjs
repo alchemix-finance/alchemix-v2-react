@@ -11,13 +11,14 @@ module.exports = {
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs", "tailwind.config.js"],
   parser: "@typescript-eslint/parser",
-  plugins: ["react-refresh"],
+  plugins: ["react-refresh", "react-compiler"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
     ],
     "react/prop-types": "off",
+    "react-compiler/react-compiler": "error",
   },
   settings: {
     react: { version: "detect" },

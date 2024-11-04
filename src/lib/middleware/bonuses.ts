@@ -14,7 +14,7 @@ import { dayjs } from "@/lib/dayjs";
 import { queryClient } from "@/components/providers/QueryProvider";
 import {
   fetchPriceInEth,
-  useEthPriceQueryOptions,
+  ethPriceQueryOptions,
 } from "../queries/useTokenPrice";
 
 const SPY = 31536000;
@@ -34,7 +34,7 @@ export const getAaveBonusData: BonusFn = async ({ chainId, vault }) => {
       ),
   );
 
-  const ethPrice = await queryClient.ensureQueryData(useEthPriceQueryOptions);
+  const ethPrice = await queryClient.ensureQueryData(ethPriceQueryOptions);
 
   const bonusYieldValue = await fetchPriceInEth({
     chainId,
@@ -116,7 +116,7 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
 
   const distributionTimeUnit = distributionTimeAmount > 1 ? "days" : "day";
 
-  const ethPrice = await queryClient.ensureQueryData(useEthPriceQueryOptions);
+  const ethPrice = await queryClient.ensureQueryData(ethPriceQueryOptions);
 
   const bonusYieldValue = await fetchPriceInEth({
     chainId,
