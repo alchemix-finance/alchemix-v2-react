@@ -1,6 +1,12 @@
 import { lsService } from "@/lib/localStorage";
 import { Theme, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface ThemeStore {
   rainbowTheme: Theme;
@@ -85,17 +91,17 @@ export const useTheme = () => {
 // Whenever the user explicitly chooses to respect the OS preference
 // localStorage.removeItem("theme");
 
-let initialHandled = false;
+const initialDark =
+  lsService.getItem(0, "theme") === "dark" ||
+  (!lsService.getItem(0, "theme") &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const initialDark =
-    lsService.getItem(0, "theme") === "dark" ||
-    (!lsService.getItem(0, "theme") &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches);
-  if (initialDark && !initialHandled) {
-    document.documentElement.classList.add("dark");
-    initialHandled = true;
-  }
+  useEffect(() => {
+    if (initialDark) {
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
 
   const [darkMode, setDarkMode] = useState<boolean>(initialDark);
 

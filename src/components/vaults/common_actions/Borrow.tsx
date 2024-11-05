@@ -260,7 +260,7 @@ export const Borrow = () => {
               (isDifferentAddress && !confirmedDifferentAddress)
             }
           >
-            Borrow {debtToken.symbol}
+            {`Borrow ${debtToken.symbol}`}
           </CtaButton>
         </>
       )}
