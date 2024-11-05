@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 
 import { Button } from "@/components/ui/button";
 
-import { GridPattern } from "./GridPattern";
+// import { GridPattern } from "./GridPattern";
 import { VideoModal } from "./VideoModal";
 import { BlurInHeader, BlurInParagraph } from "./BlurInText";
 import { LandingCtaButton } from "./LandingCtaButton";
