@@ -156,17 +156,9 @@ export const Landing = () => {
             </BlurInParagraph>
           </div>
           <Tokens />
-          <div className="relative -mx-20">
-            <GridPattern className="absolute left-1/2 -z-10 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2"></GridPattern>
-            <img
-              src="./images/landing-page/AlchemixLogoPlaceholder.png"
-              alt="Alchemix"
-              className="absolute left-[70%] -translate-x-1/2 -translate-y-[-75%] rounded-full"
-              style={{ width: "300px", height: "300px" }}
-            />
-          </div>
-          <div className="relative -mr-20 grid pr-20 text-start *:col-start-1 *:row-start-1">
-            <div className="flex size-full max-w-xl flex-col justify-center gap-6 py-48">
+
+          <div className="flex w-full items-center gap-4 px-0 py-48">
+            <div className="flex-1 space-y-6 pl-8 text-left">
               <BlurInHeader className="whitespace-nowrap text-[58px] font-semibold">
                 Get Started With Alchemix
               </BlurInHeader>
@@ -178,9 +170,18 @@ export const Landing = () => {
               </BlurInParagraph>
               <LandingCtaButton />
             </div>
+
+            <div className="flex flex-1 items-center justify-center">
+              <img
+                src="./images/landing-page/AlchemixLogoPlaceholder.png"
+                alt="Alchemix"
+                className="rounded-full"
+                style={{ width: "300px", height: "300px" }}
+              />
+            </div>
           </div>
-          <div className="-mt-36 flex flex-col items-stretch justify-center gap-4 lg:flex-row">
-            <div className="h-70 relative w-60">
+          <div className="-mt-24 flex flex-col items-stretch justify-center gap-4 lg:flex-row">
+            <div className="relative">
               <img
                 src="/alchemix-v2-react/images/landing-page/1.png"
                 alt="Deposit"
@@ -192,7 +193,7 @@ export const Landing = () => {
                 className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
               />
             </div>
-            <div className="h-70 relative w-60">
+            <div className="relative">
               <img
                 src="/alchemix-v2-react/images/landing-page/2.png"
                 alt="Earn"
@@ -204,7 +205,7 @@ export const Landing = () => {
                 className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
               />
             </div>
-            <div className="h-70 relative w-60">
+            <div className="relative">
               <img
                 src="/alchemix-v2-react/images/landing-page/3.png"
                 alt="Access"
@@ -221,7 +222,7 @@ export const Landing = () => {
             <h2 className="text-center text-5xl font-semibold">
               A Thriving Ecosystem
             </h2>
-            <div className="px-40">
+            <div className="px-44">
               <EcosystemGrid />
             </div>
           </div>
