@@ -166,7 +166,6 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <p className="text-center text-sm text-lightgrey10">TVL / Cap</p>
           <VaultCapacityCell
             vault={vault}
-            yieldTokenDecimals={vaultYieldTokenData?.decimals}
             underlyingTokenDecimals={vaultUnderlyingTokenData?.decimals}
             tokenSymbol={vaultUnderlyingTokenData?.symbol}
           />
@@ -315,12 +314,10 @@ export const CurrencyCell = ({
 
 const VaultCapacityCell = ({
   vault,
-  yieldTokenDecimals = 18,
   underlyingTokenDecimals = 18,
   tokenSymbol,
 }: {
   vault: Vault;
-  yieldTokenDecimals: number | undefined;
   underlyingTokenDecimals: number | undefined;
   tokenSymbol: string | undefined;
 }) => {
@@ -328,7 +325,10 @@ const VaultCapacityCell = ({
 
   const limitValue = formatUnits(
     vault.yieldTokenParams.maximumExpectedValue,
-    yieldTokenDecimals,
+    underlyingTokenDecimals === 6 &&
+      vault.yieldTokenParams.maximumExpectedValue > 1_000_000_000_000_000n
+      ? 18
+      : underlyingTokenDecimals,
   );
 
   const { data: capacity, isPending } = useReadContract({
