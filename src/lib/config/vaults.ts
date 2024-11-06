@@ -587,7 +587,7 @@ export const VAULTS: VaultsConfig = {
         apr: getJonesApy,
         yieldType: "APY",
         provider: "jones",
-        bonus: getNoBonus,
+        bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831"], // Jones have geo-blocking, so we disable deposit of USDC -> let folks go to Jones directly
       disabledWithdrawTokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831"], // Jones have a withdrawal queue to withdraw fron jUSDC -> let folks go to Jones directly
@@ -621,7 +621,7 @@ export const VAULTS: VaultsConfig = {
         apr: getGearboxApy,
         yieldType: "APY",
         provider: "gearbox",
-        bonus: getNoBonus,
+        bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],
       disabledWithdrawTokens: [],

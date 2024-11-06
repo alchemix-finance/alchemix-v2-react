@@ -21,5 +21,5 @@ export const BONUS_REWARDS_END_TIMESTAMPS = {
   // December 13th
   [optimism.id]: 1734048000,
   // September 28th
-  [arbitrum.id]: 1727488278,
+  [arbitrum.id]: 1733315207,
 };
