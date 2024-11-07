@@ -12,11 +12,14 @@ import { useSettings } from "@/components/providers/SettingsProvider";
 import { SynthFilter } from "../Vaults";
 
 export interface VaultsMetricsProps {
-  filteredVaults: Vault[] | undefined,
-  selectedSynth: SynthFilter
+  filteredVaults: Vault[] | undefined;
+  selectedSynth: SynthFilter;
 }
 
-export const VaultsMetrics = ({ filteredVaults, selectedSynth }: VaultsMetricsProps) => {
+export const VaultsMetrics = ({
+  filteredVaults,
+  selectedSynth,
+}: VaultsMetricsProps) => {
   const { currency } = useSettings();
 
   const { data: alchemists } = useAlchemists();
@@ -24,20 +27,19 @@ export const VaultsMetrics = ({ filteredVaults, selectedSynth }: VaultsMetricsPr
   const filteredAlchemists = useMemo(() => {
     return selectedSynth === "all"
       ? alchemists
-      : alchemists?.filter(
-        (alchemist) => {
-          return alchemist.synthType ===
-            selectedSynth
-        },
-      );
-  }, [alchemists, selectedSynth])
+      : alchemists?.filter((alchemist) => {
+          return alchemist.synthType === selectedSynth;
+        });
+  }, [alchemists, selectedSynth]);
 
-  const debtTokenPrices = useGetMultipleTokenPrices(
-    filteredAlchemists?.map((alchemist) => alchemist.underlyingTokens[0]),
-  );
-  const underlyingTokensPrices = useGetMultipleTokenPrices(
-    filteredVaults?.map((vault) => vault.underlyingToken),
-  );
+  const debtTokenPrices = useGetMultipleTokenPrices([
+    ...new Set(
+      filteredAlchemists?.map((alchemist) => alchemist.underlyingTokens[0]),
+    ),
+  ]);
+  const underlyingTokensPrices = useGetMultipleTokenPrices([
+    ...new Set(filteredVaults?.map((vault) => vault.underlyingToken)),
+  ]);
 
   const { data: tokens } = useTokensQuery();
 
@@ -51,7 +53,8 @@ export const VaultsMetrics = ({ filteredVaults, selectedSynth }: VaultsMetricsPr
   }, [filteredAlchemists, debtTokenPrices]);
 
   const availableCredit = useMemo(
-    () => calculateAvailableCredit(filteredAlchemists, debtTokenPrices, totalDebt),
+    () =>
+      calculateAvailableCredit(filteredAlchemists, debtTokenPrices, totalDebt),
     [filteredAlchemists, debtTokenPrices, totalDebt],
   );
 
@@ -133,7 +136,14 @@ function calculateTotalDeposit(
   vaults: Vault[] | undefined,
   underlyingTokensPrices: UseQueryResult<number, Error>[],
 ) {
-  return vaults?.reduce((previousValue, currentVault, i) => {
+  const set = new Set(vaults?.map((vault) => vault.underlyingToken));
+  const priceMap = new Map(
+    underlyingTokensPrices.map((price, i) => [
+      [...set.values()][i],
+      price.data,
+    ]),
+  );
+  return vaults?.reduce((previousValue, currentVault) => {
     const vaultHelper = new VaultHelper(currentVault);
 
     const sharesBalanceInUnderlying =
@@ -144,7 +154,7 @@ function calculateTotalDeposit(
         t.address.toLowerCase() === currentVault.underlyingToken.toLowerCase(),
     );
 
-    const tokenPrice = underlyingTokensPrices[i].data;
+    const tokenPrice = priceMap.get(currentVault.underlyingToken);
 
     if (!tokenPrice) {
       return previousValue + 0;
@@ -172,9 +182,15 @@ function calculateTotalDebt(
 ) {
   if (!alchemists) return 0;
   let debt = 0;
+  const set = new Set(
+    alchemists.map((alchemist) => alchemist.underlyingTokens[0]),
+  );
+  const priceMap = new Map(
+    debtTokensPrices.map((price, i) => [[...set.values()][i], price.data]),
+  );
   for (let i = 0; i < alchemists.length; i++) {
     const alchemist = alchemists[i];
-    const debtTokenPrice = debtTokensPrices[i].data;
+    const debtTokenPrice = priceMap.get(alchemist.underlyingTokens[0]);
 
     const rawDebt = alchemist.position.debt;
 
@@ -194,10 +210,17 @@ function calculateAvailableCredit(
   let availableCreditWithoutDebt = 0;
   if (!alchemists) return 0;
 
+  const set = new Set(
+    alchemists.map((alchemist) => alchemist.underlyingTokens[0]),
+  );
+  const priceMap = new Map(
+    debtTokensPrices.map((price, i) => [[...set.values()][i], price.data]),
+  );
+
   for (let i = 0; i < alchemists.length; i++) {
     const alchemist = alchemists[i];
     const totalValue = alchemist.totalValue;
-    const tokenPrice = debtTokensPrices[i].data;
+    const tokenPrice = priceMap.get(alchemist.underlyingTokens[0]);
 
     if (!tokenPrice) {
       continue;
@@ -221,13 +244,20 @@ function calculateGlobalTVL(
   vaults: Vault[] | undefined,
   underlyingTokensPrices: UseQueryResult<number, Error>[],
 ) {
-  return vaults?.reduce((prevValue, currVault, i) => {
+  const set = new Set(vaults?.map((vault) => vault.underlyingToken));
+  const priceMap = new Map(
+    underlyingTokensPrices.map((price, i) => [
+      [...set.values()][i],
+      price.data,
+    ]),
+  );
+  return vaults?.reduce((prevValue, currVault) => {
     const vaultHelper = new VaultHelper(currVault);
 
     const vaultTVL = vaultHelper.convertSharesToUnderlyingTokens(
       currVault.yieldTokenParams.totalShares,
     );
-    const tokenPrice = underlyingTokensPrices[i].data;
+    const tokenPrice = priceMap.get(currVault.underlyingToken);
 
     const vaultUnderlyingTokenData = tokens?.find(
       (t) =>
