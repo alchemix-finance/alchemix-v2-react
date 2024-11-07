@@ -13,6 +13,7 @@ export const VideoModal = ({
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
+
   return (
     <Dialog>
       <div
@@ -22,19 +23,24 @@ export const VideoModal = ({
         }}
         className={cn(
           "transition-all [transition-duration:1.1s]",
-          isInView ? "blur(0px) opacity-100" : "blur(10px) opacity-0",
+          isInView ? "opacity-100 blur-0" : "opacity-0 blur-sm",
           className,
         )}
       >
-        <DialogTrigger className="group relative inline-flex w-full items-center justify-center text-orange4">
-          <img
-            src="./images/landing-page/ad_thumbnail.webp"
-            alt="Watch the Alchemix cinematic ad"
-            className="aspect-video w-full rounded-3xl object-cover"
-          />
+        <DialogTrigger
+          className={cn(
+            // Base styles similar to CTA button
+            "group relative inline-flex h-11 w-14 cursor-pointer items-center justify-center rounded-xl border-0 text-[#1BEAA5] transition-all",
+            // Background gradient layers
+            "bg-[length:200%] [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.00*1rem)_solid_transparent]",
+            "bg-[linear-gradient(#0B0D12,#0B0D12),linear-gradient(#1BEAA5,#1BEAA5),linear-gradient(90deg,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5)]",
+            "hover:bg-[linear-gradient(#0F0F12,#0F0F12),linear-gradient(#FF5733,#FF5733),linear-gradient(90deg,#FF5733,#FF5733,#FF5733,#FF5733,#FF5733)]",
+            "shadow-md",
+          )}
+        >
           <svg
             role="img"
-            className="absolute h-32 w-32 self-center opacity-50 transition-opacity group-hover:opacity-100"
+            className="h-5 w-5 scale-[3.2] text-[#1BEAA5]"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
