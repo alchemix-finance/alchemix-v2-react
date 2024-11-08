@@ -164,6 +164,7 @@ module.exports = {
           "linear-gradient(171.08deg, #fefefe -11.16%, #ebe6de 6.1%, #f5f2ee 49.05%, #fff 93.22%)",
         bodyGradientInverse:
           "linear-gradient(171.08deg, #010101 -11.16%, #141921 6.1%, #0a0d11 49.05%, #000000 93.22%)",
+        "hero-bg": "url('/images/landing-page/HeroBg.jpg')",
       },
     },
   },
