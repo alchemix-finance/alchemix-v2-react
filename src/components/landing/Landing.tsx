@@ -35,7 +35,7 @@ export const Landing = () => {
         </div>
       )} */}
 
-      <div className="relative flex flex-col items-center space-y-0 bg-[url('./images/landing-page/HeroBg.jpg')] bg-contain bg-center font-alcxTitles">
+      <div className="relative flex flex-col items-center space-y-0 bg-[url('public/images/landing-page/HeroBg.jpg')] bg-contain bg-center font-alcxTitles">
         <div className="flex flex-col items-center justify-center gap-4 px-20 py-12">
           <div className="flex flex-1 flex-col items-center justify-center space-y-8 py-8 text-center">
             <BlurInHeader
