@@ -28,37 +28,37 @@ const assets = [
 export const Tokens = () => {
   return (
     <div className="-mx-20 flex items-center overflow-x-clip">
-      <div className="flex min-w-full items-center justify-between lg:animate-scroll lg:pl-48">
-        {assets.map(({ name, color }) => (
+      <div className="flex min-w-full items-center justify-between lg:animate-scroll lg:pl-36">
+        {assets.map(({ name }) => (
           <div key={name} className="relative">
             <img
               alt={name}
-              src={`./images/icons/${name.toLowerCase()}.svg`}
-              className="h-20 w-20 min-w-full rounded-full border border-lightgrey10inverse dark:border-lightgrey10"
+              src={`./images/landing-page/${name.toLowerCase()}.png`}
+              className="h-full w-full min-w-full"
             />
-            <div
+            {/* <div
               style={{
                 background: color,
               }}
-              className="absolute inset-0 -z-10 size-full rounded-full blur-xl"
-            />
+              className="absolute inset-0 -z-10 size-full"
+            /> */}
           </div>
         ))}
       </div>
-      <div className="hidden min-w-full animate-scroll items-center justify-between lg:flex lg:pl-48">
-        {assets.map(({ name, color }) => (
+      <div className="hidden min-w-full animate-scroll items-center justify-between lg:flex lg:pl-36">
+        {assets.map(({ name }) => (
           <div key={name} className="relative">
             <img
               alt={name}
-              src={`./images/icons/${name.toLowerCase()}.svg`}
-              className="h-20 w-20 min-w-full rounded-full border border-lightgrey10inverse dark:border-lightgrey10"
+              src={`./images/landing-page/${name.toLowerCase()}.png`}
+              className="h-full w-full min-w-full"
             />
-            <div
+            {/* <div
               style={{
                 background: color,
               }}
-              className="absolute inset-0 -z-10 size-full rounded-full blur-xl"
-            />
+              className="absolute inset-0 -z-10 size-full rounded-full"
+            /> */}
           </div>
         ))}
       </div>

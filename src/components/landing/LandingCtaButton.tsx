@@ -17,7 +17,7 @@ export const LandingCtaButton = ({ delay = 0 }) => {
       to="/vaults"
       className={cn(
         // Base styles for the button
-        "group relative inline-flex h-11 animate-buttonMovingGradientBg cursor-pointer items-center justify-center self-start rounded-xl border-0 px-4 py-5 font-sans text-xl font-bold tracking-tight text-[#0B0D12] transition-all",
+        "group relative inline-flex h-11 animate-buttonMovingGradientBg cursor-pointer items-center justify-center self-start rounded-xl border-0 px-4 py-5 font-sans text-xl font-semibold tracking-tight text-[#0B0D12] transition-all",
         // Apply multiple background layers
         "bg-[length:200%] [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.08*1rem)_solid_transparent]",
         // Background layers for the gradient effect

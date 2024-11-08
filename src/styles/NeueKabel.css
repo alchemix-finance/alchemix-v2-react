@@ -21,7 +21,7 @@
 
 @font-face {
   font-family: "Neue Kabel";
-  src: url("/fonts/Neue_Kabel/NeueKabelBold.ttf") format("truetype");
+  src: url("/fonts/Neue_Kabel/NeueKabelMedium.ttf") format("truetype");
   font-weight: 800;
   font-display: block;
 }
