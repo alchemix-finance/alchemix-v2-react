@@ -11,6 +11,7 @@ import { useChain } from "@/hooks/useChain";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { formatNumber } from "@/utils/number";
 import { LoadingBar } from "@/components/common/LoadingBar";
+import { ONE_DAY_IN_MS } from "@/lib/constants";
 
 interface VaultInfoProps {
   vault: Vault;
@@ -132,10 +133,11 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
       return events;
     },
     enabled: chain.id !== 250,
+    staleTime: ONE_DAY_IN_MS,
   });
 
   return (
-    <div className="flex w-1/4 flex-col justify-between space-y-3 rounded border border-grey1inverse bg-grey3inverse p-3 dark:border-grey1 dark:bg-grey3">
+    <div className="flex w-1/3 flex-col space-y-5 rounded border border-grey1inverse bg-grey3inverse p-3 dark:border-grey1 dark:bg-grey3">
       <h5 className="font-medium">Harvests & Donations</h5>
       {isPendingHarvestsAndDonations ? (
         <div className="flex h-full items-center justify-center">

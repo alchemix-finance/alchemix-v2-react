@@ -4,6 +4,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
 import { AnimatePresence, m } from "framer-motion";
 import { greaterThan, multiply, toString } from "dnum";
+import useMeasure from "react-use-measure";
 
 import { useChain } from "@/hooks/useChain";
 import { SYNTH_ASSETS_METADATA } from "@/lib/config/synths";
@@ -31,7 +32,7 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { useSettings } from "@/components/providers/SettingsProvider";
-import { MotionDirection, variants } from "./motion";
+import { MotionDirection, transition, variants } from "./motion";
 import { VaultInfo } from "./VaultInfo";
 
 type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
@@ -42,6 +43,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
   const [contentAction, setContentAction] = useState<ContentAction>("deposit");
   const [motionDirection, setMotionDirection] =
     useState<MotionDirection>("right");
+  const [ref, { height }] = useMeasure();
 
   const { data: tokens } = useTokensQuery();
   const { data: vaults } = useVaults();
@@ -237,60 +239,61 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               </ScrollArea>
             </Tabs>
           </div>
-          <div className="flex flex-col-reverse gap-5 md:flex-row">
-            <AnimatePresence
-              initial={false}
-              mode="popLayout"
-              custom={motionDirection}
-            >
-              <m.div
-                key={contentAction}
+          <m.div animate={{ height }} transition={transition}>
+            <div ref={ref} className="flex flex-col-reverse gap-5 md:flex-row">
+              <AnimatePresence
+                initial={false}
+                mode="popLayout"
                 custom={motionDirection}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{
-                  type: "spring",
-                  duration: 0.3,
-                  bounce: 0,
-                }}
-                className="w-3/4"
               >
-                {contentAction === "deposit" &&
-                  vaultUnderlyingTokenData &&
-                  vaultYieldTokenData && (
-                    <Deposit
-                      vault={vault}
-                      underlyingTokenData={vaultUnderlyingTokenData}
-                      yieldTokenData={vaultYieldTokenData}
-                    />
-                  )}
+                <m.div
+                  key={contentAction}
+                  custom={motionDirection}
+                  variants={variants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={transition}
+                  className="w-2/3"
+                >
+                  {contentAction === "deposit" &&
+                    vaultUnderlyingTokenData &&
+                    vaultYieldTokenData && (
+                      <Deposit
+                        vault={vault}
+                        underlyingTokenData={vaultUnderlyingTokenData}
+                        yieldTokenData={vaultYieldTokenData}
+                      />
+                    )}
 
-                {contentAction === "withdraw" &&
-                  vaultUnderlyingTokenData &&
-                  vaultYieldTokenData && (
-                    <Withdraw
-                      vault={vault}
-                      underlyingTokenData={vaultUnderlyingTokenData}
-                      yieldTokenData={vaultYieldTokenData}
-                    />
-                  )}
+                  {contentAction === "withdraw" &&
+                    vaultUnderlyingTokenData &&
+                    vaultYieldTokenData && (
+                      <Withdraw
+                        vault={vault}
+                        underlyingTokenData={vaultUnderlyingTokenData}
+                        yieldTokenData={vaultYieldTokenData}
+                      />
+                    )}
 
-                {contentAction === "migrate" &&
-                  (selectionForMigration?.length ? (
-                    <Migrate vault={vault} selection={selectionForMigration} />
-                  ) : (
-                    <p className="text-center" key="migrate">
-                      No vaults available for migration
-                    </p>
-                  ))}
+                  {contentAction === "migrate" &&
+                    (selectionForMigration?.length ? (
+                      <Migrate
+                        vault={vault}
+                        selection={selectionForMigration}
+                      />
+                    ) : (
+                      <p className="text-center" key="migrate">
+                        No vaults available for migration
+                      </p>
+                    ))}
 
-                {contentAction === "info" && <Info vault={vault} />}
-              </m.div>
-            </AnimatePresence>
-            <VaultInfo vault={vault} />
-          </div>
+                  {contentAction === "info" && <Info vault={vault} />}
+                </m.div>
+              </AnimatePresence>
+              <VaultInfo vault={vault} />
+            </div>
+          </m.div>
         </div>
       </AccordionContent>
     </AccordionItem>
