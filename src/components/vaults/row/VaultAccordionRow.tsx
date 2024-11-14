@@ -240,7 +240,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
             </Tabs>
           </div>
           <m.div animate={{ height }} transition={transition}>
-            <div ref={ref} className="flex flex-col-reverse gap-5 md:flex-row">
+            <div ref={ref} className="flex flex-col gap-5 md:flex-row">
               <AnimatePresence
                 initial={false}
                 mode="popLayout"
@@ -254,7 +254,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
                   animate="center"
                   exit="exit"
                   transition={transition}
-                  className="w-2/3"
+                  className="w-full md:w-2/3"
                 >
                   {contentAction === "deposit" &&
                     vaultUnderlyingTokenData &&

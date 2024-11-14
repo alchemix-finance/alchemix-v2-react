@@ -137,7 +137,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
   });
 
   return (
-    <div className="flex w-1/3 flex-col space-y-5 rounded border border-grey1inverse bg-grey3inverse p-3 dark:border-grey1 dark:bg-grey3">
+    <div className="flex w-full flex-col space-y-5 rounded border border-grey1inverse bg-grey3inverse p-3 md:w-1/3 dark:border-grey1 dark:bg-grey3">
       <h5 className="font-medium">Harvests & Donations</h5>
       {isPendingHarvestsAndDonations ? (
         <div className="flex h-full items-center justify-center">
@@ -147,7 +147,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
         <ScrollArea className="h-36">
           <div className="space-y-2 px-3">
             {harvestsAndDonations?.map((event) => (
-              <div key={event.transaction.hash}>
+              <div key={event.transaction.hash + event.type}>
                 <div className="flex justify-between">
                   <a
                     href={`${chain.blockExplorers.default.url}/tx/${event.transaction.hash}`}
