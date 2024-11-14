@@ -24,10 +24,8 @@ export const LandingCtaButton = ({ delay = 0 }) => {
         "bg-[linear-gradient(#1BEAA5,#1BEAA5),linear-gradient(#1BEAA5,#1BEAA5),linear-gradient(90deg,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5)]",
         // Animate in when in view
         isInView ? "opacity-100 blur-0" : "opacity-0 blur-sm",
-        // Before pseudo-element for the glow effect
-        // "before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:animate-buttonMovingGradientBg before:bg-[linear-gradient(90deg,#1EFFB4,#1BEAA5,#1EFFB4,#1BEAA5,#1EFFB4)] before:bg-[length:200%] before:opacity-70 before:[filter:blur(1rem)]",
-
-        "",
+        // Hover pseudo-element for the glow effect
+        "hover:before:absolute hover:before:bottom-[-10%] hover:before:left-0 hover:before:z-0 hover:before:h-[30%] hover:before:w-full hover:before:animate-buttonMovingGradientBg hover:before:bg-[linear-gradient(90deg,#080a0e,#1BEAA5,#080a0e,#1BEAA5,#080a0e)] hover:before:bg-[length:200%] hover:before:opacity-70 hover:before:[filter:blur(1rem)]",
       )}
     >
       <span className="relative z-10">GET A SELF-REPAYING LOAN</span>

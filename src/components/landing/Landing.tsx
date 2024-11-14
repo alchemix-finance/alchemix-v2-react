@@ -35,7 +35,7 @@ export const Landing = () => {
         </div>
       )} */}
 
-      <div className="bg-hero-bg relative flex flex-col items-center space-y-0 bg-contain bg-center font-alcxTitles">
+      <div className="relative flex flex-col items-center space-y-0 bg-hero-bg bg-contain bg-center font-alcxTitles">
         <div className="flex flex-col items-center justify-center gap-4 px-20 py-12">
           <div className="flex flex-1 flex-col items-center justify-center space-y-8 py-8 text-center">
             <BlurInHeader
@@ -84,7 +84,7 @@ export const Landing = () => {
               <Button
                 variant="cta"
                 size="cta"
-                className="rounded-xl bg-[#0B0D12] text-xl font-normal uppercase"
+                className="rounded-xl bg-[#0B0D12] text-lg font-normal"
               >
                 Explore our vaults
               </Button>
@@ -104,7 +104,7 @@ export const Landing = () => {
               <Button
                 variant="cta"
                 size="cta"
-                className="rounded-xl bg-[#0B0D12] text-xl font-normal uppercase"
+                className="rounded-xl bg-[#0B0D12] text-xl font-normal"
               >
                 Learn more
               </Button>
@@ -131,7 +131,7 @@ export const Landing = () => {
             <Button
               variant="cta"
               size="cta"
-              className="rounded-xl bg-[#0B0D12] text-xl font-normal uppercase"
+              className="rounded-xl bg-[#0B0D12] text-xl font-normal"
             >
               Explore our audits
             </Button>
@@ -164,32 +164,34 @@ export const Landing = () => {
             </div>
           </div>
 
-          <div className="w-full bg-[#080a0e]">
-            <div className="flex w-full items-center gap-4 px-20 py-48">
-              <div className="flex-1 space-y-6 pl-8 text-left">
-                <BlurInHeader className="-mb-4 whitespace-nowrap text-[58px] font-semibold">
-                  Get Started With Alchemix
+          <div className="flex w-full items-center justify-center bg-[#080a0e]">
+            <div className="flex w-full max-w-screen-lg items-center gap-4 px-20 pb-48 pt-14">
+              <div className="mx-auto flex-1 space-y-6 text-center">
+                <BlurInHeader className="mb-10 whitespace-nowrap bg-gradient-to-r from-bronze1 via-neutral-100 to-bronze1 bg-clip-text text-[58px] font-semibold text-transparent dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1">
+                  Get started with Alchemix
                 </BlurInHeader>
-                <BlurInParagraph className="text-2xl font-semibold text-lightgrey10inverse dark:text-lightgrey10">
+
+                <BlurInParagraph className="whitespace-nowrap pb-8 text-2xl font-semibold text-lightgrey10inverse dark:text-lightgrey10">
                   Alchemix's self-repaying loans automatically pay themselves
-                  off using the interest earned on your initial deposit. Borrow
-                  against your assets, earn yield on the full deposit amount,
-                  and enjoy the ability to spend and save at the same time.
+                  off using the interest earned<br></br> on your initial
+                  deposit. Borrow against your assets, earn yield on the full
+                  deposit amount,<br></br> and enjoy the ability to spend and
+                  save at the same time.
                 </BlurInParagraph>
                 <LandingCtaButton />
               </div>
-              <div className="flex flex-1 items-center justify-center">
+              {/* <div className="flex flex-1 items-center justify-center">
                 <img
                   src="./images/landing-page/AlchemixLogoPlaceholder.png"
                   alt="Alchemix"
                   className="rounded-full"
                   style={{ width: "300px", height: "300px" }}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
 
-          <div className="-mt-24 flex flex-col items-stretch justify-center gap-6 bg-[#080a0e] pb-20 lg:flex-row">
+          <div className="-mt-28 flex flex-col items-stretch justify-center gap-6 bg-[#080a0e] pb-20 lg:flex-row">
             <div className="relative">
               <img
                 src="/alchemix-v2-react/images/landing-page/1.png"

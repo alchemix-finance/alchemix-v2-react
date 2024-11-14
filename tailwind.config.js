@@ -60,6 +60,7 @@ module.exports = {
             transform: "translateX(-100%)",
           },
         },
+
         // cta button at landing page
         buttonMovingGradientBg: {
           "0%": { "background-position": "0%" },
