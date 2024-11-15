@@ -51,7 +51,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
 
   const { data: harvestsAndBonuses, isPending: isPendingHarvestsAndBonuses } =
     useQuery({
-      queryKey: [QueryKeys.Harvests, chain.id, vault.address],
+      queryKey: [QueryKeys.HarvestsAndBonuses, chain.id, vault.address],
       queryFn: async () => {
         if (chain.id === 250)
           throw new Error("Harvests are not supported on this chain");
