@@ -127,7 +127,10 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
           type: "Harvest",
           totalHarvested: toString(
             mul(
-              [BigInt(harvest.totalHarvested), vault.yieldTokenParams.decimals],
+              [
+                BigInt(harvest.totalHarvested),
+                vault.underlyingTokensParams.decimals,
+              ],
               0.9,
             ),
           ),
