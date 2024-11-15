@@ -27,7 +27,7 @@ export const processApr = async ({
     (reserve) => reserve.address.toLowerCase() === vaultAddress.toLowerCase(),
   );
 
-  let yieldValue = (reserve?.actualRates["30"] ?? 0) / 100;
+  let yieldValue = reserve?.actualRates["30"] ?? 0;
   if (yieldValue < 0) yieldValue = 0;
   return yieldValue;
 };
