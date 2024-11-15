@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 // import { GridPattern } from "./GridPattern";
 import { VideoModal } from "./VideoModal";
 import { BlurInHeader, BlurInParagraph } from "./BlurInText";
-import { LandingCtaButton } from "./LandingCtaButton";
+import { LandingCtaButton, LandingClosingCtaButton } from "./LandingCtaButton";
 import { SlideBox } from "./SlideBox";
 import { Tokens } from "./Tokens";
 import { EcosystemGrid } from "./EcosystemGrid";
@@ -35,11 +35,11 @@ export const Landing = () => {
         </div>
       )} */}
 
-      <div className="relative flex flex-col items-center space-y-0 bg-hero-bg bg-contain bg-center font-alcxTitles">
-        <div className="flex flex-col items-center justify-center gap-4 px-20 py-12">
-          <div className="flex flex-1 flex-col items-center justify-center space-y-8 py-8 text-center">
+      <div className="relative flex flex-col items-center space-y-0 bg-hero-bg bg-contain font-alcxTitles">
+        <div className="flex flex-col items-center justify-center gap-4 px-20 py-24">
+          <div className="flex flex-1 flex-col items-center justify-center text-center">
             <BlurInHeader
-              className="-mb-4 bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-[72px] font-extrabold leading-tight tracking-normal text-transparent dark:bg-gradient-to-r dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1"
+              className="cta-text-shadow bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-[72px] font-extrabold leading-tight tracking-normal text-transparent dark:bg-gradient-to-r dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1"
               delay={0.1}
             >
               Self-Repaying Loans,
@@ -47,7 +47,7 @@ export const Landing = () => {
               Without Liquidations
             </BlurInHeader>
             <BlurInParagraph
-              className="text-2xl text-lightgrey10inverse dark:text-lightgrey1"
+              className="mb-12 mt-8 text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey1"
               delay={0.2}
             >
               Alchemix loans automatically pay themselves off without risk of
@@ -62,8 +62,8 @@ export const Landing = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-12 bg-gradient-to-br from-lightgrey5inverse to-lightgrey10inverse pt-12 dark:from-[#0B0D12] dark:to-[#171B24]">
-          <div className="flex items-center gap-4 px-20">
+        <div className="flex w-full flex-col gap-20 bg-gradient-to-br from-lightgrey5inverse to-lightgrey10inverse pt-20 dark:from-[#0B0D12] dark:to-[#171B24]">
+          <div className="flex items-center gap-4 px-40">
             <div className="flex-1">
               <img
                 src="images/landing-page/01_Flexible.png"
@@ -72,39 +72,40 @@ export const Landing = () => {
                 style={{ maxWidth: "100%", height: "auto" }}
               />
             </div>
-            <SlideBox className="flex-1 space-y-6" direction="bottom">
-              <h2 className="-mb-4 text-[58px] font-semibold">
+            <SlideBox className="flex-1" direction="bottom">
+              <h2 className="ml-10 text-5xl font-semibold">
                 Completely Flexible
               </h2>
-              <p className="pr-8 text-2xl text-lightgrey10inverse dark:text-lightgrey10">
-                Alchemix gives you full control of your finances with no hidden
-                fees. Repay on your terms, keep your assets working for you, and
-                borrow against your collateral to secure future yield.
+              <p className="mb-7 ml-10 mt-6 text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey10">
+                Alchemix gives you full control of your finances<br></br> with
+                no hidden fees. Repay on your terms, keep<br></br> your assets
+                working for you, and borrow against<br></br> your collateral to
+                secure future yield.
               </p>
               <Button
                 variant="cta"
                 size="cta"
-                className="rounded-xl bg-[#0B0D12] text-lg font-normal"
+                className="ml-10 rounded-xl bg-[#0B0D12] text-lg font-normal"
               >
                 Explore our vaults
               </Button>
             </SlideBox>
           </div>
 
-          <div className="flex items-center gap-4 px-20 pb-12">
-            <div className="flex-1 space-y-6 pl-8">
-              <h2 className="-mb-4 text-[58px] font-semibold">
+          <div className="flex items-center gap-4 px-40 pb-12">
+            <div className="flex-1">
+              <h2 className="ml-10 text-5xl font-semibold">
                 Zero Liquidations
               </h2>
-              <p className="text-2xl text-lightgrey10inverse dark:text-lightgrey10">
-                With Alchemix, market volatility won&apos;t touch your vault.
-                Your debt is securely tied to your collateral, ensuring that
-                price swings never put you at risk.
+              <p className="mb-7 ml-10 mt-6 text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey10">
+                With Alchemix, market volatility won&apos;t touch <br></br> your
+                vault. Your debt is securely tied to your<br></br> collateral,
+                ensuring that price swings never put<br></br> you at risk.
               </p>
               <Button
                 variant="cta"
                 size="cta"
-                className="rounded-xl bg-[#0B0D12] text-xl font-normal"
+                className="ml-10 rounded-xl bg-[#0B0D12] text-lg font-normal"
               >
                 Learn more
               </Button>
@@ -120,10 +121,10 @@ export const Landing = () => {
             </div>
           </div>
         </div>
-        <div className="flex w-full items-center gap-4 rounded-sm bg-[#080a0e] px-20 py-12">
-          <div className="flex-1 space-y-6 pl-8">
-            <h2 className="-mb-4 text-[58px] font-semibold">Security First</h2>
-            <p className="text-2xl text-lightgrey10inverse dark:text-lightgrey10">
+        <div className="flex w-full items-center gap-4 rounded-sm bg-[#080a0e] px-40 py-20">
+          <div className="flex-1">
+            <h2 className="ml-10 text-5xl font-semibold">Security First</h2>
+            <p className="mb-7 ml-10 mt-6 text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey10">
               We are the original battle-tested DeFi platform with a priority of
               asset protection. As a pioneer in DeFi, we ensure your assets are
               preserved at every step.
@@ -131,7 +132,7 @@ export const Landing = () => {
             <Button
               variant="cta"
               size="cta"
-              className="rounded-xl bg-[#0B0D12] text-xl font-normal"
+              className="ml-10 rounded-xl bg-[#0B0D12] text-lg font-normal"
             >
               Explore our audits
             </Button>
@@ -148,93 +149,92 @@ export const Landing = () => {
             </div>
           </div>
         </div>
-        <div className="z-0 flex flex-col bg-gradient-to-br from-lightgrey5inverse to-lightgrey10inverse text-center dark:from-[#0B0D12] dark:to-[#171B24]">
+        <div className="z-0 flex flex-col bg-lightgrey5inverse text-center dark:bg-[#11141B]">
           <div className="w-full">
-            <div className="px-20 py-20 text-center">
-              <BlurInHeader className="text-5xl font-bold">
-                Your Favorite Tokens
-              </BlurInHeader>
-              <BlurInParagraph
-                className="pb-20 text-2xl text-lightgrey10inverse dark:text-lightgrey10"
-                delay={0.2}
-              >
-                Borrow up to 50% of your collateral
-              </BlurInParagraph>
-              <Tokens />
-            </div>
-          </div>
-
-          <div className="flex w-full items-center justify-center bg-[#080a0e]">
-            <div className="flex w-full max-w-screen-lg items-center gap-4 px-20 pb-48 pt-14">
-              <div className="mx-auto flex-1 space-y-6 text-center">
-                <BlurInHeader className="mb-10 whitespace-nowrap bg-gradient-to-r from-bronze1 via-neutral-100 to-bronze1 bg-clip-text text-[58px] font-semibold text-transparent dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1">
-                  Get started with Alchemix
-                </BlurInHeader>
-
-                <BlurInParagraph className="whitespace-nowrap pb-8 text-2xl font-semibold text-lightgrey10inverse dark:text-lightgrey10">
-                  Alchemix's self-repaying loans automatically pay themselves
-                  off using the interest earned<br></br> on your initial
-                  deposit. Borrow against your assets, earn yield on the full
-                  deposit amount,<br></br> and enjoy the ability to spend and
-                  save at the same time.
-                </BlurInParagraph>
-                <LandingCtaButton />
+            <div className="mx-40 flex py-20">
+              <div className="w-1/2">
+                <Tokens />
               </div>
-              {/* <div className="flex flex-1 items-center justify-center">
+              <div className="flex w-1/2 flex-col items-start justify-center pl-10 text-center">
+                <BlurInHeader className="text-5xl font-bold">
+                  Your Favorite Tokens
+                </BlurInHeader>
+                <BlurInParagraph
+                  className="mt-6 text-left text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey10"
+                  delay={0.2}
+                >
+                  Borrow up to 50% of your collateral, whist earning <br></br>{" "}
+                  yield on your full stack.
+                </BlurInParagraph>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center bg-[#080a0e] bg-hero-bg bg-cover pb-20">
+            <div className="flex w-full items-center justify-center">
+              <div className="mx-auto flex w-full max-w-screen-lg items-center justify-center gap-4 px-20 pb-20 pt-20">
+                <div className="mx-auto flex-1 text-center">
+                  <BlurInHeader className="mb-10 whitespace-nowrap bg-gradient-to-r from-bronze1 via-neutral-100 to-bronze1 bg-clip-text text-[64px] font-extrabold text-transparent dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1">
+                    Get started with Alchemix
+                  </BlurInHeader>
+
+                  <BlurInParagraph className="whitespace-nowrap pb-14 text-[28px] font-bold leading-tight text-lightgrey10inverse dark:text-lightgrey10">
+                    Alchemix's self-repaying loans automatically pay themselves
+                    off using the interest earned<br></br> on your initial
+                    deposit. Borrow against your assets, earn yield on the full
+                    deposit amount,<br></br> and enjoy the ability to spend and
+                    save at the same time.
+                  </BlurInParagraph>
+                  <LandingClosingCtaButton />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-stretch justify-center gap-6 lg:flex-row">
+              <div className="relative">
                 <img
-                  src="./images/landing-page/AlchemixLogoPlaceholder.png"
-                  alt="Alchemix"
-                  className="rounded-full"
-                  style={{ width: "300px", height: "300px" }}
+                  src="/alchemix-v2-react/images/landing-page/1.png"
+                  alt="Deposit"
+                  className="h-full w-full rounded-3xl object-contain transition-opacity duration-300 ease-in-out"
                 />
-              </div> */}
+                <img
+                  src="/alchemix-v2-react/images/landing-page/1-hover.png"
+                  alt="Deposit Hover"
+                  className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
+                />
+              </div>
+              <div className="relative">
+                <img
+                  src="/alchemix-v2-react/images/landing-page/2.png"
+                  alt="Earn"
+                  className="h-full w-full rounded-3xl object-contain transition-opacity duration-300 ease-in-out"
+                />
+                <img
+                  src="/alchemix-v2-react/images/landing-page/2-hover.png"
+                  alt="Earn Hover"
+                  className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
+                />
+              </div>
+              <div className="relative">
+                <img
+                  src="/alchemix-v2-react/images/landing-page/3.png"
+                  alt="Access"
+                  className="h-full w-full rounded-3xl object-contain transition-opacity duration-300 ease-in-out hover:opacity-0"
+                />
+                <img
+                  src="/alchemix-v2-react/images/landing-page/3-hover.png"
+                  alt="Access Hover"
+                  className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="-mt-28 flex flex-col items-stretch justify-center gap-6 bg-[#080a0e] pb-20 lg:flex-row">
-            <div className="relative">
-              <img
-                src="/alchemix-v2-react/images/landing-page/1.png"
-                alt="Deposit"
-                className="h-full w-full rounded-3xl object-contain transition-opacity duration-300 ease-in-out"
-              />
-              <img
-                src="/alchemix-v2-react/images/landing-page/1-hover.png"
-                alt="Deposit Hover"
-                className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
-              />
-            </div>
-            <div className="relative">
-              <img
-                src="/alchemix-v2-react/images/landing-page/2.png"
-                alt="Earn"
-                className="h-full w-full rounded-3xl object-contain transition-opacity duration-300 ease-in-out"
-              />
-              <img
-                src="/alchemix-v2-react/images/landing-page/2-hover.png"
-                alt="Earn Hover"
-                className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
-              />
-            </div>
-            <div className="relative">
-              <img
-                src="/alchemix-v2-react/images/landing-page/3.png"
-                alt="Access"
-                className="h-full w-full rounded-3xl object-contain transition-opacity duration-300 ease-in-out hover:opacity-0"
-              />
-              <img
-                src="/alchemix-v2-react/images/landing-page/3-hover.png"
-                alt="Access Hover"
-                className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col items-start space-y-8 pt-20 text-start">
-            <h2 className="-mt-6 self-center text-center text-[58px] font-semibold">
+          <div className="flex flex-col items-start space-y-8 pt-16 text-start">
+            <h2 className="self-center text-center text-[58px] font-semibold">
               A Thriving Ecosystem
             </h2>
-            <div className="px-64 pb-16">
+            <div className="px-64 pb-20">
               <EcosystemGrid />
             </div>
           </div>
