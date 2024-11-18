@@ -61,101 +61,107 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
   const [motionDirection, setMotionDirection] =
     useState<MotionDirection>("right");
 
-  const { data: harvestsAndBonuses, isPending: isPendingHarvestsAndBonuses } =
-    useQuery({
-      queryKey: [QueryKeys.Harvests, chain.id, vault.address],
-      queryFn: async () => {
-        if (chain.id === 250)
-          throw new Error("Harvests are not supported on this chain");
+  const {
+    data: harvestsAndBonuses,
+    isPending: isPendingHarvestsAndBonuses,
+    isError: isErrorHarvestsAndBonuses,
+  } = useQuery({
+    queryKey: [QueryKeys.HarvestsAndBonuses, chain.id, vault.address],
+    queryFn: async () => {
+      if (chain.id === 250)
+        throw new Error("Harvests are not supported on this chain");
 
-        const url = HARVESTS_ENDPOINTS[chain.id];
+      const url = HARVESTS_ENDPOINTS[chain.id];
 
-        const harvestsQuery = gql`
-          query harvests($yieldToken: String!) {
-            alchemistHarvestEvents(
-              where: { yieldToken: $yieldToken }
-              orderBy: timestamp
-              orderDirection: desc
-            ) {
-              totalHarvested
-              transaction {
-                hash
-              }
-              yieldToken
-              timestamp
+      const harvestsQuery = gql`
+        query harvests($yieldToken: String!) {
+          alchemistHarvestEvents(
+            where: { yieldToken: $yieldToken }
+            orderBy: timestamp
+            orderDirection: desc
+          ) {
+            totalHarvested
+            transaction {
+              hash
+            }
+            yieldToken
+            timestamp
+          }
+        }
+      `;
+
+      const donationsQuery = gql`
+        query donations($yieldToken: String!) {
+          alchemistDonateEvents(
+            where: { yieldToken: $yieldToken }
+            orderBy: timestamp
+            orderDirection: desc
+          ) {
+            timestamp
+            yieldToken
+            amount
+            transaction {
+              hash
             }
           }
-        `;
+        }
+      `;
 
-        const donationsQuery = gql`
-          query donations($yieldToken: String!) {
-            alchemistDonateEvents(
-              where: { yieldToken: $yieldToken }
-              orderBy: timestamp
-              orderDirection: desc
-            ) {
-              timestamp
-              yieldToken
-              amount
-              transaction {
-                hash
-              }
-            }
-          }
-        `;
+      const harvestsPromise = request<
+        {
+          alchemistHarvestEvents: HarvestEvent[];
+        },
+        {
+          yieldToken: string;
+        }
+      >(url, harvestsQuery, {
+        yieldToken: vault.address.toLowerCase(),
+      });
 
-        const harvestsPromise = request<
-          {
-            alchemistHarvestEvents: HarvestEvent[];
-          },
-          {
-            yieldToken: string;
-          }
-        >(url, harvestsQuery, {
-          yieldToken: vault.address.toLowerCase(),
-        });
+      const donationsPromise = request<
+        {
+          alchemistDonateEvents: DonateEvent[];
+        },
+        {
+          yieldToken: string;
+        }
+      >(url, donationsQuery, {
+        yieldToken: vault.address.toLowerCase(),
+      });
 
-        const donationsPromise = request<
-          {
-            alchemistDonateEvents: DonateEvent[];
-          },
-          {
-            yieldToken: string;
-          }
-        >(url, donationsQuery, {
-          yieldToken: vault.address.toLowerCase(),
-        });
+      const [harvestsResponse, donationsResponse] = await Promise.all([
+        harvestsPromise,
+        donationsPromise,
+      ]);
 
-        const [harvestsResponse, donationsResponse] = await Promise.all([
-          harvestsPromise,
-          donationsPromise,
-        ]);
+      const harvests = harvestsResponse.alchemistHarvestEvents;
+      const donations = donationsResponse.alchemistDonateEvents;
 
-        const harvests = harvestsResponse.alchemistHarvestEvents;
-        const donations = donationsResponse.alchemistDonateEvents;
-
-        const formattedHarvests = harvests.map((harvest) => ({
-          ...harvest,
-          type: "Harvest",
-          totalHarvested: toString(
-            mul(
-              [BigInt(harvest.totalHarvested), vault.yieldTokenParams.decimals],
-              0.9,
-            ),
+      const formattedHarvests = harvests.map((harvest) => ({
+        ...harvest,
+        type: "Harvest",
+        totalHarvested: toString(
+          mul(
+            [
+              BigInt(harvest.totalHarvested),
+              vault.underlyingTokensParams.decimals,
+            ],
+            0.9,
           ),
-        }));
+        ),
+      }));
 
-        const donationsFormatted = donations.map((donation) => ({
-          ...donation,
-          type: "Bonus",
-          amount: formatEther(BigInt(donation.amount)),
-        }));
+      const donationsFormatted = donations.map((donation) => ({
+        ...donation,
+        type: "Bonus",
+        amount: formatEther(BigInt(donation.amount)),
+      }));
 
-        return { harvests: formattedHarvests, bonuses: donationsFormatted };
-      },
-      enabled: chain.id !== 250,
-      staleTime: ONE_DAY_IN_MS,
-    });
+      return { harvests: formattedHarvests, bonuses: donationsFormatted };
+    },
+    enabled: chain.id !== 250,
+    staleTime: ONE_DAY_IN_MS,
+  });
 
   const { data: historicData } = useQuery({
     queryKey: [QueryKeys.HistoricYield, chain.id, vault.address],
@@ -232,7 +238,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
           </ScrollArea>
         </Tabs>
       </div>
-      {isPendingHarvestsAndBonuses ? (
+      {chain.id !== 250 && isPendingHarvestsAndBonuses ? (
         <div className="flex h-full items-center justify-center">
           <LoadingBar />
         </div>
@@ -282,6 +288,8 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
                 </div>
               ))}
               {selectedEvents?.length === 0 && <p>No previous {tab}</p>}
+              {isErrorHarvestsAndBonuses && <p>Error fetching {tab}</p>}
+              {chain.id === 250 && <p>Not supported on {chain.name}</p>}
             </m.div>
             <ScrollBar />
           </AnimatePresence>

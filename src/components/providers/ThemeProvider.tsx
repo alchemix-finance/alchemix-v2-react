@@ -47,6 +47,10 @@ export const rainbowLightTheme = {
     profileAction: "#dcd7cc",
     profileActionHover: "#DEDBD3",
   },
+  radii: {
+    ...lightThemeNoBorderRadius.radii,
+    connectButton: "12px",
+  },
 } as const satisfies Theme;
 
 export const rainbowDarkTheme = {
@@ -73,6 +77,10 @@ export const rainbowDarkTheme = {
     modalTextSecondary: "#979BA2",
     profileAction: "#232833",
     profileActionHover: "#20242C",
+  },
+  radii: {
+    ...darkThemeNoBorderRadius.radii,
+    connectButton: "12px",
   },
 } as const satisfies Theme;
 
