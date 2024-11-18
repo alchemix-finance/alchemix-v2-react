@@ -26,6 +26,7 @@ export const QueryKeys = {
       | "originTxSubgraph"
       | "destinationTxSubgraph",
   ) => `connextSdk-${type}`,
+  HarvestsAndBonuses: "harvests-and-bonuses",
 } as const;
 
 /**

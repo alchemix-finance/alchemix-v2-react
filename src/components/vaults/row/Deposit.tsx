@@ -17,7 +17,6 @@ import { useReadContract } from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useChain } from "@/hooks/useChain";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
-import { VaultActionMotionDiv } from "./motion";
 import { CtaButton } from "@/components/common/CtaButton";
 import { getTokenLogoUrl } from "@/utils/getTokenLogoUrl";
 
@@ -100,61 +99,57 @@ export const Deposit = ({
   };
 
   return (
-    <VaultActionMotionDiv>
-      <div className="space-y-4">
-        <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
-          <Select
-            value={tokenAddress}
-            onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
-          >
-            <SelectTrigger className="h-auto w-24 sm:w-56">
-              <SelectValue placeholder="Token" asChild>
-                <div className="flex items-center gap-4">
-                  <img
-                    src={getTokenLogoUrl(token.symbol)}
-                    alt={token.symbol}
-                    className="h-12 w-12"
-                  />
-                  <span className="hidden text-xl sm:inline">
-                    {token.symbol}
-                  </span>
-                </div>
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {selection.map((token) => (
-                <SelectItem key={token.address} value={token.address}>
-                  {token.symbol}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <TokenInput
-            amount={amount}
-            setAmount={setAmount}
-            tokenAddress={token.address}
-            tokenSymbol={token.symbol}
-            tokenDecimals={token.decimals}
-          />
-        </div>
-        {!isSelectedTokenYieldToken && (
-          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-        )}
-        <CtaButton
-          variant="outline"
-          width="full"
-          disabled={isFull || isPending || isInputZero(amount)}
-          onClick={onCtaClick}
+    <div className="space-y-4">
+      <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+        <Select
+          value={tokenAddress}
+          onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
         >
-          {isFull
-            ? "Vault is full"
-            : isPending
-              ? "Preparing"
-              : token.address !== GAS_ADDRESS && isApprovalNeeded === true
-                ? "Approve"
-                : "Deposit"}
-        </CtaButton>
+          <SelectTrigger className="h-auto w-24 sm:w-56">
+            <SelectValue placeholder="Token" asChild>
+              <div className="flex items-center gap-4">
+                <img
+                  src={getTokenLogoUrl(token.symbol)}
+                  alt={token.symbol}
+                  className="h-12 w-12"
+                />
+                <span className="hidden text-xl sm:inline">{token.symbol}</span>
+              </div>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {selection.map((token) => (
+              <SelectItem key={token.address} value={token.address}>
+                {token.symbol}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <TokenInput
+          amount={amount}
+          setAmount={setAmount}
+          tokenAddress={token.address}
+          tokenSymbol={token.symbol}
+          tokenDecimals={token.decimals}
+        />
       </div>
-    </VaultActionMotionDiv>
+      {!isSelectedTokenYieldToken && (
+        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+      )}
+      <CtaButton
+        variant="outline"
+        width="full"
+        disabled={isFull || isPending || isInputZero(amount)}
+        onClick={onCtaClick}
+      >
+        {isFull
+          ? "Vault is full"
+          : isPending
+            ? "Preparing"
+            : token.address !== GAS_ADDRESS && isApprovalNeeded === true
+              ? "Approve"
+              : "Deposit"}
+      </CtaButton>
+    </div>
   );
 };
