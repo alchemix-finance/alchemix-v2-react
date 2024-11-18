@@ -1,25 +1,30 @@
 import { useEffect, useState } from "react";
-import { Switch } from "../ui/switch";
-import { Button } from "../ui/button";
 import {
   useReadContracts,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { ALCX_MAINNET_ADDRESS, G_ALCX_MAINNET_ADDRESS } from "@/lib/constants";
 import { formatEther, parseEther } from "viem";
-import { TokenInput } from "../common/input/TokenInput";
+import { toast } from "sonner";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+
+import { Switch } from "../ui/switch";
+import { Button } from "../ui/button";
+import { ALCX_MAINNET_ADDRESS, G_ALCX_MAINNET_ADDRESS } from "@/lib/constants";
+import { TokenInput } from "@/components/common/input/TokenInput";
 import { formatNumber } from "@/utils/number";
 import { useChain } from "@/hooks/useChain";
 import { gAlcxAbi } from "@/abi/gAlcx";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useAllowance } from "@/hooks/useAllowance";
-import { toast } from "sonner";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
-import { EyeOffIcon, EyeIcon } from "lucide-react";
-import { AnimatePresence, m } from "framer-motion";
-import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
+import {
+  accordionVariants,
+  accordionTransition,
+  reducedMotionAccordionVariants,
+} from "@/lib/motion/motion";
 
 export const GAlcsWrapper = () => {
   const chain = useChain();
@@ -29,6 +34,7 @@ export const GAlcsWrapper = () => {
   const [amount, setAmount] = useState("");
   const [isUnwrap, setIsUnwrap] = useState(false);
   const [isInfiniteApproval, setIsInfiniteApproval] = useState(false);
+  const isReducedMotion = useReducedMotion();
 
   const { data: gAlcxData } = useReadContracts({
     allowFailure: false,
@@ -193,7 +199,11 @@ export const GAlcsWrapper = () => {
             initial="collapsed"
             animate="open"
             exit="collapsed"
-            variants={accordionVariants}
+            variants={
+              isReducedMotion
+                ? reducedMotionAccordionVariants
+                : accordionVariants
+            }
             transition={accordionTransition}
           >
             <div className="flex flex-col gap-8 p-4 lg:flex-row">

@@ -1,8 +1,11 @@
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useMemo, useState } from "react";
+import { m, AnimatePresence, useReducedMotion } from "framer-motion";
+
 import { Accordion } from "@/components/ui/accordion";
 import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SYNTH_ASSETS, SynthAsset } from "@/lib/config/synths";
-import { useMemo, useState } from "react";
 import { VaultsMetrics } from "@/components/vaults/row/VaultsMetrics";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { useChain } from "@/hooks/useChain";
@@ -12,10 +15,12 @@ import { Liquidate } from "@/components/vaults/common_actions/Liquidate";
 import { Repay } from "@/components/vaults/common_actions/Repay";
 import { LoadingBar } from "../common/LoadingBar";
 import { Button } from "../ui/button";
-import { m, AnimatePresence } from "framer-motion";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
+import {
+  accordionTransition,
+  accordionVariants,
+  reducedMotionAccordionVariants,
+} from "@/lib/motion/motion";
 
 export type SynthFilter = "all" | SynthAsset;
 type UsedFilter = "all" | "used" | "unused";
@@ -28,6 +33,7 @@ export const Vaults = () => {
   const [usedTab, setUsedTab] = useState<UsedFilter>("all");
   const [actionOpened, setActionOpened] = useState(false);
   const [actionTab, setActionTab] = useState<Action>();
+  const isReducedMotion = useReducedMotion();
 
   const { data: vaults, isPending, isSuccess, isError } = useVaults();
 
@@ -186,7 +192,11 @@ export const Vaults = () => {
                       initial="collapsed"
                       animate="open"
                       exit="collapsed"
-                      variants={accordionVariants}
+                      variants={
+                        isReducedMotion
+                          ? reducedMotionAccordionVariants
+                          : accordionVariants
+                      }
                       transition={accordionTransition}
                     >
                       {actionTab === "Borrow" && <Borrow />}

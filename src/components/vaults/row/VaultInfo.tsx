@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { gql, request } from "graphql-request";
 import { formatEther } from "viem";
 import { mul, toString } from "dnum";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 
 import { dayjs } from "@/lib/dayjs";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
@@ -16,7 +16,12 @@ import { LoadingBar } from "@/components/common/LoadingBar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
 
-import { MotionDirection, transition, variants } from "./motion";
+import {
+  MotionDirection,
+  reducedMotionVariants,
+  transition,
+  variants,
+} from "./motion";
 
 interface VaultInfoProps {
   vault: Vault;
@@ -48,6 +53,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
   const [tab, setTab] = useState<Tab>("harvests");
   const [motionDirection, setMotionDirection] =
     useState<MotionDirection>("right");
+  const isReducedMotion = useReducedMotion();
 
   const {
     data: harvestsAndBonuses,
@@ -194,7 +200,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
           >
             <m.div
               key={tab}
-              variants={variants}
+              variants={isReducedMotion ? reducedMotionVariants : variants}
               transition={transition}
               initial="enter"
               animate="center"

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { formatEther, formatUnits } from "viem";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { greaterThan, multiply, toString } from "dnum";
 import useMeasure from "react-use-measure";
 
@@ -32,7 +32,12 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { useSettings } from "@/components/providers/SettingsProvider";
-import { MotionDirection, transition, variants } from "./motion";
+import {
+  MotionDirection,
+  reducedMotionVariants,
+  transition,
+  variants,
+} from "./motion";
 import { VaultInfo } from "./VaultInfo";
 
 type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
@@ -44,6 +49,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
   const [motionDirection, setMotionDirection] =
     useState<MotionDirection>("right");
   const [ref, { height }] = useMeasure();
+  const isReducedMotion = useReducedMotion();
 
   const { data: tokens } = useTokensQuery();
   const { data: vaults } = useVaults();
@@ -239,7 +245,10 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               </ScrollArea>
             </Tabs>
           </div>
-          <m.div animate={{ height }} transition={transition}>
+          <m.div
+            animate={isReducedMotion ? {} : { height }}
+            transition={transition}
+          >
             <div ref={ref} className="flex flex-col gap-5 md:flex-row">
               <AnimatePresence
                 initial={false}
@@ -249,7 +258,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
                 <m.div
                   key={contentAction}
                   custom={motionDirection}
-                  variants={variants}
+                  variants={isReducedMotion ? reducedMotionVariants : variants}
                   initial="enter"
                   animate="center"
                   exit="exit"
