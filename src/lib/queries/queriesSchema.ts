@@ -48,6 +48,7 @@ export const ScopeKeys = {
   CurveFarmContent: "curve-farm-content",
   SushiFarmContent: "sushi-farm-content",
   InternalFarmContent: "internal-farm-content",
+  TransmuterLooperReported: "transmuter-looper-reported-content",
 } as const;
 export type ScopeKey = (typeof ScopeKeys)[keyof typeof ScopeKeys];
 

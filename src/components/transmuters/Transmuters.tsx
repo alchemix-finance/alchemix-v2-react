@@ -11,8 +11,10 @@ import { EXTERNAL_LIQUIDITY_PROVIDERS } from "@/lib/config/externalLiquidityProv
 import { windowOpen } from "@/utils/windowOpen";
 import { LoadingBar } from "../common/LoadingBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import {EthTransmuterLooper} from "@/components/farms/EthTransmuterLooper";
-import {TRANSMUTER_LOOPERS_VAULTS} from "@/lib/config/transmuters";
+import { EthTransmuterLooper } from "@/components/transmuters/EthTransmuterLooper";
+import { TRANSMUTER_LOOPERS_VAULTS } from "@/lib/config/transmuters";
+import type { SupportedTransmuterLooperChainId } from "@/lib/config/metadataTypes";
+import { arbitrum, mainnet, optimism } from "viem/chains";
 
 export const Transmuters = () => {
   const chain = useChain();
@@ -33,9 +35,11 @@ export const Transmuters = () => {
         );
   }, [synthTab, transmuters]);
 
-  const filteredTransmuterLoopers = useMemo(() => {
-    return TRANSMUTER_LOOPERS_VAULTS[chain.id];
-  }, [chain]);
+  const validTransmuterLooperChains: SupportedTransmuterLooperChainId[] = [
+    mainnet.id,
+    arbitrum.id,
+    optimism.id,
+  ];
 
   return (
     <>
@@ -77,19 +81,27 @@ export const Transmuters = () => {
               ))}
             </div>
           </div>
-          {filteredTransmuterLoopers && filteredTransmuterLoopers.length > 0
-            ? (
-                filteredTransmuterLoopers.map((transmuterLooper) => {
-                    if (transmuterLooper.synthAsset === SYNTH_ASSETS.ALETH) {
-                      return <EthTransmuterLooper/>
-                    } else {
-                      return <></>
-                    }
-                })
-              )
-            : (
-                <div>No transmuters for selected chain and synth asset</div>
-            )}
+          {validTransmuterLooperChains.includes(
+            chain.id as SupportedTransmuterLooperChainId,
+          ) &&
+          TRANSMUTER_LOOPERS_VAULTS[
+            chain.id as SupportedTransmuterLooperChainId
+          ] &&
+          TRANSMUTER_LOOPERS_VAULTS[
+            chain.id as SupportedTransmuterLooperChainId
+          ].length > 0 ? (
+            TRANSMUTER_LOOPERS_VAULTS[
+              chain.id as SupportedTransmuterLooperChainId
+            ].map((transmuterLooper) => {
+              if (transmuterLooper.synthAsset === SYNTH_ASSETS.ALETH) {
+                return <EthTransmuterLooper key="EthTransmuterLooper" />;
+              } else {
+                return null;
+              }
+            })
+          ) : (
+            <div>No transmuters for selected chain and synth asset</div>
+          )}
           <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
               <Tabs value={synthTab} onValueChange={onSynthTabChange}>

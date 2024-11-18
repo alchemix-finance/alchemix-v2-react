@@ -1,9 +1,9 @@
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
-import type { TransmutersMetadata } from "@/lib/config/metadataTypes";
+import type {
+  TransmuterLooperMetadata,
+  TransmutersMetadata,
+} from "@/lib/config/metadataTypes";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
-import {strategyMainnetAbi} from "@/abi/transmuter-looping-vaults/strategyMainnet";
-import {strategyArbAbi} from "@/abi/transmuter-looping-vaults/strategyArb";
-import {strategyOpAbi} from "@/abi/transmuter-looping-vaults/strategyOp";
 
 export const TRANSMUTER_LOOPERS_VAULTS = {
   [mainnet.id]: [
@@ -12,8 +12,7 @@ export const TRANSMUTER_LOOPERS_VAULTS = {
       synthAsset: SYNTH_ASSETS.ALETH,
       label: "ALETH Transmuter Looper",
       aprQueryUri: "",
-      abi: strategyMainnetAbi
-    }
+    },
   ],
   [arbitrum.id]: [
     {
@@ -21,8 +20,7 @@ export const TRANSMUTER_LOOPERS_VAULTS = {
       synthAsset: SYNTH_ASSETS.ALETH,
       label: "Arbitrum ALETH Transmuter Looper",
       aprQueryUri: "",
-      abi: strategyArbAbi
-    }
+    },
   ],
   [optimism.id]: [
     {
@@ -30,10 +28,9 @@ export const TRANSMUTER_LOOPERS_VAULTS = {
       synthAsset: SYNTH_ASSETS.ALETH,
       label: "Optimism ALETH Transmuter Looper",
       aprQueryUri: "",
-      abi: strategyOpAbi
-    }
+    },
   ],
-} as const satisfies TransmutersMetadata;
+} as const satisfies TransmuterLooperMetadata;
 
 export const TRANSMUTERS = {
   [mainnet.id]: [

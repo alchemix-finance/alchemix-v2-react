@@ -4,6 +4,7 @@ import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import React from "react";
 import { Token, Vault } from "@/lib/types";
 import { UsePublicClientReturnType } from "wagmi";
+import { mainnet, arbitrum, optimism } from "viem/chains";
 
 export interface TransmuterMetadata {
   address: Address;
@@ -14,6 +15,15 @@ export interface TransmuterMetadata {
 
 export type TransmutersMetadata = {
   [chainId in SupportedChainId]: TransmuterMetadata[];
+};
+
+export type SupportedTransmuterLooperChainId =
+  | typeof mainnet.id
+  | typeof optimism.id
+  | typeof arbitrum.id;
+
+export type TransmuterLooperMetadata = {
+  [chainId in SupportedTransmuterLooperChainId]: TransmuterMetadata[];
 };
 
 export type AlchemistsMetadata = {
