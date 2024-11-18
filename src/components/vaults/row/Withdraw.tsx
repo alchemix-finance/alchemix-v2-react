@@ -12,7 +12,6 @@ import {
 import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { CtaButton } from "@/components/common/CtaButton";
 import { VaultWithdrawTokenInput } from "@/components/common/input/VaultWithdrawTokenInput";
-import { VaultActionMotionDiv } from "./motion";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { GAS_ADDRESS } from "@/lib/constants";
 import { useWithdraw } from "@/lib/mutations/useWithdraw";
@@ -95,71 +94,67 @@ export const Withdraw = ({
     isPending || isInputZero(amount) || isInsufficientBalance;
 
   return (
-    <VaultActionMotionDiv>
-      <div className="space-y-4">
-        <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
-          <Select value={tokenAddress} onValueChange={onSelectChange}>
-            <SelectTrigger className="h-auto w-24 sm:w-56">
-              <SelectValue placeholder="Token" asChild>
-                <div className="flex items-center gap-4">
-                  <img
-                    src={getTokenLogoUrl(token.symbol)}
-                    alt={token.symbol}
-                    className="h-12 w-12"
-                  />
-                  <span className="hidden text-xl sm:inline">
-                    {token.symbol}
-                  </span>
-                </div>
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {selection.map((token) => (
-                <SelectItem key={token.address} value={token.address}>
-                  {token.symbol}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <VaultWithdrawTokenInput
-            amount={amount}
-            setAmount={setAmount}
-            tokenSymbol={token.symbol}
-            tokenDecimals={token.decimals}
-            isSelectedTokenYieldToken={isSelectedTokenYieldToken}
-            vault={vault}
-          />
-        </div>
-        {!isSelectedTokenYieldToken && (
-          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-        )}
-        <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
-          Current debt:{" "}
-          {formatNumber(
-            formatEther(
-              vault.alchemist.position.debt < 0n
-                ? 0n
-                : vault.alchemist.position.debt,
-            ),
-            { decimals: 4 },
-          )}{" "}
-          {vault.alchemist.synthType}
-        </p>
-        <CtaButton
-          variant="outline"
-          width="full"
-          disabled={isDisabledCta}
-          onClick={onCtaClick}
-        >
-          {isInsufficientBalance
-            ? "Insufficient balance"
-            : isPending
-              ? "Preparing"
-              : isApprovalNeeded === true
-                ? "Approve"
-                : "Withdraw"}
-        </CtaButton>
+    <div className="space-y-4">
+      <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+        <Select value={tokenAddress} onValueChange={onSelectChange}>
+          <SelectTrigger className="h-auto w-24 sm:w-56">
+            <SelectValue placeholder="Token" asChild>
+              <div className="flex items-center gap-4">
+                <img
+                  src={getTokenLogoUrl(token.symbol)}
+                  alt={token.symbol}
+                  className="h-12 w-12"
+                />
+                <span className="hidden text-xl sm:inline">{token.symbol}</span>
+              </div>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {selection.map((token) => (
+              <SelectItem key={token.address} value={token.address}>
+                {token.symbol}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <VaultWithdrawTokenInput
+          amount={amount}
+          setAmount={setAmount}
+          tokenSymbol={token.symbol}
+          tokenDecimals={token.decimals}
+          isSelectedTokenYieldToken={isSelectedTokenYieldToken}
+          vault={vault}
+        />
       </div>
-    </VaultActionMotionDiv>
+      {!isSelectedTokenYieldToken && (
+        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+      )}
+      <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
+        Current debt:{" "}
+        {formatNumber(
+          formatEther(
+            vault.alchemist.position.debt < 0n
+              ? 0n
+              : vault.alchemist.position.debt,
+          ),
+          { decimals: 4 },
+        )}{" "}
+        {vault.alchemist.synthType}
+      </p>
+      <CtaButton
+        variant="outline"
+        width="full"
+        disabled={isDisabledCta}
+        onClick={onCtaClick}
+      >
+        {isInsufficientBalance
+          ? "Insufficient balance"
+          : isPending
+            ? "Preparing"
+            : isApprovalNeeded === true
+              ? "Approve"
+              : "Withdraw"}
+      </CtaButton>
+    </div>
   );
 };

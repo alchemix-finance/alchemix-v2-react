@@ -2,8 +2,9 @@ import { useMemo, useState } from "react";
 import { formatEther, formatUnits } from "viem";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { greaterThan, multiply, toString } from "dnum";
+import useMeasure from "react-use-measure";
 
 import { useChain } from "@/hooks/useChain";
 import { SYNTH_ASSETS_METADATA } from "@/lib/config/synths";
@@ -31,6 +32,8 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { useSettings } from "@/components/providers/SettingsProvider";
+import { MotionDirection, transition, variants } from "./motion";
+import { VaultInfo } from "./VaultInfo";
 
 type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
 
@@ -38,6 +41,9 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
   const chain = useChain();
 
   const [contentAction, setContentAction] = useState<ContentAction>("deposit");
+  const [motionDirection, setMotionDirection] =
+    useState<MotionDirection>("right");
+  const [ref, { height }] = useMeasure();
 
   const { data: tokens } = useTokensQuery();
   const { data: vaults } = useVaults();
@@ -95,6 +101,17 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
 
   const vaultLtv =
     100 / parseFloat(formatEther(vault.alchemist.minimumCollateralization));
+
+  const onContentActionTabChange = (value: string) => {
+    if (value === contentAction) return;
+    const array = ["deposit", "withdraw", "migrate", "info"];
+    const indexOfCurrentAction = array.indexOf(contentAction);
+    const indexOfNewAction = array.indexOf(value);
+    if (indexOfNewAction > indexOfCurrentAction) {
+      setMotionDirection("right");
+    } else setMotionDirection("left");
+    setContentAction(value as ContentAction);
+  };
 
   return (
     <AccordionItem value={vault.address}>
@@ -196,9 +213,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <div className="rounded border border-grey1inverse bg-grey3inverse p-2 dark:border-grey1 dark:bg-grey3">
             <Tabs
               value={contentAction}
-              onValueChange={(value) =>
-                setContentAction(value as ContentAction)
-              }
+              onValueChange={onContentActionTabChange}
             >
               <ScrollArea className="max-w-full">
                 <div className="relative h-8 w-full">
@@ -224,45 +239,61 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               </ScrollArea>
             </Tabs>
           </div>
+          <m.div animate={{ height }} transition={transition}>
+            <div ref={ref} className="flex flex-col gap-5 md:flex-row">
+              <AnimatePresence
+                initial={false}
+                mode="popLayout"
+                custom={motionDirection}
+              >
+                <m.div
+                  key={contentAction}
+                  custom={motionDirection}
+                  variants={variants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={transition}
+                  className="w-full md:w-2/3"
+                >
+                  {contentAction === "deposit" &&
+                    vaultUnderlyingTokenData &&
+                    vaultYieldTokenData && (
+                      <Deposit
+                        vault={vault}
+                        underlyingTokenData={vaultUnderlyingTokenData}
+                        yieldTokenData={vaultYieldTokenData}
+                      />
+                    )}
 
-          <AnimatePresence initial={false} mode="wait">
-            {contentAction === "deposit" &&
-              vaultUnderlyingTokenData &&
-              vaultYieldTokenData && (
-                <Deposit
-                  vault={vault}
-                  underlyingTokenData={vaultUnderlyingTokenData}
-                  yieldTokenData={vaultYieldTokenData}
-                  key="deposits"
-                />
-              )}
+                  {contentAction === "withdraw" &&
+                    vaultUnderlyingTokenData &&
+                    vaultYieldTokenData && (
+                      <Withdraw
+                        vault={vault}
+                        underlyingTokenData={vaultUnderlyingTokenData}
+                        yieldTokenData={vaultYieldTokenData}
+                      />
+                    )}
 
-            {contentAction === "withdraw" &&
-              vaultUnderlyingTokenData &&
-              vaultYieldTokenData && (
-                <Withdraw
-                  vault={vault}
-                  underlyingTokenData={vaultUnderlyingTokenData}
-                  yieldTokenData={vaultYieldTokenData}
-                  key="withdraw"
-                />
-              )}
+                  {contentAction === "migrate" &&
+                    (selectionForMigration?.length ? (
+                      <Migrate
+                        vault={vault}
+                        selection={selectionForMigration}
+                      />
+                    ) : (
+                      <p className="text-center" key="migrate">
+                        No vaults available for migration
+                      </p>
+                    ))}
 
-            {contentAction === "migrate" &&
-              (selectionForMigration?.length ? (
-                <Migrate
-                  vault={vault}
-                  selection={selectionForMigration}
-                  key="migrate"
-                />
-              ) : (
-                <p className="text-center" key="migrate">
-                  No vaults available for migration
-                </p>
-              ))}
-
-            {contentAction === "info" && <Info vault={vault} key="info" />}
-          </AnimatePresence>
+                  {contentAction === "info" && <Info vault={vault} />}
+                </m.div>
+              </AnimatePresence>
+              <VaultInfo vault={vault} />
+            </div>
+          </m.div>
         </div>
       </AccordionContent>
     </AccordionItem>
