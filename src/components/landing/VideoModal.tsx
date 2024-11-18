@@ -29,18 +29,17 @@ export const VideoModal = ({
       >
         <DialogTrigger
           className={cn(
-            // Base styles similar to CTA button
-            "group relative inline-flex h-11 w-14 cursor-pointer items-center justify-center rounded-xl border-0 text-[#1BEAA5] transition-all",
-            // Background gradient layers
-            "bg-[length:200%] [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.00*1rem)_solid_transparent]",
-            "bg-[linear-gradient(#0B0D12,#0B0D12),linear-gradient(#1BEAA5,#1BEAA5),linear-gradient(90deg,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5)]",
-            "hover:bg-[linear-gradient(#0F0F12,#0F0F12),linear-gradient(#FF5733,#FF5733),linear-gradient(90deg,#FF5733,#FF5733,#FF5733,#FF5733,#FF5733)]",
-            "shadow-md",
+            // Base styles for the button
+            "group relative inline-flex h-11 w-14 items-center justify-center overflow-hidden rounded-xl border-[0.08rem] border-[#1BEAA5] bg-[#1BEAA5] transition-all",
+
+            // Shadow and hover effect
+            "shadow-md hover:border-[#FF5733] hover:bg-[#FF5733]",
           )}
         >
+          {/* SVG YouTube Logo */}
           <svg
             role="img"
-            className="h-5 w-5 scale-[3.2] text-[#1BEAA5]"
+            className="scale-125 rounded-xl text-[#080A0E]" // Let the SVG fill the container
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"

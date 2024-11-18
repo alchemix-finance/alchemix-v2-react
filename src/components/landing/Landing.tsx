@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 // import { GridPattern } from "./GridPattern";
 import { VideoModal } from "./VideoModal";
 import { BlurInHeader, BlurInParagraph } from "./BlurInText";
-import { LandingCtaButton, LandingClosingCtaButton } from "./LandingCtaButton";
+import { LandingClosingCtaButton } from "./LandingCtaButton";
 import { SlideBox } from "./SlideBox";
 import { Tokens } from "./Tokens";
 import { EcosystemGrid } from "./EcosystemGrid";
@@ -47,7 +47,7 @@ export const Landing = () => {
               Without Liquidations
             </BlurInHeader>
             <BlurInParagraph
-              className="mb-12 mt-8 text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey1"
+              className="mb-12 mt-8 font-sans text-[24px] leading-snug text-lightgrey10inverse dark:text-white"
               delay={0.2}
             >
               Alchemix loans automatically pay themselves off without risk of
@@ -56,7 +56,7 @@ export const Landing = () => {
               stress-free borrowing.
             </BlurInParagraph>
             <div className="flex items-center justify-center gap-4">
-              <LandingCtaButton delay={0.2} />
+              <LandingClosingCtaButton delay={0.2} />
               <VideoModal delay={0.2} className="ml-2" />
             </div>
           </div>
@@ -73,10 +73,10 @@ export const Landing = () => {
               />
             </div>
             <SlideBox className="flex-1" direction="bottom">
-              <h2 className="ml-10 text-5xl font-semibold">
+              <h2 className="ml-10 text-[42px] font-semibold">
                 Completely Flexible
               </h2>
-              <p className="mb-7 ml-10 mt-6 text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey10">
+              <p className="mb-7 ml-10 mt-3 font-sans text-[24px] leading-snug text-lightgrey10inverse dark:text-lightgrey10">
                 Alchemix gives you full control of your finances<br></br> with
                 no hidden fees. Repay on your terms, keep<br></br> your assets
                 working for you, and borrow against<br></br> your collateral to
@@ -94,10 +94,10 @@ export const Landing = () => {
 
           <div className="flex items-center gap-4 px-40 pb-12">
             <div className="flex-1">
-              <h2 className="ml-10 text-5xl font-semibold">
+              <h2 className="ml-10 text-[42px] font-semibold">
                 Zero Liquidations
               </h2>
-              <p className="mb-7 ml-10 mt-6 text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey10">
+              <p className="mb-7 ml-10 mt-3 font-sans text-[24px] leading-snug text-lightgrey10inverse dark:text-lightgrey10">
                 With Alchemix, market volatility won&apos;t touch <br></br> your
                 vault. Your debt is securely tied to your<br></br> collateral,
                 ensuring that price swings never put<br></br> you at risk.
@@ -123,8 +123,8 @@ export const Landing = () => {
         </div>
         <div className="flex w-full items-center gap-4 rounded-sm bg-[#080a0e] px-40 py-20">
           <div className="flex-1">
-            <h2 className="ml-10 text-5xl font-semibold">Security First</h2>
-            <p className="mb-7 ml-10 mt-6 text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey10">
+            <h2 className="ml-10 text-[42px] font-semibold">Security First</h2>
+            <p className="mb-7 ml-10 mt-3 font-sans text-[24px] leading-snug text-lightgrey10inverse dark:text-lightgrey10">
               We are the original battle-tested DeFi platform with a priority of
               asset protection. As a pioneer in DeFi, we ensure your assets are
               preserved at every step.
@@ -156,15 +156,15 @@ export const Landing = () => {
                 <Tokens />
               </div>
               <div className="flex w-1/2 flex-col items-start justify-center pl-10 text-center">
-                <BlurInHeader className="text-5xl font-bold">
+                <BlurInHeader className="text-[42px] font-bold">
                   Your Favorite Tokens
                 </BlurInHeader>
                 <BlurInParagraph
-                  className="mt-6 text-left text-[28px] leading-tight text-lightgrey10inverse dark:text-lightgrey10"
+                  className="mt-3 text-left font-sans text-[24px] leading-snug text-lightgrey10inverse dark:text-lightgrey10"
                   delay={0.2}
                 >
-                  Borrow up to 50% of your collateral, whist earning <br></br>{" "}
-                  yield on your full stack.
+                  Borrow up to 50% of your collateral, whist earning yield on
+                  your full stack.
                 </BlurInParagraph>
               </div>
             </div>
