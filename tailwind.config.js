@@ -31,12 +31,23 @@ module.exports = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+          from: { height: "0", opacity: "0" },
+          to: { height: "var(--radix-accordion-content-height)", opacity: "1" },
+        },
+        "reduced-motion-accordion-down": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          from: {
+            height: "var(--radix-accordion-content-height)",
+            opacity: "1",
+          },
+          to: { height: "0", opacity: "0" },
+        },
+        "reduced-motion-accordion-up": {
+          from: { opacity: "1" },
+          to: { opacity: "0" },
         },
         "loading-bar": {
           "0%": {
@@ -55,7 +66,11 @@ module.exports = {
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
+        "reduced-motion-accordion-down":
+          "reduced-motion-accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "reduced-motion-accordion-up":
+          "reduced-motion-accordion-up 0.2s ease-out",
         "loading-bar":
           "loading-bar 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal none running",
       },

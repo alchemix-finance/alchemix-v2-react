@@ -1,8 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Suspense, lazy, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  accordionVariants,
+  accordionTransition,
+  reducedMotionAccordionVariants,
+} from "@/lib/motion/motion";
 import { BridgeFallback } from "../BridgeFallback";
 
 const ConnextBridgeWidget = lazy(() =>
@@ -13,6 +18,7 @@ const ConnextBridgeWidget = lazy(() =>
 
 export const ConnextBridge = () => {
   const [open, setOpen] = useState(false);
+  const isReducedMotion = useReducedMotion();
   const handleOpen = () => setOpen(!open);
   return (
     <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
@@ -36,7 +42,11 @@ export const ConnextBridge = () => {
             initial="collapsed"
             animate="open"
             exit="collapsed"
-            variants={accordionVariants}
+            variants={
+              isReducedMotion
+                ? reducedMotionAccordionVariants
+                : accordionVariants
+            }
             transition={accordionTransition}
           >
             <div className="p-5">
