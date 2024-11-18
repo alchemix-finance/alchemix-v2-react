@@ -1,5 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import {
+  useReadContract,
+  useSimulateContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+import { formatEther, parseEther } from "viem";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+import { toast } from "sonner";
+
+import {
   Select,
   SelectTrigger,
   SelectValue,
@@ -7,12 +18,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import {
-  useReadContract,
-  useSimulateContract,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
 import {
   AURA_LP,
   BALANCER_LP,
@@ -24,19 +29,19 @@ import {
   MIGRATOR_ADDRESS,
 } from "@/lib/config/liquidityMigration";
 import { migrationCalcsAbi } from "@/abi/migrationCalcs";
-import { formatEther, parseEther } from "viem";
 import { isInputZero } from "@/utils/inputNotZero";
 import { Button } from "../ui/button";
 import { LoadingBar } from "../common/LoadingBar";
 import { migratorAbi } from "@/abi/migrator";
 import { useAllowance } from "@/hooks/useAllowance";
-import { toast } from "sonner";
 import { TokenInput } from "../common/input/TokenInput";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { useChain } from "@/hooks/useChain";
-import { EyeOffIcon, EyeIcon } from "lucide-react";
-import { AnimatePresence, m } from "framer-motion";
-import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
+import {
+  accordionVariants,
+  accordionTransition,
+  reducedMotionAccordionVariants,
+} from "@/lib/motion/motion";
 
 const TOKENS_FROM = ["SLP"] as const;
 const TOKENS_TO = ["AURA", "BALANCER"] as const;
@@ -52,6 +57,7 @@ export const LiquidityMigration = () => {
   const [migrationAmount, setMigrationAmount] = useState("");
   const [selectedFrom, setSelectedFrom] = useState<From>(TOKENS_FROM[0]);
   const [selectedTarget, setSelectedTarget] = useState<Target>(TOKENS_TO[0]);
+  const isReducedMotion = useReducedMotion();
 
   const { data: migrationParams, isFetching: isFetchingMigrationParams } =
     useReadContract({
@@ -170,7 +176,11 @@ export const LiquidityMigration = () => {
             initial="collapsed"
             animate="open"
             exit="collapsed"
-            variants={accordionVariants}
+            variants={
+              isReducedMotion
+                ? reducedMotionAccordionVariants
+                : accordionVariants
+            }
             transition={accordionTransition}
           >
             <div className="flex flex-col gap-8 p-4">

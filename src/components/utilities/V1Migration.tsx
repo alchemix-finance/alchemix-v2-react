@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import {
   useAccount,
   useReadContracts,
@@ -15,7 +15,11 @@ import { v1MigratorAbi } from "@/abi/v1Migrator";
 import { v1AlchemistAbi } from "@/abi/v1Alchemist";
 import { SYNTH_ASSETS, SynthAsset } from "@/lib/config/synths";
 import { V1_ALCHEMISTS, V1_MIGRATORS } from "@/lib/config/v1Migrators";
-import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
+import {
+  accordionVariants,
+  accordionTransition,
+  reducedMotionAccordionVariants,
+} from "@/lib/motion/motion";
 import { Button } from "@/components/ui/button";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { useChain } from "@/hooks/useChain";
@@ -26,6 +30,7 @@ export const V1Migration = () => {
   const mutationCallback = useWriteContractMutationCallback();
 
   const [open, setOpen] = useState(false);
+  const isReducedMotion = useReducedMotion();
 
   const { address } = useAccount();
 
@@ -221,7 +226,11 @@ export const V1Migration = () => {
             initial="collapsed"
             animate="open"
             exit="collapsed"
-            variants={accordionVariants}
+            variants={
+              isReducedMotion
+                ? reducedMotionAccordionVariants
+                : accordionVariants
+            }
             transition={accordionTransition}
           >
             <div className="flex flex-col gap-8 p-4">

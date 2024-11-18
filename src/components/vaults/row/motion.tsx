@@ -17,6 +17,18 @@ export const variants = {
   }),
 } as const satisfies Variants;
 
+export const reducedMotionVariants = {
+  enter: {
+    opacity: 0,
+  },
+  center: {
+    opacity: 1,
+  },
+  exit: {
+    opacity: 0,
+  },
+} as const satisfies Variants;
+
 export const transition = {
   type: "spring",
   duration: 0.4,
