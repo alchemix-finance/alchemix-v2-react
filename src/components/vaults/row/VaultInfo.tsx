@@ -4,15 +4,7 @@ import { gql, request } from "graphql-request";
 import { formatEther } from "viem";
 import { mul, toString } from "dnum";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ReferenceLine,
-  Label,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, ReferenceLine, Label } from "recharts";
 
 import { dayjs } from "@/lib/dayjs";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
@@ -63,11 +55,13 @@ interface DonateEvent {
 const chartConfig = {
   timestamp: {
     label: "Day",
-    color: "#2563eb",
   },
   apr: {
     label: "APR",
-    color: "#60a5fa",
+    theme: {
+      light: "#003e63",
+      dark: "#F5C09A",
+    },
   },
 } satisfies ChartConfig;
 
@@ -246,6 +240,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
   const vaultHistoricData = historicData?.filter(
     (data) => data.name === vault.metadata.yieldSymbol,
   );
+
   const vaultAverageApr = vaultHistoricData
     ? vaultHistoricData?.reduce((acc, vault) => +vault.apr + acc, 0) /
       vaultHistoricData?.length
@@ -336,19 +331,19 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
                   <LineChart accessibilityLayer data={vaultHistoricData}>
                     <XAxis dataKey="day" />
                     <YAxis domain={["dataMin - 0.1", "auto"]} />
-                    <CartesianGrid vertical={false} />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Line
                       dataKey="apr"
                       dot={false}
                       radius={4}
-                      className="fill-[--color-apr]"
+                      stroke="var(--color-apr)"
                       type="natural"
                     />
                     <ReferenceLine
                       y={vaultAverageApr}
                       stroke="green"
                       strokeDasharray="3 3"
+                      isFront
                     >
                       <Label
                         value={`${vaultAverageApr.toFixed(2)}%`}
