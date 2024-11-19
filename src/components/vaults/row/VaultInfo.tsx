@@ -4,7 +4,15 @@ import { gql, request } from "graphql-request";
 import { formatEther } from "viem";
 import { mul, toString } from "dnum";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
-import { LineChart, Line, XAxis, YAxis } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ReferenceLine,
+  Label,
+} from "recharts";
 
 import { dayjs } from "@/lib/dayjs";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
@@ -16,7 +24,12 @@ import { formatNumber } from "@/utils/number";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { LoadingBar } from "@/components/common/LoadingBar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
+import {
+  ChartContainer,
+  type ChartConfig,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 import {
   MotionDirection,
@@ -57,7 +70,8 @@ const chartConfig = {
     color: "#60a5fa",
   },
 } satisfies ChartConfig;
-type Tab = "harvests" | "bonuses";
+
+type Tab = "harvests" | "bonuses" | "apr";
 
 export const VaultInfo = ({ vault }: VaultInfoProps) => {
   const chain = useChain();
@@ -169,7 +183,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
     staleTime: ONE_DAY_IN_MS,
   });
 
-  const { data: historicData } = useQuery({
+  const { data: historicData, isPending: isPendingHistoricApr } = useQuery({
     queryKey: [QueryKeys.HistoricYield, chain.id, vault.address],
     queryFn: async () => {
       if (chain.id === 250)
@@ -199,9 +213,9 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
       const parsedData = lines.slice(1).map((line) => {
         const values = line.split(",");
         return {
-          timestamp: parseInt(values[0]),
+          day: dayjs.unix(parseInt(values[0])).format("MMM D"),
           name: values[1],
-          apr: +values[2] * 100,
+          apr: (+values[2] * 100).toFixed(2),
         };
       });
       return parsedData;
@@ -212,7 +226,12 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
 
   const onTabChange = (newTab: string) => {
     if (newTab === tab) return;
-    setMotionDirection(newTab === "bonuses" ? "right" : "left");
+    const array = ["harvests", "bonuses", "apr"];
+    const indexOfCurrentAction = array.indexOf(tab);
+    const indexOfNewAction = array.indexOf(newTab);
+    if (indexOfNewAction > indexOfCurrentAction) {
+      setMotionDirection("right");
+    } else setMotionDirection("left");
     setTab(newTab as Tab);
   };
 
@@ -221,9 +240,16 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
       ? harvestsAndBonuses?.harvests
       : harvestsAndBonuses?.bonuses;
 
+  const isPending =
+    tab === "apr" ? isPendingHistoricApr : isPendingHarvestsAndBonuses;
+
   const vaultHistoricData = historicData?.filter(
     (data) => data.name === vault.metadata.yieldSymbol,
   );
+  const vaultAverageApr = vaultHistoricData
+    ? vaultHistoricData?.reduce((acc, vault) => +vault.apr + acc, 0) /
+      vaultHistoricData?.length
+    : 0;
 
   return (
     <div className="flex w-full flex-col space-y-5 rounded border border-grey1inverse md:w-1/3 dark:border-grey1">
@@ -238,13 +264,16 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
                 <TabsTrigger value="bonuses" className="h-8 w-full">
                   Bonuses
                 </TabsTrigger>
+                <TabsTrigger value="apr" className="h-8 w-full">
+                  APR
+                </TabsTrigger>
               </TabsList>
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </Tabs>
       </div>
-      {chain.id !== 250 && isPendingHarvestsAndBonuses ? (
+      {chain.id !== 250 && isPending ? (
         <div className="flex h-full items-center justify-center">
           <LoadingBar />
         </div>
@@ -265,49 +294,77 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
               custom={motionDirection}
               className="space-y-2 px-3"
             >
-              {selectedEvents?.map((event) => (
-                <div key={event.transaction.hash + event.type}>
-                  <div className="flex justify-between">
-                    <a
-                      href={`${chain.blockExplorers.default.url}/tx/${event.transaction.hash}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline hover:no-underline"
-                    >
-                      {event.type}
-                    </a>
-                    {event.type === "Bonus" && "amount" in event && (
-                      <p>
-                        {formatNumber(event.amount)} {vault.alchemist.synthType}
-                      </p>
-                    )}
-                    {event.type === "Harvest" && "totalHarvested" in event && (
-                      <p>
-                        {formatNumber(event.totalHarvested)}{" "}
-                        {vault.metadata.underlyingSymbol}
-                      </p>
-                    )}
+              {tab !== "apr" &&
+                selectedEvents?.map((event) => (
+                  <div key={event.transaction.hash + event.type}>
+                    <div className="flex justify-between">
+                      <a
+                        href={`${chain.blockExplorers.default.url}/tx/${event.transaction.hash}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline hover:no-underline"
+                      >
+                        {event.type}
+                      </a>
+                      {event.type === "Bonus" && "amount" in event && (
+                        <p>
+                          {formatNumber(event.amount)}{" "}
+                          {vault.alchemist.synthType}
+                        </p>
+                      )}
+                      {event.type === "Harvest" &&
+                        "totalHarvested" in event && (
+                          <p>
+                            {formatNumber(event.totalHarvested)}{" "}
+                            {vault.metadata.underlyingSymbol}
+                          </p>
+                        )}
+                    </div>
+                    <p className="text-right text-sm text-lightgrey10">
+                      {dayjs(event.timestamp * 1000).format("MMM D, YYYY")}
+                    </p>
                   </div>
-                  <p className="text-right text-sm text-lightgrey10">
-                    {dayjs(event.timestamp * 1000).format("MMM D, YYYY")}
-                  </p>
-                </div>
-              ))}
-              {selectedEvents?.length === 0 && <p>No previous {tab}</p>}
-              {isErrorHarvestsAndBonuses && <p>Error fetching {tab}</p>}
+                ))}
+              {tab !== "apr" && selectedEvents?.length === 0 && (
+                <p>No previous {tab}</p>
+              )}
+              {tab !== "apr" && isErrorHarvestsAndBonuses && (
+                <p>Error fetching {tab}</p>
+              )}
+              {tab === "apr" && chain.id !== 250 && (
+                <ChartContainer config={chartConfig} className="h-36 w-full">
+                  <LineChart accessibilityLayer data={vaultHistoricData}>
+                    <XAxis dataKey="day" />
+                    <YAxis domain={["dataMin - 0.1", "auto"]} />
+                    <CartesianGrid vertical={false} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Line
+                      dataKey="apr"
+                      dot={false}
+                      radius={4}
+                      className="fill-[--color-apr]"
+                      type="natural"
+                    />
+                    <ReferenceLine
+                      y={vaultAverageApr}
+                      stroke="green"
+                      strokeDasharray="3 3"
+                    >
+                      <Label
+                        value={`${vaultAverageApr.toFixed(2)}%`}
+                        position="insideBottomRight"
+                        fill="green"
+                      />
+                    </ReferenceLine>
+                  </LineChart>
+                </ChartContainer>
+              )}
               {chain.id === 250 && <p>Not supported on {chain.name}</p>}
             </m.div>
             <ScrollBar />
           </AnimatePresence>
         </ScrollArea>
       )}
-      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-        <LineChart accessibilityLayer data={vaultHistoricData}>
-          <XAxis dataKey="timestamp" />
-          <YAxis />
-          <Line dataKey="apr" fill="var(--color-apr)" radius={4} />
-        </LineChart>
-      </ChartContainer>
     </div>
   );
 };
