@@ -23,7 +23,6 @@ interface AprHistoryItem {
 interface AreaProps {
   width: number;
   height: number;
-  margin?: { top: number; right: number; bottom: number; left: number };
   data: AprHistoryItem[];
 }
 
@@ -51,12 +50,14 @@ const tooltipStylesDark = {
   borderColor: "#232833",
 };
 
-const AprHistoricalGraph = ({
-  width,
-  height,
-  margin = { top: 20, right: 10, bottom: 20, left: 40 },
-  data,
-}: AreaProps) => {
+const margin = {
+  top: 20,
+  right: 10,
+  bottom: 20,
+  left: 40,
+};
+
+const AprHistoricalGraph = ({ width, height, data }: AreaProps) => {
   const { darkMode } = useTheme();
 
   const {
@@ -115,7 +116,7 @@ const AprHistoricalGraph = ({
         tooltipLeft: x,
       });
     },
-    [showTooltip, dateScale, data, margin],
+    [showTooltip, dateScale, data],
   );
 
   const avg = data.reduce((acc, cur) => acc + cur.apr, 0) / data.length;
