@@ -38,14 +38,18 @@ const getDate = (d: AprHistoryItem) => new Date(d.timestamp * 1000);
 
 const tooltipStylesLight = {
   ...defaultStyles,
-  padding: "12px",
+  padding: "8px",
   borderRadius: "4px",
-  fontSize: "12px",
-  lineHeight: "16px",
+  boxShadow: "none",
+  background: "#efeae4",
+  borderWidth: "1px",
+  borderColor: "#dcd7cc",
 };
 const tooltipStylesDark = {
   ...tooltipStylesLight,
   background: "#10151B",
+  borderWidth: "1px",
+  borderColor: "#232833",
 };
 
 const AprHistoricalGraph = ({
@@ -258,7 +262,7 @@ const AprHistoricalGraph = ({
           <p className="mb-2 mr-2 text-xs text-lightgrey10">
             {tooltipData.formattedDate}
           </p>
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-2 text-xs">
             <p>APR</p>
             <p>{tooltipData.apr.toFixed(2)}%</p>
           </div>
