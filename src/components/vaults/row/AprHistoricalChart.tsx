@@ -25,7 +25,6 @@ interface AreaProps {
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   data: AprHistoryItem[];
-  selectedTimeRange?: "1m" | "6m" | "1y";
 }
 
 /** A D3-like Tick Formatter for consistent values for date. */
@@ -57,7 +56,6 @@ const AprHistoricalGraph = ({
   height,
   margin = { top: 20, right: 10, bottom: 20, left: 40 },
   data,
-  selectedTimeRange = "1m",
 }: AreaProps) => {
   const { darkMode } = useTheme();
 
@@ -73,7 +71,6 @@ const AprHistoricalGraph = ({
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
-  const xAxisNumTicks = selectedTimeRange !== "6m" ? 3 : 4;
   const dateScale = useMemo(
     () =>
       scaleUtc({
@@ -185,7 +182,7 @@ const AprHistoricalGraph = ({
             top={innerHeight - margin.bottom / 4}
             scale={dateScale}
             strokeWidth={0}
-            numTicks={xAxisNumTicks}
+            numTicks={3}
             tickFormat={formatDate}
             tickStroke={darkMode ? "#979BA2" : "#68645d"}
             tickLabelProps={{
