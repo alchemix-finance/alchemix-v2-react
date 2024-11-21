@@ -46,7 +46,6 @@ const tooltipStylesLight = {
 const tooltipStylesDark = {
   ...tooltipStylesLight,
   background: "#10151B",
-  borderWidth: "1px",
   borderColor: "#232833",
 };
 
