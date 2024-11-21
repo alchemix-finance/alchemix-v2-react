@@ -4,7 +4,6 @@ import { gql, request } from "graphql-request";
 import { formatEther } from "viem";
 import { mul, toString } from "dnum";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
-import { LineChart, Line, XAxis, YAxis, ReferenceLine, Label } from "recharts";
 
 import { dayjs } from "@/lib/dayjs";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
@@ -16,12 +15,6 @@ import { formatNumber } from "@/utils/number";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { LoadingBar } from "@/components/common/LoadingBar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  ChartContainer,
-  type ChartConfig,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
 
 import {
   MotionDirection,
@@ -29,6 +22,7 @@ import {
   transition,
   variants,
 } from "./motion";
+import { AprHistoricalChart } from "./AprHistoricalChart";
 
 interface VaultInfoProps {
   vault: Vault;
@@ -51,19 +45,6 @@ interface DonateEvent {
     hash: `0x${string}`;
   };
 }
-
-const chartConfig = {
-  timestamp: {
-    label: "Day",
-  },
-  apr: {
-    label: "APR",
-    theme: {
-      light: "#003e63",
-      dark: "#F5C09A",
-    },
-  },
-} satisfies ChartConfig;
 
 type Tab = "harvests" | "bonuses" | "apr";
 
@@ -207,9 +188,10 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
       const parsedData = lines.slice(1).map((line) => {
         const values = line.split(",");
         return {
-          day: dayjs.unix(parseInt(values[0])).format("MMM D"),
           name: values[1],
-          apr: (+values[2] * 100).toFixed(2),
+          timestamp: parseInt(values[0]),
+          formattedDate: dayjs.unix(parseInt(values[0])).format("MMM D"),
+          apr: +values[2] * 100,
         };
       });
       return parsedData;
@@ -240,11 +222,6 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
   const vaultHistoricData = historicData?.filter(
     (data) => data.name === vault.metadata.yieldSymbol,
   );
-
-  const vaultAverageApr = vaultHistoricData
-    ? vaultHistoricData?.reduce((acc, vault) => +vault.apr + acc, 0) /
-      vaultHistoricData?.length
-    : 0;
 
   return (
     <div className="flex w-full flex-col space-y-5 rounded border border-grey1inverse md:w-1/3 dark:border-grey1">
@@ -327,32 +304,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
                 <p>Error fetching {tab}</p>
               )}
               {tab === "apr" && chain.id !== 250 && (
-                <ChartContainer config={chartConfig} className="h-36 w-full">
-                  <LineChart accessibilityLayer data={vaultHistoricData}>
-                    <XAxis dataKey="day" />
-                    <YAxis domain={["dataMin - 0.1", "auto"]} />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Line
-                      dataKey="apr"
-                      dot={false}
-                      radius={4}
-                      stroke="var(--color-apr)"
-                      type="natural"
-                    />
-                    <ReferenceLine
-                      y={vaultAverageApr}
-                      stroke="green"
-                      strokeDasharray="3 3"
-                      isFront
-                    >
-                      <Label
-                        value={`${vaultAverageApr.toFixed(2)}%`}
-                        position="insideBottomRight"
-                        fill="green"
-                      />
-                    </ReferenceLine>
-                  </LineChart>
-                </ChartContainer>
+                <AprHistoricalChart vaultHistoricData={vaultHistoricData} />
               )}
               {chain.id === 250 && <p>Not supported on {chain.name}</p>}
             </m.div>
