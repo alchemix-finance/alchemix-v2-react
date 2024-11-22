@@ -46,6 +46,7 @@ export const Migrate = ({
     writeMigrate,
     isPending,
     minOrNewUnderlying,
+    migrateConfigError,
   } = useMigrate({
     currentVault: vault,
     amount,
@@ -126,6 +127,12 @@ export const Migrate = ({
             ),
           )}{" "}
           {selectedVault.metadata.underlyingSymbol}
+        </p>
+      )}
+      {migrateConfigError && (
+        <p className="whitespace-nowrap text-sm text-lightgrey10inverse dark:text-lightgrey10">
+          If you have no available credit in the respective Alchemist, trying to
+          migrate will likely result in a failed transaction.
         </p>
       )}
       <CtaButton

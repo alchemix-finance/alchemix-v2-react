@@ -345,5 +345,6 @@ export const useMigrate = ({
     writeMigrate,
     isPending,
     minOrNewUnderlying,
+    migrateConfigError,
   };
 };
