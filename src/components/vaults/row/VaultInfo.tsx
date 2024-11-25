@@ -46,12 +46,12 @@ interface DonateEvent {
   };
 }
 
-type Tab = "harvests" | "bonuses" | "apr";
+type Tab = "apr" | "harvests" | "bonuses";
 
 export const VaultInfo = ({ vault }: VaultInfoProps) => {
   const chain = useChain();
 
-  const [tab, setTab] = useState<Tab>("harvests");
+  const [tab, setTab] = useState<Tab>("apr");
   const [motionDirection, setMotionDirection] =
     useState<MotionDirection>("right");
   const isReducedMotion = useReducedMotion();
@@ -202,7 +202,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
 
   const onTabChange = (newTab: string) => {
     if (newTab === tab) return;
-    const array = ["harvests", "bonuses", "apr"];
+    const array = ["apr", "harvests", "bonuses"];
     const indexOfCurrentAction = array.indexOf(tab);
     const indexOfNewAction = array.indexOf(newTab);
     if (indexOfNewAction > indexOfCurrentAction) {
@@ -230,14 +230,14 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
           <ScrollArea className="max-w-full">
             <div className="relative h-8 w-full">
               <TabsList className="absolute h-auto">
+                <TabsTrigger value="apr" className="h-8 w-full">
+                  APR
+                </TabsTrigger>
                 <TabsTrigger value="harvests" className="h-8 w-full">
                   Harvests
                 </TabsTrigger>
                 <TabsTrigger value="bonuses" className="h-8 w-full">
                   Bonuses
-                </TabsTrigger>
-                <TabsTrigger value="apr" className="h-8 w-full">
-                  APR
                 </TabsTrigger>
               </TabsList>
             </div>
