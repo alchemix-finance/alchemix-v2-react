@@ -159,7 +159,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
   });
 
   const { data: historicData, isPending: isPendingHistoricApr } = useQuery({
-    queryKey: [QueryKeys.HistoricYield, chain.id, vault.address],
+    queryKey: [QueryKeys.HistoricYield, chain.id],
     queryFn: async () => {
       if (chain.id === 250)
         throw new Error("Historic yield data is not supported on this chain");
