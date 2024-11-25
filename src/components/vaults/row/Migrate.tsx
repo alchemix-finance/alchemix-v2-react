@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { optimism } from "viem/chains";
 import { formatUnits } from "viem";
+import { divide, multiply, toString } from "dnum";
 
 import { Vault } from "@/lib/types";
 import {
@@ -46,7 +47,6 @@ export const Migrate = ({
     writeMigrate,
     isPending,
     minOrNewUnderlying,
-    migrateConfigError,
   } = useMigrate({
     currentVault: vault,
     amount,
@@ -66,6 +66,16 @@ export const Migrate = ({
     }
     writeMigrate();
   };
+
+  const ltv = toString(
+    multiply(
+      divide(
+        [vault.alchemist.position.debt, 18],
+        [vault.alchemist.totalValue, 18],
+      ),
+      100,
+    ),
+  );
 
   return (
     <div className="space-y-4">
@@ -118,7 +128,7 @@ export const Migrate = ({
       {chain.id === optimism.id ? (
         <SlippageInput slippage={slippage} setSlippage={setSlippage} />
       ) : (
-        <p className="whitespace-nowrap text-sm text-lightgrey10inverse dark:text-lightgrey10">
+        <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
           Minimum underlying after migration:{" "}
           {formatNumber(
             formatUnits(
@@ -129,12 +139,11 @@ export const Migrate = ({
           {selectedVault.metadata.underlyingSymbol}
         </p>
       )}
-      {migrateConfigError && (
-        <p className="whitespace-nowrap text-sm text-lightgrey10inverse dark:text-lightgrey10">
-          If you have no available credit in the respective Alchemist, trying to
-          migrate will likely result in a failed transaction.
-        </p>
-      )}
+      <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
+        If you have no available credit in the respective Alchemist, trying to
+        migrate will likely result in a failed transaction. Your current LTV for
+        this Alchemist is {formatNumber(ltv)}%
+      </p>
       <CtaButton
         variant="outline"
         width="full"

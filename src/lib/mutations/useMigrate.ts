@@ -89,7 +89,7 @@ export const useMigrate = ({
       parseUnits(amount, currentVault.yieldTokenParams.decimals),
     ],
     query: {
-      enabled: !!address,
+      enabled: !!address && !isInputZero(amount),
     },
   });
   // debt skipped
@@ -248,6 +248,7 @@ export const useMigrate = ({
     ],
     query: {
       enabled:
+        !isInputZero(amount) &&
         minOrNewShares !== undefined &&
         minOrNewUnderlying !== undefined &&
         isApprovalNeededMint === false &&
@@ -345,6 +346,5 @@ export const useMigrate = ({
     writeMigrate,
     isPending,
     minOrNewUnderlying,
-    migrateConfigError,
   };
 };
