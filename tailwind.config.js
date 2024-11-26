@@ -63,6 +63,31 @@ module.exports = {
             right: "-90%",
           },
         },
+        scroll: {
+          "0%": {
+            transform: "translateX(0px)",
+          },
+          "100%": {
+            transform: "translateX(-100%)",
+          },
+        },
+        // cta button at landing page
+        buttonMovingGradientBg: {
+          "0%": { "background-position": "0%" },
+          "100%": { "background-position": "200%" },
+        },
+        // shine border effect at els at landing page
+        shine: {
+          "0%": {
+            "background-position": "0% 0%",
+          },
+          "50%": {
+            "background-position": "100% 100%",
+          },
+          to: {
+            "background-position": "0% 0%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -73,6 +98,10 @@ module.exports = {
           "reduced-motion-accordion-up 0.2s ease-out",
         "loading-bar":
           "loading-bar 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal none running",
+        scroll: "scroll 30s linear infinite",
+        buttonMovingGradientBg:
+          "buttonMovingGradientBg var(--speed, 2s) infinite linear",
+        shine: "shine 14s infinite linear",
       },
       colors: {
         black1: "#0E251D",
@@ -150,10 +179,6 @@ module.exports = {
           "linear-gradient(171.08deg, #fefefe -11.16%, #ebe6de 6.1%, #f5f2ee 49.05%, #fff 93.22%)",
         bodyGradientInverse:
           "linear-gradient(171.08deg, #010101 -11.16%, #141921 6.1%, #0a0d11 49.05%, #000000 93.22%)",
-      },
-      boxShadow: {
-        glow: "0 0 15px #f5c09a80",
-        hoveredGlow: "0 0 15px 9px #f5c09a99",
       },
     },
   },

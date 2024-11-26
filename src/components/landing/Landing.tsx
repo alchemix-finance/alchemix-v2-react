@@ -1,286 +1,189 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 
-import { windowOpen } from "@/utils/windowOpen";
+import { Button } from "@/components/ui/button";
 
-const assets = [
-  {
-    name: "ETH",
-    ltv: "50",
-    address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-    price: "",
-  },
-  {
-    name: "WSTETH",
-    ltv: "50",
-    address: "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
-    price: "",
-  },
-  {
-    name: "RETH",
-    ltv: "50",
-    address: "0xae78736Cd615f374D3085123A210448E74Fc6393",
-    price: "",
-  },
-  {
-    name: "DAI",
-    ltv: "50",
-    address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-    price: "",
-  },
-  {
-    name: "USDC",
-    ltv: "50",
-    address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-    price: "",
-  },
-  {
-    name: "USDT",
-    ltv: "50",
-    address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-    price: "",
-  },
-];
+import { VideoModal } from "./VideoModal";
+import { BlurInHeader, BlurInParagraph } from "./BlurInText";
+import { LandingCtaButton } from "./LandingCtaButton";
+import { SlideBox } from "./SlideBox";
+import { Tokens } from "./Tokens";
+import { EcosystemGrid } from "./EcosystemGrid";
+import { Step } from "./Step";
+import { useBreakpoints } from "@/hooks/useBreakpoints";
 
-const subtitles = [
-  "Borrow up to 50% of your deposited collateral.",
-  "Spend and save at the same time.",
-  "Your only debt is time.",
-];
+const Scene = lazy(() =>
+  import("./particles/Scene").then((module) => ({
+    default: module.Scene,
+  })),
+);
+const ActionsList = lazy(() =>
+  import("./ActionsList").then((module) => ({ default: module.ActionsList })),
+);
 
 export const Landing = () => {
-  const [subtitleIndex, setSubtitleIndex] = useState(0);
-  const shuffle = useCallback(() => {
-    setSubtitleIndex((prev) => (prev + 1 === subtitles.length ? 0 : prev + 1));
-  }, []);
-  useEffect(() => {
-    const intervalID = setInterval(shuffle, 5000);
-    return () => clearInterval(intervalID);
-  }, [shuffle]);
-
+  const { belowBreakpoint } = useBreakpoints();
   return (
-    <div className="flex flex-col space-y-14 px-4 pb-36 pt-4 md:px-8 md:pt-8">
-      <h1 className="mt-12 bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-center font-alcxTitles text-5xl font-medium leading-tight text-transparent">
-        Alchemix Self-Repaying Loans allow you to leverage a range of tokens
-        without risk of liquidation.
-      </h1>
+    <>
+      {/* Only render Particles on desktop */}
+      {!belowBreakpoint("xl") && (
+        // Particles canvas renders to parent div
+        <div className="pointer-events-none fixed inset-0 left-0 top-0 -z-10 h-full w-full lg:pl-[352px]">
+          <Suspense fallback={null}>
+            <Scene />
+          </Suspense>
+        </div>
+      )}
 
-      <p
-        key={subtitleIndex}
-        className="text-center text-3xl font-thin opacity-50 duration-1000 animate-in fade-in"
-      >
-        {subtitles[subtitleIndex]}
-      </p>
-
-      <div className="flex justify-center">
-        <Link
-          to="/vaults"
-          className="rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider shadow-glow transition-all hover:shadow-hoveredGlow"
-        >
-          <span className="flex items-center space-x-4 self-center text-orange4">
-            <span className="self-center">
-              Get your first Self-Repaying Loan
-            </span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 self-center"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+      <div className="relative flex flex-col space-y-14 pb-12 font-alcxTitles">
+        <div className="flex items-center justify-center gap-16 px-20 py-10">
+          <div className="w-1/3 space-y-6">
+            <BlurInHeader
+              className="inline-flex bg-gradient-to-br from-bronze4 via-bronze3 to-bronze4 bg-clip-text text-6xl font-extrabold text-transparent dark:bg-gradient-to-r dark:from-bronze3 dark:via-bronze2 dark:to-bronze3"
+              delay={0.1}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              ></path>
-            </svg>
-          </span>
-        </Link>
-      </div>
-
-      <div
-        className="group relative flex h-auto w-full cursor-pointer justify-center overflow-hidden text-orange4"
-        onClick={() =>
-          windowOpen("https://www.youtube.com/embed/FlWP9FC8C3c?autoplay=1")
-        }
-      >
-        <img
-          src="/images/landing-page/ad.webp"
-          alt="Watch the Alchemix cinematic ad"
-          className="w-full transition-all"
-        />
-        <svg
-          role="img"
-          className="absolute h-32 w-32 self-center opacity-50 transition-all group-hover:opacity-100"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-        >
-          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path>
-        </svg>
-      </div>
-
-      <div>
-        <p className="mb-4 text-center text-lg opacity-75">
-          By borrowing a synthetic version of the asset you deposit you&apos;ll
-          avoid the risk of liquidation. Defi innovation on a whole new level,
-          Alchemix is the first same-asset loan product in DeFi.
-        </p>
-        <p className="text-center text-lg opacity-75">
-          Using your collateral we earn yield on your behalf to pay off your
-          loan automagically!
-        </p>
-      </div>
-
-      <div className="flex w-full flex-col">
-        <p className="text-center font-alcxTitles text-3xl opacity-75">
-          Choose your path
-        </p>
-        <p className="text-center text-lg opacity-75">
-          A multi-functional account for all your financial needs
-        </p>
-        <img
-          className="w-3/4 self-center invert dark:filter-none"
-          src="/images/landing-page/diagram.svg"
-          alt="A diagram depicting the possibilities of Alchemix"
-        />
-        <a
-          className="text-center underline"
-          href="https://alchemix-finance.gitbook.io/v2/"
-        >
-          Learn more
-        </a>
-      </div>
-
-      <div className="flex flex-col space-y-4 border-b border-t border-grey5inverse py-8 dark:border-grey5">
-        <p className="text-center font-alcxTitles text-3xl opacity-75">
-          Leverage your assets
-        </p>
-        <div className="flex flex-col justify-center gap-2 lg:grid lg:grid-cols-3">
-          {assets.map((asset) => (
-            <div
-              key={asset.address}
-              className="flex w-full flex-row space-x-4 rounded-lg border border-grey1inverse bg-grey15inverse p-4 dark:border-grey1 dark:bg-grey15"
+              Self-Repaying Loans, Without The Liquidations
+            </BlurInHeader>
+            <BlurInParagraph
+              className="text-3xl text-lightgrey10inverse dark:text-lightgrey10"
+              delay={0.2}
+            >
+              Alchemix loans automatically pay themselves off without risk of
+              liquidation. Unlock the potential of your assets with secure and
+              stress-free borrowing.
+            </BlurInParagraph>
+            <LandingCtaButton delay={0.2} />
+          </div>
+          <VideoModal
+            delay={0.3}
+            className="flex w-full items-center justify-center"
+          />
+        </div>
+        <div className="flex flex-col gap-14">
+          <BlurInHeader className="pl-20 text-4xl font-semibold" delay={0.3}>
+            Why Alchemix?
+          </BlurInHeader>
+          <div className="flex items-center gap-24 px-20">
+            <SlideBox direction="left" className="w-full">
+              <Suspense fallback={<div className="h-64 w-full" />}>
+                <ActionsList />
+              </Suspense>
+            </SlideBox>
+            <SlideBox className="space-y-6" direction="bottom">
+              <h2 className="text-2xl font-semibold">Completely Flexible</h2>
+              <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
+                Alchemix gives you full control of your finances with no hidden
+                fees. Repay on your terms, keep your assets working for you, and
+                borrow against your collateral to secure future yield.
+              </p>
+              <Button size="sm" className="uppercase">
+                Exlore our vaults
+              </Button>
+            </SlideBox>
+          </div>
+          <div className="flex items-center gap-24 px-20">
+            <SlideBox className="space-y-6" direction="bottom">
+              <h2 className="text-2xl font-semibold">Zero Liquidations</h2>
+              <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
+                With Alchemix, market volatility won&apos;t touch your vault.
+                Your debt is securely tied to your collateral, ensuring that
+                price swings never put you at risk.
+              </p>
+              <Button size="sm" className="uppercase">
+                Learn more
+              </Button>
+            </SlideBox>
+            <SlideBox
+              className="flex w-full items-center justify-center"
+              direction="right"
             >
               <img
-                src={`/images/icons/${asset.name.toLowerCase()}.svg`}
-                className="w-16"
-                alt={asset.name}
+                src="/images/landing-page/liquidations.png"
+                alt="Liquidations section image"
+                className="aspect-video h-52 object-cover"
               />
-              <div>
-                <p>{asset.name}</p>
-                <p>{asset.price}</p>
-                <p>{asset.ltv}% LTV</p>
-              </div>
+            </SlideBox>
+          </div>
+          <div className="flex w-full max-w-none items-center gap-24 rounded-sm bg-grey10inverse px-20 dark:bg-grey10">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold">Security First</h2>
+              <p className="text-xl text-lightgrey10inverse dark:text-lightgrey10">
+                We are the original battle-tested DeFi platform with a priority
+                of asset protection. As a pioneer in DeFi, we ensure your assets
+                are preserved at every step.
+              </p>
+              <Button size="sm" className="uppercase">
+                Explore our audits
+              </Button>
             </div>
-          ))}
+            <div className="flex w-full items-center justify-center p-6">
+              <img
+                src="/images/landing-page/lock.svg"
+                alt="Lock vector image"
+                className="h-64 w-64"
+                loading="lazy"
+              />
+            </div>
+          </div>
         </div>
-        <a
-          className="text-center underline"
-          href="https://alchemix-finance.gitbook.io/v2/"
-        >
-          Learn more
-        </a>
-      </div>
-
-      <div className="flex w-full flex-col space-y-4">
-        <p className="text-center font-alcxTitles text-3xl opacity-75">
-          The benefits of Alchemix
-        </p>
-        <div className="flex w-full flex-col md:flex-row">
-          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16 dark:border-grey1 dark:bg-grey15">
-            <p className="font-alcxTitles text-2xl font-light text-orange4">
-              Leverage your wealth
-            </p>
-            <p className="mb text-lg font-light opacity-75">
-              Keep exposure to important assets while making them work for you.
-              Leverage more of your wealth (without risk of liquidation!) by
-              borrowing a synthetic version of your collateral.
-            </p>
-            <a
-              href="https://alchemix-finance.gitbook.io/v2/"
-              className="absolute inset-x-0 bottom-4 text-center underline"
+        <div className="flex flex-col gap-14 px-20 text-center">
+          <div>
+            <BlurInHeader className="text-4xl font-bold">
+              Your Favorite Tokens
+            </BlurInHeader>
+            <BlurInParagraph
+              className="text-xl text-lightgrey10inverse dark:text-lightgrey10"
+              delay={0.2}
             >
-              Learn more
-            </a>
+              Borrow up to 50% of your collateral
+            </BlurInParagraph>
           </div>
-          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16 dark:border-grey1 dark:bg-grey15">
-            <p className="font-alcxTitles text-2xl font-light text-orange4">
-              Wide range of tokens
-            </p>
-            <p className="text-lg font-light opacity-75">
-              Alchemix is opening doors to new collateral types. Leverage more
-              of your wealth than ever before.
-            </p>
-            <a
-              href="https://alchemix-finance.gitbook.io/v2/"
-              className="absolute inset-x-0 bottom-4 text-center underline"
-            >
-              Learn more
-            </a>
+          <Tokens />
+          <div className="relative -mr-20 grid text-start *:col-start-1 *:row-start-1">
+            <div className="pointer-events-none -z-10 w-full pl-64">
+              <img
+                src="/images/landing-page/big_placeholder.png"
+                alt="Placeholder image"
+                className="h-full w-full"
+              />
+            </div>
+            <div className="flex size-full max-w-xl flex-col justify-center gap-6">
+              <BlurInHeader className="text-4xl font-semibold">
+                Get Started With Alchemix
+              </BlurInHeader>
+              <BlurInParagraph className="text-xl font-semibold text-lightgrey10inverse dark:text-lightgrey10">
+                Alchemix&apos;s self-repaying loans automatically pay themselves
+                off using the interest earned on your initial deposit. Borrow
+                against your assets, earn yield on the full deposit amount, and
+                enjoy the ability to spend and save at the same time.
+              </BlurInParagraph>
+              <LandingCtaButton />
+            </div>
           </div>
-          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16 dark:border-grey1 dark:bg-grey15">
-            <p className="font-alcxTitles text-2xl font-light text-orange4">
-              No liquidations
-            </p>
-            <p className="text-lg font-light opacity-75">
-              No matter what happens we&apos;ll never liquidate your deposit.
-              You can choose to self-liquidate your own loan at your own
-              discretion.
-            </p>
-            <a
-              href="https://alchemix-finance.gitbook.io/v2/"
-              className="absolute inset-x-0 bottom-4 text-center underline"
-            >
-              Learn more
-            </a>
+          <div className="flex flex-col items-stretch justify-between gap-20 lg:flex-row">
+            <Step
+              src="/images/landing-page/1.png"
+              srcHover="/images/landing-page/1-hover.png"
+              alt="Deposit"
+            />
+            <Step
+              src="/images/landing-page/2.png"
+              srcHover="/images/landing-page/2-hover.png"
+              alt="Earn"
+            />
+            <Step
+              src="/images/landing-page/3.png"
+              srcHover="/images/landing-page/3-hover.png"
+              alt="Access"
+            />
           </div>
-          <div className="relative flex flex-1 flex-col space-y-4 border border-grey1inverse bg-grey15inverse p-4 pb-16 dark:border-grey1 dark:bg-grey15">
-            <p className="font-alcxTitles text-2xl font-light text-orange4">
-              Completely flexible
-            </p>
-            <p className="text-lg font-light opacity-75">
-              Alchemix doesn&apos;t lock your deposit or charge you fees. Your
-              funds are accessible 100% of the time. You can also repay your
-              debt whenever you like.
-            </p>
-            <a
-              href="https://alchemix-finance.gitbook.io/v2/"
-              className="absolute inset-x-0 bottom-4 text-center underline"
-            >
-              Learn more
-            </a>
+          <div className="space-y-8 text-start">
+            <h2 className="text-center text-4xl font-semibold">
+              A Thriving Ecosystem
+            </h2>
+            <EcosystemGrid />
           </div>
         </div>
       </div>
-
-      <div className="flex justify-center text-bronze4inverse dark:text-bronze4">
-        <Link
-          to="/vaults"
-          className="rounded-lg border-2 border-orange4 px-4 py-2 font-alcxTitles text-xl tracking-wider shadow-glow transition-all hover:shadow-hoveredGlow"
-        >
-          <span className="flex items-center space-x-4 self-center text-orange4">
-            <span className="self-center">
-              Get your first Self-Repaying Loan
-            </span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 self-center"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              ></path>
-            </svg>
-          </span>
-        </Link>
-      </div>
-    </div>
+    </>
   );
 };
