@@ -1,6 +1,6 @@
-import { LazyMotion, domAnimation } from "framer-motion";
+import { LazyMotion, domMax } from "framer-motion";
 
-// NOTE: Reduced bundle size,
+// NOTE: Possible to reduce bundle size,
 // see: https://www.framer.com/motion/guide-reduce-bundle-size/
 
 export const FramerMotionProvider = ({
@@ -8,9 +8,5 @@ export const FramerMotionProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  return (
-    <LazyMotion features={domAnimation} strict>
-      {children}
-    </LazyMotion>
-  );
+  return <LazyMotion features={domMax}>{children}</LazyMotion>;
 };
