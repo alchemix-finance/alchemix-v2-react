@@ -1,6 +1,6 @@
 import { HTMLAttributes, Ref, forwardRef } from "react";
 import { useMatchRoute, createLink } from "@tanstack/react-router";
-import { motion, MotionProps } from "framer-motion";
+import { motion, MotionProps, useReducedMotion } from "framer-motion";
 
 import { cn } from "@/utils/cn";
 import {
@@ -23,6 +23,7 @@ const MotionLink = createLink(MotionLinkForwardRef);
 
 export function LeftNav() {
   const matchRoute = useMatchRoute();
+  const isReducedMotion = useReducedMotion();
   const { data: isSentinel } = useSentinel();
   return (
     <nav className="space-y-5">
@@ -42,6 +43,12 @@ export function LeftNav() {
             })
               ? "opacity-100"
               : "opacity-40",
+            isReducedMotion &&
+              matchRoute({
+                to: routeTitleToPathMapping[item as RouteTitle].to,
+                fuzzy: true,
+              }) &&
+              "bg-grey10inverse dark:bg-grey10",
           )}
         >
           {item}
@@ -51,7 +58,8 @@ export function LeftNav() {
             alt={`${item} icon`}
           />
 
-          {matchRoute({
+          {!isReducedMotion &&
+          matchRoute({
             to: routeTitleToPathMapping[item as RouteTitle].to,
             fuzzy: true,
           }) ? (
@@ -74,6 +82,12 @@ export function LeftNav() {
             })
               ? "opacity-100"
               : "opacity-40",
+            isReducedMotion &&
+              matchRoute({
+                to: "/sentinel",
+                fuzzy: true,
+              }) &&
+              "bg-grey10inverse dark:bg-grey10",
           )}
         >
           Sentinel
@@ -82,7 +96,8 @@ export function LeftNav() {
             className="h-7 w-7 invert dark:filter-none"
             alt="Sentinel icon"
           />
-          {matchRoute({
+          {!isReducedMotion &&
+          matchRoute({
             to: "/sentinel",
             fuzzy: true,
           }) ? (
