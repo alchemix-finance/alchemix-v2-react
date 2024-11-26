@@ -228,7 +228,7 @@ function calculateAvailableCredit(
 
     const totalDepositValue = toNumber(multiply(tokenPrice, [totalValue, 18]));
 
-    const ratio = +formatEther(alchemist.minimumCollateralization ?? 0n);
+    const ratio = +formatEther(alchemist.minimumCollateralization);
 
     const debtLimit = totalDepositValue / ratio;
 
