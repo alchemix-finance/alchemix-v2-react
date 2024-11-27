@@ -120,6 +120,7 @@ const AprHistoricalGraph = ({ width, height, data }: AreaProps) => {
 
   const avg = data.reduce((acc, cur) => acc + cur.apr, 0) / data.length;
 
+  if (width === 0) return null;
   return (
     <>
       <svg width={width} height={height}>
