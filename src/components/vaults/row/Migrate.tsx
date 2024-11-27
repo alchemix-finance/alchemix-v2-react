@@ -67,15 +67,18 @@ export const Migrate = ({
     writeMigrate();
   };
 
-  const ltv = toString(
-    multiply(
-      divide(
-        [vault.alchemist.position.debt, 18],
-        [vault.alchemist.totalValue, 18],
-      ),
-      100,
-    ),
-  );
+  const ltv =
+    vault.alchemist.totalValue > 0
+      ? toString(
+          multiply(
+            divide(
+              [vault.alchemist.position.debt, 18],
+              [vault.alchemist.totalValue, 18],
+            ),
+            100,
+          ),
+        )
+      : "0";
 
   return (
     <div className="space-y-4">
