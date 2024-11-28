@@ -1,12 +1,21 @@
-import { LazyMotion, domMax } from "framer-motion";
+import { LazyMotion } from "framer-motion";
 
-// NOTE: Possible to reduce bundle size,
-// see: https://www.framer.com/motion/guide-reduce-bundle-size/
+// NOTE: Reduced initial bundle size.
+// Lazy load rest of the Framer Motion features after the initial render.
+// See: https://motion.dev/docs/react-reduce-bundle-size
+
+// Make sure to return the specific export containing the feature bundle.
+const loadFeatures = () =>
+  import("framer-motion").then((module) => module.domMax);
 
 export const FramerMotionProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  return <LazyMotion features={domMax}>{children}</LazyMotion>;
+  return (
+    <LazyMotion features={loadFeatures} strict>
+      {children}
+    </LazyMotion>
+  );
 };

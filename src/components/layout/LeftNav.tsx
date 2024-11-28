@@ -1,6 +1,6 @@
 import { HTMLAttributes, Ref, forwardRef } from "react";
 import { useMatchRoute, createLink } from "@tanstack/react-router";
-import { motion, MotionProps, useReducedMotion } from "framer-motion";
+import { m, MotionProps, useReducedMotion } from "framer-motion";
 
 import { cn } from "@/utils/cn";
 import {
@@ -14,7 +14,7 @@ const MotionLinkForwardRef = forwardRef(
     props: MotionProps & HTMLAttributes<HTMLAnchorElement>,
     ref: Ref<HTMLAnchorElement>,
   ) => {
-    return <motion.a {...props} ref={ref} />;
+    return <m.a {...props} ref={ref} />;
   },
 );
 MotionLinkForwardRef.displayName = "MotionLinkForwardRef";
@@ -63,7 +63,7 @@ export function LeftNav() {
             to: routeTitleToPathMapping[item as RouteTitle].to,
             fuzzy: true,
           }) ? (
-            <motion.div
+            <m.div
               layoutId="tab-indicator"
               className="absolute inset-0 -z-10 rounded-xl bg-grey10inverse dark:bg-grey10"
             />
@@ -101,7 +101,7 @@ export function LeftNav() {
             to: "/sentinel",
             fuzzy: true,
           }) ? (
-            <motion.div
+            <m.div
               layoutId="tab-indicator"
               className="absolute inset-0 -z-10 rounded-xl bg-grey10inverse dark:bg-grey10"
             />
