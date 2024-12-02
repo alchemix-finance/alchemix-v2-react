@@ -14,6 +14,9 @@ import { chains } from "./chains";
 
 const projectId = import.meta.env.VITE_WC_PROJECT_ID;
 
+// Alchemix v2 doesn't support contract wallets
+coinbaseWallet.preference = "eoaOnly";
+
 const connectors = connectorsForWallets(
   [
     {
