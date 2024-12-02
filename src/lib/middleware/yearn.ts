@@ -2,6 +2,7 @@
 
 import { AprFn } from "@/lib/config/metadataTypes";
 import { optimism } from "viem/chains";
+import { ALCHEMIST_FEE_MULTIPLIER } from "./common";
 
 export const getYearnApy: AprFn = async ({
   yieldTokenOverride,
@@ -24,5 +25,5 @@ export const getYearnApy: AprFn = async ({
       ? vaultData.apr.netAPR + vaultData.apr.extra.stakingRewardsAPR
       : vaultData.apr.netAPR;
 
-  return value * 100 * 0.9;
+  return value * 100 * ALCHEMIST_FEE_MULTIPLIER;
 };

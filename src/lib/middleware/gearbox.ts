@@ -1,6 +1,7 @@
 import { toNumber } from "dnum";
 
 import { AprFn } from "@/lib/config/metadataTypes";
+import { ALCHEMIST_FEE_MULTIPLIER } from "./common";
 
 export const getGearboxApy: AprFn = async ({ vaultAddress, publicClient }) => {
   const poolContract = {
@@ -37,5 +38,5 @@ export const getGearboxApy: AprFn = async ({ vaultAddress, publicClient }) => {
     functionName: "supplyRate",
   });
 
-  return toNumber([rateBigInt, 25]);
+  return toNumber([rateBigInt, 25]) * ALCHEMIST_FEE_MULTIPLIER;
 };

@@ -1,4 +1,5 @@
 import { AprFn } from "@/lib/config/metadataTypes";
+import { ALCHEMIST_FEE_MULTIPLIER } from "./common";
 
 interface VesperReserve {
   address: string;
@@ -29,7 +30,7 @@ export const processApr = async ({
 
   let yieldValue = reserve?.actualRates["30"] ?? 0;
   if (yieldValue < 0) yieldValue = 0;
-  return yieldValue;
+  return yieldValue * ALCHEMIST_FEE_MULTIPLIER;
 };
 
 export const getVesperApr: AprFn = async ({ vaultAddress }) => {
