@@ -1,8 +1,10 @@
-import { AprFn } from "@/lib/config/metadataTypes";
-
-import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 import { gql, request } from "graphql-request";
+
+import { AprFn } from "@/lib/config/metadataTypes";
+import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
+
+import { ALCHEMIST_FEE_MULTIPLIER } from "./common";
 
 const aaveApiParams = {
   [mainnet.id]: {
@@ -145,7 +147,7 @@ export const processApr = async ({
 
   const ray = 10 ** 27;
   let a = parseFloat(reserve?.liquidityRate || "1") / ray;
-  a = a * 0.9;
+  a = a * ALCHEMIST_FEE_MULTIPLIER;
   const b = a * 100;
   return b;
 };
