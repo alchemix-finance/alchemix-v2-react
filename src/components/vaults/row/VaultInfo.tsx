@@ -191,7 +191,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
           name: values[1],
           timestamp: parseInt(values[0]),
           formattedDate: dayjs.unix(parseInt(values[0])).format("MMM D"),
-          apr: +values[2] * 100,
+          apr: +values[2] * 100 * 0.9, // 10% fee for Alchemist
         };
       });
       return parsedData;
