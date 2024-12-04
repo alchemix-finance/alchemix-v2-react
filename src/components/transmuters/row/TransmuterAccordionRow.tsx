@@ -28,8 +28,8 @@ export const TransmuterAccordionRow = ({
     transmuter.account.exchangedBalance + transmuter.account.unexchangedBalance;
   return (
     <AccordionItem value={transmuter.address}>
-      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 sm:grid-cols-4 xl:grid-cols-5 dark:border-grey3 dark:bg-grey10">
-        <div className="col-span-2 flex justify-start pl-4 sm:col-span-4 xl:col-span-1">
+      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 sm:grid-cols-4 xl:grid-cols-6 dark:border-grey3 dark:bg-grey10">
+        <div className="col-span-2 flex justify-start pl-4 sm:col-span-3 xl:col-span-1">
           <div className="flex flex-row space-x-8">
             <div className="relative">
               <img
@@ -55,6 +55,17 @@ export const TransmuterAccordionRow = ({
               <p className="text-sm text-lightgrey10">LTV: 50%</p>
             </div>
           </div>
+        </div>
+        <div>
+          <p className="text-center text-sm text-lightgrey10">Total Deposits</p>
+          {syntheticToken && (
+            <CurrencyCell
+              tokenAmount={transmuter.totalUnexchanged}
+              tokenAddress={syntheticToken.address}
+              tokenSymbol={syntheticToken.symbol}
+              tokenDecimals={syntheticToken.decimals}
+            />
+          )}
         </div>
         <div>
           <p className="text-center text-sm text-lightgrey10">Deposited</p>
