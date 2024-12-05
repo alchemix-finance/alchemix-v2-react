@@ -28,17 +28,14 @@ export const TransmuterAccordionRow = ({
   );
   const totalDeposited =
     transmuter.account.exchangedBalance + transmuter.account.unexchangedBalance;
-  const totalDepositsFormatted = formatNumber(
-    formatUnits(transmuter?.totalUnexchanged, syntheticToken?.decimals || 18),
-    {
-      dustToZero: true,
-      tokenDecimals: syntheticToken?.decimals || 18,
-    },
+  const tvl = formatUnits(
+    transmuter?.totalUnexchanged,
+    syntheticToken?.decimals ?? 18,
   );
   return (
     <AccordionItem value={transmuter.address}>
-      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 sm:grid-cols-4 xl:grid-cols-5 dark:border-grey3 dark:bg-grey10">
-        <div className="col-span-2 flex justify-start pl-4 sm:col-span-4 xl:col-span-1">
+      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 sm:grid-cols-4 xl:grid-cols-6 dark:border-grey3 dark:bg-grey10">
+        <div className="col-span-2 flex justify-start pl-4 sm:col-span-4 xl:col-span-2">
           <div className="flex flex-row space-x-8">
             <div className="relative">
               <img
@@ -62,12 +59,8 @@ export const TransmuterAccordionRow = ({
                 underlyingToken?.symbol ?? "..."
               }`}</p>
               <p className="text-sm text-lightgrey10">
-                <span>Total Deposits:</span>
-                <br />
-                <span>
-                  {totalDepositsFormatted}{" "}
-                  {syntheticToken?.symbol || "alAssets"}
-                </span>
+                TVL: {formatNumber(tvl, { compact: true })}{" "}
+                {syntheticToken?.symbol}
               </p>
             </div>
           </div>
