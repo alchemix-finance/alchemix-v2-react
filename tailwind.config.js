@@ -63,8 +63,8 @@ module.exports = {
 
         // cta button at landing page
         buttonMovingGradientBg: {
-          "0%": { "background-position": "0%" },
-          "100%": { "background-position": "200%" },
+          "0%": { backgroundPosition: "0% 0%" },
+          "100%": { backgroundPosition: "200% 0%" },
         },
         // shine border effect at els at landing page
         shine: {

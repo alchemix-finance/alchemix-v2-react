@@ -178,7 +178,7 @@ export const Landing = () => {
                     Get started with Alchemix
                   </BlurInHeader>
 
-                  <BlurInParagraph className="whitespace-nowrap pb-14 text-[28px] font-bold leading-tight text-lightgrey10inverse dark:text-lightgrey10">
+                  <BlurInParagraph className="whitespace-nowrap pb-14 text-[28px] font-bold leading-tight text-lightgrey10inverse dark:text-white">
                     Alchemix's self-repaying loans automatically pay themselves
                     off using the interest earned<br></br> on your initial
                     deposit. Borrow against your assets, earn yield on the full
@@ -191,7 +191,7 @@ export const Landing = () => {
             </div>
 
             <div className="flex flex-col items-stretch justify-center gap-6 lg:flex-row">
-              <div className="relative">
+              <div className="relative drop-shadow-md">
                 <img
                   src="/alchemix-v2-react/images/landing-page/1.png"
                   alt="Deposit"
@@ -203,7 +203,7 @@ export const Landing = () => {
                   className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
                 />
               </div>
-              <div className="relative">
+              <div className="relative drop-shadow-md">
                 <img
                   src="/alchemix-v2-react/images/landing-page/2.png"
                   alt="Earn"
@@ -215,7 +215,7 @@ export const Landing = () => {
                   className="absolute inset-0 h-full w-full rounded-3xl object-contain opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"
                 />
               </div>
-              <div className="relative">
+              <div className="relative drop-shadow-md">
                 <img
                   src="/alchemix-v2-react/images/landing-page/3.png"
                   alt="Access"
