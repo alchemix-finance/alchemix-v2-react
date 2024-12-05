@@ -11,6 +11,8 @@ import { Deposit } from "./Deposit";
 import { Withdraw } from "./Withdraw";
 import { Claim } from "./Claim";
 import { TransmuterApr } from "./TransmuterApr";
+import { formatUnits } from "viem";
+import { formatNumber } from "@/utils/number";
 
 export const TransmuterAccordionRow = ({
   transmuter,
@@ -26,10 +28,17 @@ export const TransmuterAccordionRow = ({
   );
   const totalDeposited =
     transmuter.account.exchangedBalance + transmuter.account.unexchangedBalance;
+  const totalDepositsFormatted = formatNumber(
+    formatUnits(transmuter?.totalUnexchanged, syntheticToken?.decimals || 18),
+    {
+      dustToZero: true,
+      tokenDecimals: syntheticToken?.decimals || 18,
+    },
+  );
   return (
     <AccordionItem value={transmuter.address}>
-      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 sm:grid-cols-4 xl:grid-cols-6 dark:border-grey3 dark:bg-grey10">
-        <div className="col-span-2 flex justify-start pl-4 sm:col-span-3 xl:col-span-1">
+      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 sm:grid-cols-4 xl:grid-cols-5 dark:border-grey3 dark:bg-grey10">
+        <div className="col-span-2 flex justify-start pl-4 sm:col-span-4 xl:col-span-1">
           <div className="flex flex-row space-x-8">
             <div className="relative">
               <img
@@ -52,20 +61,16 @@ export const TransmuterAccordionRow = ({
               <p className="text-sm text-lightgrey10">{`${syntheticToken?.symbol ?? "..."}-${
                 underlyingToken?.symbol ?? "..."
               }`}</p>
-              <p className="text-sm text-lightgrey10">LTV: 50%</p>
+              <p className="text-sm text-lightgrey10">
+                <span>Total Deposits:</span>
+                <br />
+                <span>
+                  {totalDepositsFormatted}{" "}
+                  {syntheticToken?.symbol || "alAssets"}
+                </span>
+              </p>
             </div>
           </div>
-        </div>
-        <div>
-          <p className="text-center text-sm text-lightgrey10">Total Deposits</p>
-          {syntheticToken && (
-            <CurrencyCell
-              tokenAmount={transmuter.totalUnexchanged}
-              tokenAddress={syntheticToken.address}
-              tokenSymbol={syntheticToken.symbol}
-              tokenDecimals={syntheticToken.decimals}
-            />
-          )}
         </div>
         <div>
           <p className="text-center text-sm text-lightgrey10">Deposited</p>
