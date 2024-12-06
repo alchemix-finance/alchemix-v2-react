@@ -1,14 +1,29 @@
-import { cn } from "@/utils/cn";
-import { Link, useMatchRoute } from "@tanstack/react-router";
+import { HTMLAttributes, Ref, forwardRef } from "react";
+import { useMatchRoute, createLink } from "@tanstack/react-router";
+import { m, MotionProps, useReducedMotion } from "framer-motion";
 
+import { cn } from "@/utils/cn";
 import {
   routeTitleToPathMapping,
   RouteTitle,
 } from "@/components/layout/Header";
 import { useSentinel } from "@/lib/queries/sentinel/useSentinel";
 
+const MotionLinkForwardRef = forwardRef(
+  (
+    props: MotionProps & HTMLAttributes<HTMLAnchorElement>,
+    ref: Ref<HTMLAnchorElement>,
+  ) => {
+    return <m.a {...props} ref={ref} />;
+  },
+);
+MotionLinkForwardRef.displayName = "MotionLinkForwardRef";
+
+const MotionLink = createLink(MotionLinkForwardRef);
+
 export function LeftNav() {
   const matchRoute = useMatchRoute();
+  const isReducedMotion = useReducedMotion();
   const { data: isSentinel } = useSentinel();
   return (
     <nav className="space-y-5">
@@ -16,18 +31,24 @@ export function LeftNav() {
         Navigation
       </p>
       {Object.keys(routeTitleToPathMapping).map((item) => (
-        <Link
+        <MotionLink
           key={item}
           to={routeTitleToPathMapping[item as RouteTitle].to}
           className={cn(
-            "flex cursor-pointer justify-between rounded-xl p-4 transition-all",
-            "hover:bg-grey10inverse hover:opacity-100 dark:hover:bg-grey10",
+            "relative flex cursor-pointer justify-between rounded-xl p-4 transition-all",
+            "hover:opacity-100",
             matchRoute({
               to: routeTitleToPathMapping[item as RouteTitle].to,
               fuzzy: true,
             })
-              ? "bg-grey10inverse opacity-100 dark:bg-grey10"
+              ? "opacity-100"
               : "opacity-40",
+            isReducedMotion &&
+              matchRoute({
+                to: routeTitleToPathMapping[item as RouteTitle].to,
+                fuzzy: true,
+              }) &&
+              "bg-grey10inverse dark:bg-grey10",
           )}
         >
           {item}
@@ -36,20 +57,37 @@ export function LeftNav() {
             className="h-7 w-7 invert dark:filter-none"
             alt={`${item} icon`}
           />
-        </Link>
+
+          {!isReducedMotion &&
+          matchRoute({
+            to: routeTitleToPathMapping[item as RouteTitle].to,
+            fuzzy: true,
+          }) ? (
+            <m.div
+              layoutId="tab-indicator"
+              className="absolute inset-0 -z-10 rounded-xl bg-grey10inverse dark:bg-grey10"
+            />
+          ) : null}
+        </MotionLink>
       ))}
       {isSentinel && (
-        <Link
+        <MotionLink
           to="/sentinel"
           className={cn(
-            "flex cursor-pointer justify-between rounded-xl p-4 transition-all",
-            "hover:bg-grey10inverse hover:opacity-100 dark:hover:bg-grey10",
+            "relative flex cursor-pointer justify-between rounded-xl p-4 transition-all",
+            "hover:opacity-100",
             matchRoute({
               to: "/sentinel",
               fuzzy: true,
             })
-              ? "bg-grey10inverse opacity-100 dark:bg-grey10"
+              ? "opacity-100"
               : "opacity-40",
+            isReducedMotion &&
+              matchRoute({
+                to: "/sentinel",
+                fuzzy: true,
+              }) &&
+              "bg-grey10inverse dark:bg-grey10",
           )}
         >
           Sentinel
@@ -58,7 +96,17 @@ export function LeftNav() {
             className="h-7 w-7 invert dark:filter-none"
             alt="Sentinel icon"
           />
-        </Link>
+          {!isReducedMotion &&
+          matchRoute({
+            to: "/sentinel",
+            fuzzy: true,
+          }) ? (
+            <m.div
+              layoutId="tab-indicator"
+              className="absolute inset-0 -z-10 rounded-xl bg-grey10inverse dark:bg-grey10"
+            />
+          ) : null}
+        </MotionLink>
       )}
     </nav>
   );
