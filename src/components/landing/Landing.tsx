@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 // import { GridPattern } from "./GridPattern";
 import { VideoModal } from "./VideoModal";
 import { BlurInHeader, BlurInParagraph } from "./BlurInText";
-import { LandingClosingCtaButton } from "./LandingCtaButton";
+import { LandingClosingCtaButton, LandingSubButton } from "./LandingCtaButton";
 import { SlideBox } from "./SlideBox";
 import { Tokens } from "./Tokens";
 import { EcosystemGrid } from "./EcosystemGrid";
@@ -82,13 +82,8 @@ export const Landing = () => {
                 working for you, and borrow against<br></br> your collateral to
                 secure future yield.
               </p>
-              <Button
-                variant="cta"
-                size="cta"
-                className="ml-10 rounded-xl bg-[#0B0D12] text-lg font-normal"
-              >
-                Explore our vaults
-              </Button>
+
+              <LandingSubButton delay={0.2} text="Explore our vaults" />
             </SlideBox>
           </div>
 
@@ -102,13 +97,8 @@ export const Landing = () => {
                 vault. Your debt is securely tied to your<br></br> collateral,
                 ensuring that price swings never put<br></br> you at risk.
               </p>
-              <Button
-                variant="cta"
-                size="cta"
-                className="ml-10 rounded-xl bg-[#0B0D12] text-lg font-normal"
-              >
-                Learn more
-              </Button>
+
+              <LandingSubButton delay={0.2} text="Learn more" />
             </div>
 
             <div className="flex-1">
@@ -129,13 +119,8 @@ export const Landing = () => {
               asset protection. As a pioneer in DeFi, we ensure your assets are
               preserved at every step.
             </p>
-            <Button
-              variant="cta"
-              size="cta"
-              className="ml-10 rounded-xl bg-[#0B0D12] text-lg font-normal"
-            >
-              Explore our audits
-            </Button>
+
+            <LandingSubButton delay={0.2} text="Explore our audits" />
           </div>
 
           <div className="flex flex-1 items-center justify-center">
