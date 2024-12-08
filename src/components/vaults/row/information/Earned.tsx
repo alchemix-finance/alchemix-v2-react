@@ -48,7 +48,7 @@ export const Earned = ({ vault }: { vault: Vault }) => {
         {isLoadingGeneratedEarned ? "Loading..." : "Generate"}
       </CtaButton>
       <p className="text-lightgrey10">
-        Please exercise patience. It can take up to 2 minutes to generate earned
+        Please be patient. It may take up to 2 minutes to calculate the earned
         amount.
       </p>
     </div>

@@ -4,7 +4,6 @@ import { dayjs } from "@/lib/dayjs";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
 import { useChain } from "@/hooks/useChain";
-
 import { ALCHEMIST_FEE_MULTIPLIER } from "@/lib/middleware/common";
 
 export const useHistoricApr = () => {

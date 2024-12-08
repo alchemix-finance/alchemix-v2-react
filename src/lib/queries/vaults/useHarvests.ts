@@ -4,7 +4,6 @@ import { formatEther } from "viem";
 import { mul, toString } from "dnum";
 
 import { QueryKeys } from "@/lib/queries/queriesSchema";
-
 import { HARVESTS_ENDPOINTS } from "@/lib/config/harvests";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
 import { useChain } from "@/hooks/useChain";

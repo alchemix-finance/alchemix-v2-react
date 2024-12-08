@@ -20,7 +20,9 @@ interface VaultInfoProps {
   vault: Vault;
 }
 
-type Tab = "apr" | "harvests" | "bonuses" | "earned";
+const TABS = ["apr", "harvests", "bonuses", "earned"] as const;
+type Tab = (typeof TABS)[number];
+const isTab = (tab: string): tab is Tab => TABS.includes(tab as Tab);
 
 export const VaultInfo = ({ vault }: VaultInfoProps) => {
   const chain = useChain();
@@ -32,13 +34,13 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
 
   const onTabChange = (newTab: string) => {
     if (newTab === tab) return;
-    const array = ["apr", "harvests", "bonuses", "earned"];
-    const indexOfCurrentAction = array.indexOf(tab);
-    const indexOfNewAction = array.indexOf(newTab);
+    if (!isTab(newTab)) return;
+    const indexOfCurrentAction = TABS.indexOf(tab);
+    const indexOfNewAction = TABS.indexOf(newTab);
     if (indexOfNewAction > indexOfCurrentAction) {
       setMotionDirection("right");
     } else setMotionDirection("left");
-    setTab(newTab as Tab);
+    setTab(newTab);
   };
 
   return (
@@ -48,18 +50,15 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
           <ScrollArea className="max-w-full">
             <div className="relative h-8 w-full">
               <TabsList className="absolute h-auto">
-                <TabsTrigger value="apr" className="h-8 w-full">
-                  APR
-                </TabsTrigger>
-                <TabsTrigger value="harvests" className="h-8 w-full">
-                  Harvests
-                </TabsTrigger>
-                <TabsTrigger value="bonuses" className="h-8 w-full">
-                  Bonuses
-                </TabsTrigger>
-                <TabsTrigger value="earned" className="h-8 w-full">
-                  Earned
-                </TabsTrigger>
+                {TABS.map((tab) => (
+                  <TabsTrigger
+                    key={tab}
+                    value={tab}
+                    className="h-8 w-full capitalize first:uppercase"
+                  >
+                    {tab}
+                  </TabsTrigger>
+                ))}
               </TabsList>
             </div>
             <ScrollBar orientation="horizontal" />
