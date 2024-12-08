@@ -1,12 +1,15 @@
-import { Token } from "@/lib/types";
-import { useVaults } from "@/lib/queries/useVaults";
 import { formatEther } from "viem";
-import { TokenInput } from "./TokenInput";
 import { useAccount, useReadContract } from "wagmi";
+import { divide } from "dnum";
+
+import { TokenInput } from "./TokenInput";
+
 import { alchemistV2Abi } from "@/abi/alchemistV2";
+import { Token } from "@/lib/types";
+import { useVaults } from "@/lib/queries/vaults/useVaults";
+import { ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import { useChain } from "@/hooks/useChain";
-import { ScopeKeys } from "@/lib/queries/queriesSchema";
 
 export const BorrowInput = ({
   amount,
@@ -57,15 +60,15 @@ export const BorrowInput = ({
     totalValueOfCollateralInDebtTokens !== undefined &&
     vaultForAlchemist !== undefined &&
     debt !== undefined
-      ? totalValueOfCollateralInDebtTokens /
-          BigInt(
-            formatEther(vaultForAlchemist?.alchemist.minimumCollateralization),
-          ) -
-        debt
+      ? divide(
+          [totalValueOfCollateralInDebtTokens, 18],
+          [vaultForAlchemist.alchemist.minimumCollateralization, 18],
+        )[0] - debt
       : 0n;
 
+  // If availableCredit is greater than 0, subtract 1 from it to prevent the user from borrowing the full amount (to avoid failed tx)
   const overrideBalance = formatEther(
-    availableCredit > 0n ? availableCredit : 0n,
+    availableCredit > 0n ? availableCredit - 1n : 0n,
   );
 
   useWatchQuery({

@@ -1,5 +1,7 @@
-import { Token, Vault } from "@/lib/types";
 import { useState } from "react";
+import { formatEther } from "viem";
+
+import { Token, Vault } from "@/lib/types";
 import {
   Select,
   SelectTrigger,
@@ -7,16 +9,16 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { SlippageInput } from "@/components/common/input/SlippageInput";
+import { CtaButton } from "@/components/common/CtaButton";
+import { VaultWithdrawTokenInput } from "@/components/common/input/VaultWithdrawTokenInput";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { GAS_ADDRESS } from "@/lib/constants";
 import { useWithdraw } from "@/lib/mutations/useWithdraw";
-import { VaultWithdrawTokenInput } from "@/components/common/input/VaultWithdrawTokenInput";
+import { useVaultsWithdrawAvailableBalance } from "@/lib/queries/vaults/useVaultsWithdrawAvailableBalance";
 import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
-import { formatEther } from "viem";
-import { SlippageInput } from "@/components/common/input/SlippageInput";
-import { VaultActionMotionDiv } from "./motion";
-import { CtaButton } from "@/components/common/CtaButton";
+import { getTokenLogoUrl } from "@/utils/getTokenLogoUrl";
 
 export const Withdraw = ({
   vault,
@@ -29,18 +31,29 @@ export const Withdraw = ({
 }) => {
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
-  const [tokenAddress, setTokenAddress] = useState<`0x${string}`>(
-    underlyingTokenData.address,
-  );
+
+  const initTokenAddress = vault.metadata.disabledWithdrawTokens
+    .map((t) => t.toLowerCase())
+    .includes(underlyingTokenData.address.toLowerCase())
+    ? yieldTokenData.address
+    : underlyingTokenData.address;
+  const [tokenAddress, setTokenAddress] = useState(initTokenAddress);
 
   const { data: tokens } = useTokensQuery();
   const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
 
   const isETHCompatible =
     vault.metadata.wethGateway !== undefined && gasToken !== undefined;
-  const selection = isETHCompatible
-    ? [underlyingTokenData, yieldTokenData, gasToken]
-    : [underlyingTokenData, yieldTokenData];
+  const selection = [
+    ...(isETHCompatible
+      ? [underlyingTokenData, yieldTokenData, gasToken]
+      : [underlyingTokenData, yieldTokenData]),
+  ].filter(
+    (t) =>
+      !vault.metadata.disabledWithdrawTokens
+        .map((t) => t.toLowerCase())
+        .includes(t.address.toLowerCase()),
+  );
 
   const token = selection.find((token) => token.address === tokenAddress)!;
 
@@ -71,70 +84,77 @@ export const Withdraw = ({
     setTokenAddress(value as `0x${string}`);
   };
 
+  const { balance } = useVaultsWithdrawAvailableBalance({
+    vault,
+    isSelectedTokenYieldToken,
+  });
+
+  const isInsufficientBalance = balance !== undefined && +amount > +balance;
+  const isDisabledCta =
+    isPending || isInputZero(amount) || isInsufficientBalance;
+
   return (
-    <VaultActionMotionDiv>
-      <div className="space-y-4">
-        <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
-          <Select value={tokenAddress} onValueChange={onSelectChange}>
-            <SelectTrigger className="h-auto w-24 sm:w-56">
-              <SelectValue placeholder="Token" asChild>
-                <div className="flex items-center gap-4">
-                  <img
-                    src={`/images/token-icons/${token.symbol}.svg`}
-                    alt={token.symbol}
-                    className="h-12 w-12"
-                  />
-                  <span className="hidden text-xl sm:inline">
-                    {token.symbol}
-                  </span>
-                </div>
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {selection.map((token) => (
-                <SelectItem key={token.address} value={token.address}>
-                  {token.symbol}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <VaultWithdrawTokenInput
-            amount={amount}
-            setAmount={setAmount}
-            tokenSymbol={token.symbol}
-            tokenDecimals={token.decimals}
-            isSelectedTokenYieldToken={isSelectedTokenYieldToken}
-            vault={vault}
-          />
-        </div>
-        {!isSelectedTokenYieldToken && (
-          <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-        )}
-        <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
-          Current debt:{" "}
-          {formatNumber(
-            formatEther(
-              vault.alchemist.position.debt < 0n
-                ? 0n
-                : vault.alchemist.position.debt,
-            ),
-            { decimals: 4 },
-          )}{" "}
-          {vault.alchemist.synthType}
-        </p>
-        <CtaButton
-          variant="outline"
-          width="full"
-          disabled={isPending || isInputZero(amount)}
-          onClick={onCtaClick}
-        >
-          {isPending
+    <div className="space-y-4">
+      <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+        <Select value={tokenAddress} onValueChange={onSelectChange}>
+          <SelectTrigger className="h-auto w-24 sm:w-56">
+            <SelectValue placeholder="Token" asChild>
+              <div className="flex items-center gap-4">
+                <img
+                  src={getTokenLogoUrl(token.symbol)}
+                  alt={token.symbol}
+                  className="h-12 w-12"
+                />
+                <span className="hidden text-xl sm:inline">{token.symbol}</span>
+              </div>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {selection.map((token) => (
+              <SelectItem key={token.address} value={token.address}>
+                {token.symbol}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <VaultWithdrawTokenInput
+          amount={amount}
+          setAmount={setAmount}
+          tokenSymbol={token.symbol}
+          tokenDecimals={token.decimals}
+          isSelectedTokenYieldToken={isSelectedTokenYieldToken}
+          vault={vault}
+        />
+      </div>
+      {!isSelectedTokenYieldToken && (
+        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
+      )}
+      <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
+        Current debt:{" "}
+        {formatNumber(
+          formatEther(
+            vault.alchemist.position.debt < 0n
+              ? 0n
+              : vault.alchemist.position.debt,
+          ),
+          { decimals: 4 },
+        )}{" "}
+        {vault.alchemist.synthType}
+      </p>
+      <CtaButton
+        variant="outline"
+        width="full"
+        disabled={isDisabledCta}
+        onClick={onCtaClick}
+      >
+        {isInsufficientBalance
+          ? "Insufficient balance"
+          : isPending
             ? "Preparing"
             : isApprovalNeeded === true
               ? "Approve"
               : "Withdraw"}
-        </CtaButton>
-      </div>
-    </VaultActionMotionDiv>
+      </CtaButton>
+    </div>
   );
 };

@@ -1,4 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  useAccount,
+  useSimulateContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+import { isAddress, parseUnits } from "viem";
+import { toast } from "sonner";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+import { useQueryClient } from "@tanstack/react-query";
+
 import { BorrowInput } from "@/components/common/input/BorrowInput";
 import {
   Select,
@@ -10,25 +21,20 @@ import {
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { Button } from "@/components/ui/button";
 import { useAlchemists } from "@/lib/queries/useAlchemists";
-import {
-  useAccount,
-  useSimulateContract,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { isAddress, parseUnits } from "viem";
-import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
-import { useQueryClient } from "@tanstack/react-query";
-import { ALCHEMISTS_METADATA, SYNTH_ASSETS } from "@/lib/config/alchemists";
+import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
+import { SYNTH_ASSETS } from "@/lib/config/synths";
 import { isInputZero } from "@/utils/inputNotZero";
 import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { Switch } from "@/components/ui/switch";
-import { AnimatePresence, m } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { accordionTransition, accordionVariants } from "@/lib/motion/motion";
+import {
+  accordionTransition,
+  accordionVariants,
+  reducedMotionAccordionVariants,
+} from "@/lib/motion/motion";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
 
@@ -44,6 +50,7 @@ export const Borrow = () => {
     useState(false);
   const [receipientAddress, setReceipientAddress] = useState("");
   const [amount, setAmount] = useState("");
+  const isReducedMotion = useReducedMotion();
 
   const receipient = isAddress(receipientAddress) ? receipientAddress : address;
 
@@ -209,7 +216,11 @@ export const Borrow = () => {
                   initial="collapsed"
                   animate="open"
                   exit="collapsed"
-                  variants={accordionVariants}
+                  variants={
+                    isReducedMotion
+                      ? reducedMotionAccordionVariants
+                      : accordionVariants
+                  }
                   transition={accordionTransition}
                   className="space-y-4"
                 >
@@ -259,7 +270,7 @@ export const Borrow = () => {
               (isDifferentAddress && !confirmedDifferentAddress)
             }
           >
-            Borrow {debtToken.symbol}
+            {`Borrow ${debtToken.symbol}`}
           </CtaButton>
         </>
       )}

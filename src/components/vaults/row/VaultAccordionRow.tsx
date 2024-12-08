@@ -2,8 +2,9 @@ import { useMemo, useState } from "react";
 import { formatEther, formatUnits } from "viem";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { usePublicClient, useReadContract, useReadContracts } from "wagmi";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { greaterThan, multiply, toString } from "dnum";
+import useMeasure from "react-use-measure";
 
 import { useChain } from "@/hooks/useChain";
 import { SYNTH_ASSETS_METADATA } from "@/lib/config/synths";
@@ -24,13 +25,20 @@ import { Deposit } from "@/components/vaults/row/Deposit";
 import { Withdraw } from "@/components/vaults/row/Withdraw";
 import { Migrate } from "@/components/vaults/row/Migrate";
 import { mainnet, optimism } from "viem/chains";
-import { useVaults } from "@/lib/queries/useVaults";
+import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { useSettings } from "@/components/providers/SettingsProvider";
+import {
+  MotionDirection,
+  reducedMotionVariants,
+  transition,
+  variants,
+} from "./motion";
+import { VaultInfo } from "./VaultInfo";
 
 type ContentAction = "deposit" | "withdraw" | "migrate" | "info";
 
@@ -38,6 +46,10 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
   const chain = useChain();
 
   const [contentAction, setContentAction] = useState<ContentAction>("deposit");
+  const [motionDirection, setMotionDirection] =
+    useState<MotionDirection>("right");
+  const [ref, { height }] = useMeasure();
+  const isReducedMotion = useReducedMotion();
 
   const { data: tokens } = useTokensQuery();
   const { data: vaults } = useVaults();
@@ -96,6 +108,17 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
   const vaultLtv =
     100 / parseFloat(formatEther(vault.alchemist.minimumCollateralization));
 
+  const onContentActionTabChange = (value: string) => {
+    if (value === contentAction) return;
+    const array = ["deposit", "withdraw", "migrate", "info"];
+    const indexOfCurrentAction = array.indexOf(contentAction);
+    const indexOfNewAction = array.indexOf(value);
+    if (indexOfNewAction > indexOfCurrentAction) {
+      setMotionDirection("right");
+    } else setMotionDirection("left");
+    setContentAction(value as ContentAction);
+  };
+
   return (
     <AccordionItem value={vault.address}>
       <AccordionTrigger className="flex flex-col flex-wrap justify-between gap-5 rounded border border-grey3inverse bg-grey10inverse p-2 py-4 pr-8 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:grid lg:grid-cols-12 lg:gap-2 dark:border-grey3 dark:bg-grey10">
@@ -120,8 +143,8 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               className="h-12 w-12"
             />
             <img
-              src={`/images/icons/${vaultYieldTokenData?.symbol.toLowerCase()}.svg`}
-              alt={vaultYieldTokenData?.symbol ?? vault.metadata.label}
+              src={`/images/token-icons/${vault.metadata.image}`}
+              alt={`${vault.metadata.image} logo`}
               className="absolute left-6 top-6 h-9 w-9"
             />
           </div>
@@ -166,7 +189,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <p className="text-center text-sm text-lightgrey10">TVL / Cap</p>
           <VaultCapacityCell
             vault={vault}
-            tokenDecimals={vaultUnderlyingTokenData?.decimals}
+            underlyingTokenDecimals={vaultUnderlyingTokenData?.decimals}
             tokenSymbol={vaultUnderlyingTokenData?.symbol}
           />
         </div>
@@ -196,9 +219,7 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
           <div className="rounded border border-grey1inverse bg-grey3inverse p-2 dark:border-grey1 dark:bg-grey3">
             <Tabs
               value={contentAction}
-              onValueChange={(value) =>
-                setContentAction(value as ContentAction)
-              }
+              onValueChange={onContentActionTabChange}
             >
               <ScrollArea className="max-w-full">
                 <div className="relative h-8 w-full">
@@ -224,45 +245,64 @@ export const VaultAccordionRow = ({ vault }: { vault: Vault }) => {
               </ScrollArea>
             </Tabs>
           </div>
+          <m.div
+            animate={isReducedMotion ? {} : { height }}
+            transition={transition}
+          >
+            <div ref={ref} className="flex flex-col gap-5 md:flex-row">
+              <AnimatePresence
+                initial={false}
+                mode="popLayout"
+                custom={motionDirection}
+              >
+                <m.div
+                  key={contentAction}
+                  custom={motionDirection}
+                  variants={isReducedMotion ? reducedMotionVariants : variants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={transition}
+                  className="w-full md:w-2/3"
+                >
+                  {contentAction === "deposit" &&
+                    vaultUnderlyingTokenData &&
+                    vaultYieldTokenData && (
+                      <Deposit
+                        vault={vault}
+                        underlyingTokenData={vaultUnderlyingTokenData}
+                        yieldTokenData={vaultYieldTokenData}
+                      />
+                    )}
 
-          <AnimatePresence initial={false} mode="wait">
-            {contentAction === "deposit" &&
-              vaultUnderlyingTokenData &&
-              vaultYieldTokenData && (
-                <Deposit
-                  vault={vault}
-                  underlyingTokenData={vaultUnderlyingTokenData}
-                  yieldTokenData={vaultYieldTokenData}
-                  key="deposits"
-                />
-              )}
+                  {contentAction === "withdraw" &&
+                    vaultUnderlyingTokenData &&
+                    vaultYieldTokenData && (
+                      <Withdraw
+                        vault={vault}
+                        underlyingTokenData={vaultUnderlyingTokenData}
+                        yieldTokenData={vaultYieldTokenData}
+                      />
+                    )}
 
-            {contentAction === "withdraw" &&
-              vaultUnderlyingTokenData &&
-              vaultYieldTokenData && (
-                <Withdraw
-                  vault={vault}
-                  underlyingTokenData={vaultUnderlyingTokenData}
-                  yieldTokenData={vaultYieldTokenData}
-                  key="withdraw"
-                />
-              )}
+                  {contentAction === "migrate" &&
+                    (selectionForMigration?.length ? (
+                      <Migrate
+                        vault={vault}
+                        selection={selectionForMigration}
+                      />
+                    ) : (
+                      <p className="text-center" key="migrate">
+                        No vaults available for migration
+                      </p>
+                    ))}
 
-            {contentAction === "migrate" &&
-              (selectionForMigration?.length ? (
-                <Migrate
-                  vault={vault}
-                  selection={selectionForMigration}
-                  key="migrate"
-                />
-              ) : (
-                <p className="text-center" key="migrate">
-                  No vaults available for migration
-                </p>
-              ))}
-
-            {contentAction === "info" && <Info vault={vault} key="info" />}
-          </AnimatePresence>
+                  {contentAction === "info" && <Info vault={vault} />}
+                </m.div>
+              </AnimatePresence>
+              <VaultInfo vault={vault} />
+            </div>
+          </m.div>
         </div>
       </AccordionContent>
     </AccordionItem>
@@ -314,18 +354,21 @@ export const CurrencyCell = ({
 
 const VaultCapacityCell = ({
   vault,
-  tokenDecimals = 18,
+  underlyingTokenDecimals = 18,
   tokenSymbol,
 }: {
   vault: Vault;
-  tokenDecimals: number | undefined;
+  underlyingTokenDecimals: number | undefined;
   tokenSymbol: string | undefined;
 }) => {
   const chain = useChain();
 
   const limitValue = formatUnits(
     vault.yieldTokenParams.maximumExpectedValue,
-    tokenDecimals,
+    underlyingTokenDecimals === 6 &&
+      vault.yieldTokenParams.maximumExpectedValue > 1_000_000_000_000_000n
+      ? 18
+      : underlyingTokenDecimals,
   );
 
   const { data: capacity, isPending } = useReadContract({
@@ -336,7 +379,10 @@ const VaultCapacityCell = ({
     args: [vault.yieldToken, vault.yieldTokenParams.totalShares],
     query: {
       select: (currentValueBn) => {
-        const currentValue = formatUnits(currentValueBn, tokenDecimals);
+        const currentValue = formatUnits(
+          currentValueBn,
+          underlyingTokenDecimals,
+        );
         const isFull =
           (parseFloat(currentValue) / parseFloat(limitValue)) * 100 >= 99;
         return { currentValue, isFull };
@@ -383,10 +429,14 @@ const VaultCapacityCell = ({
 
 const VaultYieldCell = ({ vault }: { vault: Vault }) => {
   const chain = useChain();
+  const publicClient = usePublicClient<typeof wagmiConfig>({
+    chainId: chain.id,
+  });
   const { data: apr, isPending } = useQuery({
     queryKey: [
       QueryKeys.Apr,
       chain.id,
+      publicClient,
       vault.underlyingToken,
       vault.address,
       vault.metadata.yieldTokenOverride,
@@ -397,6 +447,7 @@ const VaultYieldCell = ({ vault }: { vault: Vault }) => {
         underlyingToken: vault.underlyingToken,
         vaultAddress: vault.address,
         yieldTokenOverride: vault.metadata.yieldTokenOverride,
+        publicClient,
       }),
     placeholderData: keepPreviousData,
   });
