@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
 
-interface TransmuterAprDuneQueryResponse {
+export interface TransmuterAprDuneQueryResponse {
   execution_id: string;
   query_id: number;
   is_execution_finished: boolean;
