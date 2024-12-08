@@ -6,7 +6,7 @@ import { Accordion } from "@/components/ui/accordion";
 import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SYNTH_ASSETS, SynthAsset } from "@/lib/config/synths";
-import { VaultsMetrics } from "@/components/vaults/row/VaultsMetrics";
+import { VaultsMetrics } from "@/components/vaults/VaultsMetrics";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { useChain } from "@/hooks/useChain";
 import { VaultAccordionRow } from "@/components/vaults/row/VaultAccordionRow";
