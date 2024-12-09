@@ -1,6 +1,6 @@
 // import { lazy, Suspense } from "react";
 
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 
 // import { GridPattern } from "./GridPattern";
 import { VideoModal } from "./VideoModal";
@@ -9,6 +9,7 @@ import { LandingClosingCtaButton, LandingSubButton } from "./LandingCtaButton";
 import { SlideBox } from "./SlideBox";
 import { Tokens } from "./Tokens";
 import { EcosystemGrid } from "./EcosystemGrid";
+// import RiveComponent from "@rive-app/react-canvas";
 // import { useBreakpoints } from "@/hooks/useBreakpoints";
 
 // const Scene = lazy(() =>
@@ -177,6 +178,16 @@ export const Landing = () => {
 
             <div className="flex flex-col items-stretch justify-center gap-6 lg:flex-row">
               <div className="relative drop-shadow-md">
+                {/* <RiveComponent
+                  src="/alchemix-v2-react/riv/1_deposit.riv"
+                  onLoad={() =>
+                    console.log("Rive animation loaded successfully")
+                  }
+                  onError={(e) =>
+                    console.error("Error loading Rive animation:", e)
+                  }
+                /> */}
+
                 <img
                   src="/alchemix-v2-react/images/landing-page/1.png"
                   alt="Deposit"
