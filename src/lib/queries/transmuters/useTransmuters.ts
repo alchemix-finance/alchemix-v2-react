@@ -5,8 +5,8 @@ import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { useAccount, usePublicClient } from "wagmi";
 import { Address, zeroAddress } from "viem";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
-import { QueryKeys } from "./queriesSchema";
 import { ONE_MINUTE_IN_MS } from "@/lib/constants";
+import { QueryKeys } from "../queriesSchema";
 
 export const useTransmuters = () => {
   const chain = useChain();

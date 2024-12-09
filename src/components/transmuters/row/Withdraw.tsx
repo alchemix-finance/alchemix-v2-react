@@ -103,6 +103,8 @@ export const Withdraw = ({
         tokenDecimals={syntheticToken.decimals}
       />
 
+      <p className="text-xs font-light text-lightgrey10 lg:text-sm">&nbsp;</p>
+
       <CtaButton
         variant="outline"
         onClick={onCtaClick}

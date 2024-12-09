@@ -99,11 +99,11 @@ export const TransmuterAccordionRow = ({
           )}
         </div>
 
-        <TransmuterApr transmuter={transmuter} />
+        {transmuter && <TransmuterApr transmuter={transmuter} />}
       </AccordionTrigger>
       <AccordionContent className="flex flex-col items-center gap-5 rounded-b border border-t-0 border-grey3inverse bg-grey15inverse p-4 lg:flex-row dark:border-grey3 dark:bg-grey15">
         <div className="flex w-full flex-col gap-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
-          {syntheticToken && (
+          {syntheticToken && transmuter && (
             <Deposit transmuter={transmuter} syntheticToken={syntheticToken} />
           )}
         </div>

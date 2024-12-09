@@ -5,7 +5,7 @@ import { SYNTH_ASSETS, SynthAsset } from "@/lib/config/synths";
 import { useMemo, useState } from "react";
 import { useChain } from "@/hooks/useChain";
 import { TransmuterAccordionRow } from "@/components/transmuters/row/TransmuterAccordionRow";
-import { useTransmuters } from "@/lib/queries/useTransmuters";
+import { useTransmuters } from "@/lib/queries/transmuters/useTransmuters";
 import { Button } from "../ui/button";
 import { EXTERNAL_LIQUIDITY_PROVIDERS } from "@/lib/config/externalLiquidityProviders";
 import { windowOpen } from "@/utils/windowOpen";
