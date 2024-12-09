@@ -1,17 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
 import { InfoIcon } from "lucide-react";
 
 import { dayjs } from "@/lib/dayjs";
 import { Transmuter } from "@/lib/types";
 import { formatNumber } from "@/utils/number";
-import { QueryKeys } from "@/lib/queries/queriesSchema";
 
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ONE_DAY_IN_MS } from "@/lib/constants";
+import { useTransmuterApr } from "@/lib/queries/transmuters/useTransmuterApr";
 
 export interface TransmuterAprDuneQueryResponse {
   execution_id: string;
@@ -43,38 +41,9 @@ export interface TransmuterAprDuneQueryResponse {
   };
 }
 
-const DUNE_API_ENDPOINT = "https://api.dune.com/api/v1/query";
-const API_KEY = import.meta.env.VITE_DUNE_API_KEY;
-
 export const TransmuterApr = ({ transmuter }: { transmuter: Transmuter }) => {
-  const { data, isError, isPending } = useQuery({
-    queryKey: [
-      QueryKeys.TransmuterApr,
-      transmuter.address,
-      transmuter.metadata.aprQueryUri,
-    ],
-    queryFn: async () => {
-      const response = await fetch(
-        `${DUNE_API_ENDPOINT}/${transmuter.metadata.aprQueryUri}/results?api_key=${API_KEY}`,
-      );
-      const data = (await response.json()) as TransmuterAprDuneQueryResponse;
+  const { data, isError, isPending } = useTransmuterApr(transmuter);
 
-      const apr = data.result.rows[0].projected_yield_rate;
-      const timeToTransmute = data.result.rows[0].time_to_transmute;
-
-      if (apr === undefined || timeToTransmute === undefined) {
-        throw new Error("APR fetch failed.");
-      }
-
-      return {
-        apr,
-        timeToTransmute,
-      };
-    },
-    enabled: !!transmuter.metadata.aprQueryUri,
-    staleTime: ONE_DAY_IN_MS,
-    retry: false,
-  });
   return (
     <div className="text-center">
       <div className="flex items-center justify-center gap-2">

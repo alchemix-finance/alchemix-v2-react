@@ -9,7 +9,7 @@ import { Token, Transmuter } from "@/lib/types";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { formatUnits, parseEther } from "viem";
@@ -19,8 +19,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { TransmuterAprDuneQueryResponse } from "./TransmuterApr";
-import { ONE_DAY_IN_MS } from "@/lib/constants";
+import { useTransmuterApr } from "@/lib/queries/transmuters/useTransmuterApr";
 
 export const Deposit = ({
   transmuter,
@@ -90,56 +89,25 @@ export const Deposit = ({
     }
   }, [depositReceipt, queryClient]);
 
-  const DUNE_API_ENDPOINT = "https://api.dune.com/api/v1/query";
-  const API_KEY = import.meta.env.VITE_DUNE_API_KEY;
-
   const {
     data,
     isError: aprQueryError,
     isPending: aprQueryPending,
-  } = useQuery({
-    queryKey: [
-      QueryKeys.TransmuterApr,
-      transmuter.address,
-      transmuter.metadata.aprQueryUri,
-      DUNE_API_ENDPOINT,
-      API_KEY,
-      transmuter?.totalUnexchanged || BigInt(0),
-      depositAmount,
-    ],
-    queryFn: async () => {
-      const response = await fetch(
-        `${DUNE_API_ENDPOINT}/${transmuter.metadata.aprQueryUri}/results?api_key=${API_KEY}`,
-      );
-      const data = (await response.json()) as TransmuterAprDuneQueryResponse;
+  } = useTransmuterApr(transmuter);
 
-      const apr = data.result.rows[0].projected_yield_rate;
-
-      if (apr === undefined) {
-        throw new Error("APR fetch failed.");
-      }
-
-      // proj apr estimated roughly based on the previously fetched apr by checking the ratio of current assets to new assets and currentApr
-      // to newApr, based on user input of alAssets to add as a deposit.
-      // projectedApr / apr = assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit)
-      // projectedApr = apr * (assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit))
-      const formattedTotalAssetsDeposited = Number(
-        formatUnits(transmuter?.totalUnexchanged || BigInt(0), 18),
-      );
-      const assetsToDeposit = Number(depositAmount || 0);
-      const projectedApr =
-        apr *
-        (formattedTotalAssetsDeposited /
-          (formattedTotalAssetsDeposited + assetsToDeposit));
-
-      return {
-        projectedApr,
-      };
-    },
-    enabled: !!transmuter.metadata.aprQueryUri,
-    staleTime: ONE_DAY_IN_MS,
-    retry: false,
-  });
+  // proj apr estimated roughly based on the previously fetched apr by checking the ratio of current assets to new assets and currentApr
+  // to newApr, based on user input of alAssets to add as a deposit.
+  // projectedApr / apr = assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit)
+  // projectedApr = apr * (assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit))
+  const formattedTotalAssetsDeposited = Number(
+    formatUnits(transmuter?.totalUnexchanged || BigInt(0), 18),
+  );
+  const assetsToDeposit = Number(depositAmount || 0);
+  const projectedApr = data
+    ? data.apr *
+      (formattedTotalAssetsDeposited /
+        (formattedTotalAssetsDeposited + assetsToDeposit))
+    : null;
 
   const onCtaClick = () => {
     if (isApprovalNeeded === true) {
@@ -188,7 +156,7 @@ export const Deposit = ({
           ? "Projected APR: N/A"
           : aprQueryPending
             ? "calculating projected APR..."
-            : `Projected APR: ${formatNumber(`${data.projectedApr}`, { allowNegative: false })}%`}
+            : `Projected APR: ${formatNumber(`${projectedApr}`, { allowNegative: false })}%`}
       </p>
 
       <CtaButton
