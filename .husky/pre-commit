@@ -1,0 +1,4 @@
+echo "Executing pre-commit scripts"
+
+vitest run
+pnpm pre-commit
