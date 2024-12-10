@@ -17,6 +17,7 @@ export const Earned = ({ vault }: { vault: Vault }) => {
     data: generatedEarned,
     isLoading: isLoadingGeneratedEarned,
     refetch: generateEarned,
+    isError,
   } = useVaultEarned({ vault, harvestsAndBonuses });
 
   const onGenerateEarned = () => {
@@ -37,7 +38,9 @@ export const Earned = ({ vault }: { vault: Vault }) => {
   return (
     <div className="flex h-36 flex-col items-center justify-center gap-2">
       <p>
-        {formatNumber(generatedEarned)} {vault.alchemist.synthType}
+        {isError
+          ? "Error. Please try again."
+          : `${formatNumber(generatedEarned)} ${vault.alchemist.synthType}`}
       </p>
       <CtaButton
         variant="outline"
