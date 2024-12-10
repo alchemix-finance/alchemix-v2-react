@@ -28,6 +28,7 @@ export const QueryKeys = {
   ) => `connextSdk-${type}`,
   HarvestsAndBonuses: "harvests-and-bonuses",
   HistoricYield: "historicYield",
+  GeneratedEarned: "generatedEarned",
 } as const;
 
 /**

@@ -14,6 +14,9 @@ import { ParentSize } from "@visx/responsive";
 
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { dayjs } from "@/lib/dayjs";
+import { Vault } from "@/lib/types";
+import { useHistoricApr } from "@/lib/queries/vaults/useHistoricApr";
+import { LoadingBar } from "@/components/common/LoadingBar";
 
 interface AprHistoryItem {
   apr: number;
@@ -272,11 +275,21 @@ const AprHistoricalGraph = ({ width, height, data }: AreaProps) => {
 
 const CHART_HEIGHT = 144;
 
-export const AprHistoricalChart = ({
-  vaultHistoricData,
-}: {
-  vaultHistoricData: AprHistoryItem[] | undefined;
-}) => {
+export const AprHistoricalChart = ({ vault }: { vault: Vault }) => {
+  const { data: historicData, isPending: isPendingHistoricApr } =
+    useHistoricApr();
+  const vaultHistoricData = historicData?.filter(
+    (data) => data.name === vault.metadata.yieldSymbol,
+  );
+
+  if (isPendingHistoricApr) {
+    return (
+      <div className="flex h-36 items-center justify-center">
+        <LoadingBar />
+      </div>
+    );
+  }
+
   return (
     <ParentSize>
       {({ width }) =>
