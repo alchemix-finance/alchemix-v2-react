@@ -4,7 +4,7 @@ import { Transmuter } from "@/lib/types";
 import { TransmuterAprDuneQueryResponse } from "@/components/transmuters/row/TransmuterApr";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
 
-export const useTransmuterApr = (transmuter: { transmuter: Transmuter }) => {
+export const useTransmuterApr = (transmuter: Transmuter) => {
   const DUNE_API_ENDPOINT = "https://api.dune.com/api/v1/query";
   const API_KEY = import.meta.env.VITE_DUNE_API_KEY;
 
