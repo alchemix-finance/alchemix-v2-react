@@ -39,7 +39,7 @@ export const Earned = ({ vault }: { vault: Vault }) => {
     <div className="flex h-36 flex-col items-center justify-center gap-2">
       <p>
         {isError
-          ? "Error. Please try again."
+          ? "Error. Please try again"
           : `${formatNumber(generatedEarned)} ${vault.alchemist.synthType}`}
       </p>
       <CtaButton
