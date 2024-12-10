@@ -18,6 +18,7 @@ import {
 } from "@/lib/middleware/bonuses";
 import { getGearboxApy } from "@/lib/middleware/gearbox";
 import { getJonesApy } from "@/lib/middleware/jones";
+import { getDineroApr } from "../middleware/dinero";
 
 // @dev some vaults are broken so we need to ignore them from processing
 export const IGNORED_VAULTS: `0x${string}`[] = [
@@ -319,6 +320,22 @@ export const VAULTS: VaultsConfig = {
         apr: getFraxApy,
         yieldType: "APR",
         provider: "frax",
+        bonus: getNoBonus,
+      },
+      disabledDepositTokens: [],
+      disabledWithdrawTokens: [],
+    },
+    "0x9Ba021B0a9b958B5E75cE9f6dff97C7eE52cb3E6": {
+      label: "Dinero apxETH",
+      synthAssetType: SYNTH_ASSETS.ALETH,
+      underlyingSymbol: "WETH",
+      yieldSymbol: "apxETH",
+      image: "apxETH.png",
+      messages: [],
+      api: {
+        apr: getDineroApr,
+        yieldType: "APR",
+        provider: "dinero",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
