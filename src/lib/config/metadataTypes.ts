@@ -57,7 +57,8 @@ type ApiProvider =
   | "vesper"
   | "lido"
   | "gearbox"
-  | "jones";
+  | "jones"
+  | "dinero";
 
 export interface VaultMetadata {
   label: string;
