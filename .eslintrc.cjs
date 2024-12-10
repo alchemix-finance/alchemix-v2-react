@@ -19,6 +19,7 @@ module.exports = {
     ],
     "react/prop-types": "off",
     "react-compiler/react-compiler": "error",
+    "react-refresh/only-export-components": "off",
   },
   settings: {
     react: { version: "detect" },
