@@ -178,6 +178,8 @@ export const Landing = () => {
 
             <div className="flex flex-col items-stretch justify-center gap-6 lg:flex-row">
               <div className="relative drop-shadow-md">
+                {/* Tried to implement RiveComponenet, but the files provided were
+                throwing errors. I think its on the file side, seems to be recursive errors or negatively interacting with useEffect? */}
                 {/* <RiveComponent
                   src="/alchemix-v2-react/riv/1_deposit.riv"
                   onLoad={() =>
@@ -187,7 +189,6 @@ export const Landing = () => {
                     console.error("Error loading Rive animation:", e)
                   }
                 /> */}
-
                 <img
                   src="/alchemix-v2-react/images/landing-page/1.png"
                   alt="Deposit"
