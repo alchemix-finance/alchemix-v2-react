@@ -26,7 +26,7 @@ export const BONUS_REWARDS_END_TIMESTAMPS: Record<
     // Aave aUSDC
     "0x4186Eb285b1efdf372AC5896a08C346c7E373cC4": 1734048000,
     // Lido wstETH
-    "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": 1749600000,
+    "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": 1752192000,
   },
   // September 28th
   [arbitrum.id]: {
