@@ -1,6 +1,6 @@
 import { Address } from "viem";
 import { useVaults } from "./queries/vaults/useVaults";
-import { useTransmuters } from "./queries/useTransmuters";
+import { useTransmuters } from "@/lib/queries/transmuters/useTransmuters";
 import { useProposals } from "./queries/useProposals";
 
 export type Mutable<T> = {
