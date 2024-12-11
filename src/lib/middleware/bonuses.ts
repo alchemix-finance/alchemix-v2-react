@@ -111,7 +111,17 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
   const bonusYieldTokenSymbol = REWARD_TOKENS[chainId].rewardTokenSymbol;
   const bonusTimeLimit = true;
 
-  const rewardEnd = dayjs.unix(BONUS_REWARDS_END_TIMESTAMPS[chainId]);
+  const rewardEndTimestamp =
+    BONUS_REWARDS_END_TIMESTAMPS[chainId][vault.address];
+
+  if (!rewardEndTimestamp)
+    throw new Error(
+      `Reward end timestamp is not set up for ${vault.metadata.label}`,
+    );
+
+  const rewardEnd = dayjs.unix(
+    BONUS_REWARDS_END_TIMESTAMPS[chainId][vault.address],
+  );
   const distributionTimeAmount = rewardEnd.diff(dayjs(), "days");
 
   const distributionTimeUnit = distributionTimeAmount > 1 ? "days" : "day";

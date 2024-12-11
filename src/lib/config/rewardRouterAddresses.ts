@@ -17,9 +17,26 @@ export const REWARD_TOKENS = {
   },
 } as const;
 
-export const BONUS_REWARDS_END_TIMESTAMPS = {
+export const BONUS_REWARDS_END_TIMESTAMPS: Record<
+  typeof optimism.id | typeof arbitrum.id,
+  Record<`0x${string}`, number>
+> = {
   // December 13th
-  [optimism.id]: 1734048000,
+  [optimism.id]: {
+    // Aave aUSDC
+    "0x4186Eb285b1efdf372AC5896a08C346c7E373cC4": 1734048000,
+    // Lido wstETH
+    "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": 1752192000,
+  },
   // September 28th
-  [arbitrum.id]: 1733315207,
+  [arbitrum.id]: {
+    // Aave aUSDC
+    "0x248a431116c6f6FCD5Fe1097d16d0597E24100f5": 1733315207,
+    // Jones jUSDC
+    "0xB0BDE111812EAC913b392D80D51966eC977bE3A2": 1733315207,
+    // Lido wstETH
+    "0x5979D7b546E38E414F7E9822514be443A4800529": 1733315207,
+    // Gearbox WETH
+    "0xf3b7994e4dA53E04155057Fd61dc501599d57877": 1733315207,
+  },
 };
