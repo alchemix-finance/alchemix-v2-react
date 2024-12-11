@@ -63,6 +63,19 @@ module.exports = {
             right: "-90%",
           },
         },
+
+        buttonMovingGradientBg: {
+          "0%": { backgroundPosition: "0% 0%" },
+          "100%": { backgroundPosition: "200% 0%" },
+        },
+        tokensScroll: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        tokensScrollReverse: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(50%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -73,6 +86,11 @@ module.exports = {
           "reduced-motion-accordion-up 0.2s ease-out",
         "loading-bar":
           "loading-bar 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal none running",
+
+        buttonMovingGradientBg:
+          "buttonMovingGradientBg var(--speed, 2s) infinite linear",
+        tokensScroll: "tokensScroll 15s linear infinite",
+        tokensScrollReverse: "tokensScrollReverse 15s linear infinite",
       },
       colors: {
         black1: "#0E251D",
@@ -150,6 +168,7 @@ module.exports = {
           "linear-gradient(171.08deg, #fefefe -11.16%, #ebe6de 6.1%, #f5f2ee 49.05%, #fff 93.22%)",
         bodyGradientInverse:
           "linear-gradient(171.08deg, #010101 -11.16%, #141921 6.1%, #0a0d11 49.05%, #000000 93.22%)",
+        heroBg: "url('/images/landing-page/HeroBg.png')",
       },
       boxShadow: {
         glow: "0 0 15px #f5c09a80",
