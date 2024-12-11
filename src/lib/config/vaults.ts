@@ -452,8 +452,8 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        provider: "meltedRewards",
-        bonus: getMeltedRewardsBonusData,
+        provider: "yearn",
+        bonus: getNoBonus,
       },
       disabledDepositTokens: [],
       disabledWithdrawTokens: [],
@@ -514,7 +514,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getLidoApy,
         yieldType: "APR",
-        provider: "meltedRewards",
+        provider: "lido",
         bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],
@@ -539,8 +539,8 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        provider: "meltedRewards",
-        bonus: getMeltedRewardsBonusData,
+        provider: "yearn",
+        bonus: getNoBonus,
       },
       disabledDepositTokens: [],
       disabledWithdrawTokens: [],

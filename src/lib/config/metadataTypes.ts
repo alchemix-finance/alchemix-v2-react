@@ -49,7 +49,6 @@ export type VaultMessage = {
 };
 
 type ApiProvider =
-  | "meltedRewards"
   | "aave"
   | "yearn"
   | "frax"
