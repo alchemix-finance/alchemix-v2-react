@@ -97,10 +97,10 @@ export const Deposit = ({
 
   // proj apr estimated roughly based on the previously fetched apr by checking the ratio of current assets to new assets and currentApr
   // to newApr, based on user input of alAssets to add as a deposit.
-  // projectedApr / apr = assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit)
-  // projectedApr = apr * (assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit))
+  // 1. projectedApr / apr = assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit)
+  // 2. projectedApr = apr * (assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit))
   const formattedTotalAssetsDeposited = Number(
-    formatUnits(transmuter?.totalUnexchanged || 0n, 18),
+    formatUnits(transmuter?.totalUnexchanged ?? 0n, 18),
   );
   const assetsToDeposit = Number(depositAmount ?? 0);
   const projectedApr = data

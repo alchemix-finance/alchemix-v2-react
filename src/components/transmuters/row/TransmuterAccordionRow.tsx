@@ -99,7 +99,7 @@ export const TransmuterAccordionRow = ({
           )}
         </div>
 
-        {transmuter && <TransmuterApr transmuter={transmuter} />}
+        {<TransmuterApr transmuter={transmuter} />}
       </AccordionTrigger>
       <AccordionContent className="flex flex-col gap-5 rounded-b border border-t-0 border-grey3inverse bg-grey15inverse p-4 lg:flex-row dark:border-grey3 dark:bg-grey15">
         <div className="flex w-full flex-col justify-between gap-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
