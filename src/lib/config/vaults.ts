@@ -332,6 +332,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "apxETH",
       image: "apxETH.png",
       messages: [],
+      wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
       api: {
         apr: getDineroApr,
         yieldType: "APR",
