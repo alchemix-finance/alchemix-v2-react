@@ -101,20 +101,20 @@ export const TransmuterAccordionRow = ({
 
         {transmuter && <TransmuterApr transmuter={transmuter} />}
       </AccordionTrigger>
-      <AccordionContent className="flex flex-col items-center gap-5 rounded-b border border-t-0 border-grey3inverse bg-grey15inverse p-4 lg:flex-row dark:border-grey3 dark:bg-grey15">
-        <div className="flex w-full flex-col gap-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
-          {syntheticToken && transmuter && (
+      <AccordionContent className="flex flex-col gap-5 rounded-b border border-t-0 border-grey3inverse bg-grey15inverse p-4 lg:flex-row dark:border-grey3 dark:bg-grey15">
+        <div className="flex w-full flex-col justify-between gap-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
+          {syntheticToken && (
             <Deposit transmuter={transmuter} syntheticToken={syntheticToken} />
           )}
         </div>
 
-        <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
+        <div className="flex w-full flex-col justify-between space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
           {syntheticToken && (
             <Withdraw transmuter={transmuter} syntheticToken={syntheticToken} />
           )}
         </div>
 
-        <div className="flex w-full flex-col space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
+        <div className="flex w-full flex-col justify-between space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
           {underlyingToken && (
             <Claim transmuter={transmuter} underlyingToken={underlyingToken} />
           )}

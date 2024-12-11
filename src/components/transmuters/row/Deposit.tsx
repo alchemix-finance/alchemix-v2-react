@@ -100,9 +100,9 @@ export const Deposit = ({
   // projectedApr / apr = assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit)
   // projectedApr = apr * (assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit))
   const formattedTotalAssetsDeposited = Number(
-    formatUnits(transmuter?.totalUnexchanged || BigInt(0), 18),
+    formatUnits(transmuter?.totalUnexchanged || 0n, 18),
   );
-  const assetsToDeposit = Number(depositAmount || 0);
+  const assetsToDeposit = Number(depositAmount ?? 0);
   const projectedApr = data
     ? data.apr *
       (formattedTotalAssetsDeposited /
@@ -155,7 +155,7 @@ export const Deposit = ({
         {aprQueryError || !transmuter.metadata.aprQueryUri
           ? "Projected APR: N/A"
           : aprQueryPending
-            ? "calculating projected APR..."
+            ? "Calculating projected APR..."
             : `Projected APR: ${formatNumber(`${projectedApr}`, { allowNegative: false })}%`}
       </p>
 
