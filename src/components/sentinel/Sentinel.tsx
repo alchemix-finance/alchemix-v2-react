@@ -8,7 +8,7 @@ import {
 } from "wagmi";
 import { useEffect } from "react";
 import { alTokenAbi } from "@/abi/alToken";
-import { useTransmuters } from "@/lib/queries/useTransmuters";
+import { useTransmuters } from "@/lib/queries/transmuters/useTransmuters";
 import { useVaults } from "@/lib/queries/vaults/useVaults";
 import { IGNORED_VAULTS } from "@/lib/config/vaults";
 import { useChain } from "@/hooks/useChain";
