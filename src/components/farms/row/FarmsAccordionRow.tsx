@@ -1,19 +1,21 @@
+import { Fragment } from "react";
+
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { useSettings } from "@/components/providers/SettingsProvider";
 import { useGetTokenPrice } from "@/lib/queries/useTokenPrice";
 import { Farm } from "@/lib/types";
 import { cn } from "@/utils/cn";
 import { formatNumber } from "@/utils/number";
+
 import { ExitButton } from "./ExitButton";
 import { CurveFarmContent } from "./CurveFarmContent";
 import { InternalFarmContent } from "./InternalFarmContent";
 import { SushiFarmContent } from "./SushiFarmContent";
-import { Fragment } from "react";
-import { useSettings } from "@/components/providers/SettingsProvider";
 
 export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
   const isActive = farm.isActive;
