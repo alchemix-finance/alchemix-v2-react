@@ -32,6 +32,7 @@ export const TransmuterApr = ({ transmuter }: { transmuter: Transmuter }) => {
           <p className="text-sm text-lightgrey10">
             {formatNumber(
               dayjs.duration({ years: data.timeToTransmute }).asDays(),
+              { allowNegative: false },
             )}{" "}
             days
           </p>

@@ -24,7 +24,7 @@ export const AmountQuickOptions = ({ value, setValue }: QuickOptionsProps) => {
           weight="normal"
           data-state={value === option ? "active" : "inactive"}
           onClick={() => setValue(option)}
-          className="w-16"
+          className="w-10 sm:w-16"
         >
           {option}
         </Button>
