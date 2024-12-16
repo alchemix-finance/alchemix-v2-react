@@ -1,18 +1,21 @@
+import { Fragment } from "react";
+
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { useSettings } from "@/components/providers/SettingsProvider";
 import { useGetTokenPrice } from "@/lib/queries/useTokenPrice";
 import { Farm } from "@/lib/types";
 import { cn } from "@/utils/cn";
 import { formatNumber } from "@/utils/number";
+
 import { ExitButton } from "./ExitButton";
 import { CurveFarmContent } from "./CurveFarmContent";
 import { InternalFarmContent } from "./InternalFarmContent";
 import { SushiFarmContent } from "./SushiFarmContent";
-import { Fragment } from "react";
 
 export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
   const isActive = farm.isActive;
@@ -135,10 +138,26 @@ const TvlCell = ({ farm }: { farm: Farm }) => {
         ? "0xdbdb4d16eda451d0503b854cf79d55697f90c8df"
         : farm.poolTokenAddress;
 
+  const { currency } = useSettings();
   const { data: internalTokenPrice = 0 } = useGetTokenPrice(tokenAddress);
 
   const tvl =
     farm.type === "internal" ? internalTokenPrice * +farm.reserve : farm.tvl;
 
-  return <p>{formatNumber(tvl)}</p>;
+  return (
+    <div className="flex flex-col items-center text-center">
+      <p>
+        {formatNumber(tvl, {
+          isCurrency: true,
+          // NOTE: Curve TVL Calculation doesn't account for currency selected, because uses virtual price from contract.
+          currency: farm.type !== "external-curve" ? currency : undefined,
+        })}
+      </p>
+      {farm.type === "internal" && (
+        <p className="text-sm text-lightgrey10">
+          {formatNumber(farm.reserve)} {farm.tokenSymbol}
+        </p>
+      )}
+    </div>
+  );
 };
