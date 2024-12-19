@@ -165,7 +165,7 @@ export const useOpExternalFarmsAprs = () => {
       const opPrice = ethPriceData.coins["coingecko:optimism"].price;
       const veloPrice = ethPriceData.coins["coingecko:velodrome-finance"].price;
 
-      const [pool0, pool1, pool2, pool3, pool4, pool5, pool6] =
+      const [pool0, pool1, pool2, pool3, pool4, pool5, pool6, pool7] =
         await publicClient.multicall({
           allowFailure: false,
           contracts: [
@@ -173,7 +173,7 @@ export const useOpExternalFarmsAprs = () => {
               address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
               abi: veloStatsAbi,
               functionName: "byIndex",
-              args: [31n],
+              args: [667n],
             },
             {
               address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
@@ -204,6 +204,12 @@ export const useOpExternalFarmsAprs = () => {
               abi: veloStatsAbi,
               functionName: "byIndex",
               args: [5n],
+            },
+            {
+              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              abi: veloStatsAbi,
+              functionName: "byIndex",
+              args: [909n],
             },
             {
               address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
@@ -257,8 +263,15 @@ export const useOpExternalFarmsAprs = () => {
           ethPrice,
           opPrice,
         }),
-        "Velodrome alETH-OP": calculateVeloApr({
+        "Velodrome alETH-pxETH": calculateVeloApr({
           pool: pool6,
+          poolSymbol: "sAMMV2-pxETH/alETH",
+          veloPrice,
+          ethPrice,
+          opPrice,
+        }),
+        "Velodrome alETH-OP": calculateVeloApr({
+          pool: pool7,
           poolSymbol: "vAMMV2-alETH/OP",
           veloPrice,
           ethPrice,
@@ -297,6 +310,7 @@ const calculateVeloApr = ({
     +formatEther(pool.emissions) * SECONDS_IN_A_YEAR * veloPrice;
 
   const [token0, token1] = poolSymbol.split("-")[1].split("/");
+
   const price0 = token0.includes("ETH")
     ? ethPrice
     : token0 === "OP"
