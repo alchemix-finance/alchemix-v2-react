@@ -46,7 +46,7 @@ export const Farms = () => {
   );
 };
 
-export const MainnetFarms = () => {
+const MainnetFarms = () => {
   const [filter, setFilter] = useState<Filter>("active");
 
   const {
