@@ -91,8 +91,8 @@ export const useGetMultipleTokenPrices = (addresses: `0x${string}`[] = []) => {
         queryKey: [
           QueryKeys.TokenPrice,
           currency,
-          ethPrice,
           chain.id,
+          ethPrice,
           tokenAddress,
         ],
         queryFn: () =>

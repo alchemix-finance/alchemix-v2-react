@@ -19,7 +19,34 @@ type Filter = "active" | "retired" | "external";
 
 export const Farms = () => {
   const chain = useChain();
+  const { switchChain } = useSwitchChain();
+  return (
+    <>
+      {chain.id === mainnet.id && <MainnetFarms />}
 
+      {chain.id !== mainnet.id && (
+        <div className="space-y-5">
+          <StaticExternalFarms />
+          <div className="space-y-2">
+            <p>gALCX Wrapper is available on Mainnet</p>
+            <Button
+              variant="action"
+              onClick={() =>
+                switchChain({
+                  chainId: mainnet.id,
+                })
+              }
+            >
+              Switch to Ethereum
+            </Button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export const MainnetFarms = () => {
   const [filter, setFilter] = useState<Filter>("active");
 
   const {
@@ -57,84 +84,59 @@ export const Farms = () => {
     }
   }, [curveFarm, filter, internalFarms, sushiFarm]);
 
-  const { switchChain } = useSwitchChain();
-
   const onFilterChain = (filter: string) => {
     setFilter(filter as Filter);
   };
 
   return (
-    <>
-      {chain.id === mainnet.id && (
-        <div className="space-y-5">
-          <GAlcsWrapper />
-          <StaticExternalFarms />
-          <LiquidityMigration />
-          <div>
-            {isPending ? (
-              <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-                <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
-                  <p className="inline-block self-center">Fetching data</p>
-                </div>
-                <div className="my-4 flex justify-center">
-                  <LoadingBar />
-                </div>
-              </div>
-            ) : null}
-            {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
-            {filteredFarms && (
-              <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-                <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
-                  <Tabs
-                    value={filter}
-                    onValueChange={onFilterChain}
-                    className="w-full"
-                  >
-                    <ScrollArea className="max-w-full">
-                      <div className="relative h-6 w-full">
-                        <TabsList className="absolute h-auto">
-                          <TabsTrigger value="active">Active</TabsTrigger>
-                          <TabsTrigger value="retired">Retired</TabsTrigger>
-                          <TabsTrigger value="external">External</TabsTrigger>
-                        </TabsList>
-                      </div>
-                      <ScrollBar orientation="horizontal" />
-                    </ScrollArea>
-                  </Tabs>
-                </div>
-                <Accordion type="single" collapsible className="space-y-4 p-4">
-                  {filteredFarms.length > 0 ? (
-                    filteredFarms.map((farm) => (
-                      <FarmsAccordionRow key={farm.uuid} farm={farm} />
-                    ))
-                  ) : (
-                    <div>No vaults for selected chain and synth asset</div>
-                  )}
-                </Accordion>
-              </div>
-            )}
+    <div className="space-y-5">
+      <GAlcsWrapper />
+      <StaticExternalFarms />
+      <LiquidityMigration />
+      <div>
+        {isPending ? (
+          <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+            <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
+              <p className="inline-block self-center">Fetching data</p>
+            </div>
+            <div className="my-4 flex justify-center">
+              <LoadingBar />
+            </div>
           </div>
-        </div>
-      )}
-
-      {chain.id !== mainnet.id && (
-        <div className="space-y-5">
-          <StaticExternalFarms />
-          <div className="space-y-2">
-            <p>gALCX Wrapper is available on Mainnet</p>
-            <Button
-              variant="action"
-              onClick={() =>
-                switchChain({
-                  chainId: mainnet.id,
-                })
-              }
-            >
-              Switch to Ethereum
-            </Button>
+        ) : null}
+        {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
+        {filteredFarms && (
+          <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+            <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
+              <Tabs
+                value={filter}
+                onValueChange={onFilterChain}
+                className="w-full"
+              >
+                <ScrollArea className="max-w-full">
+                  <div className="relative h-6 w-full">
+                    <TabsList className="absolute h-auto">
+                      <TabsTrigger value="active">Active</TabsTrigger>
+                      <TabsTrigger value="retired">Retired</TabsTrigger>
+                      <TabsTrigger value="external">External</TabsTrigger>
+                    </TabsList>
+                  </div>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              </Tabs>
+            </div>
+            <Accordion type="single" collapsible className="space-y-4 p-4">
+              {filteredFarms.length > 0 ? (
+                filteredFarms.map((farm) => (
+                  <FarmsAccordionRow key={farm.uuid} farm={farm} />
+                ))
+              ) : (
+                <div>No vaults for selected chain and synth asset</div>
+              )}
+            </Accordion>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 };
