@@ -274,6 +274,18 @@ export const STATIC_EXTERNAL_FARMS = {
       ],
     },
     {
+      symbol: "alETH-pxETH",
+      icon: "velodrome.svg",
+      collabicon: "",
+      name: "Velodrome",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://velo.drome.eth.limo/deposit?token0=0x300d2c875C6fb8Ce4bf5480B4d34b7c9ea8a33A4&token1=0x3E29D3A9316dAB217754d13b28646B76607c5f04&type=0&factory=0xF1046053aa5682b4F9a81b5481394DA16BE5FF5a&chain=10",
+        },
+      ],
+    },
+    {
       symbol: "alETH-OP",
       icon: "velodrome.svg",
       collabicon: "",
