@@ -165,70 +165,100 @@ export const useOpExternalFarmsAprs = () => {
       const opPrice = ethPriceData.coins["coingecko:optimism"].price;
       const veloPrice = ethPriceData.coins["coingecko:velodrome-finance"].price;
 
-      const [pools0, pools1] = await publicClient.multicall({
-        allowFailure: false,
-        contracts: [
-          {
-            address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
-            abi: veloStatsAbi,
-            functionName: "all",
-            args: [480n, 0n],
-          },
-          {
-            address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
-            abi: veloStatsAbi,
-            functionName: "all",
-            args: [480n, 480n],
-          },
-        ],
-      });
-      const pools = pools0.concat(pools1);
+      const [pool0, pool1, pool2, pool3, pool4, pool5, pool6] =
+        await publicClient.multicall({
+          allowFailure: false,
+          contracts: [
+            {
+              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              abi: veloStatsAbi,
+              functionName: "byIndex",
+              args: [31n],
+            },
+            {
+              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              abi: veloStatsAbi,
+              functionName: "byIndex",
+              args: [54n],
+            },
+            {
+              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              abi: veloStatsAbi,
+              functionName: "byIndex",
+              args: [680n],
+            },
+            {
+              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              abi: veloStatsAbi,
+              functionName: "byIndex",
+              args: [81n],
+            },
+            {
+              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              abi: veloStatsAbi,
+              functionName: "byIndex",
+              args: [53n],
+            },
+            {
+              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              abi: veloStatsAbi,
+              functionName: "byIndex",
+              args: [5n],
+            },
+            {
+              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              abi: veloStatsAbi,
+              functionName: "byIndex",
+              args: [82n],
+            },
+          ],
+        });
 
       return {
-        "Velodrome alUSD-USDC": selectVeloApr({
-          pools,
+        "Velodrome alUSD-USDC": calculateVeloApr({
+          pool: pool0,
           poolSymbol: "sAMMV2-USDC/alUSD",
           veloPrice,
           ethPrice,
           opPrice,
         }),
-        "Velodrome alUSD-FRAX": selectVeloApr({
-          pools,
+        "Velodrome alUSD-FRAX": calculateVeloApr({
+          pool: pool1,
           poolSymbol: "sAMMV2-FRAX/alUSD",
           veloPrice,
           ethPrice,
           opPrice,
         }),
-        "Velodrome alUSD-DOLA": selectVeloApr({
-          pools,
+        "Velodrome alUSD-DOLA": calculateVeloApr({
+          pool: pool2,
           poolSymbol: "sAMMV2-DOLA/alUSD",
           veloPrice,
           ethPrice,
           opPrice,
         }),
-        "Velodrome alUSD-OP": selectVeloApr({
-          pools,
+        "Velodrome alUSD-OP": calculateVeloApr({
+          pool: pool3,
           poolSymbol: "vAMMV2-OP/alUSD",
           veloPrice,
           ethPrice,
           opPrice,
         }),
-        "Velodrome alETH-WETH": selectVeloApr({
-          pools,
+        "Velodrome alETH-WETH": calculateVeloApr({
+          pool: pool4,
           poolSymbol: "sAMMV2-alETH/WETH",
           veloPrice,
           ethPrice,
           opPrice,
         }),
-        "Velodrome alETH-frxETH": selectVeloApr({
-          pools,
+        "Velodrome alETH-frxETH": calculateVeloApr({
+          pool: pool5,
           poolSymbol: "sAMMV2-alETH/frxETH",
           veloPrice,
           ethPrice,
           opPrice,
         }),
-        "Velodrome alETH-OP": selectVeloApr({
-          pools,
+        "Velodrome alETH-OP": calculateVeloApr({
+          pool: pool6,
           poolSymbol: "vAMMV2-alETH/OP",
           veloPrice,
           ethPrice,
@@ -243,28 +273,25 @@ export const useOpExternalFarmsAprs = () => {
 
 const SECONDS_IN_A_YEAR = 31556926;
 
-const selectVeloApr = ({
-  pools,
+const calculateVeloApr = ({
+  pool,
   poolSymbol,
   veloPrice,
   ethPrice,
   opPrice,
 }: {
-  pools: {
+  pool: {
     symbol: string;
     emissions: bigint;
     reserve0: bigint;
     reserve1: bigint;
-  }[];
+  };
   poolSymbol: `sAMMV2-${string}/${string}` | `vAMMV2-${string}/${string}`;
   veloPrice: number | undefined;
   ethPrice: number | undefined;
   opPrice: number | undefined;
 }) => {
   if (!veloPrice || !opPrice || !ethPrice) return 0;
-
-  const pool = pools.find((pool) => pool.symbol === poolSymbol);
-  if (!pool) return 0;
 
   const emissions =
     +formatEther(pool.emissions) * SECONDS_IN_A_YEAR * veloPrice;
