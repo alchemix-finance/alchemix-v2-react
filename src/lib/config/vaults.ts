@@ -1,7 +1,7 @@
 import { zeroAddress } from "viem";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 
-import { GAS_ADDRESS, WETH_MAINNET_ADDRESS } from "@/lib/constants";
+import { GAS_ADDRESS, WETH_ADDRESSES } from "@/lib/constants";
 
 import { SYNTH_ASSETS } from "@/lib/config/synths";
 import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
@@ -270,7 +270,10 @@ export const VAULTS: VaultsConfig = {
         provider: "rocket",
         bonus: getNoBonus,
       },
-      disabledDepositTokens: [GAS_ADDRESS, WETH_MAINNET_ADDRESS],
+      disabledDepositTokens: [
+        GAS_ADDRESS,
+        WETH_ADDRESSES[mainnet.id] as `0x${string}`,
+      ],
       disabledWithdrawTokens: [],
     },
     "0x61134511187a9a2DF38D10DBe07Ba2e8E5563967": {

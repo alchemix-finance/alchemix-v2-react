@@ -7,7 +7,7 @@ import { QueryKeys } from "@/lib/queries/queriesSchema";
 import {
   ALCX_MAINNET_ADDRESS,
   ONE_DAY_IN_MS,
-  WETH_MAINNET_ADDRESS,
+  WETH_ADDRESSES,
 } from "@/lib/constants";
 import { mainnet } from "viem/chains";
 import {
@@ -27,7 +27,7 @@ export const useInternalFarms = () => {
   });
 
   const prices = useGetMultipleTokenPrices([
-    WETH_MAINNET_ADDRESS,
+    WETH_ADDRESSES[mainnet.id] as `0x${string}`,
     ALCX_MAINNET_ADDRESS,
   ]);
   const [{ data: wethPrice }, { data: alcxPrice }] = prices;

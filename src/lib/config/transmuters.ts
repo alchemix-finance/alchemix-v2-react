@@ -16,7 +16,7 @@ export const TRANSMUTER_LOOPERS_VAULTS = {
   ],
   [arbitrum.id]: [
     {
-      address: "0x...", // TODO - replace with address for StrategyArb
+      address: "0xd89ee1E95f7728f6964CF321E2648cCd29a881f1", // TODO - This is yvUSDC for testing, replace with address for StrategyArb
       synthAsset: SYNTH_ASSETS.ALETH,
       label: "Arbitrum ALETH Transmuter Looper",
       aprQueryUri: "",

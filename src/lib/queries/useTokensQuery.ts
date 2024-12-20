@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { lsService } from "@/lib/localStorage";
 import { useAlchemists } from "./useAlchemists";
 import { VAULTS } from "@/lib/config/vaults";
-import { arbitrum, mainnet, optimism } from "viem/chains";
+import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 import { erc20Abi } from "viem";
 import { usePublicClient } from "wagmi";
 import { Token } from "@/lib/types";
@@ -14,6 +14,7 @@ import {
   GAS_ADDRESS,
   G_ALCX_MAINNET_ADDRESS,
   ONE_DAY_IN_MS,
+  WETH_ADDRESSES,
 } from "@/lib/constants";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "./queriesSchema";
@@ -54,6 +55,9 @@ export const useTokensQuery = () => {
       }
       if (chain.id === optimism.id) {
         tokensAddresses.push(ALCX_OPTIMISM_ADDRESS);
+      }
+      if (chain.id !== fantom.id) {
+        tokensAddresses.push(WETH_ADDRESSES[chain.id] as `0x${string}`);
       }
 
       const calls = tokensAddresses.flatMap(

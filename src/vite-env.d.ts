@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly VITE_INFURA_API_KEY: string;
   readonly VITE_DUNE_API_KEY: string;
   readonly VITE_PINATA_KEY: string;
+  readonly VITE_ENSO_API_KEY: string;
   // more env variables...
 }
 

@@ -13,8 +13,7 @@ import { LoadingBar } from "../common/LoadingBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { EthTransmuterLooper } from "@/components/transmuters/EthTransmuterLooper";
 import { TRANSMUTER_LOOPERS_VAULTS } from "@/lib/config/transmuters";
-import type { SupportedTransmuterLooperChainId } from "@/lib/config/metadataTypes";
-import { arbitrum, mainnet, optimism } from "viem/chains";
+import { fantom } from "viem/chains";
 
 export const Transmuters = () => {
   const chain = useChain();
@@ -34,12 +33,6 @@ export const Transmuters = () => {
           (transmuter) => transmuter.metadata.synthAsset === synthTab,
         );
   }, [synthTab, transmuters]);
-
-  const validTransmuterLooperChains: SupportedTransmuterLooperChainId[] = [
-    mainnet.id,
-    arbitrum.id,
-    optimism.id,
-  ];
 
   return (
     <>
@@ -81,18 +74,8 @@ export const Transmuters = () => {
               ))}
             </div>
           </div>
-          {validTransmuterLooperChains.includes(
-            chain.id as SupportedTransmuterLooperChainId,
-          ) &&
-          TRANSMUTER_LOOPERS_VAULTS[
-            chain.id as SupportedTransmuterLooperChainId
-          ] &&
-          TRANSMUTER_LOOPERS_VAULTS[
-            chain.id as SupportedTransmuterLooperChainId
-          ].length > 0 ? (
-            TRANSMUTER_LOOPERS_VAULTS[
-              chain.id as SupportedTransmuterLooperChainId
-            ].map((transmuterLooper) => {
+          {chain.id !== fantom.id ? (
+            TRANSMUTER_LOOPERS_VAULTS[chain.id].map((transmuterLooper) => {
               if (transmuterLooper.synthAsset === SYNTH_ASSETS.ALETH) {
                 return <EthTransmuterLooper key="EthTransmuterLooper" />;
               } else {
@@ -100,7 +83,7 @@ export const Transmuters = () => {
               }
             })
           ) : (
-            <div>No transmuters for selected chain and synth asset</div>
+            <div>No transmuters for selected chain</div>
           )}
           <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">

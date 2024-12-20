@@ -1,5 +1,9 @@
+import { arbitrum, mainnet, optimism } from "viem/chains";
+
 // Gas doesn't have an address, but we use this to handle gas logic in the app
 export const GAS_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+// Some APIs require zero address when dealing with GAS
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 // Time constants
 export const ONE_MINUTE_IN_MS = 60 * 1000;
@@ -24,6 +28,11 @@ export const SUSHI_MAINNET_ADDRESS =
 export const CRV_MAINNET_ADDRESS = "0xd533a949740bb3306d119cc777fa900ba034cd52";
 export const USDT_MAINNET_ADDRESS =
   "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+export const WETH_ADDRESSES = {
+  [mainnet.id]: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+  [arbitrum.id]: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+  [optimism.id]: "0x4200000000000000000000000000000000000006",
+};
 
 // Number constants
 export const MAX_UINT256_BN = BigInt(Math.pow(2, 256)) - 1n;

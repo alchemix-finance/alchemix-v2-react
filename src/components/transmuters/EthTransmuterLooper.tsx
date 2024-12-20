@@ -21,7 +21,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
 import { tokenizedStrategyAbi } from "@/abi/tokenizedStrategy";
 import { SYNTH_ASSETS, SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
-import { mainnet } from "viem/chains";
+import { fantom, mainnet } from "viem/chains";
 import { TRANSMUTER_LOOPERS_VAULTS } from "@/lib/config/transmuters";
 import {
   SupportedTransmuterLooperChainId,
@@ -29,6 +29,21 @@ import {
 } from "@/lib/config/metadataTypes";
 import { ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { useTokensQuery } from "@/lib/queries/useTokensQuery";
+import { GAS_ADDRESS, WETH_ADDRESSES, ZERO_ADDRESS } from "@/lib/constants";
+import { SlippageInput } from "../common/input/SlippageInput";
+import {
+  PortalTransactionResult,
+  usePortalApproval,
+  usePortalZap,
+} from "@/hooks/usePortal";
 
 enum TL_STATIC_STATE_INDICIES {
   sharesTokenAddress = 0,
@@ -63,6 +78,12 @@ export const EthTransmuterLooper = () => {
   const [amount, setAmount] = useState(""); // represents amount of assets or shares depending on deposit or withdraw state
   const [isWithdraw, setIsWithdraw] = useState(false); // sets state of token input to accept input in assets or input in shares
   const [isInfiniteApproval, setIsInfiniteApproval] = useState(false);
+  const [selectTokenAddress, setSelectTokenAddress] =
+    useState<`0x${string}`>(GAS_ADDRESS);
+  const [slippage, setSlippage] = useState("0.5"); // sets the slippage param used for depositing from or withdrawing into ETH, which requires a trade
+  const [gaslessSignature, setGaslessSignature] = useState<
+    `0x${string}` | undefined
+  >(undefined);
 
   const { address: TRANSMUTER_LOOPER_ADDRESS } = useMemo(
     () =>
@@ -71,6 +92,28 @@ export const EthTransmuterLooper = () => {
       ].find((vault) => vault.synthAsset === SYNTH_ASSETS.ALETH),
     [chain.id],
   ) as TransmuterMetadata;
+
+  const { data: tokens } = useTokensQuery();
+  const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
+  const wethToken = tokens?.find(
+    (token) =>
+      chain.id !== fantom.id && token.address === WETH_ADDRESSES[chain.id],
+  );
+  const alEthToken =
+    chain.id !== fantom.id
+      ? tokens?.find(
+          (token) =>
+            token.address ===
+            SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH],
+        )
+      : null;
+  const selection =
+    gasToken && wethToken && alEthToken
+      ? [gasToken, wethToken, alEthToken]
+      : [];
+  const token = selection.find(
+    (token) => token.address === selectTokenAddress,
+  )!;
 
   // ** INITIAL CONTRACT READS ** //
   // Read these contract functions once when the component renders for the first time. Return refetch functions for
@@ -278,7 +321,7 @@ export const EthTransmuterLooper = () => {
 
   /** CONTRACT WRITES **/
   /**
-   * Get allowance info for alETH
+   * Get allowance info for alETH and WETH
    */
   const {
     isApprovalNeeded,
@@ -294,6 +337,41 @@ export const EthTransmuterLooper = () => {
       ] as number) || 18,
     isInfiniteApproval,
   });
+
+  /** PORTAL APPROVAL */
+  const {
+    approveInputToken: approveSpendWeth,
+    shouldApprove: isWethApprovalNeeded,
+  } = usePortalApproval(
+    address as `0x${string}`,
+    WETH_ADDRESSES[
+      chain.id as SupportedTransmuterLooperChainId
+    ] as `0x${string}`,
+    amount,
+    gaslessSignature,
+    18,
+  );
+
+  const {
+    approveInputToken: approveSpendShares,
+    shouldApprove: isSharesApprovalNeeded,
+  } = usePortalApproval(
+    address as `0x${string}`,
+    TRANSMUTER_LOOPER_ADDRESS as `0x${string}`,
+    amount,
+    gaslessSignature,
+    6,
+  );
+
+  const selectedTokenIsApprovalNeeded =
+    selectTokenAddress ===
+    SYNTH_ASSETS_ADDRESSES[chain.id as SupportedTransmuterLooperChainId][
+      SYNTH_ASSETS.ALETH
+    ]
+      ? isApprovalNeeded
+      : selectTokenAddress === GAS_ADDRESS
+        ? false
+        : isWethApprovalNeeded;
 
   /**
    * Configure write contract functions for alETH deposit
@@ -349,6 +427,30 @@ export const EthTransmuterLooper = () => {
     hash: redeemHash,
   });
 
+  /** PORTAL BUNDLER CALLS */
+  const { mutateAsync: depositUsingPortal } = usePortalZap({
+    shouldApprove: isWethApprovalNeeded,
+    approveInputToken: approveSpendWeth,
+    gaslessSignature,
+    inputToken:
+      selectTokenAddress === GAS_ADDRESS ? ZERO_ADDRESS : selectTokenAddress,
+    inputTokenDecimals: 18,
+    inputAmount: amount,
+    outputToken: `0xd89ee1E95f7728f6964CF321E2648cCd29a881f1` as `0x${string}`, // Yearn AaveV3 USDC Lender, TODO swap out for Looper contract
+    sender: address as `0x${string}`,
+  });
+  const { mutateAsync: withdrawUsingPortal } = usePortalZap({
+    shouldApprove: isSharesApprovalNeeded,
+    approveInputToken: approveSpendShares,
+    gaslessSignature: undefined,
+    outputToken:
+      selectTokenAddress === GAS_ADDRESS ? ZERO_ADDRESS : selectTokenAddress,
+    inputAmount: amount,
+    inputToken: `0xd89ee1E95f7728f6964CF321E2648cCd29a881f1` as `0x${string}`, // Yearn AaveV3 USDC Lender, TODO swap out for Looper contract
+    inputTokenDecimals: 6,
+    sender: address as `0x${string}`,
+  });
+
   useEffect(() => {
     if (redeemReceipt) {
       setAmount("");
@@ -356,58 +458,87 @@ export const EthTransmuterLooper = () => {
   }, [redeemReceipt]);
 
   /** UI Actions **/
-  const onDeposit = () => {
-    // 1. Check approval
-    if (isApprovalNeeded) {
-      alETHApproveConfig && approveSpendAlETH(alETHApproveConfig.request);
-      return;
-    }
-
-    // 2. Check for contract call error
-    if (depositError) {
-      toast.error("Error depositing alETH", {
-        description:
-          depositError.name === "ContractFunctionExecutionError"
-            ? depositError.cause.message
-            : depositError.message,
-      });
-      return;
-    }
-
-    // 3. Deposit
-    if (depositConfig) {
-      deposit(depositConfig.request);
+  const onDeposit = async () => {
+    if (
+      selectTokenAddress === GAS_ADDRESS ||
+      (chain.id !== fantom.id &&
+        selectTokenAddress === WETH_ADDRESSES[chain.id])
+    ) {
+      const result = await depositUsingPortal();
+      if ((result as PortalTransactionResult).signature) {
+        setGaslessSignature(
+          (result as PortalTransactionResult).signature as `0x${string}`,
+        );
+      } else if ((result as PortalTransactionResult).hash) {
+        setAmount("");
+      } else {
+        setGaslessSignature(undefined);
+      }
     } else {
-      toast.error("Error depositing alETH", {
-        description: "Unexpected error. Please contact Alchemix team.",
-      });
-    }
+      // 1. Check approval
+      if (isApprovalNeeded) {
+        alETHApproveConfig && approveSpendAlETH(alETHApproveConfig.request);
+        return;
+      }
 
-    // TODO -- do I need to refetch the shares/assets balance here, or is it taken care of by the transaction occuring and a refetch in the next block?
+      // 2. Check for contract call error
+      if (depositError) {
+        toast.error("Error depositing alETH", {
+          description:
+            depositError.name === "ContractFunctionExecutionError"
+              ? depositError.cause.message
+              : depositError.message,
+        });
+        return;
+      }
+
+      // 3. Deposit
+      if (depositConfig) {
+        deposit(depositConfig.request);
+      } else {
+        toast.error("Error depositing alETH", {
+          description: "Unexpected error. Please contact Alchemix team.",
+        });
+      }
+
+      // TODO -- do I need to refetch the shares/assets balance here, or is it taken care of by the transaction occuring and a refetch in the next block?
+    }
   };
 
-  const onWithdraw = () => {
-    // 1. Check for contract call error
-    if (redeemError) {
-      toast.error("Error withdrawing alETH", {
-        description:
-          redeemError.name === "ContractFunctionExecutionError"
-            ? redeemError.cause.message
-            : redeemError.message,
-      });
-      return;
-    }
-
-    // 2. Withdraw
-    if (redeemConfig) {
-      redeem(redeemConfig.request);
+  const onWithdraw = async () => {
+    if (
+      chain.id !== fantom.id &&
+      selectTokenAddress !==
+        SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH]
+    ) {
+      // withdrawUsingEnzo();
+      const hash = await withdrawUsingPortal();
+      if (hash) {
+        setAmount("");
+      }
     } else {
-      toast.error("Error withdrawing alETH", {
-        description: "Unexpected error. Please contact Alchemix team.",
-      });
-    }
+      // 1. Check for contract call error
+      if (redeemError) {
+        toast.error("Error withdrawing alETH", {
+          description:
+            redeemError.name === "ContractFunctionExecutionError"
+              ? redeemError.cause.message
+              : redeemError.message,
+        });
+        return;
+      }
 
-    // TODO -- do I need to refetch the shares/assets balance here, or is it taken care of by the transaction occuring and a refetch in the next block?
+      // 2. Withdraw
+      if (redeemConfig) {
+        redeem(redeemConfig.request);
+      } else {
+        toast.error("Error withdrawing alETH", {
+          description: "Unexpected error. Please contact Alchemix team.",
+        });
+      }
+
+      // TODO -- do I need to refetch the shares/assets balance here, or is it taken care of by the transaction occuring and a refetch in the next block?
+    }
   };
 
   // Reuses contract logic of _convertToShares for a front end estimation so as not to trigger many RPC calls
@@ -522,36 +653,55 @@ export const EthTransmuterLooper = () => {
                     </label>
                   </div>
                 </div>
-                <div className="relative flex w-full flex-row">
-                  <div className="flex w-full justify-end rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
-                    <TokenInput
-                      amount={amount}
-                      setAmount={setAmount}
-                      tokenAddress={
-                        isWithdraw
-                          ? TRANSMUTER_LOOPER_ADDRESS
-                          : SYNTH_ASSETS_ADDRESSES[mainnet.id][
-                              SYNTH_ASSETS.ALETH
-                            ]
-                      }
-                      // TODO -- can probably remove overrideBalance when real contract address is ready
-                      overrideBalance={
-                        isWithdraw
-                          ? `${
-                              transmuterLooperContractDynamicState?.[
-                                TL_DYNAMIC_STATE_INDICIES.balanceOf
-                              ]
-                            }` || "0"
-                          : undefined
-                      }
-                      tokenDecimals={
-                        (transmuterLooperContractStaticState?.[
-                          TL_STATIC_STATE_INDICIES.decimals
-                        ] as number) || 18
-                      }
-                      tokenSymbol={isWithdraw ? "yvAlETH" : "alETH"}
-                    />
-                  </div>
+                <div className="flex w-full rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+                  <Select
+                    value={selectTokenAddress}
+                    onValueChange={(value: string) =>
+                      setSelectTokenAddress(value as `0x${string}`)
+                    }
+                  >
+                    <SelectTrigger className="h-auto w-24 sm:w-56">
+                      <SelectValue placeholder="Token" asChild>
+                        <div className="flex items-center gap-4">
+                          <img
+                            src={`/images/token-icons/${token.symbol}.svg`}
+                            alt={token.symbol}
+                            className="h-12 w-12"
+                          />
+                          <span className="hidden text-xl sm:inline">
+                            {token.symbol}
+                          </span>
+                        </div>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {selection.map((token) => (
+                        <SelectItem key={token.address} value={token.address}>
+                          {token.symbol}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <TokenInput
+                    amount={amount}
+                    setAmount={(amount: string) => {
+                      setAmount(amount);
+                      setGaslessSignature(undefined);
+                    }}
+                    tokenAddress={
+                      isWithdraw
+                        ? TRANSMUTER_LOOPER_ADDRESS
+                        : selectTokenAddress
+                    }
+                    tokenDecimals={
+                      /*(transmuterLooperContractStaticState?.[
+                        TL_STATIC_STATE_INDICIES.decimals
+                      ] as number) || 18*/ // TODO -- put this back when contract is deployed, and remove below condition which tests using a USDC vault with 6 decimals
+                      isWithdraw ? 6 : 18
+                    }
+                    tokenSymbol={isWithdraw ? "yvAlETH" : token.symbol}
+                    dustToZero={isWithdraw}
+                  />
                 </div>
                 <div className="flex h-8 flex-row space-x-4">
                   <div className="flex w-full rounded bg-grey3inverse p-4 text-center text-xl dark:bg-grey3">
@@ -562,6 +712,15 @@ export const EthTransmuterLooper = () => {
                     </p>
                   </div>
                 </div>
+                {selectTokenAddress &&
+                  chain.id !== fantom.id &&
+                  selectTokenAddress !==
+                    SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH] && (
+                    <SlippageInput
+                      slippage={slippage}
+                      setSlippage={setSlippage}
+                    />
+                  )}
                 <div className="flex flex-row justify-between">
                   <p className="flex-auto text-sm text-lightgrey10inverse dark:text-lightgrey10">
                     Approval
@@ -591,7 +750,13 @@ export const EthTransmuterLooper = () => {
                   disabled={isInputZero(amount)}
                   onClick={isWithdraw ? onWithdraw : onDeposit}
                 >
-                  {isWithdraw ? "Withdraw" : "Deposit"}
+                  {isWithdraw
+                    ? isSharesApprovalNeeded
+                      ? "Approve Spend shares"
+                      : "Withdraw"
+                    : selectedTokenIsApprovalNeeded
+                      ? `Approve Spend ${token.symbol}`
+                      : "Deposit"}
                 </Button>
               </div>
               <div className="flex flex-col justify-between gap-4">
