@@ -59,7 +59,7 @@ type ApiProvider =
   | "jones"
   | "dinero";
 
-export interface VaultMetadata {
+interface VaultMetadataBase {
   label: string;
   image: string;
   synthAssetType: SynthAsset;
@@ -75,17 +75,35 @@ export interface VaultMetadata {
   disabledDepositTokens: Address[];
   disabledWithdrawTokens: Address[];
   wethGateway?: Address;
-  gateway?: Address;
+  strategy?: string;
+  beta?: boolean;
+}
+
+interface VaultMetadataWithYieldTokenOverride extends VaultMetadataBase {
+  gateway: Address;
   /**
    * This is the address of the actual yield (bearing for aave) token,
    * the regular yield token address in this case becomes a (static token adapter for aave or staking token for yearn),
    * that we use for the vaults.
    * If it exists, means the vault is using (static token adapter for aave or staking token for yearn).
    */
-  yieldTokenOverride?: Address;
-  strategy?: string;
-  beta?: boolean;
+  yieldTokenOverride: Address;
 }
+
+interface VaultMetadataWithoutYieldTokenOverride extends VaultMetadataBase {
+  gateway?: never;
+  /**
+   * This is the address of the actual yield (bearing for aave) token,
+   * the regular yield token address in this case becomes a (static token adapter for aave or staking token for yearn),
+   * that we use for the vaults.
+   * If it exists, means the vault is using (static token adapter for aave or staking token for yearn).
+   */
+  yieldTokenOverride?: never;
+}
+
+export type VaultMetadata =
+  | VaultMetadataWithYieldTokenOverride
+  | VaultMetadataWithoutYieldTokenOverride;
 
 /**
  * Handle fetching APR data
