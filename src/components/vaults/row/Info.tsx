@@ -19,12 +19,11 @@ export const Info = ({ vault }: { vault: Vault }) => {
     },
     gateway: {
       label: "Gateway",
-      address: vault.metadata.gateway ?? vault.metadata.wethGateway,
+      address: vault.metadata.gateway,
     },
-    strategy: {
-      label: "Strategy",
-      address: vault.metadata.strategy,
-      vanity: vault.metadata.label,
+    wethGateway: {
+      label: "WETH Gateway",
+      address: vault.metadata.wethGateway,
     },
   } as const;
 

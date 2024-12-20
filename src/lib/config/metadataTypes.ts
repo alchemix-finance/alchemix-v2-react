@@ -83,7 +83,6 @@ export interface VaultMetadata {
    * If it exists, means the vault is using (static token adapter for aave or staking token for yearn).
    */
   yieldTokenOverride?: Address;
-  strategy?: string;
   beta?: boolean;
 }
 
