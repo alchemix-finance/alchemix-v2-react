@@ -75,7 +75,6 @@ interface VaultMetadataBase {
   disabledDepositTokens: Address[];
   disabledWithdrawTokens: Address[];
   wethGateway?: Address;
-  strategy?: string;
   beta?: boolean;
 }
 
