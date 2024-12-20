@@ -8,7 +8,7 @@ import {
   ALCX_MAINNET_ADDRESS,
   ONE_DAY_IN_MS,
   SUSHI_MAINNET_ADDRESS,
-  WETH_MAINNET_ADDRESS,
+  WETH_ADDRESSES,
 } from "@/lib/constants";
 import { mainnet } from "viem/chains";
 import { SUSHI } from "@/lib/config/farms";
@@ -27,7 +27,7 @@ export const useSushiFarm = () => {
   });
 
   const prices = useGetMultipleTokenPrices([
-    WETH_MAINNET_ADDRESS,
+    WETH_ADDRESSES[mainnet.id] as `0x${string}`,
     ALCX_MAINNET_ADDRESS,
     SUSHI_MAINNET_ADDRESS,
   ]);
@@ -140,11 +140,13 @@ export const useSushiFarm = () => {
       });
 
       const price0 =
-        underlying0.toLowerCase() === WETH_MAINNET_ADDRESS.toLowerCase()
+        underlying0.toLowerCase() ===
+        (WETH_ADDRESSES[mainnet.id] as `0x${string}`).toLowerCase()
           ? wethPrice
           : alcxPrice;
       const price1 =
-        underlying1.toLowerCase() === WETH_MAINNET_ADDRESS.toLowerCase()
+        underlying1.toLowerCase() ===
+        (WETH_ADDRESSES[mainnet.id] as `0x${string}`).toLowerCase()
           ? wethPrice
           : alcxPrice;
       const reserve0Number = parseFloat(formatEther(reserve0));
