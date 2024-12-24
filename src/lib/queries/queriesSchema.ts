@@ -29,6 +29,7 @@ export const QueryKeys = {
   HarvestsAndBonuses: "harvests-and-bonuses",
   HistoricYield: "historicYield",
   GeneratedEarned: "generatedEarned",
+  ExternalFarmsApr: "externalFarmsApr",
 } as const;
 
 /**

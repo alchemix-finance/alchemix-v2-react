@@ -2,6 +2,32 @@ import { STATIC_EXTERNAL_FARMS } from "@/lib/config/farms";
 import { windowOpen } from "@/utils/windowOpen";
 import { Button } from "../ui/button";
 import { useChain } from "@/hooks/useChain";
+import { formatNumber } from "@/utils/number";
+import {
+  useEthArbExternalFarmsAprs,
+  useOpExternalFarmsAprs,
+} from "@/lib/queries/farms/useExternalFarmsAprs";
+import { cn } from "@/utils/cn";
+
+const EthArbExternalApr = ({ tag }: { tag: string }) => {
+  const { data: ethArbExternalFarmsArps, isPending } =
+    useEthArbExternalFarmsAprs();
+  const apr = ethArbExternalFarmsArps?.[tag];
+  return (
+    <p className={cn("tracking-tight", isPending && "animate-pulse")}>
+      {formatNumber(apr)}%
+    </p>
+  );
+};
+const OpExternalApr = ({ tag }: { tag: string }) => {
+  const { data: opExternalFarmsArps, isPending } = useOpExternalFarmsAprs();
+  const apr = opExternalFarmsArps?.[tag];
+  return (
+    <p className={cn("tracking-tight", isPending && "animate-pulse")}>
+      {formatNumber(apr)}%
+    </p>
+  );
+};
 
 export const StaticExternalFarms = () => {
   const chain = useChain();
@@ -27,7 +53,14 @@ export const StaticExternalFarms = () => {
               className="flex flex-col justify-between gap-2 rounded border border-grey5inverse bg-grey10inverse p-2 dark:bg-grey10"
             >
               <div className="space-y-1">
-                <p className="font-semibold tracking-tight">{farm.symbol}</p>
+                <div className="flex items-center justify-between">
+                  <p className="font-semibold tracking-tight">{farm.symbol}</p>
+                  {farm.name === "Velodrome" ? (
+                    <OpExternalApr tag={`${farm.name} ${farm.symbol}`} />
+                  ) : (
+                    <EthArbExternalApr tag={`${farm.name} ${farm.symbol}`} />
+                  )}
+                </div>
                 <div className="flex items-center gap-2">
                   <img
                     src={`./images/icons/${farm.icon}`}
@@ -43,7 +76,6 @@ export const StaticExternalFarms = () => {
                   )}
                   <h2 className="text-lightgrey10">{farm.name}</h2>
                 </div>
-                {/* <p className="text-sm">{farm.subtitle}</p> */}
               </div>
               <div className="flex items-center gap-2">
                 {farm.actions.map((action) => (
