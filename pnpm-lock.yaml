@@ -47,6 +47,9 @@ importers:
       '@rainbow-me/rainbowkit':
         specifier: ^2.2.1
         version: 2.2.1(@tanstack/react-query@5.59.19(react@18.3.1))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(viem@2.21.55(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.23.8))(wagmi@2.14.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.2(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10)))(@tanstack/query-core@5.59.17)(@tanstack/react-query@5.59.19(react@18.3.1))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.21.55(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8))
+      '@rive-app/react-canvas':
+        specifier: ^4.17.4
+        version: 4.17.4(react@18.3.1)
       '@tanstack/react-query':
         specifier: ^5.59.19
         version: 5.59.19(react@18.3.1)
@@ -2236,6 +2239,14 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  '@rive-app/canvas@2.25.2':
+    resolution: {integrity: sha512-6iCWnr1VG1su9e9ZUV+gA38+LEBfpYkzCkx4MvBe0FwkYaFeHybj2bLwEr8AYBlxfqWBI5mTEiA5NWWwZeyZiA==}
+
+  '@rive-app/react-canvas@4.17.4':
+    resolution: {integrity: sha512-h0MBw2xVje1uJ0A1l6XZZ8nzcxepgcJxlGs4fguLIOHz8cdXMhyxWR4JwuvupK1XPTjVlvD7Ee3NzJowof6A8A==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     resolution: {integrity: sha512-lzD84av1ZQhYUS+jsGqJiCMaJO2dn9u+RTT9n9q6D3SaKVwWqv+7AoRKqBu19bkwyE+iFRl1ymr40QS90jVFYg==}
@@ -9316,6 +9327,13 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.3
     optional: true
+
+  '@rive-app/canvas@2.25.2': {}
+
+  '@rive-app/react-canvas@4.17.4(react@18.3.1)':
+    dependencies:
+      '@rive-app/canvas': 2.25.2
+      react: 18.3.1
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     dependencies:

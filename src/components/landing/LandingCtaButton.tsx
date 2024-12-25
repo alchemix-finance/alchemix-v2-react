@@ -4,7 +4,13 @@ import { useInView } from "framer-motion";
 
 import { cn } from "@/utils/cn";
 
-export const LandingSubButton = ({ delay = 0, text = "Default Text" }) => {
+export const LandingSubButton = ({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
@@ -20,7 +26,7 @@ export const LandingSubButton = ({ delay = 0, text = "Default Text" }) => {
       to="/vaults"
       className={cn(
         // Base styles for the button
-        "group relative z-10 ml-10 inline-flex h-10 cursor-pointer items-center justify-center self-start rounded-xl border-0 bg-[#0b0d1248] px-8 py-5 font-sans text-lg tracking-tight text-[#F3BF99] transition-all",
+        "group relative z-10 inline-flex h-10 cursor-pointer items-center justify-center self-start rounded-xl border-0 bg-[#0b0d1248] px-8 py-5 font-sans text-lg tracking-tight text-[#F3BF99] transition-all",
         // Apply multiple background layers
         "bg-[length:200%] [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.08*1rem)_solid_transparent]",
         // Background layers for the gradient effect
@@ -28,17 +34,23 @@ export const LandingSubButton = ({ delay = 0, text = "Default Text" }) => {
         // Animate in when in view
         isInView ? "opacity-100 blur-0" : "opacity-0 blur-sm",
         // Base styles for before pseudo-element
-        "before:animate-buttonMovingGradientBg before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:bg-[linear-gradient(90deg,#080a0e,#F3BF99,#080a0e,#F3BF99,#080a0e)] before:bg-[length:200%] before:opacity-15 before:transition-opacity before:[filter:blur(1rem)]",
+        "before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:animate-buttonMovingGradientBg before:bg-[linear-gradient(90deg,#080a0e,#F3BF99,#080a0e,#F3BF99,#080a0e)] before:bg-[length:200%] before:opacity-15 before:transition-opacity before:[filter:blur(1rem)]",
         // Hover pseudo-element for the glow effect
         "hover:before:animate-buttonMovingGradientBg hover:before:opacity-70",
       )}
     >
-      <span className="relative z-10">{text}</span>
+      <span className="relative z-10">{children}</span>
     </Link>
   );
 };
 
-export const LandingClosingCtaButton = ({ delay = 0 }) => {
+export const LandingClosingCtaButton = ({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
@@ -62,12 +74,12 @@ export const LandingClosingCtaButton = ({ delay = 0 }) => {
         // Animate in when in view
         isInView ? "opacity-100 blur-0" : "opacity-0 blur-sm",
         // Base styles for before pseudo-element
-        "before:animate-buttonMovingGradientBg before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:bg-[linear-gradient(90deg,#080a0e,#1BEAA5,#080a0e,#1BEAA5,#080a0e)] before:bg-[length:200%] before:opacity-15 before:transition-opacity before:[filter:blur(1rem)]",
+        "before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:animate-buttonMovingGradientBg before:bg-[linear-gradient(90deg,#080a0e,#1BEAA5,#080a0e,#1BEAA5,#080a0e)] before:bg-[length:200%] before:opacity-15 before:transition-opacity before:[filter:blur(1rem)]",
         // Hover pseudo-element for the glow effect
         "hover:before:animate-buttonMovingGradientBg hover:before:opacity-70",
       )}
     >
-      <span className="relative z-10">Get your Self-Repaying Loan</span>
+      <span className="relative z-10">{children}</span>
     </Link>
   );
 };

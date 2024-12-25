@@ -168,7 +168,6 @@ module.exports = {
           "linear-gradient(171.08deg, #fefefe -11.16%, #ebe6de 6.1%, #f5f2ee 49.05%, #fff 93.22%)",
         bodyGradientInverse:
           "linear-gradient(171.08deg, #010101 -11.16%, #141921 6.1%, #0a0d11 49.05%, #000000 93.22%)",
-        heroBg: "url('/images/landing-page/HeroBg.png')",
       },
       boxShadow: {
         glow: "0 0 15px #f5c09a80",
