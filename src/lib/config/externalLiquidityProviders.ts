@@ -2,9 +2,9 @@ import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 
 const DEFAULT_SWAP_PROVIDERS = [
   {
-    label: "Curve",
-    url: "https://curve.fi/",
-    icon: "crv.png",
+    label: "LlamaSwap",
+    url: "https://swap.defillama.com/",
+    icon: "llamaswap.png",
   },
   {
     label: "Paraswap",
@@ -12,14 +12,14 @@ const DEFAULT_SWAP_PROVIDERS = [
     icon: "paraswap.png",
   },
   {
-    label: "Zapper",
-    url: "https://zapper.xyz/",
-    icon: "zapper.png",
+    label: "OpenOcean",
+    url: "https://app.openocean.finance/swap/eth/ETH/ALETH",
+    icon: "openocean.png",
   },
   {
-    label: "LlamaSwap",
-    url: "https://swap.defillama.com/",
-    icon: "llamaswap.png",
+    label: "Curve",
+    url: "https://curve.fi/",
+    icon: "crv.png",
   },
 ];
 
