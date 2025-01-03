@@ -44,7 +44,7 @@ export const VideoModal = ({
             // Animate in when in view
             isInView ? "opacity-100 blur-0" : "opacity-0 blur-sm",
             // Base styles for before pseudo-element
-            "before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:animate-buttonMovingGradientBg before:bg-[linear-gradient(90deg,#080a0e,#1BEAA5,#080a0e,#1BEAA5,#080a0e)] before:bg-[length:200%] before:opacity-15 before:transition-opacity before:[filter:blur(1rem)]",
+            "before:animate-buttonMovingGradientBg before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:bg-[linear-gradient(90deg,#080a0e,#1BEAA5,#080a0e,#1BEAA5,#080a0e)] before:bg-[length:200%] before:opacity-15 before:transition-opacity before:[filter:blur(1rem)]",
             // Hover pseudo-element for the glow effect
             "hover:before:animate-buttonMovingGradientBg hover:before:opacity-70",
           )}
@@ -52,7 +52,7 @@ export const VideoModal = ({
           <span className="relative z-10">
             <svg
               role="img"
-              className="w-8 scale-125 rounded-xl text-red-500"
+              className="w-8 scale-125 rounded-xl text-[#1BEAA5]"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
