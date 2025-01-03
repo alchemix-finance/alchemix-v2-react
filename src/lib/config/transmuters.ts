@@ -1,6 +1,36 @@
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
-import type { TransmutersMetadata } from "@/lib/config/metadataTypes";
+import type {
+  TransmuterLooperMetadata,
+  TransmutersMetadata,
+} from "@/lib/config/metadataTypes";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
+
+export const TRANSMUTER_LOOPERS_VAULTS = {
+  [mainnet.id]: [
+    {
+      address: "0x...", // TODO - replace with address for StrategyMainnet
+      synthAsset: SYNTH_ASSETS.ALETH,
+      label: "ALETH Transmuter Looper",
+      aprQueryUri: "",
+    },
+  ],
+  [arbitrum.id]: [
+    {
+      address: "0xd89ee1E95f7728f6964CF321E2648cCd29a881f1", // TODO - This is yvUSDC for testing, replace with address for StrategyArb
+      synthAsset: SYNTH_ASSETS.ALETH,
+      label: "Arbitrum ALETH Transmuter Looper",
+      aprQueryUri: "",
+    },
+  ],
+  [optimism.id]: [
+    {
+      address: "0x...", // TODO - replace with address for StrategyOp
+      synthAsset: SYNTH_ASSETS.ALETH,
+      label: "Optimism ALETH Transmuter Looper",
+      aprQueryUri: "",
+    },
+  ],
+} as const satisfies TransmuterLooperMetadata;
 
 export const TRANSMUTERS = {
   [mainnet.id]: [
