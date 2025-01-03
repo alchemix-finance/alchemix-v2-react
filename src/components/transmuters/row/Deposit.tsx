@@ -93,18 +93,18 @@ export const Deposit = ({
     data,
     isError: aprQueryError,
     isPending: aprQueryPending,
-  } = useTransmuterApr(transmuter);
+  } = useTransmuterApr({ transmuter });
 
   // proj apr estimated roughly based on the previously fetched apr by checking the ratio of current assets to new assets and currentApr
   // to newApr, based on user input of alAssets to add as a deposit.
   // 1. projectedApr / apr = assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit)
   // 2. projectedApr = apr * (assetsCurrentlyDeposited / (assetsCurrentlyDeposited + assetsToDeposit))
   const formattedTotalAssetsDeposited = Number(
-    formatUnits(transmuter?.totalUnexchanged ?? 0n, 18),
+    formatUnits(transmuter.totalUnexchanged, 18),
   );
   const assetsToDeposit = Number(depositAmount ?? 0);
   const projectedApr = data
-    ? data.apr *
+    ? data.projectedRate *
       (formattedTotalAssetsDeposited /
         (formattedTotalAssetsDeposited + assetsToDeposit))
     : null;
@@ -152,7 +152,7 @@ export const Deposit = ({
       />
 
       <p className="text-xs font-light text-lightgrey10 lg:text-sm">
-        {aprQueryError || !transmuter.metadata.aprQueryUri
+        {aprQueryError || !transmuter.metadata.aprSelector
           ? "Projected APR: N/A"
           : aprQueryPending
             ? "Calculating projected APR..."
