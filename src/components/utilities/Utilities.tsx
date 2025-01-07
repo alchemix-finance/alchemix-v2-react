@@ -30,6 +30,12 @@ const utilities = [
     url: "https://alchemix-dashboard-frontend-lovat.vercel.app/",
     image: "contract_params_dashboard.png",
   },
+  {
+    label: "Alchemix Tidbits",
+    author: "DoDao",
+    url: "https://alchemix.tidbitshub.org/",
+    image: "alchemix_tidbits.png",
+  },
 ];
 
 export const Utilities = () => {
