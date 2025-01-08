@@ -62,7 +62,6 @@
     "@tanstack/router-devtools": "^1.43.10",
     "@tanstack/router-plugin": "^1.85.3",
     "@types/d3-array": "^3.2.1",
-    "@types/dompurify": "^3.2.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
@@ -88,7 +87,6 @@
   },
   "pnpm": {
     "overrides": {
-      "cross-spawn": "7.0.5",
       "nanoid": "3.3.8"
     }
   },
