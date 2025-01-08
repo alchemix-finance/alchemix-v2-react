@@ -1,8 +1,16 @@
+import { formatUnits } from "viem";
+import { InfoIcon } from "lucide-react";
+
 import {
   AccordionTrigger,
   AccordionItem,
   AccordionContent,
 } from "@/components/ui/accordion";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { CurrencyCell } from "@/components/vaults/row/VaultAccordionRow";
 import { SYNTH_ASSETS_METADATA } from "@/lib/config/synths";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
@@ -11,7 +19,6 @@ import { Deposit } from "./Deposit";
 import { Withdraw } from "./Withdraw";
 import { Claim } from "./Claim";
 import { TransmuterApr } from "./TransmuterApr";
-import { formatUnits } from "viem";
 import { formatNumber } from "@/utils/number";
 
 export const TransmuterAccordionRow = ({
@@ -58,9 +65,12 @@ export const TransmuterAccordionRow = ({
               <p className="text-sm text-lightgrey10">{`${syntheticToken?.symbol ?? "..."}-${
                 underlyingToken?.symbol ?? "..."
               }`}</p>
-              <p className="text-sm text-lightgrey10">
-                TVL: {formatNumber(tvl, { compact: true })}{" "}
-                {syntheticToken?.symbol}
+              <p className="inline-flex items-center gap-1 text-sm text-lightgrey10">
+                <span>
+                  TVL: {formatNumber(tvl, { compact: true })}{" "}
+                  {syntheticToken?.symbol}
+                </span>
+                <TvlInfoPopover />
               </p>
             </div>
           </div>
@@ -121,5 +131,20 @@ export const TransmuterAccordionRow = ({
         </div>
       </AccordionContent>
     </AccordionItem>
+  );
+};
+
+const TvlInfoPopover = () => {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button onClick={(e) => e.stopPropagation()}>
+          <InfoIcon className="h-3 w-3" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="text-sm" onClick={(e) => e.stopPropagation()}>
+        Total unexchanged transmuter balance.
+      </PopoverContent>
+    </Popover>
   );
 };
