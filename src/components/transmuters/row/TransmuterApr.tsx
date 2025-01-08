@@ -12,7 +12,7 @@ import {
 import { useTransmuterApr } from "@/lib/queries/transmuters/useTransmuterApr";
 
 export const TransmuterApr = ({ transmuter }: { transmuter: Transmuter }) => {
-  const { data, isError, isPending } = useTransmuterApr(transmuter);
+  const { data, isError, isPending } = useTransmuterApr({ transmuter });
 
   return (
     <div className="text-center">
@@ -22,11 +22,11 @@ export const TransmuterApr = ({ transmuter }: { transmuter: Transmuter }) => {
       </div>
       <div className="flex flex-col items-center">
         <p>
-          {isError || !transmuter.metadata.aprQueryUri
+          {isError || !transmuter.metadata.aprSelector
             ? "N/A"
             : isPending
               ? "..."
-              : `${formatNumber(data.apr, { allowNegative: false })}%`}
+              : `${formatNumber(data.projectedRate, { allowNegative: false })}%`}
         </p>
         {!!data?.timeToTransmute && (
           <p className="text-sm text-lightgrey10">

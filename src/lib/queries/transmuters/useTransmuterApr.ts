@@ -1,67 +1,61 @@
 import { useQuery } from "@tanstack/react-query";
+import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
+
 import { QueryKeys } from "../queriesSchema";
 import { Transmuter } from "@/lib/types";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
+import { useChain } from "@/hooks/useChain";
 
-interface TransmuterAprDuneQueryResponse {
-  execution_id: string;
-  query_id: number;
-  is_execution_finished: boolean;
-  state: string;
-  submitted_at: string;
-  expires_at: string;
-  execution_started_at: string;
-  execution_ended_at: string;
-  result: {
-    rows: [
-      {
-        projected_yield_rate: number;
-        time_to_transmute: number;
-      },
-    ];
-    metadata: {
-      column_names: string[];
-      column_types: string[];
-      row_count: number;
-      result_set_bytes: number;
-      total_row_count: number;
-      total_result_set_bytes: number;
-      datapoint_count: number;
-      pending_time_millis: number;
-      execution_time_millis: number;
-    };
-  };
-}
+type TransmuterAprResponse = Record<
+  "mainnet" | "optimism" | "arbitrum",
+  {
+    [key: string]: { timeToTransmute: number; projectedRate: number };
+  }
+>;
 
-const DUNE_API_ENDPOINT = "https://api.dune.com/api/v1/query";
-const API_KEY = import.meta.env.VITE_DUNE_API_KEY;
+const FILE_NAME = "transmuterRates.json";
+const API_KEY = import.meta.env.VITE_PINATA_KEY;
 
-export const useTransmuterApr = (transmuter: Transmuter) => {
+const ID_TO_KEY = {
+  [mainnet.id]: "mainnet",
+  [optimism.id]: "optimism",
+  [arbitrum.id]: "arbitrum",
+} as const;
+
+export const useTransmuterApr = ({
+  transmuter,
+}: {
+  transmuter: Transmuter;
+}) => {
+  const chain = useChain();
   return useQuery({
-    queryKey: [
-      QueryKeys.TransmuterApr,
-      transmuter.address,
-      transmuter.metadata.aprQueryUri,
-    ],
+    queryKey: [QueryKeys.TransmuterApr, chain.id],
     queryFn: async () => {
-      const response = await fetch(
-        `${DUNE_API_ENDPOINT}/${transmuter.metadata.aprQueryUri}/results?api_key=${API_KEY}`,
-      );
-      const data = (await response.json()) as TransmuterAprDuneQueryResponse;
-
-      const apr = data.result.rows[0].projected_yield_rate;
-      const timeToTransmute = data.result.rows[0].time_to_transmute;
-
-      if (apr === undefined || timeToTransmute === undefined) {
-        throw new Error("APR fetch failed.");
+      if (chain.id === fantom.id) {
+        throw new Error("Transmuter APR is not available on Fantom.");
       }
 
-      return {
-        apr,
-        timeToTransmute,
-      };
+      const responseHash = await fetch(
+        `https://api.pinata.cloud/data/pinList?includeCount=false&metadata[name]=${FILE_NAME}&status=pinned&pageLimit=1`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${API_KEY}`,
+          },
+        },
+      );
+      const dataHash = await responseHash.json();
+      const pinataHash = dataHash.rows[0].ipfs_pin_hash as string;
+      const url = `https://ipfs.imimim.info/ipfs/${pinataHash}`;
+      const responseData = await fetch(url);
+      const data = (await responseData.json()) as TransmuterAprResponse;
+
+      const chainData = data[ID_TO_KEY[chain.id]];
+
+      return chainData;
     },
-    enabled: !!transmuter.metadata.aprQueryUri,
+    select: (data) => data[transmuter.metadata.aprSelector],
+    enabled: !!transmuter.metadata.aprSelector && chain.id !== fantom.id,
     staleTime: ONE_DAY_IN_MS,
     retry: false,
   });

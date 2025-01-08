@@ -9,7 +9,7 @@ export interface TransmuterMetadata {
   address: Address;
   label: string;
   synthAsset: SynthAsset;
-  aprQueryUri: string;
+  aprSelector: string;
 }
 
 export type TransmutersMetadata = {
