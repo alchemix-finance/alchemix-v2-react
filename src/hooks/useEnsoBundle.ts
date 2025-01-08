@@ -19,10 +19,17 @@ export interface EnsoActionArg {
   primaryAddress?: `0x${string}`;
 }
 
+export interface EnsoBundleResponse {
+  bundle: EnsoAction[];
+  gas: string;
+  createdAt: string;
+  tx: EnsoTx;
+}
+
 export interface EnsoTx {
-  data: string;
-  to: string;
-  value: string;
+  data: `0x${string}`;
+  to: `0x${string}`;
+  value: bigint;
 }
 
 export interface EnsoBundleConfig {
@@ -33,7 +40,7 @@ export interface EnsoBundleConfig {
 }
 
 export const ENSO_ROUTER_ADDRESS = "0x80EbA3855878739F4710233A8a19d89Bdd2ffB8E";
-const ENSO_API_BASE_URI = "https://api.enso.finance/api/v1/shortcuts/bundle";
+const ENSO_API_BUNDLE_URI = "https://api.enso.finance/api/v1/shortcuts/bundle";
 const ENSO_API_KEY = import.meta.env.VITE_ENSO_API_KEY;
 
 export const useEnsoBundle = ({
@@ -67,7 +74,7 @@ export const useEnsoBundle = ({
         }
 
         const response = await fetch(
-          `${ENSO_API_BASE_URI}?chainId=${chain.id}&fromAddress=${address}`,
+          `${ENSO_API_BUNDLE_URI}?chainId=${chain.id}&fromAddress=${address}`,
           {
             method: "POST",
             headers: {
@@ -83,7 +90,7 @@ export const useEnsoBundle = ({
             `Error executing enso api call: ${response.status} ${response.statusText}`,
           );
         }
-        const ensoTxData = await response.json();
+        const ensoTxData = (await response.json()) as EnsoBundleResponse;
 
         const result = await sendTransaction({
           data: ensoTxData.tx.data,

@@ -57,7 +57,7 @@ export const useTokensQuery = () => {
         tokensAddresses.push(ALCX_OPTIMISM_ADDRESS);
       }
       if (chain.id !== fantom.id) {
-        tokensAddresses.push(WETH_ADDRESSES[chain.id] as `0x${string}`);
+        tokensAddresses.push(WETH_ADDRESSES[chain.id]);
       }
 
       const calls = tokensAddresses.flatMap(

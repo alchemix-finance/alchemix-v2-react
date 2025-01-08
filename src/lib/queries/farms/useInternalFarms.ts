@@ -27,7 +27,7 @@ export const useInternalFarms = () => {
   });
 
   const prices = useGetMultipleTokenPrices([
-    WETH_ADDRESSES[mainnet.id] as `0x${string}`,
+    WETH_ADDRESSES[mainnet.id],
     ALCX_MAINNET_ADDRESS,
   ]);
   const [{ data: wethPrice }, { data: alcxPrice }] = prices;

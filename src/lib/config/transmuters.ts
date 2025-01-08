@@ -10,7 +10,7 @@ export const TRANSMUTER_LOOPERS_VAULTS = {
     {
       address: "0x...", // TODO - replace with address for StrategyMainnet
       synthAsset: SYNTH_ASSETS.ALETH,
-      label: "ALETH Transmuter Looper",
+      label: "alETH Transmuter Looper",
       aprQueryUri: "",
     },
   ],
@@ -18,7 +18,7 @@ export const TRANSMUTER_LOOPERS_VAULTS = {
     {
       address: "0xd89ee1E95f7728f6964CF321E2648cCd29a881f1", // TODO - This is yvUSDC for testing, replace with address for StrategyArb
       synthAsset: SYNTH_ASSETS.ALETH,
-      label: "Arbitrum ALETH Transmuter Looper",
+      label: "Arbitrum alETH Transmuter Looper",
       aprQueryUri: "",
     },
   ],
@@ -26,7 +26,7 @@ export const TRANSMUTER_LOOPERS_VAULTS = {
     {
       address: "0x...", // TODO - replace with address for StrategyOp
       synthAsset: SYNTH_ASSETS.ALETH,
-      label: "Optimism ALETH Transmuter Looper",
+      label: "Optimism alETH Transmuter Looper",
       aprQueryUri: "",
     },
   ],

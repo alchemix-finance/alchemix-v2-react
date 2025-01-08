@@ -27,7 +27,7 @@ export const useSushiFarm = () => {
   });
 
   const prices = useGetMultipleTokenPrices([
-    WETH_ADDRESSES[mainnet.id] as `0x${string}`,
+    WETH_ADDRESSES[mainnet.id],
     ALCX_MAINNET_ADDRESS,
     SUSHI_MAINNET_ADDRESS,
   ]);
@@ -140,13 +140,11 @@ export const useSushiFarm = () => {
       });
 
       const price0 =
-        underlying0.toLowerCase() ===
-        (WETH_ADDRESSES[mainnet.id] as `0x${string}`).toLowerCase()
+        underlying0.toLowerCase() === WETH_ADDRESSES[mainnet.id].toLowerCase()
           ? wethPrice
           : alcxPrice;
       const price1 =
-        underlying1.toLowerCase() ===
-        (WETH_ADDRESSES[mainnet.id] as `0x${string}`).toLowerCase()
+        underlying1.toLowerCase() === WETH_ADDRESSES[mainnet.id].toLowerCase()
           ? wethPrice
           : alcxPrice;
       const reserve0Number = parseFloat(formatEther(reserve0));

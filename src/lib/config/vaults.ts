@@ -270,10 +270,7 @@ export const VAULTS: VaultsConfig = {
         provider: "rocket",
         bonus: getNoBonus,
       },
-      disabledDepositTokens: [
-        GAS_ADDRESS,
-        WETH_ADDRESSES[mainnet.id] as `0x${string}`,
-      ],
+      disabledDepositTokens: [GAS_ADDRESS, WETH_ADDRESSES[mainnet.id]],
       disabledWithdrawTokens: [],
     },
     "0x61134511187a9a2DF38D10DBe07Ba2e8E5563967": {

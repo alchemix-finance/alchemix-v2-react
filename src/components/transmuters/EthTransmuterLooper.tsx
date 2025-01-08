@@ -41,8 +41,10 @@ import { GAS_ADDRESS, WETH_ADDRESSES, ZERO_ADDRESS } from "@/lib/constants";
 import { SlippageInput } from "../common/input/SlippageInput";
 import {
   PortalTransactionResult,
-  usePortalApproval,
-  usePortalZap,
+  useApproveInputToken,
+  useCheckApproval,
+  usePortalQuote,
+  useSendPortalTransaction,
 } from "@/hooks/usePortal";
 
 enum TL_STATIC_STATE_INDICIES {
@@ -319,6 +321,68 @@ export const EthTransmuterLooper = () => {
     scopeKey: ScopeKeys.TransmuterLooperReported,
   });
 
+  /** PORTAL APPROVAL */
+  const { data: checkWethApprovalData } = useCheckApproval(
+    address as `0x${string}`,
+    WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId],
+    amount,
+    18,
+  );
+  const {
+    shouldApprove: isWethApprovalNeeded,
+    canPermit: isWethEligibleForGaslessSignature,
+    approveTx: approveSpendWethTx,
+    permit: approveSpendWethSignature,
+  } = checkWethApprovalData ?? {};
+
+  const { data: checkSharesApprovalData } = useCheckApproval(
+    address as `0x${string}`,
+    TRANSMUTER_LOOPER_ADDRESS as `0x${string}`,
+    amount,
+    6,
+  );
+  const {
+    shouldApprove: isSharesApprovalNeeded,
+    canPermit: isSharesEligibleForGasslessSignature,
+    approveTx: approveSpendSharesTx,
+    permit: approveSpendSharesSignature,
+  } = checkSharesApprovalData ?? {};
+
+  /** PORTAL QUOTE */
+  const { data: wethOrEthToVaultSharesQuote } = usePortalQuote({
+    gaslessSignature: gaslessSignature,
+    inputToken:
+      selectTokenAddress === GAS_ADDRESS ? ZERO_ADDRESS : selectTokenAddress,
+    inputTokenDecimals: 18,
+    inputAmount: amount,
+    outputToken: TRANSMUTER_LOOPER_ADDRESS,
+    sender: address as `0x${string}`,
+    shouldQuote:
+      selectTokenAddress === GAS_ADDRESS ||
+      (selectTokenAddress ===
+        WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId] &&
+        (!isWethApprovalNeeded || gaslessSignature))
+        ? true
+        : false,
+  });
+
+  const { data: vaultSharesToETHorWethQuote } = usePortalQuote({
+    gaslessSignature: gaslessSignature,
+    inputToken: TRANSMUTER_LOOPER_ADDRESS,
+    inputTokenDecimals: 6,
+    inputAmount: amount,
+    outputToken:
+      selectTokenAddress === GAS_ADDRESS ? ZERO_ADDRESS : selectTokenAddress,
+    sender: address as `0x${string}`,
+    shouldQuote:
+      ((!isSharesApprovalNeeded || gaslessSignature) &&
+        selectTokenAddress !==
+          SYNTH_ASSETS_ADDRESSES[chain.id as SupportedTransmuterLooperChainId][
+            SYNTH_ASSETS.ALETH
+          ]) ??
+      false,
+  });
+
   /** CONTRACT WRITES **/
   /**
    * Get allowance info for alETH and WETH
@@ -338,31 +402,6 @@ export const EthTransmuterLooper = () => {
     isInfiniteApproval,
   });
 
-  /** PORTAL APPROVAL */
-  const {
-    approveInputToken: approveSpendWeth,
-    shouldApprove: isWethApprovalNeeded,
-  } = usePortalApproval(
-    address as `0x${string}`,
-    WETH_ADDRESSES[
-      chain.id as SupportedTransmuterLooperChainId
-    ] as `0x${string}`,
-    amount,
-    gaslessSignature,
-    18,
-  );
-
-  const {
-    approveInputToken: approveSpendShares,
-    shouldApprove: isSharesApprovalNeeded,
-  } = usePortalApproval(
-    address as `0x${string}`,
-    TRANSMUTER_LOOPER_ADDRESS as `0x${string}`,
-    amount,
-    gaslessSignature,
-    6,
-  );
-
   const selectedTokenIsApprovalNeeded =
     selectTokenAddress ===
     SYNTH_ASSETS_ADDRESSES[chain.id as SupportedTransmuterLooperChainId][
@@ -371,7 +410,21 @@ export const EthTransmuterLooper = () => {
       ? isApprovalNeeded
       : selectTokenAddress === GAS_ADDRESS
         ? false
-        : isWethApprovalNeeded;
+        : isWethApprovalNeeded && !gaslessSignature;
+
+  const { mutateAsync: approveSpendWeth } = useApproveInputToken({
+    shouldApprove: isWethApprovalNeeded ?? false,
+    canPermit: isWethEligibleForGaslessSignature ?? false,
+    approveTx: approveSpendWethTx,
+    permit: approveSpendWethSignature,
+  });
+
+  const { mutateAsync: approveSpendShares } = useApproveInputToken({
+    shouldApprove: isSharesApprovalNeeded ?? false,
+    canPermit: isSharesEligibleForGasslessSignature ?? false,
+    approveTx: approveSpendSharesTx,
+    permit: approveSpendSharesSignature,
+  });
 
   /**
    * Configure write contract functions for alETH deposit
@@ -428,28 +481,12 @@ export const EthTransmuterLooper = () => {
   });
 
   /** PORTAL BUNDLER CALLS */
-  const { mutateAsync: depositUsingPortal } = usePortalZap({
-    shouldApprove: isWethApprovalNeeded,
-    approveInputToken: approveSpendWeth,
-    gaslessSignature,
-    inputToken:
-      selectTokenAddress === GAS_ADDRESS ? ZERO_ADDRESS : selectTokenAddress,
-    inputTokenDecimals: 18,
-    inputAmount: amount,
-    outputToken: `0xd89ee1E95f7728f6964CF321E2648cCd29a881f1` as `0x${string}`, // Yearn AaveV3 USDC Lender, TODO swap out for Looper contract
-    sender: address as `0x${string}`,
-  });
-  const { mutateAsync: withdrawUsingPortal } = usePortalZap({
-    shouldApprove: isSharesApprovalNeeded,
-    approveInputToken: approveSpendShares,
-    gaslessSignature: undefined,
-    outputToken:
-      selectTokenAddress === GAS_ADDRESS ? ZERO_ADDRESS : selectTokenAddress,
-    inputAmount: amount,
-    inputToken: `0xd89ee1E95f7728f6964CF321E2648cCd29a881f1` as `0x${string}`, // Yearn AaveV3 USDC Lender, TODO swap out for Looper contract
-    inputTokenDecimals: 6,
-    sender: address as `0x${string}`,
-  });
+  const { mutateAsync: depositUsingPortal } = useSendPortalTransaction(
+    wethOrEthToVaultSharesQuote,
+  );
+  const { mutateAsync: withdrawUsingPortal } = useSendPortalTransaction(
+    vaultSharesToETHorWethQuote,
+  );
 
   useEffect(() => {
     if (redeemReceipt) {
@@ -464,15 +501,23 @@ export const EthTransmuterLooper = () => {
       (chain.id !== fantom.id &&
         selectTokenAddress === WETH_ADDRESSES[chain.id])
     ) {
-      const result = await depositUsingPortal();
-      if ((result as PortalTransactionResult).signature) {
-        setGaslessSignature(
-          (result as PortalTransactionResult).signature as `0x${string}`,
-        );
-      } else if ((result as PortalTransactionResult).hash) {
-        setAmount("");
+      if (
+        selectTokenAddress ===
+          WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId] &&
+        isWethApprovalNeeded &&
+        !gaslessSignature
+      ) {
+        const result = await approveSpendWeth();
+        if ((result as PortalTransactionResult).signature) {
+          setGaslessSignature(
+            (result as PortalTransactionResult).signature as `0x${string}`,
+          );
+        } else {
+          setAmount("");
+          setGaslessSignature(undefined);
+        }
       } else {
-        setGaslessSignature(undefined);
+        depositUsingPortal();
       }
     } else {
       // 1. Check approval
@@ -511,11 +556,12 @@ export const EthTransmuterLooper = () => {
       selectTokenAddress !==
         SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH]
     ) {
-      // withdrawUsingEnzo();
-      const hash = await withdrawUsingPortal();
-      if (hash) {
-        setAmount("");
+      if (isSharesApprovalNeeded) {
+        await approveSpendShares();
+      } else {
+        await withdrawUsingPortal();
       }
+      setAmount("");
     } else {
       // 1. Check for contract call error
       if (redeemError) {

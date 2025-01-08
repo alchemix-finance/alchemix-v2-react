@@ -1,13 +1,28 @@
-import { useSendTransaction, useWalletClient } from "wagmi";
-import { useChain } from "./useChain";
 import {
-  UseMutateAsyncFunction,
-  useMutation,
-  useQuery,
-} from "@tanstack/react-query";
+  usePrepareTransactionRequest,
+  useSendTransaction,
+  useWalletClient,
+} from "wagmi";
+import { useChain } from "./useChain";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 import { parseUnits } from "viem";
-import { ZERO_ADDRESS } from "@/lib/constants";
+
+type PortalApprovalResponse = {
+  context: PortalApprovalContext;
+  approve?: TransactionToSubmit;
+  permit?: PermitTx;
+};
+
+type PortalApprovalContext = {
+  network: string;
+  allowance: string;
+  approvalAmount: string;
+  shouldApprove: boolean;
+  canPermit: boolean;
+  spender: string;
+  target: `0x${string}`;
+};
 
 type PermitTypes = {
   Permit: [
@@ -45,14 +60,13 @@ type TransactionToSubmit = {
 };
 
 type PortalQuoteParams = {
-  approveInputToken: UseMutateAsyncFunction;
-  shouldApprove: unknown;
   gaslessSignature: `0x${string}` | undefined;
   inputToken: string;
   inputTokenDecimals: number;
   inputAmount: string;
   outputToken: string;
   sender: string;
+  shouldQuote: boolean;
 };
 
 export type PortalQuoteResponse = {
@@ -96,7 +110,7 @@ const PORTALS_CHAIN_ID = {
   [fantom.id]: "fantom",
 };
 
-const useCheckApproval = (
+export const useCheckApproval = (
   sender: `0x${string}`,
   inputToken: `0x${string}`,
   inputAmount: string,
@@ -104,7 +118,13 @@ const useCheckApproval = (
 ) => {
   const chain = useChain();
 
-  return useQuery({
+  return useQuery<{
+    shouldApprove: boolean;
+    canPermit: boolean;
+    routerAddress: `0x${string}`;
+    approveTx: TransactionToSubmit;
+    permit: PermitTx;
+  }>({
     queryKey: [
       "portalCheckApproval",
       sender,
@@ -132,31 +152,43 @@ const useCheckApproval = (
         );
       }
 
-      const portalRouterApprovalData = await response.json();
+      const portalRouterApprovalData =
+        (await response.json()) as PortalApprovalResponse;
 
       return {
         shouldApprove: portalRouterApprovalData.context.shouldApprove,
         canPermit: portalRouterApprovalData.context.canPermit,
         routerAddress: portalRouterApprovalData.context.target,
-        approveTx: portalRouterApprovalData?.approve,
-        permit: portalRouterApprovalData?.permit,
+        approveTx: portalRouterApprovalData.approve as TransactionToSubmit,
+        permit: portalRouterApprovalData.permit as PermitTx,
       };
     },
   });
 };
 
-const useApproveInputToken = ({
+export const useApproveInputToken = ({
   approveTx,
   permit,
   canPermit,
   shouldApprove,
 }: {
-  approveTx: TransactionToSubmit;
-  permit: PermitTx;
+  approveTx: TransactionToSubmit | undefined;
+  permit: PermitTx | undefined;
   canPermit: boolean;
   shouldApprove: boolean;
 }) => {
-  const { sendTransactionAsync } = useSendTransaction();
+  const { sendTransaction } = useSendTransaction();
+  const preparedTransactionConfig =
+    !canPermit && shouldApprove
+      ? {
+          to: (approveTx as TransactionToSubmit).to,
+          data: (approveTx as TransactionToSubmit).data,
+          account: (approveTx as TransactionToSubmit).from,
+        }
+      : undefined;
+  const { isError: isPrepareTxRequestError } = usePrepareTransactionRequest(
+    preparedTransactionConfig,
+  );
   const { data: walletClient } = useWalletClient();
 
   return useMutation({
@@ -177,11 +209,15 @@ const useApproveInputToken = ({
 
         return { signature };
       } else {
-        const hash = await sendTransactionAsync({
-          to: approveTx.to,
-          data: approveTx.data,
-          account: approveTx.from,
-          gas: BigInt(approveTx.gasLimit),
+        if (isPrepareTxRequestError) {
+          throw new Error(`Failed to prepare transaction for approval tx`);
+        }
+
+        const hash = sendTransaction({
+          to: (approveTx as TransactionToSubmit).to,
+          data: (approveTx as TransactionToSubmit).data,
+          account: (approveTx as TransactionToSubmit).from,
+          gas: BigInt((approveTx as TransactionToSubmit).gasLimit),
         });
 
         return { hash };
@@ -193,51 +229,19 @@ const useApproveInputToken = ({
   });
 };
 
-export const usePortalApproval = (
-  sender: `0x${string}`,
-  inputToken: `0x${string}`,
-  inputAmount: string,
-  gaslessSignature: `0x${string}` | undefined,
-  inputTokenDecimals: number,
-) => {
-  const { data, isLoading, error } = useCheckApproval(
-    sender,
-    inputToken,
-    inputAmount,
-    inputTokenDecimals,
-  );
-
-  const { mutateAsync: approveInputToken } = useApproveInputToken({
-    approveTx: data?.approveTx,
-    permit: data?.permit,
-    canPermit: data?.canPermit,
-    shouldApprove: data?.shouldApprove,
-  });
-
-  return {
-    isLoading,
-    error,
-    approveInputToken,
-    routerAddress: data?.routerAddress,
-    shouldApprove: gaslessSignature ? false : data?.shouldApprove,
-  };
-};
-
-const useSendPortalTransaction = (params: PortalQuoteParams) => {
-  const { sendTransactionAsync } = useSendTransaction();
+export const usePortalQuote = (params: PortalQuoteParams) => {
   const chain = useChain();
 
-  return useMutation({
-    mutationFn: async () => {
-      if (
-        params.inputToken !== ZERO_ADDRESS &&
-        params.shouldApprove &&
-        !params.gaslessSignature
-      ) {
-        const signatureOrHash = await params.approveInputToken();
-        return signatureOrHash;
-      }
-
+  return useQuery({
+    queryKey: [
+      "portalQuote",
+      params.inputToken,
+      params.inputTokenDecimals,
+      params.inputAmount,
+      params.outputToken,
+      params.sender,
+    ],
+    queryFn: async () => {
       const url = new URL(`${PORTAL_API_BASE_URI}/portal`);
       url.searchParams.append(
         "inputToken",
@@ -272,32 +276,36 @@ const useSendPortalTransaction = (params: PortalQuoteParams) => {
 
       const portalQuote = (await response.json()) as PortalQuoteResponse;
 
-      const transaction = {
-        to: portalQuote.tx.to,
-        from: portalQuote.tx.from,
-        data: portalQuote.tx.data,
-        gasLimit: portalQuote.tx.gasLimit,
-        value: portalQuote.tx.value,
-      };
+      return portalQuote;
+    },
+    enabled: params.shouldQuote,
+  });
+};
 
-      const hash = await sendTransactionAsync({
-        to: transaction.to,
-        data: transaction.data,
-        value: transaction.value,
+export const useSendPortalTransaction = (
+  params: PortalQuoteResponse | undefined,
+) => {
+  const { sendTransaction } = useSendTransaction();
+  const chain = useChain();
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!params) {
+        throw new Error(
+          "Undefined portal quote. A failure likely occured when trying to create quote that was expected to succeed.",
+        );
+      }
+
+      const hash = sendTransaction({
+        to: params.tx.to,
+        data: params.tx.data,
+        value: params.tx.value,
       });
 
       console.log("Transaction sent:", hash);
-
-      return { hash, portalQuote };
     },
     onError: (error) => {
       console.log(`Error executing zap through portal: ${error}`);
     },
   });
-};
-
-export const usePortalZap = (params: PortalQuoteParams) => {
-  const { mutateAsync } = useSendPortalTransaction(params);
-
-  return { mutateAsync };
 };

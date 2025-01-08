@@ -32,7 +32,7 @@ export const WETH_ADDRESSES = {
   [mainnet.id]: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
   [arbitrum.id]: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
   [optimism.id]: "0x4200000000000000000000000000000000000006",
-};
+} as const;
 
 // Number constants
 export const MAX_UINT256_BN = BigInt(Math.pow(2, 256)) - 1n;
