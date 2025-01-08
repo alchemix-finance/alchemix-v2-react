@@ -44,7 +44,7 @@
     "d3-array": "^3.2.4",
     "dayjs": "^1.11.12",
     "dnum": "^2.13.1",
-    "dompurify": "^3.1.6",
+    "dompurify": "^3.2.3",
     "framer-motion": "^11.3.21",
     "graphql": "^16.9.0",
     "graphql-request": "^7.1.2",
@@ -62,13 +62,12 @@
     "@tanstack/router-devtools": "^1.43.10",
     "@tanstack/router-plugin": "^1.85.3",
     "@types/d3-array": "^3.2.1",
-    "@types/dompurify": "^3.0.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "autoprefixer": "^10.4.19",
+    "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.4",
     "eslint-plugin-react-compiler": "19.0.0-beta-6fc168f-20241025",
@@ -83,12 +82,12 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.7.2",
     "vite": "^5.4.11",
-    "vite-plugin-svgr": "^4.2.0",
+    "vite-plugin-svgr": "^4.3.0",
     "vitest": "^2.1.8"
   },
   "pnpm": {
     "overrides": {
-      "cross-spawn": "7.0.5"
+      "nanoid": "3.3.8"
     }
   },
   "lint-staged": {
