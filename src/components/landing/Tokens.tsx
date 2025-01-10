@@ -17,7 +17,7 @@ const FULL_SET_WIDTH = (ITEM_WIDTH + GAP_WIDTH) * ITEMS_IN_SET;
 
 export const Tokens = () => {
   return (
-    <div className="relative flex max-w-xs flex-col gap-8 2xl:max-w-lg">
+    <div className="relative flex max-w-xs flex-col gap-8 sm:max-w-xl 2xl:max-w-lg">
       {/* Gradient Overlays */}
       <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-[16px] bg-gradient-to-r from-slate-950 to-transparent" />
       <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-[16px] bg-gradient-to-l from-slate-950 to-transparent" />

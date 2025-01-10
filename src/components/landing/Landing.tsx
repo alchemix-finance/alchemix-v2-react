@@ -37,7 +37,7 @@ export const Landing = () => {
       </div>
 
       <div className="flex w-full flex-col gap-4 2xl:gap-20 dark:bg-gradient-to-br dark:from-[#0B0D12] dark:to-[#171B24]">
-        <div className="flex flex-col items-center gap-4 px-5 2xl:flex-row 2xl:px-40">
+        <div className="flex flex-col items-center gap-4 px-5 sm:flex-row 2xl:px-40">
           <SlideBox className="w-full" direction="left" delay={0.2}>
             <img
               src="images/landing-page/01_Flexible.png"
@@ -60,7 +60,7 @@ export const Landing = () => {
           </SlideBox>
         </div>
 
-        <div className="flex flex-col-reverse items-center gap-4 px-5 pb-12 2xl:flex-row 2xl:px-40">
+        <div className="flex flex-col-reverse items-center gap-4 px-5 pb-12 sm:flex-row 2xl:px-40">
           <div className="w-full">
             <h2 className="text-xl font-semibold 2xl:text-[42px]">
               Zero Liquidations
@@ -85,7 +85,7 @@ export const Landing = () => {
         </div>
       </div>
 
-      <div className="flex w-full flex-col-reverse items-center gap-4 rounded-sm p-5 2xl:flex-row 2xl:px-40 2xl:py-20 dark:bg-[#080a0e]">
+      <div className="flex w-full flex-col-reverse items-center gap-4 rounded-sm p-5 sm:flex-row 2xl:px-40 2xl:py-20 dark:bg-[#080a0e]">
         <div className="w-full">
           <h2 className="text-xl font-semibold 2xl:text-[42px]">
             Security First
@@ -151,7 +151,7 @@ export const Landing = () => {
           <h2 className="text-center text-lg font-semibold 2xl:text-[58px]">
             A Thriving Ecosystem
           </h2>
-          <div className="max-w-xs 2xl:max-w-5xl">
+          <div className="max-w-xs sm:max-w-xl 2xl:max-w-5xl">
             <EcosystemGrid />
           </div>
         </div>
