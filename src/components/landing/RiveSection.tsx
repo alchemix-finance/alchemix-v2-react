@@ -2,7 +2,7 @@ import Rive from "@rive-app/react-canvas";
 
 export const RiveSection = () => {
   return (
-    <div className="flex justify-center gap-4">
+    <div className="flex flex-col justify-center gap-4 2xl:flex-row">
       <Rive
         className="h-[330px] w-[330px]"
         src="/riv/1_deposit.riv"

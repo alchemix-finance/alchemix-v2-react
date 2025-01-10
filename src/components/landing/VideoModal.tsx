@@ -36,15 +36,15 @@ export const VideoModal = ({
           }}
           className={cn(
             // Base styles for the button
-            "group relative z-10 inline-flex h-11 cursor-pointer items-center justify-center self-start rounded-xl border-0 px-8 py-5 font-sans text-xl font-medium tracking-tight text-[#1BEAA5] transition-all",
+            "group relative z-10 inline-flex h-11 cursor-pointer items-center justify-center rounded-xl border-0 px-8 py-5 font-sans text-xl font-medium tracking-tight text-[#1BEAA5]",
             // Apply multiple background layers
             "bg-[length:200%] [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.08*1rem)_solid_transparent]",
             // Background layers for the gradient effect
-            "bg-[linear-gradient(#080a0e,#080a0e),linear-gradient(#1BEAA5,#1BEAA5),linear-gradient(90deg,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5)]",
+            "bg-[linear-gradient(#DEDBD3,#DEDBD3),linear-gradient(#1BEAA5,#1BEAA5),linear-gradient(90deg,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5)] dark:bg-[linear-gradient(#080a0e,#080a0e),linear-gradient(#1BEAA5,#1BEAA5),linear-gradient(90deg,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5)]",
             // Animate in when in view
             isInView ? "opacity-100 blur-0" : "opacity-0 blur-sm",
             // Base styles for before pseudo-element
-            "before:animate-buttonMovingGradientBg before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:bg-[linear-gradient(90deg,#080a0e,#1BEAA5,#080a0e,#1BEAA5,#080a0e)] before:bg-[length:200%] before:opacity-15 before:transition-opacity before:[filter:blur(1rem)]",
+            "before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:animate-buttonMovingGradientBg before:bg-[linear-gradient(90deg,#DEDBD3,#1BEAA5,#DEDBD3,#1BEAA5,#DEDBD3)] before:bg-[length:200%] before:opacity-15 before:transition-opacity before:[filter:blur(1rem)] dark:before:bg-[linear-gradient(90deg,#080a0e,#1BEAA5,#080a0e,#1BEAA5,#080a0e)]",
             // Hover pseudo-element for the glow effect
             "hover:before:animate-buttonMovingGradientBg hover:before:opacity-70",
           )}

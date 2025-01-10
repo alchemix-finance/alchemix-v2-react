@@ -12,7 +12,7 @@ const socials = [
     title: "Twitter",
     description:
       "Stay up to date with the latest Alchemix news and community updates.",
-    href: "#",
+    href: "https://x.com/AlchemixFi",
     cta: "Follow us on X",
     Icon: XPrevTwitterIcon,
     background: null,
@@ -22,7 +22,7 @@ const socials = [
     title: "Discord",
     description:
       "Participate in active Alchemix community discussions and get user support.",
-    href: "#",
+    href: "https://discord.gg/alchemix",
     cta: "Join Discord",
     Icon: DiscordIcon,
     background: null,
@@ -32,7 +32,7 @@ const socials = [
     title: "Documentation",
     description:
       "Build with us! Our documentation offers everything you need to get started.",
-    href: "#",
+    href: "https://docs.alchemix.fi/",
     cta: "Read the docs",
     Icon: FileIcon,
     background: null,
@@ -87,8 +87,8 @@ const BentoCard = ({
     )}
   >
     <div>{background}</div>
-    <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-1 p-6 transition-all duration-300 group-hover:-translate-y-10">
-      <Icon className="h-12 w-12 origin-left transform-gpu fill-iconsInverse text-iconsInverse transition-all duration-300 ease-in-out group-hover:scale-75 dark:fill-orange4 dark:text-orange4" />
+    <div className="pointer-events-none z-10 flex -translate-y-10 transform-gpu flex-col gap-1 p-6 transition-all duration-300 group-hover:-translate-y-10 2xl:translate-y-0">
+      <Icon className="h-12 w-12 origin-left transform-gpu fill-iconsInverse text-iconsInverse transition-all duration-300 ease-in-out 2xl:group-hover:scale-75 dark:fill-orange4 dark:text-orange4" />
       <h3 className="text-xl font-semibold text-neutral-700 dark:text-neutral-300">
         {title}
       </h3>
@@ -97,7 +97,7 @@ const BentoCard = ({
 
     <div
       className={cn(
-        "pointer-events-none absolute bottom-0 flex w-full translate-y-10 transform-gpu flex-row items-center p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100",
+        "pointer-events-none absolute bottom-0 flex w-full transform-gpu flex-row items-center p-4 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 2xl:translate-y-10 2xl:opacity-0",
       )}
     >
       <Button
@@ -106,7 +106,7 @@ const BentoCard = ({
         size="sm"
         className="pointer-events-auto bg-grey15inverse hover:bg-grey5inverse dark:bg-grey15 dark:hover:bg-grey5"
       >
-        <a href={href}>
+        <a href={href} target="_blank" rel="noreferrer noopener">
           {cta}
           <ArrowRightIcon className="ml-2 h-4 w-4" />
         </a>
