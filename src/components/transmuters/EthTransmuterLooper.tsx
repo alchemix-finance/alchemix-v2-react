@@ -160,17 +160,9 @@ export const EthTransmuterLooper = ({
     ],
   });
   // TODO: Figure out what we need and what we dont need from this
-  const [
-    sharesTokenAddress,
-    decimals,
-    shareTokenName,
-    performanceFee,
-    maxDeposit,
-    maxMint,
-    maxRedeem,
-    maxWithdraw,
-    symbol,
-  ] = transmuterLooperContractStaticState ?? [];
+  // const [sharesTokenAddress,decimals,shareTokenName,performanceFee,maxDeposit,maxMint,maxRedeem,maxWithdraw,symbol]
+  const [, decimals, , , maxDeposit, , , , ,] =
+    transmuterLooperContractStaticState ?? [];
 
   /** EVENT TRIGGERED CONTRACT READS **/
   // Read these contract functions initially, but separately as they will be watched and reread per block in case they are updated
@@ -245,17 +237,9 @@ export const EthTransmuterLooper = ({
     ],
   });
   // TODO: Figure out what we need and what we dont need from this
-  const [
-    fullProfitUnlockDate,
-    isShutdown,
-    lastReport,
-    balanceOf,
-    pricePerShare,
-    profitMaxUnlockTime,
-    profitUnlockingRate,
-    totalAssets,
-    totalSupply,
-  ] = transmuterLooperContractDynamicState ?? [];
+  // const [fullProfitUnlockDate,isShutdown,lastReport,balanceOf,pricePerShare,profitMaxUnlockTime,profitUnlockingRate,totalAssets,totalSupply]
+  const [, , , , , , , totalAssets, totalSupply] =
+    transmuterLooperContractDynamicState ?? [];
 
   // Watch intermittently updated read values in case they are updated due to the report function or other manual updates to the contract
   useWatchQuery({
