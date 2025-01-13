@@ -22,6 +22,8 @@ export const ctaErrorToast = (
           try {
             const decodedError = decodeErrorResult({
               abi: alchemistErrorsAbi,
+              // FIXME: This signature is not data and missing Error arguments.
+              // This causes decodeErrorResult to throw an error, because it cannot parse parameters.
               data: noSignatureError.signature,
             });
             return decodedError.errorName;
