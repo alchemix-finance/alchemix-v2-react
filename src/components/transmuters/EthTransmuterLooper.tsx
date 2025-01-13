@@ -21,7 +21,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
 import { tokenizedStrategyAbi } from "@/abi/tokenizedStrategy";
 import { SYNTH_ASSETS, SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
-import { fantom, mainnet } from "viem/chains";
+import { fantom } from "viem/chains";
 import {
   SupportedTransmuterLooperChainId,
   TransmuterMetadata,
@@ -282,7 +282,10 @@ export const EthTransmuterLooper = ({
     approveConfig: alETHApproveConfig,
     approve: approveSpendAlETH,
   } = useAllowance({
-    tokenAddress: SYNTH_ASSETS_ADDRESSES[mainnet.id][SYNTH_ASSETS.ALETH],
+    tokenAddress:
+      chain.id !== fantom.id
+        ? SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH]
+        : undefined,
     spender: transmuterLooper.address,
     amount,
     decimals: decimals ?? 18,
