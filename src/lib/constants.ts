@@ -2,8 +2,6 @@ import { arbitrum, mainnet, optimism } from "viem/chains";
 
 // Gas doesn't have an address, but we use this to handle gas logic in the app
 export const GAS_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-// Some APIs require zero address when dealing with GAS
-export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 // Time constants
 export const ONE_MINUTE_IN_MS = 60 * 1000;

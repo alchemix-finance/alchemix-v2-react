@@ -8,7 +8,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { formatEther, parseEther } from "viem";
+import { formatEther, parseEther, zeroAddress } from "viem";
 import { TokenInput } from "../common/input/TokenInput";
 import { formatNumber } from "@/utils/number";
 import { useChain } from "@/hooks/useChain";
@@ -37,7 +37,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
-import { GAS_ADDRESS, WETH_ADDRESSES, ZERO_ADDRESS } from "@/lib/constants";
+import { GAS_ADDRESS, WETH_ADDRESSES } from "@/lib/constants";
 import { SlippageInput } from "../common/input/SlippageInput";
 import {
   PortalTransactionResult,
@@ -47,31 +47,31 @@ import {
   useSendPortalTransaction,
 } from "@/hooks/usePortal";
 
-enum TL_STATIC_STATE_INDICIES {
-  sharesTokenAddress = 0,
-  decimals = 1,
-  shareTokenName = 2,
-  performanceFee = 3,
-  maxDeposit = 4,
-  maxMint = 5,
-  maxRedeem = 6,
-  maxWithdraw = 7,
-  symbol = 8,
-}
-
-enum TL_DYNAMIC_STATE_INDICIES {
-  fullProfitUnlockDate = 0,
-  isShutdown = 1,
-  lastReport = 2,
-  balanceOf = 3,
-  pricePerShare = 4,
-  profitMaxUnlockTime = 5,
-  profitUnlockingRate = 6,
-  totalAssets = 7,
-  totalSupply = 8,
-}
-
 export const EthTransmuterLooper = () => {
+  const TL_STATIC_STATE_INDICIES = Object.freeze({
+    sharesTokenAddress: 0,
+    decimals: 1,
+    shareTokenName: 2,
+    performanceFee: 3,
+    maxDeposit: 4,
+    maxMint: 5,
+    maxRedeem: 6,
+    maxWithdraw: 7,
+    symbol: 8,
+  });
+
+  const TL_DYNAMIC_STATE_INDICIES = Object.freeze({
+    fullProfitUnlockDate: 0,
+    isShutdown: 1,
+    lastReport: 2,
+    balanceOf: 3,
+    pricePerShare: 4,
+    profitMaxUnlockTime: 5,
+    profitUnlockingRate: 6,
+    totalAssets: 7,
+    totalSupply: 8,
+  });
+
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
   const { address } = useAccount();
@@ -352,7 +352,7 @@ export const EthTransmuterLooper = () => {
   const { data: wethOrEthToVaultSharesQuote } = usePortalQuote({
     gaslessSignature: gaslessSignature,
     inputToken:
-      selectTokenAddress === GAS_ADDRESS ? ZERO_ADDRESS : selectTokenAddress,
+      selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
     inputTokenDecimals: 18,
     inputAmount: amount,
     outputToken: TRANSMUTER_LOOPER_ADDRESS,
@@ -372,7 +372,7 @@ export const EthTransmuterLooper = () => {
     inputTokenDecimals: 6,
     inputAmount: amount,
     outputToken:
-      selectTokenAddress === GAS_ADDRESS ? ZERO_ADDRESS : selectTokenAddress,
+      selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
     sender: address as `0x${string}`,
     shouldQuote:
       ((!isSharesApprovalNeeded || gaslessSignature) &&
