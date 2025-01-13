@@ -28,7 +28,7 @@ export const Landing = () => {
           Unlock the potential of your assets with secure and stress-free
           borrowing.
         </BlurInParagraph>
-        <div className="flex flex-col-reverse items-center justify-center gap-4 2xl:flex-row 2xl:gap-6">
+        <div className="flex flex-col items-center justify-center gap-4 2xl:flex-row 2xl:gap-6">
           <LandingCtaButton delay={0.2}>
             Get your Self-Repaying Loan
           </LandingCtaButton>
