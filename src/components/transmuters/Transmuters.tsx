@@ -77,13 +77,18 @@ export const Transmuters = () => {
           {chain.id !== fantom.id ? (
             TRANSMUTER_LOOPERS_VAULTS[chain.id].map((transmuterLooper) => {
               if (transmuterLooper.synthAsset === SYNTH_ASSETS.ALETH) {
-                return <EthTransmuterLooper key="EthTransmuterLooper" />;
+                return (
+                  <EthTransmuterLooper
+                    transmuterLooper={transmuterLooper}
+                    key="EthTransmuterLooper"
+                  />
+                );
               } else {
                 return null;
               }
             })
           ) : (
-            <div>No transmuters for selected chain</div>
+            <div>No transmuters loopers for selected chain</div>
           )}
           <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">

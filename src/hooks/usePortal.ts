@@ -1,12 +1,15 @@
 import {
   usePrepareTransactionRequest,
   useSendTransaction,
-  useWalletClient,
+  useSignTypedData,
+  useWaitForTransactionReceipt,
 } from "wagmi";
-import { useChain } from "./useChain";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 import { parseUnits } from "viem";
+import { useEffect } from "react";
+
+import { useChain } from "./useChain";
 
 type PortalApprovalResponse = {
   context: PortalApprovalContext;
@@ -98,10 +101,6 @@ export type PortalQuoteContext = {
   steps: string[];
 };
 
-export type PortalTransactionResult =
-  | { hash: string; signature?: undefined }
-  | { signature: string; hash?: undefined };
-
 const PORTAL_API_BASE_URI = "https://api.portals.fi/v2";
 const PORTALS_CHAIN_ID = {
   [mainnet.id]: "ethereum",
@@ -118,13 +117,7 @@ export const useCheckApproval = (
 ) => {
   const chain = useChain();
 
-  return useQuery<{
-    shouldApprove: boolean;
-    canPermit: boolean;
-    routerAddress: `0x${string}`;
-    approveTx: TransactionToSubmit;
-    permit: PermitTx;
-  }>({
+  return useQuery({
     queryKey: [
       "portalCheckApproval",
       sender,
@@ -159,8 +152,8 @@ export const useCheckApproval = (
         shouldApprove: portalRouterApprovalData.context.shouldApprove,
         canPermit: portalRouterApprovalData.context.canPermit,
         routerAddress: portalRouterApprovalData.context.target,
-        approveTx: portalRouterApprovalData.approve as TransactionToSubmit,
-        permit: portalRouterApprovalData.permit as PermitTx,
+        approveTx: portalRouterApprovalData.approve,
+        permit: portalRouterApprovalData.permit,
       };
     },
   });
@@ -174,73 +167,81 @@ export const useApproveInputToken = ({
 }: {
   approveTx: TransactionToSubmit | undefined;
   permit: PermitTx | undefined;
-  canPermit: boolean;
-  shouldApprove: boolean;
+  canPermit: boolean | undefined;
+  shouldApprove: boolean | undefined;
 }) => {
-  const { sendTransaction } = useSendTransaction();
-  const preparedTransactionConfig =
-    !canPermit && shouldApprove
-      ? {
-          to: (approveTx as TransactionToSubmit).to,
-          data: (approveTx as TransactionToSubmit).data,
-          account: (approveTx as TransactionToSubmit).from,
-        }
-      : undefined;
-  const { isError: isPrepareTxRequestError } = usePrepareTransactionRequest(
-    preparedTransactionConfig,
-  );
-  const { data: walletClient } = useWalletClient();
+  const chain = useChain();
 
-  return useMutation({
-    mutationFn: async () => {
-      if (!shouldApprove) {
-        return {};
-      }
-
-      if (canPermit && permit) {
-        if (!walletClient) throw new Error("No wallet client found");
-
-        const signature = await walletClient.signTypedData({
-          domain: permit.domain,
-          types: permit.types,
-          message: permit.value,
-          primaryType: "Permit",
-        });
-
-        return { signature };
-      } else {
-        if (isPrepareTxRequestError) {
-          throw new Error(`Failed to prepare transaction for approval tx`);
-        }
-
-        const hash = sendTransaction({
-          to: (approveTx as TransactionToSubmit).to,
-          data: (approveTx as TransactionToSubmit).data,
-          account: (approveTx as TransactionToSubmit).from,
-          gas: BigInt((approveTx as TransactionToSubmit).gasLimit),
-        });
-
-        return { hash };
-      }
-    },
-    onError: (error) => {
-      console.log(`Error approving input token through portal: ${error}`);
+  const { signTypedData, data: signature } = useSignTypedData({
+    // TODO: Add onSuccess and onError handlers (reuse similar logic as useWriteContractMutationCallback but for signTypedData instead of writeContract)
+    mutation: {
+      onSuccess: () => {},
+      onError: () => {},
     },
   });
+
+  const { data: approveConfig } = usePrepareTransactionRequest({
+    to: approveTx?.to,
+    data: approveTx?.data,
+    account: approveTx?.from,
+    chainId: chain.id,
+    query: {
+      enabled: !!approveTx && canPermit === false && shouldApprove === true,
+    },
+  });
+
+  const {
+    sendTransaction: approve,
+    data: approveTxHash,
+    reset: resetApprove,
+  } = useSendTransaction({
+    // TODO: Add onSuccess and onError handlers (reuse similar logic as useWriteContractMutationCallback but for sendTransaction instead of writeContract)
+    mutation: {
+      onSuccess: () => {},
+      onError: () => {},
+    },
+  });
+
+  const { data: approveReceipt } = useWaitForTransactionReceipt({
+    hash: approveTxHash,
+    chainId: chain.id,
+  });
+
+  useEffect(() => {
+    if (approveReceipt) {
+      resetApprove();
+      // TODO: Handle approval receipt (refetch stuff: probably refetch is approval is needed)
+    }
+  }, [approveReceipt, resetApprove]);
+
+  const mutate = () => {
+    if (shouldApprove === false) return;
+
+    if (canPermit === true && permit !== undefined) {
+      return signTypedData({
+        domain: permit.domain,
+        types: permit.types,
+        message: permit.value,
+        primaryType: "Permit",
+      });
+    }
+
+    if (approveConfig !== undefined) {
+      return approve(approveConfig);
+    }
+  };
+
+  return {
+    mutate,
+    signature,
+  };
 };
 
 export const usePortalQuote = (params: PortalQuoteParams) => {
   const chain = useChain();
 
   return useQuery({
-    queryKey: [
-      "portalQuote",
-      params.inputToken,
-      params.inputTokenDecimals,
-      params.inputAmount,
-      params.outputToken,
-      params.sender,
-    ],
+    queryKey: ["portalQuote", params],
     queryFn: async () => {
       const url = new URL(`${PORTAL_API_BASE_URI}/portal`);
       url.searchParams.append(
@@ -285,27 +286,49 @@ export const usePortalQuote = (params: PortalQuoteParams) => {
 export const useSendPortalTransaction = (
   params: PortalQuoteResponse | undefined,
 ) => {
-  const { sendTransaction } = useSendTransaction();
   const chain = useChain();
-
-  return useMutation({
-    mutationFn: async () => {
-      if (!params) {
-        throw new Error(
-          "Undefined portal quote. A failure likely occured when trying to create quote that was expected to succeed.",
-        );
-      }
-
-      const hash = sendTransaction({
-        to: params.tx.to,
-        data: params.tx.data,
-        value: params.tx.value,
-      });
-
-      console.log("Transaction sent:", hash);
-    },
-    onError: (error) => {
-      console.log(`Error executing zap through portal: ${error}`);
+  const { data: transactionConfig } = usePrepareTransactionRequest({
+    to: params?.tx.to,
+    data: params?.tx.data,
+    value: params?.tx.value,
+    chainId: chain.id,
+    query: {
+      enabled: !!params,
     },
   });
+
+  const {
+    sendTransaction,
+    data: txHash,
+    error,
+  } = useSendTransaction({
+    // TODO: Add onSuccess and onError handlers (reuse similar logic as useWriteContractMutationCallback but for sendTransaction instead of writeContract)
+    mutation: {
+      onSuccess: () => {},
+      onError: () => {},
+    },
+  });
+
+  const { data: receipt } = useWaitForTransactionReceipt({
+    hash: txHash,
+  });
+
+  useEffect(() => {
+    if (receipt) {
+      // TODO: Handle transaction receipt (refetch stuff and setAmounts back to empty string etc)
+    }
+  });
+
+  const mutate = () => {
+    if (error) {
+      // Add error handling
+    }
+    if (transactionConfig) {
+      return sendTransaction(transactionConfig);
+    } else {
+      // Add error handling
+    }
+  };
+
+  return { mutate };
 };
