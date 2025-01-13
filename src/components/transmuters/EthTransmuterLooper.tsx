@@ -288,7 +288,7 @@ export const EthTransmuterLooper = ({
         : undefined,
     spender: transmuterLooper.address,
     amount,
-    decimals: decimals ?? 18,
+    decimals,
     isInfiniteApproval,
   });
 
