@@ -9,9 +9,9 @@ import { RiveSection } from "./RiveSection";
 export const Landing = () => {
   return (
     <div className="relative flex flex-col items-center font-alcxTitles">
-      <div className="flex flex-col items-center justify-center gap-4 p-5 text-center 2xl:px-20 2xl:py-24">
+      <div className="flex flex-col items-center justify-center gap-4 p-5 text-center lg:px-10 lg:py-12 2xl:px-20 2xl:py-24">
         <BlurInHeader
-          className="bg-gradient-to-br from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-2xl font-extrabold leading-tight tracking-normal text-transparent 2xl:text-7xl dark:bg-gradient-to-r dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1 dark:drop-shadow-[8px_8px_16px_rgba(0,_0,_0,_0.8)]"
+          className="bg-gradient-to-br from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-2xl font-extrabold leading-tight tracking-normal text-transparent xl:text-7xl dark:bg-gradient-to-r dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1 dark:drop-shadow-[8px_8px_16px_rgba(0,_0,_0,_0.8)]"
           delay={0.1}
         >
           Self-Repaying Loans,
@@ -19,7 +19,7 @@ export const Landing = () => {
           Without Liquidations
         </BlurInHeader>
         <BlurInParagraph
-          className="mb-4 mt-2 font-sans leading-snug text-lightgrey10inverse 2xl:mb-12 2xl:mt-8 2xl:text-2xl dark:text-white"
+          className="mb-4 mt-2 font-sans leading-snug text-lightgrey10inverse xl:text-2xl 2xl:mb-12 2xl:mt-8 dark:text-white"
           delay={0.2}
         >
           Alchemix loans automatically pay themselves off without risk of
@@ -37,7 +37,7 @@ export const Landing = () => {
       </div>
 
       <div className="flex w-full flex-col gap-4 2xl:gap-20 dark:bg-gradient-to-br dark:from-[#0B0D12] dark:to-[#171B24]">
-        <div className="flex flex-col items-center gap-4 px-5 sm:flex-row 2xl:px-40">
+        <div className="flex flex-col items-center gap-4 px-5 sm:flex-row lg:px-10 2xl:px-40">
           <SlideBox className="w-full" direction="left" delay={0.2}>
             <img
               src="images/landing-page/01_Flexible.png"
@@ -60,7 +60,7 @@ export const Landing = () => {
           </SlideBox>
         </div>
 
-        <div className="flex flex-col-reverse items-center gap-4 px-5 pb-12 sm:flex-row 2xl:px-40">
+        <div className="flex flex-col-reverse items-center gap-4 px-5 pb-12 sm:flex-row lg:px-10 2xl:px-40">
           <div className="w-full">
             <h2 className="text-xl font-semibold 2xl:text-[42px]">
               Zero Liquidations
@@ -85,7 +85,7 @@ export const Landing = () => {
         </div>
       </div>
 
-      <div className="flex w-full flex-col-reverse items-center gap-4 rounded-sm p-5 sm:flex-row 2xl:px-40 2xl:py-20 dark:bg-[#080a0e]">
+      <div className="flex w-full flex-col-reverse items-center gap-4 rounded-sm p-5 sm:flex-row lg:px-10 2xl:px-40 2xl:py-20 dark:bg-[#080a0e]">
         <div className="w-full">
           <h2 className="text-xl font-semibold 2xl:text-[42px]">
             Security First
@@ -111,7 +111,7 @@ export const Landing = () => {
       </div>
 
       <div className="dark:bg-[#11141B]">
-        <div className="flex flex-col items-center gap-6 p-5 2xl:flex-row 2xl:px-40 2xl:py-20">
+        <div className="flex flex-col items-center gap-6 p-5 lg:px-10 2xl:flex-row 2xl:px-40 2xl:py-20">
           <Tokens />
           <div className="flex w-full flex-col items-center justify-center text-center 2xl:items-start">
             <BlurInHeader className="text-xl font-bold 2xl:text-[42px]">
@@ -147,11 +147,11 @@ export const Landing = () => {
           <RiveSection />
         </div>
 
-        <div className="mt-4 flex flex-col items-center space-y-4 pb-4 2xl:mt-16 2xl:space-y-8 2xl:pb-20">
+        <div className="mt-4 flex flex-col items-center space-y-4 pb-4 lg:pb-10 2xl:mt-16 2xl:space-y-8 2xl:pb-20">
           <h2 className="text-center text-lg font-semibold 2xl:text-[58px]">
             A Thriving Ecosystem
           </h2>
-          <div className="max-w-xs sm:max-w-xl 2xl:max-w-5xl">
+          <div className="max-w-xs sm:max-w-xl md:max-w-2xl 2xl:max-w-5xl">
             <EcosystemGrid />
           </div>
         </div>
