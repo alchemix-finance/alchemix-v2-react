@@ -36,7 +36,7 @@ export const VideoModal = ({
           }}
           className={cn(
             // Base styles for the button
-            "group relative z-10 inline-flex h-11 cursor-pointer items-center justify-center rounded-xl border-0 px-8 py-5 font-sans text-xl font-medium tracking-tight text-green2 dark:text-[#1BEAA5]",
+            "group relative z-10 inline-flex h-11 cursor-pointer items-center justify-center rounded-xl border-0 p-4 font-sans text-xl font-medium tracking-tight text-green2 dark:text-[#1BEAA5]",
             // Apply multiple background layers
             "bg-[length:200%] [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.08*1rem)_solid_transparent]",
             // Background layers for the gradient effect
@@ -52,7 +52,7 @@ export const VideoModal = ({
           <span className="relative z-10">
             <svg
               role="img"
-              className="w-8 scale-125 rounded-xl text-green2 dark:text-[#1BEAA5]"
+              className="w-8 rounded-xl text-green2 dark:text-[#1BEAA5]"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
