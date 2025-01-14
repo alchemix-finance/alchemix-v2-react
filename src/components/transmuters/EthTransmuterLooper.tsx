@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "../ui/switch";
 import { Button } from "../ui/button";
 import {
@@ -21,8 +21,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
 import { tokenizedStrategyAbi } from "@/abi/tokenizedStrategy";
 import { SYNTH_ASSETS, SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
-import { fantom, mainnet } from "viem/chains";
-import { TRANSMUTER_LOOPERS_VAULTS } from "@/lib/config/transmuters";
+import { fantom } from "viem/chains";
 import {
   SupportedTransmuterLooperChainId,
   TransmuterMetadata,
@@ -40,41 +39,20 @@ import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { GAS_ADDRESS, WETH_ADDRESSES } from "@/lib/constants";
 import { SlippageInput } from "../common/input/SlippageInput";
 import {
-  PortalTransactionResult,
   useApproveInputToken,
   useCheckApproval,
   usePortalQuote,
   useSendPortalTransaction,
 } from "@/hooks/usePortal";
 
-export const EthTransmuterLooper = () => {
-  const TL_STATIC_STATE_INDICIES = Object.freeze({
-    sharesTokenAddress: 0,
-    decimals: 1,
-    shareTokenName: 2,
-    performanceFee: 3,
-    maxDeposit: 4,
-    maxMint: 5,
-    maxRedeem: 6,
-    maxWithdraw: 7,
-    symbol: 8,
-  });
-
-  const TL_DYNAMIC_STATE_INDICIES = Object.freeze({
-    fullProfitUnlockDate: 0,
-    isShutdown: 1,
-    lastReport: 2,
-    balanceOf: 3,
-    pricePerShare: 4,
-    profitMaxUnlockTime: 5,
-    profitUnlockingRate: 6,
-    totalAssets: 7,
-    totalSupply: 8,
-  });
-
+export const EthTransmuterLooper = ({
+  transmuterLooper,
+}: {
+  transmuterLooper: TransmuterMetadata;
+}) => {
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
-  const { address } = useAccount();
+  const { address = zeroAddress } = useAccount();
 
   const [open, setOpen] = useState(false); // used to toggle the animation pane closed/open
   const [amount, setAmount] = useState(""); // represents amount of assets or shares depending on deposit or withdraw state
@@ -83,17 +61,6 @@ export const EthTransmuterLooper = () => {
   const [selectTokenAddress, setSelectTokenAddress] =
     useState<`0x${string}`>(GAS_ADDRESS);
   const [slippage, setSlippage] = useState("0.5"); // sets the slippage param used for depositing from or withdrawing into ETH, which requires a trade
-  const [gaslessSignature, setGaslessSignature] = useState<
-    `0x${string}` | undefined
-  >(undefined);
-
-  const { address: TRANSMUTER_LOOPER_ADDRESS } = useMemo(
-    () =>
-      TRANSMUTER_LOOPERS_VAULTS[
-        chain.id as SupportedTransmuterLooperChainId
-      ].find((vault) => vault.synthAsset === SYNTH_ASSETS.ALETH),
-    [chain.id],
-  ) as TransmuterMetadata;
 
   const { data: tokens } = useTokensQuery();
   const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
@@ -108,7 +75,7 @@ export const EthTransmuterLooper = () => {
             token.address ===
             SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH],
         )
-      : null;
+      : undefined;
   const selection =
     gasToken && wethToken && alEthToken
       ? [gasToken, wethToken, alEthToken]
@@ -125,35 +92,35 @@ export const EthTransmuterLooper = () => {
     contracts: [
       {
         // Get the underlying asset for the strategy.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "asset",
         chainId: chain.id,
       },
       {
         // Get the decimals used for the strategy and `asset`.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "decimals",
         chainId: chain.id,
       },
       {
         // Get the name the strategy is using for it's token
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "name",
         chainId: chain.id,
       },
       {
         // Get the performance fee charged on profits.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "performanceFee",
         chainId: chain.id,
       },
       {
         // Get the max the owner can deposit in asset.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "maxDeposit",
         chainId: chain.id,
@@ -161,7 +128,7 @@ export const EthTransmuterLooper = () => {
       },
       {
         // Get the max the owner can mint in shares.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "maxMint",
         chainId: chain.id,
@@ -169,7 +136,7 @@ export const EthTransmuterLooper = () => {
       },
       {
         // Get the max amount of shares the owner can redeem
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "maxRedeem",
         chainId: chain.id,
@@ -177,7 +144,7 @@ export const EthTransmuterLooper = () => {
       },
       {
         // Get the max amount of assets the owner can withdraw
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "maxWithdraw",
         chainId: chain.id,
@@ -185,38 +152,17 @@ export const EthTransmuterLooper = () => {
       },
       {
         // Gets the symbol the strategy is using for its tokens as a string. (yvSymbol)
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "symbol",
         chainId: chain.id,
       },
     ],
-    query: {
-      select: ([
-        sharesTokenAddress,
-        decimals,
-        shareTokenName,
-        performanceFeeInBps,
-        maxDeposit,
-        maxMint,
-        maxRedeem,
-        maxWithdraw,
-        symbol,
-      ]) => {
-        return [
-          sharesTokenAddress,
-          Number(decimals),
-          shareTokenName,
-          (performanceFeeInBps as number) / 100,
-          BigInt(maxDeposit as number),
-          BigInt(maxMint as number),
-          BigInt(maxRedeem as number),
-          BigInt(maxWithdraw as number),
-          symbol,
-        ];
-      },
-    },
   });
+  // TODO: Figure out what we need and what we dont need from this
+  // const [sharesTokenAddress,decimals,shareTokenName,performanceFee,maxDeposit,maxMint,maxRedeem,maxWithdraw,symbol]
+  const [, decimals, , , maxDeposit, , , , ,] =
+    transmuterLooperContractStaticState ?? [];
 
   /** EVENT TRIGGERED CONTRACT READS **/
   // Read these contract functions initially, but separately as they will be watched and reread per block in case they are updated
@@ -226,28 +172,28 @@ export const EthTransmuterLooper = () => {
     contracts: [
       {
         // Get the timestamp at which all profits will unlock.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "fullProfitUnlockDate",
         chainId: chain.id,
       },
       {
         // Get status on whether the strategy is shut down.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "isShutdown",
         chainId: chain.id,
       },
       {
         // Get the timestamp of the last report
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "lastReport",
         chainId: chain.id,
       },
       {
         // Get the current balance in y shares of the address or account.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "balanceOf",
         chainId: chain.id,
@@ -255,66 +201,45 @@ export const EthTransmuterLooper = () => {
       },
       {
         // Get the price in asset per share
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "pricePerShare",
         chainId: chain.id,
       },
       {
         // Gets the current time profits are set to unlock over as uint.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "profitMaxUnlockTime",
         chainId: chain.id,
       },
       {
         // Gets the current time profits are set to unlock over as uint.
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "profitUnlockingRate",
         chainId: chain.id,
       },
       {
         // Gets the total assets deposited
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "totalAssets",
         chainId: chain.id,
       },
       {
         // Gets the total shares outstanding
-        address: TRANSMUTER_LOOPER_ADDRESS,
+        address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "totalSupply",
         chainId: chain.id,
       },
     ],
-    query: {
-      select: ([
-        fullProfitUnlockDate,
-        isShutdown,
-        lastReport,
-        balanceOf,
-        pricePerShare,
-        profitMaxUnlockTime,
-        profitUnlockingRate,
-        totalAssets,
-        totalSupply,
-      ]) => {
-        return [
-          BigInt(fullProfitUnlockDate as number),
-          isShutdown,
-          BigInt(lastReport as number),
-          BigInt(balanceOf as number),
-          BigInt(pricePerShare as number),
-          BigInt(profitMaxUnlockTime as number),
-          BigInt(profitUnlockingRate as number),
-          BigInt(totalAssets as number),
-          BigInt(totalSupply as number),
-        ];
-      },
-    },
   });
+  // TODO: Figure out what we need and what we dont need from this
+  // const [fullProfitUnlockDate,isShutdown,lastReport,balanceOf,pricePerShare,profitMaxUnlockTime,profitUnlockingRate,totalAssets,totalSupply]
+  const [, , , , , , , totalAssets, totalSupply] =
+    transmuterLooperContractDynamicState ?? [];
 
   // Watch intermittently updated read values in case they are updated due to the report function or other manual updates to the contract
   useWatchQuery({
@@ -323,7 +248,7 @@ export const EthTransmuterLooper = () => {
 
   /** PORTAL APPROVAL */
   const { data: checkWethApprovalData } = useCheckApproval(
-    address as `0x${string}`,
+    address,
     WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId],
     amount,
     18,
@@ -336,8 +261,8 @@ export const EthTransmuterLooper = () => {
   } = checkWethApprovalData ?? {};
 
   const { data: checkSharesApprovalData } = useCheckApproval(
-    address as `0x${string}`,
-    TRANSMUTER_LOOPER_ADDRESS as `0x${string}`,
+    address,
+    transmuterLooper.address,
     amount,
     6,
   );
@@ -348,41 +273,6 @@ export const EthTransmuterLooper = () => {
     permit: approveSpendSharesSignature,
   } = checkSharesApprovalData ?? {};
 
-  /** PORTAL QUOTE */
-  const { data: wethOrEthToVaultSharesQuote } = usePortalQuote({
-    gaslessSignature: gaslessSignature,
-    inputToken:
-      selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
-    inputTokenDecimals: 18,
-    inputAmount: amount,
-    outputToken: TRANSMUTER_LOOPER_ADDRESS,
-    sender: address as `0x${string}`,
-    shouldQuote:
-      selectTokenAddress === GAS_ADDRESS ||
-      (selectTokenAddress ===
-        WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId] &&
-        (!isWethApprovalNeeded || gaslessSignature))
-        ? true
-        : false,
-  });
-
-  const { data: vaultSharesToETHorWethQuote } = usePortalQuote({
-    gaslessSignature: gaslessSignature,
-    inputToken: TRANSMUTER_LOOPER_ADDRESS,
-    inputTokenDecimals: 6,
-    inputAmount: amount,
-    outputToken:
-      selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
-    sender: address as `0x${string}`,
-    shouldQuote:
-      ((!isSharesApprovalNeeded || gaslessSignature) &&
-        selectTokenAddress !==
-          SYNTH_ASSETS_ADDRESSES[chain.id as SupportedTransmuterLooperChainId][
-            SYNTH_ASSETS.ALETH
-          ]) ??
-      false,
-  });
-
   /** CONTRACT WRITES **/
   /**
    * Get allowance info for alETH and WETH
@@ -392,14 +282,63 @@ export const EthTransmuterLooper = () => {
     approveConfig: alETHApproveConfig,
     approve: approveSpendAlETH,
   } = useAllowance({
-    tokenAddress: SYNTH_ASSETS_ADDRESSES[mainnet.id][SYNTH_ASSETS.ALETH],
-    spender: TRANSMUTER_LOOPER_ADDRESS,
+    tokenAddress:
+      chain.id !== fantom.id
+        ? SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH]
+        : undefined,
+    spender: transmuterLooper.address,
     amount,
-    decimals:
-      (transmuterLooperContractStaticState?.[
-        TL_STATIC_STATE_INDICIES.decimals
-      ] as number) || 18,
+    decimals,
     isInfiniteApproval,
+  });
+
+  const { mutate: approveSpendWeth, signature: gaslessSignature } =
+    useApproveInputToken({
+      shouldApprove: isWethApprovalNeeded,
+      canPermit: isWethEligibleForGaslessSignature,
+      approveTx: approveSpendWethTx,
+      permit: approveSpendWethSignature,
+    });
+
+  const { mutate: approveSpendShares } = useApproveInputToken({
+    shouldApprove: isSharesApprovalNeeded,
+    canPermit: isSharesEligibleForGasslessSignature,
+    approveTx: approveSpendSharesTx,
+    permit: approveSpendSharesSignature,
+  });
+
+  /** PORTAL QUOTE */
+  const { data: wethOrEthToVaultSharesQuote } = usePortalQuote({
+    gaslessSignature,
+    inputToken:
+      selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
+    inputTokenDecimals: 18,
+    inputAmount: amount,
+    outputToken: transmuterLooper.address,
+    sender: address,
+    shouldQuote:
+      selectTokenAddress === GAS_ADDRESS ||
+      (selectTokenAddress ===
+        WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId] &&
+        (!isWethApprovalNeeded || !!gaslessSignature))
+        ? true
+        : false,
+  });
+
+  const { data: vaultSharesToETHorWethQuote } = usePortalQuote({
+    gaslessSignature,
+    inputToken: transmuterLooper.address,
+    inputTokenDecimals: 6,
+    inputAmount: amount,
+    outputToken:
+      selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
+    sender: address,
+    shouldQuote:
+      (!isSharesApprovalNeeded || gaslessSignature !== undefined) &&
+      selectTokenAddress !==
+        SYNTH_ASSETS_ADDRESSES[chain.id as SupportedTransmuterLooperChainId][
+          SYNTH_ASSETS.ALETH
+        ],
   });
 
   const selectedTokenIsApprovalNeeded =
@@ -412,25 +351,11 @@ export const EthTransmuterLooper = () => {
         ? false
         : isWethApprovalNeeded && !gaslessSignature;
 
-  const { mutateAsync: approveSpendWeth } = useApproveInputToken({
-    shouldApprove: isWethApprovalNeeded ?? false,
-    canPermit: isWethEligibleForGaslessSignature ?? false,
-    approveTx: approveSpendWethTx,
-    permit: approveSpendWethSignature,
-  });
-
-  const { mutateAsync: approveSpendShares } = useApproveInputToken({
-    shouldApprove: isSharesApprovalNeeded ?? false,
-    canPermit: isSharesEligibleForGasslessSignature ?? false,
-    approveTx: approveSpendSharesTx,
-    permit: approveSpendSharesSignature,
-  });
-
   /**
    * Configure write contract functions for alETH deposit
    */
   const { data: depositConfig, error: depositError } = useSimulateContract({
-    address: TRANSMUTER_LOOPER_ADDRESS,
+    address: transmuterLooper.address,
     abi: tokenizedStrategyAbi,
     chainId: chain.id,
     functionName: "deposit",
@@ -460,7 +385,7 @@ export const EthTransmuterLooper = () => {
    * Configure write contract functions for alETH withdrawl
    */
   const { data: redeemConfig, error: redeemError } = useSimulateContract({
-    address: TRANSMUTER_LOOPER_ADDRESS,
+    address: transmuterLooper.address,
     abi: tokenizedStrategyAbi,
     chainId: chain.id,
     functionName: "redeem",
@@ -481,10 +406,10 @@ export const EthTransmuterLooper = () => {
   });
 
   /** PORTAL BUNDLER CALLS */
-  const { mutateAsync: depositUsingPortal } = useSendPortalTransaction(
+  const { mutate: depositUsingPortal } = useSendPortalTransaction(
     wethOrEthToVaultSharesQuote,
   );
-  const { mutateAsync: withdrawUsingPortal } = useSendPortalTransaction(
+  const { mutate: withdrawUsingPortal } = useSendPortalTransaction(
     vaultSharesToETHorWethQuote,
   );
 
@@ -502,20 +427,12 @@ export const EthTransmuterLooper = () => {
         selectTokenAddress === WETH_ADDRESSES[chain.id])
     ) {
       if (
-        selectTokenAddress ===
-          WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId] &&
+        chain.id !== fantom.id &&
+        selectTokenAddress === WETH_ADDRESSES[chain.id] &&
         isWethApprovalNeeded &&
         !gaslessSignature
       ) {
-        const result = await approveSpendWeth();
-        if ((result as PortalTransactionResult).signature) {
-          setGaslessSignature(
-            (result as PortalTransactionResult).signature as `0x${string}`,
-          );
-        } else {
-          setAmount("");
-          setGaslessSignature(undefined);
-        }
+        approveSpendWeth();
       } else {
         depositUsingPortal();
       }
@@ -557,9 +474,9 @@ export const EthTransmuterLooper = () => {
         SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH]
     ) {
       if (isSharesApprovalNeeded) {
-        await approveSpendShares();
+        approveSpendShares();
       } else {
-        await withdrawUsingPortal();
+        withdrawUsingPortal();
       }
       setAmount("");
     } else {
@@ -589,20 +506,15 @@ export const EthTransmuterLooper = () => {
 
   // Reuses contract logic of _convertToShares for a front end estimation so as not to trigger many RPC calls
   const previewDeposit = () => {
-    // Get inputted assetsToDeposit, totalAssets, and totalSupply
-    const assetsToDeposit = parseEther(amount); // TODO -- need to validate this input otherwise an error will be thrown. Does token input do this?
-    const totalAssets =
-      (transmuterLooperContractDynamicState?.[
-        TL_DYNAMIC_STATE_INDICIES.totalAssets
-      ] as bigint) || BigInt(0);
-    const totalSupply =
-      (transmuterLooperContractDynamicState?.[
-        TL_DYNAMIC_STATE_INDICIES.totalSupply
-      ] as bigint) || BigInt(0);
+    if (totalAssets === undefined || totalSupply === undefined) {
+      return "0";
+    }
+
+    const assetsToDeposit = parseEther(amount);
 
     // If assets are 0 but supply is not PPS = 0.
-    if (totalAssets === BigInt(0)) {
-      return totalSupply === BigInt(0) ? formatEther(assetsToDeposit) : 0;
+    if (totalAssets === 0n) {
+      return totalSupply === 0n ? formatEther(assetsToDeposit) : "0";
     }
 
     // Perform multiplication and division:
@@ -614,19 +526,14 @@ export const EthTransmuterLooper = () => {
 
   // Reuses contract logic of _convertToAssets for a front end estimation so as not to trigger many RPC calls
   const previewRedeem = () => {
-    // Get inputted sharesToRedeem, totalAssets, and totalSupply
-    const sharesToRedeem = parseEther(amount); // TODO -- need to validate this input otherwise an error will be thrown. Does token input do this?
-    const totalAssets =
-      (transmuterLooperContractDynamicState?.[
-        TL_DYNAMIC_STATE_INDICIES.totalAssets
-      ] as bigint) || BigInt(0);
-    const totalSupply =
-      (transmuterLooperContractDynamicState?.[
-        TL_DYNAMIC_STATE_INDICIES.totalSupply
-      ] as bigint) || BigInt(0);
+    if (totalAssets === undefined || totalSupply === undefined) {
+      return "0";
+    }
 
-    if (totalSupply == BigInt(0)) {
-      return totalSupply == BigInt(0) ? formatEther(sharesToRedeem) : 0;
+    const sharesToRedeem = parseEther(amount);
+
+    if (totalSupply === 0n) {
+      formatEther(sharesToRedeem);
     }
 
     // Perform multiplication and division:
@@ -638,9 +545,7 @@ export const EthTransmuterLooper = () => {
 
   // Calculates and sets previewedOutput for a deposit or withdraw for display purposes.
   // This represents the previewed output in shares or assets of a deposit or withdraw
-  const previewedOutput = isWithdraw
-    ? (previewRedeem() as string)
-    : (previewDeposit() as string);
+  const previewedOutput = isWithdraw ? previewRedeem() : previewDeposit();
 
   const changeInputToDepositOrWithdraw = (value: boolean) => {
     setIsWithdraw(value);
@@ -650,6 +555,10 @@ export const EthTransmuterLooper = () => {
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };
+
+  const totalAssetsFormatted = formatEther(totalAssets ?? 0n);
+  const totalSupplyFormatted = formatEther(totalSupply ?? 0n);
+  const maxDepositFormatted = formatEther(maxDeposit ?? 0n);
 
   return (
     <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
@@ -702,7 +611,7 @@ export const EthTransmuterLooper = () => {
                 <div className="flex w-full rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
                   <Select
                     value={selectTokenAddress}
-                    onValueChange={(value: string) =>
+                    onValueChange={(value) =>
                       setSelectTokenAddress(value as `0x${string}`)
                     }
                   >
@@ -730,19 +639,15 @@ export const EthTransmuterLooper = () => {
                   </Select>
                   <TokenInput
                     amount={amount}
-                    setAmount={(amount: string) => {
-                      setAmount(amount);
-                      setGaslessSignature(undefined);
-                    }}
+                    setAmount={(amount) => setAmount(amount)}
                     tokenAddress={
-                      isWithdraw
-                        ? TRANSMUTER_LOOPER_ADDRESS
-                        : selectTokenAddress
+                      isWithdraw ? transmuterLooper.address : selectTokenAddress
                     }
                     tokenDecimals={
-                      /*(transmuterLooperContractStaticState?.[
-                        TL_STATIC_STATE_INDICIES.decimals
-                      ] as number) || 18*/ // TODO -- put this back when contract is deployed, and remove below condition which tests using a USDC vault with 6 decimals
+                      // TODO -- put this back when contract is deployed, and remove below condition which tests using a USDC vault with 6 decimals
+                      /*
+                      decimals ?? 18
+                      */
                       isWithdraw ? 6 : 18
                     }
                     tokenSymbol={isWithdraw ? "yvAlETH" : token.symbol}
@@ -822,9 +727,7 @@ export const EthTransmuterLooper = () => {
                     </div>
                     <div className="flex">
                       <div className="mr-2 flex">
-                        {formatNumber(
-                          `${(transmuterLooperContractDynamicState?.[TL_DYNAMIC_STATE_INDICIES.totalSupply] as bigint) || BigInt(0)}`,
-                        )}
+                        {formatNumber(totalSupplyFormatted)}
                       </div>
                     </div>
                   </div>
@@ -834,9 +737,7 @@ export const EthTransmuterLooper = () => {
                     </div>
                     <div className="flex">
                       <div className="mr-2 flex">
-                        {formatNumber(
-                          `${(transmuterLooperContractDynamicState?.[TL_DYNAMIC_STATE_INDICIES.totalAssets] as bigint) || BigInt(0)}`,
-                        )}
+                        {formatNumber(totalAssetsFormatted)}
                       </div>
                     </div>
                   </div>
@@ -846,9 +747,7 @@ export const EthTransmuterLooper = () => {
                     </div>
                     <div className="flex">
                       <div className="mr-2 flex">
-                        {formatNumber(
-                          `${(transmuterLooperContractStaticState?.[TL_STATIC_STATE_INDICIES.maxDeposit] as bigint) || BigInt(0)}`,
-                        )}
+                        {formatNumber(maxDepositFormatted)}
                       </div>
                     </div>
                   </div>
