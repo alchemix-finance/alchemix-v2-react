@@ -7,7 +7,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { parseUnits } from "viem";
-import { arbitrum, fantom, optimism } from "viem/chains";
+import { arbitrum, fantom } from "viem/chains";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -19,7 +19,6 @@ import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { MIGRATORS } from "@/lib/config/migrators";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
 import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
-import { MAX_UINT256_BN } from "@/lib/constants";
 import { isInputZero } from "@/utils/inputNotZero";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
@@ -93,26 +92,17 @@ export const useMigrate = ({
     },
   });
   // debt skipped
-  const [doesMigrationSucceed, reason, , minOrNewShares, minOrNewUnderlying] =
+  const [doesMigrationSucceed, reason, , newShares, newUnderlying] =
     migrationParams ?? [];
 
-  // new op migrator tool returns not minShares and minUnderlying but newShares and newUnderlying
-  let minSharesForSlippage = MAX_UINT256_BN,
-    minUnderlyingForSlippage = MAX_UINT256_BN;
-  if (
-    chain.id === optimism.id &&
-    minOrNewShares !== undefined &&
-    minOrNewUnderlying !== undefined
-  ) {
-    minSharesForSlippage = calculateMinimumOut(
-      minOrNewShares,
-      parseUnits(slippage, 2),
-    );
-    minUnderlyingForSlippage = calculateMinimumOut(
-      minOrNewUnderlying,
-      parseUnits(slippage, 2),
-    );
-  }
+  const minSharesForSlippage = calculateMinimumOut(
+    newShares,
+    parseUnits(slippage, 2),
+  );
+  const minUnderlyingForSlippage = calculateMinimumOut(
+    newUnderlying,
+    parseUnits(slippage, 2),
+  );
 
   const {
     data: isApprovalNeededWithdraw,
@@ -243,14 +233,14 @@ export const useMigrate = ({
       currentVault.address,
       selectedVault.address,
       parseUnits(amount, currentVault.yieldTokenParams.decimals),
-      chain.id === optimism.id ? minSharesForSlippage : minOrNewShares!,
-      chain.id === optimism.id ? minUnderlyingForSlippage : minOrNewUnderlying!,
+      minSharesForSlippage,
+      minUnderlyingForSlippage,
     ],
     query: {
       enabled:
         !isInputZero(amount) &&
-        minOrNewShares !== undefined &&
-        minOrNewUnderlying !== undefined &&
+        newShares !== undefined &&
+        newUnderlying !== undefined &&
         isApprovalNeededMint === false &&
         isApprovalNeededWithdraw === false,
     },
@@ -345,6 +335,5 @@ export const useMigrate = ({
     writeMintApprove,
     writeMigrate,
     isPending,
-    minOrNewUnderlying,
   };
 };
