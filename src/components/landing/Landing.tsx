@@ -9,9 +9,9 @@ import { RiveSection } from "./RiveSection";
 export const Landing = () => {
   return (
     <div className="relative flex flex-col items-center font-alcxTitles">
-      <div className="relative flex max-w-screen-2xl flex-col items-center justify-center gap-4 p-5 text-center after:absolute after:left-1/2 after:top-3/4 after:-z-10 after:size-1/2 after:-translate-x-1/2 lg:px-10 lg:py-12 2xl:px-20 2xl:py-24 dark:after:bg-green2 dark:after:blur-[256px]">
+      <div className="relative flex max-w-screen-2xl flex-col items-center justify-center gap-4 p-5 text-center after:absolute after:left-1/2 after:top-3/4 after:-z-10 after:size-1/3 after:-translate-x-1/2 lg:px-10 lg:py-12 2xl:px-20 2xl:py-24 dark:after:bg-green2 dark:after:blur-[256px]">
         <BlurInHeader
-          className="bg-gradient-to-br from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-4xl font-extrabold leading-tight tracking-normal text-transparent xl:text-7xl dark:bg-gradient-to-r dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1 dark:drop-shadow-[8px_8px_16px_rgba(0,_0,_0,_0.8)]"
+          className="bg-gradient-to-br from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-4xl font-extrabold leading-tight tracking-normal text-transparent sm:text-5xl xl:text-7xl dark:bg-gradient-to-r dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1 dark:drop-shadow-[8px_8px_16px_rgba(0,_0,_0,_0.8)]"
           delay={0.1}
         >
           Self-Repaying Loans,
@@ -34,10 +34,11 @@ export const Landing = () => {
           </LandingCtaButton>
           <VideoModal delay={0.2} />
         </div>
+        <div className="absolute left-1/2 top-3/4 -z-10 hidden size-full -translate-x-1/2 bg-[url('/images/landing-page/stars.svg')] bg-contain dark:block" />
       </div>
 
       <div className="w-full dark:bg-gradient-to-br dark:from-[#0B0D12] dark:to-[#171B24]">
-        <div className="mx-auto flex max-w-screen-2xl flex-col gap-4 2xl:gap-20 2xl:py-20">
+        <div className="mx-auto flex max-w-screen-2xl flex-col gap-4 py-12 2xl:gap-20 2xl:py-20">
           <div className="flex flex-col items-center gap-4 px-5 sm:flex-row lg:px-10 2xl:px-40">
             <SlideBox className="w-full" direction="left" delay={0.2}>
               <img
@@ -57,7 +58,7 @@ export const Landing = () => {
               <p className="mb-7 mt-3 font-sans font-light leading-snug text-lightgrey10inverse xl:text-xl dark:text-lightgrey10">
                 Alchemix gives you full control of your finances with no hidden
                 fees. Repay on your terms, keep your assets working for you, and
-                borrow against your collateral to secure future yield.
+                borrow against your collateral to secure future&nbsp;yield.
               </p>
               <LandingSubButton delay={0.2}>
                 Explore our vaults
@@ -65,7 +66,7 @@ export const Landing = () => {
             </SlideBox>
           </div>
 
-          <div className="flex flex-col-reverse items-center gap-4 px-5 pb-12 sm:flex-row lg:px-10 2xl:px-40">
+          <div className="flex flex-col-reverse items-center gap-4 px-5 sm:flex-row lg:px-10 2xl:px-40">
             <div className="w-full space-y-6">
               <h2 className="text-xl font-semibold 2xl:text-4xl">
                 Zero Liquidations
@@ -118,9 +119,9 @@ export const Landing = () => {
       </div>
 
       <div className="w-full dark:bg-[#11141B]">
-        <div className="mx-auto flex max-w-screen-2xl flex-col-reverse items-center gap-6 p-5 sm:flex-row lg:px-10 2xl:px-40 2xl:py-20">
+        <div className="mx-auto flex max-w-screen-2xl flex-col-reverse items-center gap-6 p-5 sm:flex-row lg:px-10 2xl:gap-16 2xl:px-40 2xl:py-20">
           <Tokens />
-          <div className="flex w-full flex-col items-center justify-center text-center sm:items-start">
+          <div className="flex w-full flex-col items-center justify-center text-center sm:items-start sm:text-left">
             <BlurInHeader className="text-xl font-semibold 2xl:text-4xl">
               Your Favorite Tokens
             </BlurInHeader>
