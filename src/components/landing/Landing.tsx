@@ -76,8 +76,11 @@ export const Landing = () => {
                 Your debt is securely tied to your collateral, ensuring that
                 price swings never put you at risk.
               </p>
-              <LandingSubButton delay={0.2} href="#">
-                Learn more
+              <LandingSubButton
+                delay={0.2}
+                href="https://docs.alchemix.fi/#the-benefits-of-alchemix"
+              >
+                Alchemix Benefits
               </LandingSubButton>
             </div>
             <div className="w-full">
@@ -103,7 +106,10 @@ export const Landing = () => {
               asset protection. As a pioneer in DeFi, we ensure your assets are
               preserved at every step.
             </p>
-            <LandingSubButton delay={0.2} href="#">
+            <LandingSubButton
+              delay={0.2}
+              href="https://docs.alchemix.fi/resources/audits-and-reports"
+            >
               Explore our audits
             </LandingSubButton>
           </div>
