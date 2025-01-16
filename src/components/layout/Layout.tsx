@@ -13,7 +13,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         <Header />
         <div className="flex flex-grow">
           <LeftBlock />
-          <div className="flex flex-grow flex-col border-l border-grey5inverse dark:border-grey5">
+          <div className="flex flex-grow flex-col border-grey5inverse lg:border-l dark:border-grey5">
             <main
               className={cn(
                 "mx-auto w-full flex-grow",
