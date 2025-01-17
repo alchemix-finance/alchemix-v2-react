@@ -28,6 +28,8 @@ export const QueryKeys = {
   ) => `connextSdk-${type}`,
   HarvestsAndBonuses: "harvests-and-bonuses",
   HistoricYield: "historicYield",
+  PortalCheckApproval: "portalCheckApproval",
+  PortalCreateQuote: "portalCreateQuote",
 } as const;
 
 /**

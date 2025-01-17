@@ -44,6 +44,7 @@ import {
   usePortalQuote,
   useSendPortalTransaction,
 } from "@/hooks/usePortal";
+import { CtaButton } from "../common/CtaButton";
 
 export const EthTransmuterLooper = ({
   transmuterLooper,
@@ -91,31 +92,10 @@ export const EthTransmuterLooper = ({
     allowFailure: false,
     contracts: [
       {
-        // Get the underlying asset for the strategy.
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "asset",
-        chainId: chain.id,
-      },
-      {
         // Get the decimals used for the strategy and `asset`.
         address: transmuterLooper.address,
         abi: tokenizedStrategyAbi,
         functionName: "decimals",
-        chainId: chain.id,
-      },
-      {
-        // Get the name the strategy is using for it's token
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "name",
-        chainId: chain.id,
-      },
-      {
-        // Get the performance fee charged on profits.
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "performanceFee",
         chainId: chain.id,
       },
       {
@@ -126,43 +106,11 @@ export const EthTransmuterLooper = ({
         chainId: chain.id,
         args: [address!],
       },
-      {
-        // Get the max the owner can mint in shares.
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "maxMint",
-        chainId: chain.id,
-        args: [address!],
-      },
-      {
-        // Get the max amount of shares the owner can redeem
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "maxRedeem",
-        chainId: chain.id,
-        args: [address!],
-      },
-      {
-        // Get the max amount of assets the owner can withdraw
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "maxWithdraw",
-        chainId: chain.id,
-        args: [address!],
-      },
-      {
-        // Gets the symbol the strategy is using for its tokens as a string. (yvSymbol)
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "symbol",
-        chainId: chain.id,
-      },
     ],
   });
-  // TODO: Figure out what we need and what we dont need from this
-  // const [sharesTokenAddress,decimals,shareTokenName,performanceFee,maxDeposit,maxMint,maxRedeem,maxWithdraw,symbol]
-  const [, decimals, , , maxDeposit, , , , ,] =
-    transmuterLooperContractStaticState ?? [];
+  const [decimals, maxDeposit] = (transmuterLooperContractStaticState ?? []) as
+    | [number, bigint]
+    | [];
 
   /** EVENT TRIGGERED CONTRACT READS **/
   // Read these contract functions initially, but separately as they will be watched and reread per block in case they are updated
@@ -170,56 +118,6 @@ export const EthTransmuterLooper = ({
     scopeKey: ScopeKeys.TransmuterLooperReported,
     allowFailure: false,
     contracts: [
-      {
-        // Get the timestamp at which all profits will unlock.
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "fullProfitUnlockDate",
-        chainId: chain.id,
-      },
-      {
-        // Get status on whether the strategy is shut down.
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "isShutdown",
-        chainId: chain.id,
-      },
-      {
-        // Get the timestamp of the last report
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "lastReport",
-        chainId: chain.id,
-      },
-      {
-        // Get the current balance in y shares of the address or account.
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "balanceOf",
-        chainId: chain.id,
-        args: [address!],
-      },
-      {
-        // Get the price in asset per share
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "pricePerShare",
-        chainId: chain.id,
-      },
-      {
-        // Gets the current time profits are set to unlock over as uint.
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "profitMaxUnlockTime",
-        chainId: chain.id,
-      },
-      {
-        // Gets the current time profits are set to unlock over as uint.
-        address: transmuterLooper.address,
-        abi: tokenizedStrategyAbi,
-        functionName: "profitUnlockingRate",
-        chainId: chain.id,
-      },
       {
         // Gets the total assets deposited
         address: transmuterLooper.address,
@@ -236,10 +134,8 @@ export const EthTransmuterLooper = ({
       },
     ],
   });
-  // TODO: Figure out what we need and what we dont need from this
-  // const [fullProfitUnlockDate,isShutdown,lastReport,balanceOf,pricePerShare,profitMaxUnlockTime,profitUnlockingRate,totalAssets,totalSupply]
-  const [, , , , , , , totalAssets, totalSupply] =
-    transmuterLooperContractDynamicState ?? [];
+  const [totalAssets, totalSupply] = (transmuterLooperContractDynamicState ??
+    []) as [bigint, bigint] | [];
 
   // Watch intermittently updated read values in case they are updated due to the report function or other manual updates to the contract
   useWatchQuery({
@@ -282,23 +178,23 @@ export const EthTransmuterLooper = ({
     approveConfig: alETHApproveConfig,
     approve: approveSpendAlETH,
   } = useAllowance({
-    tokenAddress:
-      chain.id !== fantom.id
-        ? SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH]
-        : undefined,
+    tokenAddress: alEthToken?.address,
     spender: transmuterLooper.address,
     amount,
     decimals,
     isInfiniteApproval,
   });
 
-  const { mutate: approveSpendWeth, signature: gaslessSignature } =
-    useApproveInputToken({
-      shouldApprove: isWethApprovalNeeded,
-      canPermit: isWethEligibleForGaslessSignature,
-      approveTx: approveSpendWethTx,
-      permit: approveSpendWethSignature,
-    });
+  const {
+    mutate: approveSpendWeth,
+    signature: gaslessSignature,
+    resetGaslessSignature: resetWethApprovalSignature,
+  } = useApproveInputToken({
+    shouldApprove: isWethApprovalNeeded,
+    canPermit: isWethEligibleForGaslessSignature,
+    approveTx: approveSpendWethTx,
+    permit: approveSpendWethSignature,
+  });
 
   const { mutate: approveSpendShares } = useApproveInputToken({
     shouldApprove: isSharesApprovalNeeded,
@@ -308,7 +204,11 @@ export const EthTransmuterLooper = ({
   });
 
   /** PORTAL QUOTE */
-  const { data: wethOrEthToVaultSharesQuote } = usePortalQuote({
+  const {
+    data: wethOrEthToVaultSharesQuote,
+    error: wethOrEthToVaultSharesQuoteError,
+    isPending: isWethOrEthToVaultSharesQuotePending,
+  } = usePortalQuote({
     gaslessSignature,
     inputToken:
       selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
@@ -316,36 +216,37 @@ export const EthTransmuterLooper = ({
     inputAmount: amount,
     outputToken: transmuterLooper.address,
     sender: address,
+    slippage,
     shouldQuote:
-      selectTokenAddress === GAS_ADDRESS ||
-      (selectTokenAddress ===
-        WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId] &&
-        (!isWethApprovalNeeded || !!gaslessSignature))
-        ? true
-        : false,
+      (selectTokenAddress === GAS_ADDRESS ||
+        (selectTokenAddress === wethToken?.address &&
+          (isWethApprovalNeeded === false || !!gaslessSignature))) &&
+      Number(amount || 0) > 0 &&
+      !isWithdraw,
   });
 
-  const { data: vaultSharesToETHorWethQuote } = usePortalQuote({
-    gaslessSignature,
+  const {
+    data: vaultSharesToETHorWethQuote,
+    error: vaultSharesToETHorWethQuoteError,
+    isPending: isVaultSharesToETHorWethQuotePending,
+  } = usePortalQuote({
+    gaslessSignature: undefined,
     inputToken: transmuterLooper.address,
     inputTokenDecimals: 6,
     inputAmount: amount,
     outputToken:
       selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
     sender: address,
+    slippage,
     shouldQuote:
-      (!isSharesApprovalNeeded || gaslessSignature !== undefined) &&
-      selectTokenAddress !==
-        SYNTH_ASSETS_ADDRESSES[chain.id as SupportedTransmuterLooperChainId][
-          SYNTH_ASSETS.ALETH
-        ],
+      isSharesApprovalNeeded === false &&
+      selectTokenAddress !== alEthToken?.address &&
+      Number(amount || 0) > 0 &&
+      isWithdraw,
   });
 
-  const selectedTokenIsApprovalNeeded =
-    selectTokenAddress ===
-    SYNTH_ASSETS_ADDRESSES[chain.id as SupportedTransmuterLooperChainId][
-      SYNTH_ASSETS.ALETH
-    ]
+  const isSelectedTokenApprovalNeeded =
+    selectTokenAddress === alEthToken?.address
       ? isApprovalNeeded
       : selectTokenAddress === GAS_ADDRESS
         ? false
@@ -406,12 +307,24 @@ export const EthTransmuterLooper = ({
   });
 
   /** PORTAL BUNDLER CALLS */
-  const { mutate: depositUsingPortal } = useSendPortalTransaction(
-    wethOrEthToVaultSharesQuote,
-  );
-  const { mutate: withdrawUsingPortal } = useSendPortalTransaction(
-    vaultSharesToETHorWethQuote,
-  );
+  const { mutate: depositUsingPortal, isLoading: isPrepareDepositTxLoading } =
+    useSendPortalTransaction(
+      wethOrEthToVaultSharesQuote,
+      wethOrEthToVaultSharesQuoteError,
+      () => {
+        setAmount("");
+
+        if (!!gaslessSignature) {
+          resetWethApprovalSignature();
+        }
+      },
+    );
+  const { mutate: withdrawUsingPortal, isLoading: isPrepareWithdrawTxLoading } =
+    useSendPortalTransaction(
+      vaultSharesToETHorWethQuote,
+      vaultSharesToETHorWethQuoteError,
+      () => setAmount(""),
+    );
 
   useEffect(() => {
     if (redeemReceipt) {
@@ -423,12 +336,10 @@ export const EthTransmuterLooper = ({
   const onDeposit = async () => {
     if (
       selectTokenAddress === GAS_ADDRESS ||
-      (chain.id !== fantom.id &&
-        selectTokenAddress === WETH_ADDRESSES[chain.id])
+      selectTokenAddress === wethToken?.address
     ) {
       if (
-        chain.id !== fantom.id &&
-        selectTokenAddress === WETH_ADDRESSES[chain.id] &&
+        selectTokenAddress === wethToken?.address &&
         isWethApprovalNeeded &&
         !gaslessSignature
       ) {
@@ -462,23 +373,16 @@ export const EthTransmuterLooper = ({
           description: "Unexpected error. Please contact Alchemix team.",
         });
       }
-
-      // TODO -- do I need to refetch the shares/assets balance here, or is it taken care of by the transaction occuring and a refetch in the next block?
     }
   };
 
   const onWithdraw = async () => {
-    if (
-      chain.id !== fantom.id &&
-      selectTokenAddress !==
-        SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH]
-    ) {
+    if (selectTokenAddress !== alEthToken?.address) {
       if (isSharesApprovalNeeded) {
         approveSpendShares();
       } else {
         withdrawUsingPortal();
       }
-      setAmount("");
     } else {
       // 1. Check for contract call error
       if (redeemError) {
@@ -499,8 +403,6 @@ export const EthTransmuterLooper = ({
           description: "Unexpected error. Please contact Alchemix team.",
         });
       }
-
-      // TODO -- do I need to refetch the shares/assets balance here, or is it taken care of by the transaction occuring and a refetch in the next block?
     }
   };
 
@@ -665,50 +567,68 @@ export const EthTransmuterLooper = ({
                 </div>
                 {selectTokenAddress &&
                   chain.id !== fantom.id &&
-                  selectTokenAddress !==
-                    SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH] && (
+                  selectTokenAddress !== alEthToken?.address && (
                     <SlippageInput
                       slippage={slippage}
                       setSlippage={setSlippage}
                     />
                   )}
-                <div className="flex flex-row justify-between">
-                  <p className="flex-auto text-sm text-lightgrey10inverse dark:text-lightgrey10">
-                    Approval
-                  </p>
-                  <div className="flex items-center">
-                    <label
-                      className="pr-[15px] text-sm leading-none text-lightgrey10inverse dark:text-lightgrey10"
-                      htmlFor="is-infinite-approval"
-                    >
-                      Fixed
-                    </label>
-                    <Switch
-                      checked={isInfiniteApproval}
-                      onCheckedChange={setIsInfiniteApproval}
-                      id="is-infinite-approval"
-                    />
-                    <label
-                      className="pl-[15px] text-sm leading-none text-lightgrey10inverse dark:text-lightgrey10"
-                      htmlFor="is-infinite-approval"
-                    >
-                      Infinite
-                    </label>
+                {selectTokenAddress === alEthToken?.address && (
+                  <div className="flex flex-row justify-between">
+                    <p className="flex-auto text-sm text-lightgrey10inverse dark:text-lightgrey10">
+                      Approval
+                    </p>
+                    <div className="flex items-center">
+                      <label
+                        className="pr-[15px] text-sm leading-none text-lightgrey10inverse dark:text-lightgrey10"
+                        htmlFor="is-infinite-approval"
+                      >
+                        Fixed
+                      </label>
+                      <Switch
+                        checked={isInfiniteApproval}
+                        onCheckedChange={setIsInfiniteApproval}
+                        id="is-infinite-approval"
+                      />
+                      <label
+                        className="pl-[15px] text-sm leading-none text-lightgrey10inverse dark:text-lightgrey10"
+                        htmlFor="is-infinite-approval"
+                      >
+                        Infinite
+                      </label>
+                    </div>
                   </div>
-                </div>
-                <Button
+                )}
+                <CtaButton
                   variant="outline"
-                  disabled={isInputZero(amount)}
+                  width="full"
+                  disabled={
+                    isInputZero(amount) ||
+                    /* deposit conditions */
+                    (!isWithdraw &&
+                      !isSelectedTokenApprovalNeeded &&
+                      isWethOrEthToVaultSharesQuotePending) ||
+                    (!isWithdraw &&
+                      !isSelectedTokenApprovalNeeded &&
+                      isPrepareDepositTxLoading) ||
+                    /* withdraw conditions */
+                    (isWithdraw &&
+                      !isSharesApprovalNeeded &&
+                      isVaultSharesToETHorWethQuotePending) ||
+                    (isWithdraw &&
+                      !isSharesApprovalNeeded &&
+                      isPrepareWithdrawTxLoading)
+                  }
                   onClick={isWithdraw ? onWithdraw : onDeposit}
                 >
                   {isWithdraw
                     ? isSharesApprovalNeeded
                       ? "Approve Spend shares"
                       : "Withdraw"
-                    : selectedTokenIsApprovalNeeded
+                    : isSelectedTokenApprovalNeeded
                       ? `Approve Spend ${token.symbol}`
                       : "Deposit"}
-                </Button>
+                </CtaButton>
               </div>
               <div className="flex flex-col justify-between gap-4">
                 <div className="w-full rounded border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10">
