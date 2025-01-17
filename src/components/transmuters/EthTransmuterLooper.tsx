@@ -292,7 +292,7 @@ export const EthTransmuterLooper = ({
     functionName: "redeem",
     args: [parseEther(amount), address!, address!],
     query: {
-      enabled: !isInputZero(amount),
+      enabled: !isInputZero(amount) && isWithdraw === true,
     },
   });
 

@@ -221,7 +221,6 @@ export const useApproveInputToken = ({
     sendTransaction: approve,
     data: approveTxHash,
     reset: resetApprove,
-    error: approveTxError,
   } = useSendTransaction({
     mutation: mutationCallback({
       action: "Approve input token",
@@ -252,9 +251,10 @@ export const useApproveInputToken = ({
   useEffect(() => {
     if (approveReceipt) {
       queryClient.invalidateQueries({
-        queryKey: [QueryKeys.PortalCheckApproval, QueryKeys.PortalCreateQuote],
-        exact: false,
-        refetchType: "all",
+        queryKey: [QueryKeys.PortalCheckApproval],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.PortalCreateQuote],
       });
       resetApprove();
     }
@@ -276,11 +276,6 @@ export const useApproveInputToken = ({
       toast.error(
         `Failed to prepare transaction: ${prepareTxError.message.split(".")[0]}`,
       );
-      return;
-    }
-
-    if (approveTxError) {
-      resetApprove();
       return;
     }
 
@@ -395,7 +390,6 @@ export const useSendPortalTransaction = (
   const {
     sendTransaction,
     data: txHash,
-    error: sendPortalTxError,
     reset: resetSendPortalTx,
   } = useSendTransaction({
     mutation: mutationCallback({
@@ -404,10 +398,6 @@ export const useSendPortalTransaction = (
       publicClient,
     }),
   });
-
-  if (sendPortalTxError) {
-    resetSendPortalTx();
-  }
 
   const { data: sendTxReceipt } = useWaitForTransactionReceipt({
     hash: txHash,
@@ -430,8 +420,10 @@ export const useSendPortalTransaction = (
   useEffect(() => {
     if (sendTxReceipt) {
       queryClient.invalidateQueries({
-        queryKey: [QueryKeys.PortalCheckApproval, QueryKeys.PortalCreateQuote],
-        exact: false,
+        queryKey: [QueryKeys.PortalCheckApproval],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.PortalCreateQuote],
       });
       resetSendPortalTx();
 
