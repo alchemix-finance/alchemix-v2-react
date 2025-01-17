@@ -9,7 +9,7 @@ import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { Token, Vault } from "@/lib/types";
 import { formatNumber } from "@/utils/number";
 import { useSettings } from "@/components/providers/SettingsProvider";
-import { SynthFilter } from "../Vaults";
+import { SynthFilter } from "./Vaults";
 
 export interface VaultsMetricsProps {
   filteredVaults: Vault[] | undefined;

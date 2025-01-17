@@ -1,5 +1,4 @@
 import {
-  useAccount,
   usePrepareTransactionRequest,
   usePublicClient,
   useSendTransaction,
@@ -440,7 +439,7 @@ export const useSendPortalTransaction = (
         onSuccess();
       }
     }
-  }, [sendTxReceipt, onSuccess]);
+  }, [sendTxReceipt, onSuccess, resetSendPortalTx]);
 
   const mutate = () => {
     if (quoteError) {

@@ -18,6 +18,7 @@ import {
 } from "@/lib/middleware/bonuses";
 import { getGearboxApy } from "@/lib/middleware/gearbox";
 import { getJonesApy } from "@/lib/middleware/jones";
+import { getDineroApr } from "../middleware/dinero";
 
 // @dev some vaults are broken so we need to ignore them from processing
 export const IGNORED_VAULTS: `0x${string}`[] = [
@@ -96,6 +97,7 @@ export const VAULTS: VaultsConfig = {
       image: "aDAI.svg",
       messages: [],
       yieldTokenOverride: "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+      gateway: "0x67EC822A2F981Ef2db6Afce4E8dF57ff1439f4d3",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -113,6 +115,7 @@ export const VAULTS: VaultsConfig = {
       image: "aUSDC.svg",
       messages: [],
       yieldTokenOverride: "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+      gateway: "0x67EC822A2F981Ef2db6Afce4E8dF57ff1439f4d3",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -130,6 +133,7 @@ export const VAULTS: VaultsConfig = {
       image: "aUSDT.svg",
       messages: [],
       yieldTokenOverride: "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+      gateway: "0x67EC822A2F981Ef2db6Afce4E8dF57ff1439f4d3",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -211,6 +215,7 @@ export const VAULTS: VaultsConfig = {
       image: "aFRAX.svg",
       messages: [],
       yieldTokenOverride: "0xd4937682df3C8aEF4FE912A96A74121C0829E664",
+      gateway: "0x67EC822A2F981Ef2db6Afce4E8dF57ff1439f4d3",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -246,7 +251,6 @@ export const VAULTS: VaultsConfig = {
       image: "wstETH.svg",
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
-      gateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
       api: {
         apr: getLidoApy,
         yieldType: "APR",
@@ -282,6 +286,7 @@ export const VAULTS: VaultsConfig = {
       messages: [],
       wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
       yieldTokenOverride: "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+      gateway: "0xA067C885d958aec176eC3D8dAdc847e0c9384809",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -319,6 +324,23 @@ export const VAULTS: VaultsConfig = {
         apr: getFraxApy,
         yieldType: "APR",
         provider: "frax",
+        bonus: getNoBonus,
+      },
+      disabledDepositTokens: [],
+      disabledWithdrawTokens: [],
+    },
+    "0x9Ba021B0a9b958B5E75cE9f6dff97C7eE52cb3E6": {
+      label: "Dinero apxETH",
+      synthAssetType: SYNTH_ASSETS.ALETH,
+      underlyingSymbol: "WETH",
+      yieldSymbol: "apxETH",
+      image: "apxETH.png",
+      messages: [],
+      wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
+      api: {
+        apr: getDineroApr,
+        yieldType: "APR",
+        provider: "dinero",
         bonus: getNoBonus,
       },
       disabledDepositTokens: [],
@@ -452,8 +474,8 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        provider: "meltedRewards",
-        bonus: getMeltedRewardsBonusData,
+        provider: "yearn",
+        bonus: getNoBonus,
       },
       disabledDepositTokens: [],
       disabledWithdrawTokens: [],
@@ -514,7 +536,7 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getLidoApy,
         yieldType: "APR",
-        provider: "meltedRewards",
+        provider: "lido",
         bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],
@@ -539,8 +561,8 @@ export const VAULTS: VaultsConfig = {
       api: {
         apr: getYearnApy,
         yieldType: "APY",
-        provider: "meltedRewards",
-        bonus: getMeltedRewardsBonusData,
+        provider: "yearn",
+        bonus: getNoBonus,
       },
       disabledDepositTokens: [],
       disabledWithdrawTokens: [],

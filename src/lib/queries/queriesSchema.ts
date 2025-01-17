@@ -30,6 +30,8 @@ export const QueryKeys = {
   HistoricYield: "historicYield",
   PortalCheckApproval: "portalCheckApproval",
   PortalCreateQuote: "portalCreateQuote",
+  GeneratedEarned: "generatedEarned",
+  ExternalFarmsApr: "externalFarmsApr",
 } as const;
 
 /**

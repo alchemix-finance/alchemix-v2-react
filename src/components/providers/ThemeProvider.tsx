@@ -21,7 +21,7 @@ const darkThemeNoBorderRadius = darkTheme({
   borderRadius: "none",
 });
 
-export const rainbowLightTheme = {
+const rainbowLightTheme = {
   ...lightThemeNoBorderRadius,
   fonts: {
     body: "Montserrat",
@@ -53,7 +53,7 @@ export const rainbowLightTheme = {
   },
 } as const satisfies Theme;
 
-export const rainbowDarkTheme = {
+const rainbowDarkTheme = {
   ...darkThemeNoBorderRadius,
   fonts: {
     body: "Montserrat",

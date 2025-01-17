@@ -314,7 +314,7 @@ export const EthTransmuterLooper = ({
       () => {
         setAmount("");
 
-        if (!!gaslessSignature) {
+        if (gaslessSignature) {
           resetWethApprovalSignature();
         }
       },
