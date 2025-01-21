@@ -1,6 +1,5 @@
 import {
   usePrepareTransactionRequest,
-  usePublicClient,
   useSendTransaction,
   useSignTypedData,
   useWaitForTransactionReceipt,
@@ -12,11 +11,9 @@ import { useEffect } from "react";
 
 import { useChain } from "./useChain";
 import { toast } from "sonner";
-import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
-import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
-import { mutationCallback } from "@/utils/helpers/mutationCallback";
 import { queryClient } from "@/components/providers/QueryProvider";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { useWriteContractMutationCallback } from "./useWriteContractMutationCallback";
 
 type PortalApprovalResponse = {
   context: PortalApprovalContext;
@@ -179,10 +176,7 @@ export const useApproveInputToken = ({
   shouldApprove: boolean | undefined;
 }) => {
   const chain = useChain();
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const {
     signTypedData,
@@ -224,8 +218,6 @@ export const useApproveInputToken = ({
   } = useSendTransaction({
     mutation: mutationCallback({
       action: "Approve input token",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
@@ -233,20 +225,6 @@ export const useApproveInputToken = ({
     hash: approveTxHash,
     chainId: chain.id,
   });
-
-  useEffect(() => {
-    if (isLoading) {
-      toast.loading("Preparing transaction request...");
-    } else if (!isLoading && approveConfig) {
-      toast.dismiss();
-      toast.success("Transaction request prepared successfully!");
-    } else if (!isLoading && prepareTxError) {
-      toast.dismiss();
-      toast.error(
-        `Failed to prepare transaction: ${prepareTxError.message.split(".")[0]}`,
-      );
-    }
-  }, [isLoading, approveConfig, prepareTxError]);
 
   useEffect(() => {
     if (approveReceipt) {
@@ -303,60 +281,48 @@ export const usePortalQuote = (params: PortalQuoteParams) => {
   return useQuery({
     queryKey: [QueryKeys.PortalCreateQuote, params],
     queryFn: async () => {
-      const getPortalQuote = async () => {
-        const url = new URL(`${PORTAL_API_BASE_URI}/portal`);
+      const url = new URL(`${PORTAL_API_BASE_URI}/portal`);
+      url.searchParams.append(
+        "inputToken",
+        `${PORTALS_CHAIN_ID[chain.id]}:${params.inputToken}`,
+      );
+      url.searchParams.append(
+        "inputAmount",
+        `${parseUnits(params.inputAmount || "0", params.inputTokenDecimals)}`,
+      );
+      url.searchParams.append(
+        "outputToken",
+        `${PORTALS_CHAIN_ID[chain.id]}:${params.outputToken}`,
+      );
+      url.searchParams.append("sender", params.sender);
+
+      if (params.slippage) {
         url.searchParams.append(
-          "inputToken",
-          `${PORTALS_CHAIN_ID[chain.id]}:${params.inputToken}`,
+          "slippageTolerancePercentage",
+          `${Number(params.slippage)}`,
         );
+      }
+
+      if (params.gaslessSignature) {
+        // Append the gasless transaction signature
         url.searchParams.append(
-          "inputAmount",
-          `${parseUnits(params.inputAmount || "0", params.inputTokenDecimals)}`,
+          "permitSignature",
+          `${params.gaslessSignature}`,
         );
-        url.searchParams.append(
-          "outputToken",
-          `${PORTALS_CHAIN_ID[chain.id]}:${params.outputToken}`,
-        );
-        url.searchParams.append("sender", params.sender);
+      }
 
-        if (params.slippage) {
-          url.searchParams.append(
-            "slippageTolerancePercentage",
-            `${Number(params.slippage)}`,
-          );
-        }
-
-        if (params.gaslessSignature) {
-          // Append the gasless transaction signature
-          url.searchParams.append(
-            "permitSignature",
-            `${params.gaslessSignature}`,
-          );
-        }
-
-        const response = await fetch(url.toString(), {
-          method: "GET",
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(`Failed to fetch portal quote ${error?.message}`);
-        }
-
-        const portalQuote = (await response.json()) as PortalQuoteResponse;
-
-        return portalQuote;
-      };
-
-      const getQuotePromise = getPortalQuote();
-
-      toast.promise(getQuotePromise, {
-        loading: "Getting portal quote...",
-        success: "Portal quote retrieved successfully!",
-        error: "Failed to create quote for transaction",
+      const response = await fetch(url.toString(), {
+        method: "GET",
       });
 
-      return await getQuotePromise;
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(`Failed to fetch portal quote ${error?.message}`);
+      }
+
+      const portalQuote = (await response.json()) as PortalQuoteResponse;
+
+      return portalQuote;
     },
     retry: false,
     enabled: params.shouldQuote,
@@ -382,10 +348,7 @@ export const useSendPortalTransaction = (
       enabled: !!params,
     },
   });
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
-  const addRecentTransaction = useAddRecentTransaction();
+  const mutationCallback = useWriteContractMutationCallback();
 
   const {
     sendTransaction,
@@ -394,28 +357,12 @@ export const useSendPortalTransaction = (
   } = useSendTransaction({
     mutation: mutationCallback({
       action: "Execute portal zap",
-      addRecentTransaction,
-      publicClient,
     }),
   });
 
   const { data: sendTxReceipt } = useWaitForTransactionReceipt({
     hash: txHash,
   });
-
-  useEffect(() => {
-    if (isLoading) {
-      toast.loading("Preparing transaction request...");
-    } else if (!isLoading && transactionConfig) {
-      toast.dismiss();
-      toast.success("Transaction request prepared successfully!");
-    } else if (!isLoading && prepareTxError) {
-      toast.dismiss();
-      toast.error(
-        `Failed to prepare transaction: ${prepareTxError.message.split(".")[0]}`,
-      );
-    }
-  }, [isLoading, transactionConfig, prepareTxError]);
 
   useEffect(() => {
     if (sendTxReceipt) {

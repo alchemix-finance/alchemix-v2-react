@@ -17,8 +17,12 @@ import { useAllowance } from "@/hooks/useAllowance";
 import { toast } from "sonner";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { EyeOffIcon, EyeIcon } from "lucide-react";
-import { AnimatePresence, m } from "framer-motion";
-import { accordionVariants, accordionTransition } from "@/lib/motion/motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+import {
+  accordionVariants,
+  accordionTransition,
+  reducedMotionAccordionVariants,
+} from "@/lib/motion/motion";
 import { tokenizedStrategyAbi } from "@/abi/tokenizedStrategy";
 import { SYNTH_ASSETS, SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
 import { fantom } from "viem/chains";
@@ -62,6 +66,7 @@ export const EthTransmuterLooper = ({
   const [selectTokenAddress, setSelectTokenAddress] =
     useState<`0x${string}`>(GAS_ADDRESS);
   const [slippage, setSlippage] = useState("0.5"); // sets the slippage param used for depositing from or withdrawing into ETH, which requires a trade
+  const isReducedMotion = useReducedMotion();
 
   const { data: tokens } = useTokensQuery();
   const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
@@ -163,7 +168,7 @@ export const EthTransmuterLooper = ({
     6,
   );
   const {
-    shouldApprove: isSharesApprovalNeeded,
+    shouldApprove: isPortalSharesApprovalNeeded,
     canPermit: isSharesEligibleForGasslessSignature,
     approveTx: approveSpendSharesTx,
     permit: approveSpendSharesSignature,
@@ -177,6 +182,7 @@ export const EthTransmuterLooper = ({
     isApprovalNeeded,
     approveConfig: alETHApproveConfig,
     approve: approveSpendAlETH,
+    isPending: isApproveSpendAlEthPending,
   } = useAllowance({
     tokenAddress: alEthToken?.address,
     spender: transmuterLooper.address,
@@ -189,6 +195,7 @@ export const EthTransmuterLooper = ({
     mutate: approveSpendWeth,
     signature: gaslessSignature,
     resetGaslessSignature: resetWethApprovalSignature,
+    isLoading: isApproveSpendWethLoading,
   } = useApproveInputToken({
     shouldApprove: isWethApprovalNeeded,
     canPermit: isWethEligibleForGaslessSignature,
@@ -196,12 +203,13 @@ export const EthTransmuterLooper = ({
     permit: approveSpendWethSignature,
   });
 
-  const { mutate: approveSpendShares } = useApproveInputToken({
-    shouldApprove: isSharesApprovalNeeded,
-    canPermit: isSharesEligibleForGasslessSignature,
-    approveTx: approveSpendSharesTx,
-    permit: approveSpendSharesSignature,
-  });
+  const { mutate: approveSpendShares, isLoading: isApproveSpendSharesLoading } =
+    useApproveInputToken({
+      shouldApprove: isPortalSharesApprovalNeeded,
+      canPermit: isSharesEligibleForGasslessSignature,
+      approveTx: approveSpendSharesTx,
+      permit: approveSpendSharesSignature,
+    });
 
   /** PORTAL QUOTE */
   const {
@@ -239,7 +247,7 @@ export const EthTransmuterLooper = ({
     sender: address,
     slippage,
     shouldQuote:
-      isSharesApprovalNeeded === false &&
+      isPortalSharesApprovalNeeded === false &&
       selectTokenAddress !== alEthToken?.address &&
       Number(amount || 0) > 0 &&
       isWithdraw,
@@ -262,7 +270,11 @@ export const EthTransmuterLooper = ({
     functionName: "deposit",
     args: [parseEther(amount), address!],
     query: {
-      enabled: !isInputZero(amount) && isApprovalNeeded === false,
+      enabled:
+        !isInputZero(amount) &&
+        isApprovalNeeded === false &&
+        !isWithdraw &&
+        selectTokenAddress === alEthToken?.address,
     },
   });
 
@@ -292,7 +304,10 @@ export const EthTransmuterLooper = ({
     functionName: "redeem",
     args: [parseEther(amount), address!, address!],
     query: {
-      enabled: !isInputZero(amount) && isWithdraw === true,
+      enabled:
+        !isInputZero(amount) &&
+        isWithdraw === true &&
+        selectTokenAddress === alEthToken?.address,
     },
   });
 
@@ -378,7 +393,7 @@ export const EthTransmuterLooper = ({
 
   const onWithdraw = async () => {
     if (selectTokenAddress !== alEthToken?.address) {
-      if (isSharesApprovalNeeded) {
+      if (isPortalSharesApprovalNeeded) {
         approveSpendShares();
       } else {
         withdrawUsingPortal();
@@ -462,6 +477,75 @@ export const EthTransmuterLooper = ({
   const totalSupplyFormatted = formatEther(totalSupply ?? 0n);
   const maxDepositFormatted = formatEther(maxDeposit ?? 0n);
 
+  /* Withdraw Button States */
+  const shouldShowApproveSpendShares =
+    Number(amount || 0) > 0 &&
+    isWithdraw &&
+    isPortalSharesApprovalNeeded &&
+    !isApproveSpendSharesLoading &&
+    !isPrepareWithdrawTxLoading;
+  const shouldShowApproveSpendSharesIsLoading =
+    Number(amount || 0) > 0 &&
+    isWithdraw &&
+    isApproveSpendSharesLoading &&
+    !isVaultSharesToETHorWethQuotePending &&
+    !isPrepareWithdrawTxLoading;
+  const shouldShowFetchingSpendSharesQuote =
+    Number(amount || 0) > 0 &&
+    isWithdraw &&
+    !isPortalSharesApprovalNeeded &&
+    !isApproveSpendSharesLoading &&
+    isVaultSharesToETHorWethQuotePending &&
+    !isPrepareWithdrawTxLoading;
+  const shouldShowPreparingSpendSharesTx =
+    Number(amount || 0) > 0 &&
+    isWithdraw &&
+    !isPortalSharesApprovalNeeded &&
+    !isApproveSpendSharesLoading &&
+    isPrepareWithdrawTxLoading;
+  const shouldShowWithdraw =
+    isWithdraw &&
+    !isPortalSharesApprovalNeeded &&
+    !isApproveSpendSharesLoading &&
+    !isPrepareWithdrawTxLoading;
+  /* Deposit Button States */
+  const shouldShowApproveSpendToken =
+    Number(amount || 0) > 0 &&
+    !isWithdraw &&
+    selectTokenAddress !== GAS_ADDRESS &&
+    isSelectedTokenApprovalNeeded &&
+    !isApproveSpendAlEthPending &&
+    !isApproveSpendWethLoading &&
+    !isPrepareDepositTxLoading;
+  const shouldShowApproveSpendingWethIsLoading =
+    Number(amount || 0) > 0 &&
+    !isWithdraw &&
+    selectTokenAddress === wethToken?.address &&
+    isApproveSpendWethLoading &&
+    !isPrepareDepositTxLoading;
+  const shouldShowApproveSpendingAlEthIsLoading =
+    Number(amount || 0) > 0 &&
+    !isWithdraw &&
+    selectTokenAddress === alEthToken?.address &&
+    isApproveSpendAlEthPending;
+  const shouldShowFetchingSpendWethorEthQuote =
+    Number(amount || 0) > 0 &&
+    !isWithdraw &&
+    (selectTokenAddress === wethToken?.address ||
+      selectTokenAddress === GAS_ADDRESS) &&
+    !isApproveSpendWethLoading &&
+    isWethOrEthToVaultSharesQuotePending &&
+    !isPrepareDepositTxLoading;
+  const shouldShowPreparingSpendEthOrWethTx =
+    Number(amount || 0) > 0 &&
+    !isWithdraw &&
+    (selectTokenAddress === wethToken?.address ||
+      selectTokenAddress === GAS_ADDRESS) &&
+    !isApproveSpendWethLoading &&
+    isPrepareDepositTxLoading;
+  const shouldShowDeposit =
+    !isWithdraw && !isApproveSpendWethLoading && !isPrepareDepositTxLoading;
+
   return (
     <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
       <div
@@ -484,7 +568,11 @@ export const EthTransmuterLooper = ({
             initial="collapsed"
             animate="open"
             exit="collapsed"
-            variants={accordionVariants}
+            variants={
+              isReducedMotion
+                ? reducedMotionAccordionVariants
+                : accordionVariants
+            }
             transition={accordionTransition}
           >
             <div className="flex flex-col gap-8 p-4 lg:flex-row">
@@ -510,51 +598,55 @@ export const EthTransmuterLooper = ({
                     </label>
                   </div>
                 </div>
-                <div className="flex w-full rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
-                  <Select
-                    value={selectTokenAddress}
-                    onValueChange={(value) =>
-                      setSelectTokenAddress(value as `0x${string}`)
-                    }
-                  >
-                    <SelectTrigger className="h-auto w-24 sm:w-56">
-                      <SelectValue placeholder="Token" asChild>
-                        <div className="flex items-center gap-4">
-                          <img
-                            src={`/images/token-icons/${token.symbol}.svg`}
-                            alt={token.symbol}
-                            className="h-12 w-12"
-                          />
-                          <span className="hidden text-xl sm:inline">
+                <div className="relative flex w-full flex-row">
+                  <div className="flex w-full justify-end rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+                    <Select
+                      value={selectTokenAddress}
+                      onValueChange={(value) =>
+                        setSelectTokenAddress(value as `0x${string}`)
+                      }
+                    >
+                      <SelectTrigger className="h-auto w-24 sm:w-56">
+                        <SelectValue placeholder="Token" asChild>
+                          <div className="flex items-center gap-4">
+                            <img
+                              src={`/images/token-icons/${token.symbol}.svg`}
+                              alt={token.symbol}
+                              className="h-12 w-12"
+                            />
+                            <span className="hidden text-xl sm:inline">
+                              {token.symbol}
+                            </span>
+                          </div>
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {selection.map((token) => (
+                          <SelectItem key={token.address} value={token.address}>
                             {token.symbol}
-                          </span>
-                        </div>
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {selection.map((token) => (
-                        <SelectItem key={token.address} value={token.address}>
-                          {token.symbol}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <TokenInput
-                    amount={amount}
-                    setAmount={(amount) => setAmount(amount)}
-                    tokenAddress={
-                      isWithdraw ? transmuterLooper.address : selectTokenAddress
-                    }
-                    tokenDecimals={
-                      // TODO -- put this back when contract is deployed, and remove below condition which tests using a USDC vault with 6 decimals
-                      /*
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <TokenInput
+                      amount={amount}
+                      setAmount={(amount) => setAmount(amount)}
+                      tokenAddress={
+                        isWithdraw
+                          ? transmuterLooper.address
+                          : selectTokenAddress
+                      }
+                      tokenDecimals={
+                        // TODO -- put this back when contract is deployed, and remove below condition which tests using a USDC vault with 6 decimals
+                        /*
                       decimals ?? 18
                       */
-                      isWithdraw ? 6 : 18
-                    }
-                    tokenSymbol={isWithdraw ? "yvAlETH" : token.symbol}
-                    dustToZero={isWithdraw}
-                  />
+                        isWithdraw ? 6 : 18
+                      }
+                      tokenSymbol={isWithdraw ? "yvAlETH" : token.symbol}
+                      dustToZero={isWithdraw}
+                    />
+                  </div>
                 </div>
                 <div className="flex h-8 flex-row space-x-4">
                   <div className="flex w-full rounded bg-grey3inverse p-4 text-center text-xl dark:bg-grey3">
@@ -613,21 +705,38 @@ export const EthTransmuterLooper = ({
                       isPrepareDepositTxLoading) ||
                     /* withdraw conditions */
                     (isWithdraw &&
-                      !isSharesApprovalNeeded &&
+                      !isPortalSharesApprovalNeeded &&
                       isVaultSharesToETHorWethQuotePending) ||
                     (isWithdraw &&
-                      !isSharesApprovalNeeded &&
+                      !isPortalSharesApprovalNeeded &&
                       isPrepareWithdrawTxLoading)
                   }
                   onClick={isWithdraw ? onWithdraw : onDeposit}
                 >
                   {isWithdraw
-                    ? isSharesApprovalNeeded
+                    ? shouldShowApproveSpendShares
                       ? "Approve Spend shares"
-                      : "Withdraw"
-                    : isSelectedTokenApprovalNeeded
+                      : shouldShowApproveSpendSharesIsLoading
+                        ? "Approving shares..."
+                        : shouldShowFetchingSpendSharesQuote
+                          ? "Fetching portal quote..."
+                          : shouldShowPreparingSpendSharesTx
+                            ? "Preparing transaction..."
+                            : shouldShowWithdraw
+                              ? "Withdraw"
+                              : "Withdraw?"
+                    : shouldShowApproveSpendToken
                       ? `Approve Spend ${token.symbol}`
-                      : "Deposit"}
+                      : shouldShowApproveSpendingWethIsLoading ||
+                          shouldShowApproveSpendingAlEthIsLoading
+                        ? `Approving ${token.symbol}...`
+                        : shouldShowFetchingSpendWethorEthQuote
+                          ? "Fetching portal quote..."
+                          : shouldShowPreparingSpendEthOrWethTx
+                            ? "Preparing transaction..."
+                            : shouldShowDeposit
+                              ? "Deposit"
+                              : "Deposit?"}
                 </CtaButton>
               </div>
               <div className="flex flex-col justify-between gap-4">
@@ -640,8 +749,8 @@ export const EthTransmuterLooper = ({
                     alETH over time.
                   </p>
                 </div>
-                <div className="flex w-full flex-col justify-between gap-6 rounded border-grey10inverse bg-grey10inverse p-4 lg:flex-row dark:border-grey10 dark:bg-grey10">
-                  <div className="flex-col">
+                <div className="flex w-full flex-col justify-between gap-6 rounded border-grey10inverse bg-grey10inverse p-4 sm:flex-row md:flex-row lg:flex-col xl:flex-row dark:border-grey10 dark:bg-grey10">
+                  <div className="flex-1 flex-col">
                     <div className="mr-2 whitespace-nowrap text-sm text-bronze3">
                       yvAlETH Token Supply
                     </div>
@@ -651,8 +760,8 @@ export const EthTransmuterLooper = ({
                       </div>
                     </div>
                   </div>
-                  <div className="flex-col">
-                    <div className="mr-2 whitespace-nowrap text-sm text-bronze3">
+                  <div className="flex-1 flex-col">
+                    <div className="mr-2 text-sm text-bronze3">
                       alETH Deposited To yvAlETH
                     </div>
                     <div className="flex">
@@ -661,8 +770,8 @@ export const EthTransmuterLooper = ({
                       </div>
                     </div>
                   </div>
-                  <div className="flex-col">
-                    <div className="mr-2 whitespace-nowrap text-sm text-bronze3">
+                  <div className="flex-1 flex-col">
+                    <div className="mr-2 text-sm text-bronze3">
                       alETH Deposit Limit
                     </div>
                     <div className="flex">

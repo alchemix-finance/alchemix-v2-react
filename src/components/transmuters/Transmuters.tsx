@@ -55,7 +55,7 @@ export const Transmuters = () => {
                 External Swap Providers
               </p>
             </div>
-            <div className="flex max-h-44 flex-col gap-4 overflow-y-auto px-6 py-4 lg:flex-row">
+            <div className="flex max-h-44 flex-col gap-4 overflow-y-auto px-6 py-4 lg:flex-row lg:flex-wrap">
               {EXTERNAL_LIQUIDITY_PROVIDERS[chain.id].map((provider) => (
                 <Button
                   key={provider.label}
