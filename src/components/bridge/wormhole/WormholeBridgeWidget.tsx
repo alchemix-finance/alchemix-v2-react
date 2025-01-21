@@ -12,41 +12,33 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { TokenInput } from "@/components/common/input/TokenInput";
-import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { Button } from "@/components/ui/button";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useChain } from "@/hooks/useChain";
-import { useAllowance } from "@/hooks/useAllowance";
 import { formatNumber } from "@/utils/number";
 import {
-  useConnextRelayerFee,
-  useConnextAmountOut,
-  chainIdToDomainMapping,
+  useBridgeCost,
   bridgeChains,
   chainToAvailableTokensMapping,
   SupportedBridgeChainIds,
-  useConnextWriteBridge,
-} from "./lib/connext";
+  useWormholeWriteBridge,
+} from "./lib/wormhole";
 import {
   getInitialOriginTokenAddresses,
   getIsConnectedChainNotSupportedForBridge,
-  getOriginDomain,
-  getSpender,
 } from "./lib/utils";
 import { StatusBox } from "../StatusBox";
 
-export const ConnextBridgeWidget = () => {
+export const WormholeBridgeWidget = () => {
   const chain = useChain();
   const { switchChain } = useSwitchChain();
 
   const [originChainId, setOriginChainId] = useState(chain.id);
-  const originDomain = getOriginDomain(originChainId);
   const originChain = bridgeChains.find((c) => c.id === originChainId);
 
   const [destinationChainId, setDestinationChainId] = useState(
     bridgeChains.find((c) => c.id !== originChainId)!.id,
   );
-  const destinationDomain = chainIdToDomainMapping[destinationChainId];
   const destinationChain = bridgeChains.find(
     (c) => c.id === destinationChainId,
   );
@@ -94,36 +86,30 @@ export const ConnextBridgeWidget = () => {
   );
 
   const [amount, setAmount] = useState("");
-  const [slippage, setSlippage] = useState("0.5");
 
-  const { data: relayerFee } = useConnextRelayerFee({
-    originDomain,
-    destinationDomain,
-  });
-
-  const {
-    data: amountOut,
-    isFetching: isFetchingAmountOut,
-    isError,
-  } = useConnextAmountOut({
-    originDomain,
-    destinationDomain,
+  const { data: bridgeCost } = useBridgeCost({
+    destinationChainId,
+    originChainId,
     originTokenAddress,
-    amount,
-  });
-
-  const { isApprovalNeeded, approveConfig, approve } = useAllowance({
-    amount,
-    tokenAddress: originTokenAddress,
-    spender: getSpender({ originChainId }),
-    decimals: token?.decimals,
   });
 
   const {
-    mutate: writeBridge,
-    data: transactionHash,
-    isPending: isWritingBridge,
-  } = useConnextWriteBridge();
+    writeApprove,
+    writeBridge,
+    writeWrap,
+    isApprovalNeeded,
+    isWrapNeeded,
+    bridgeTxHash,
+    isPending,
+  } = useWormholeWriteBridge({
+    amount,
+    destinationChainId,
+    originChainId,
+    originTokenAddress,
+    decimals: token?.decimals,
+    setOriginTokenAddress,
+    bridgeCost,
+  });
 
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
@@ -173,23 +159,17 @@ export const ConnextBridgeWidget = () => {
   );
 
   const onCtaClick = () => {
-    if (isApprovalNeeded) {
-      approveConfig?.request && approve(approveConfig.request);
+    if (isWrapNeeded) {
+      writeWrap();
       return;
     }
 
-    writeBridge(
-      {
-        amount,
-        destinationDomain,
-        originDomain,
-        originChainId,
-        originTokenAddress,
-        slippage,
-        relayerFee,
-      },
-      { onSuccess: () => setAmount("") },
-    );
+    if (isApprovalNeeded) {
+      writeApprove();
+      return;
+    }
+
+    writeBridge();
   };
 
   return (
@@ -236,21 +216,9 @@ export const ConnextBridgeWidget = () => {
           </Select>
         </div>
         <div className="flex flex-col gap-2">
-          <p>Router fee:</p>
+          <p>Bridge cost:</p>
           <Input
-            value={formatNumber(amountOut?.routerFee)}
-            readOnly
-            aria-readonly
-            type="text"
-            className="text-right"
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <p>Relayer fee:</p>
-          <Input
-            value={formatNumber(relayerFee, {
-              decimals: 5,
-            })}
+            value={formatNumber(bridgeCost)}
             readOnly
             aria-readonly
             type="text"
@@ -260,13 +228,7 @@ export const ConnextBridgeWidget = () => {
         <div className="flex flex-col gap-2">
           <p>You receive:</p>
           <Input
-            value={
-              isError
-                ? "Error"
-                : isFetchingAmountOut
-                  ? "Loading"
-                  : formatNumber(amountOut?.amountReceived, { decimals: 4 })
-            }
+            value={amount}
             readOnly
             aria-readonly
             type="text"
@@ -312,16 +274,21 @@ export const ConnextBridgeWidget = () => {
         />
       </div>
       <div className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between">
-        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-        <StatusBox transactionHash={transactionHash} bridgeProvider="connext" />
+        <StatusBox transactionHash={bridgeTxHash} bridgeProvider="wormhole" />
       </div>
       <Button
         variant="outline"
         width="full"
-        disabled={isInputZero(amount) || isWritingBridge}
+        disabled={isInputZero(amount) || isPending}
         onClick={onCtaClick}
       >
-        {isApprovalNeeded ? "Approve" : "Bridge"}
+        {isPending
+          ? "Preparing"
+          : isApprovalNeeded === true
+            ? "Approve"
+            : isWrapNeeded
+              ? "Wrap"
+              : "Bridge"}
       </Button>
     </div>
   );
