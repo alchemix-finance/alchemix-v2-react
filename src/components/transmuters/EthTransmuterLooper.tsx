@@ -113,9 +113,7 @@ export const EthTransmuterLooper = ({
       },
     ],
   });
-  const [decimals, maxDeposit] = (transmuterLooperContractStaticState ?? []) as
-    | [number, bigint]
-    | [];
+  const [decimals, maxDeposit] = transmuterLooperContractStaticState ?? [];
 
   /** EVENT TRIGGERED CONTRACT READS **/
   // Read these contract functions initially, but separately as they will be watched and reread per block in case they are updated
@@ -139,8 +137,7 @@ export const EthTransmuterLooper = ({
       },
     ],
   });
-  const [totalAssets, totalSupply] = (transmuterLooperContractDynamicState ??
-    []) as [bigint, bigint] | [];
+  const [totalAssets, totalSupply] = transmuterLooperContractDynamicState ?? [];
 
   // Watch intermittently updated read values in case they are updated due to the report function or other manual updates to the contract
   useWatchQuery({
@@ -148,12 +145,12 @@ export const EthTransmuterLooper = ({
   });
 
   /** PORTAL APPROVAL */
-  const { data: checkWethApprovalData } = useCheckApproval(
-    address,
-    WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId],
-    amount,
-    18,
-  );
+  const { data: checkWethApprovalData } = useCheckApproval({
+    sender: address,
+    inputAmount: amount,
+    inputToken: WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId],
+    inputTokenDecimals: 18,
+  });
   const {
     shouldApprove: isWethApprovalNeeded,
     canPermit: isWethEligibleForGaslessSignature,
@@ -161,12 +158,12 @@ export const EthTransmuterLooper = ({
     permit: approveSpendWethSignature,
   } = checkWethApprovalData ?? {};
 
-  const { data: checkSharesApprovalData } = useCheckApproval(
-    address,
-    transmuterLooper.address,
-    amount,
-    6,
-  );
+  const { data: checkSharesApprovalData } = useCheckApproval({
+    inputToken: transmuterLooper.address,
+    inputTokenDecimals: 6,
+    sender: address,
+    inputAmount: amount,
+  });
   const {
     shouldApprove: isPortalSharesApprovalNeeded,
     canPermit: isSharesEligibleForGasslessSignature,
@@ -323,23 +320,22 @@ export const EthTransmuterLooper = ({
 
   /** PORTAL BUNDLER CALLS */
   const { mutate: depositUsingPortal, isLoading: isPrepareDepositTxLoading } =
-    useSendPortalTransaction(
-      wethOrEthToVaultSharesQuote,
-      wethOrEthToVaultSharesQuoteError,
-      () => {
+    useSendPortalTransaction({
+      quote: wethOrEthToVaultSharesQuote,
+      quoteError: wethOrEthToVaultSharesQuoteError,
+      onSuccess: () => {
         setAmount("");
-
         if (gaslessSignature) {
           resetWethApprovalSignature();
         }
       },
-    );
+    });
   const { mutate: withdrawUsingPortal, isLoading: isPrepareWithdrawTxLoading } =
-    useSendPortalTransaction(
-      vaultSharesToETHorWethQuote,
-      vaultSharesToETHorWethQuoteError,
-      () => setAmount(""),
-    );
+    useSendPortalTransaction({
+      quote: vaultSharesToETHorWethQuote,
+      quoteError: vaultSharesToETHorWethQuoteError,
+      onSuccess: () => setAmount(""),
+    });
 
   useEffect(() => {
     if (redeemReceipt) {

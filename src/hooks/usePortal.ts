@@ -114,12 +114,17 @@ const PORTALS_CHAIN_ID = {
   [fantom.id]: "fantom",
 };
 
-export const useCheckApproval = (
-  sender: `0x${string}`,
-  inputToken: `0x${string}`,
-  inputAmount: string,
-  inputTokenDecimals: number,
-) => {
+export const useCheckApproval = ({
+  sender,
+  inputToken,
+  inputAmount,
+  inputTokenDecimals,
+}: {
+  sender: `0x${string}`;
+  inputToken: `0x${string}`;
+  inputAmount: string;
+  inputTokenDecimals: number;
+}) => {
   const chain = useChain();
 
   return useQuery({
@@ -258,12 +263,11 @@ export const useApproveInputToken = ({
     }
 
     if (approveConfig !== undefined) {
-      return approve(approveConfig);
+      approve(approveConfig);
     } else {
       toast.error(
         "Failed to send transaction. This is likely due to a pending prepareTransactionRequest.",
       );
-      return;
     }
   };
 
@@ -324,28 +328,31 @@ export const usePortalQuote = (params: PortalQuoteParams) => {
 
       return portalQuote;
     },
-    retry: false,
     enabled: params.shouldQuote,
   });
 };
 
-export const useSendPortalTransaction = (
-  params: PortalQuoteResponse | undefined,
-  quoteError: Error | null,
-  onSuccess?: () => void,
-) => {
+export const useSendPortalTransaction = ({
+  quote,
+  quoteError,
+  onSuccess,
+}: {
+  quote: PortalQuoteResponse | undefined;
+  quoteError: Error | null;
+  onSuccess?: () => void;
+}) => {
   const chain = useChain();
   const {
     data: transactionConfig,
     error: prepareTxError,
     isLoading,
   } = usePrepareTransactionRequest({
-    to: params?.tx.to,
-    data: params?.tx.data,
-    value: params?.tx.value,
+    to: quote?.tx.to,
+    data: quote?.tx.data,
+    value: quote?.tx.value,
     chainId: chain.id,
     query: {
-      enabled: !!params,
+      enabled: !!quote,
     },
   });
   const mutationCallback = useWriteContractMutationCallback();
