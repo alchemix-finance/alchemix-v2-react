@@ -150,7 +150,6 @@ export const EthTransmuterLooper = ({
     isPending: isPortalAllowancePending,
     isFetching: isPortalAllowanceFetching,
   } = usePortalAllowance({
-    address,
     inputAmount: amount,
     inputToken: isWithdraw ? transmuterLooper.address : selectedToken.address,
     // TODO: update when contracts are deployed
@@ -211,7 +210,6 @@ export const EthTransmuterLooper = ({
         ? zeroAddress
         : selectedToken.address
       : transmuterLooper.address,
-    address,
     slippage,
     shouldQuote:
       !isInputZero(amount) &&
@@ -263,14 +261,14 @@ export const EthTransmuterLooper = ({
    * Configure write contract functions for alETH withdrawal
    */
   const {
-    data: withdrawConfig,
-    error: withdrawError,
-    isPending: isWithdrawConfigPending,
+    data: redeemConfig,
+    error: redeemError,
+    isPending: isRedeemConfigPending,
   } = useSimulateContract({
     address: transmuterLooper.address,
     abi: tokenizedStrategyAbi,
     chainId: chain.id,
-    functionName: "withdraw",
+    functionName: "redeem",
     args: [parseEther(amount), address, address],
     query: {
       enabled:
@@ -280,21 +278,21 @@ export const EthTransmuterLooper = ({
     },
   });
 
-  const { writeContract: withdraw, data: withdrawHash } = useWriteContract({
+  const { writeContract: redeem, data: redeemHash } = useWriteContract({
     mutation: mutationCallback({
-      action: "Withdraw",
+      action: "Redeem",
     }),
   });
 
-  const { data: withdrawReceipt } = useWaitForTransactionReceipt({
-    hash: withdrawHash,
+  const { data: redeemReceipt } = useWaitForTransactionReceipt({
+    hash: redeemHash,
   });
 
   useEffect(() => {
-    if (withdrawReceipt) {
+    if (redeemReceipt) {
       setAmount("");
     }
-  }, [withdrawReceipt]);
+  }, [redeemReceipt]);
 
   /** PORTAL BUNDLER CALLS */
   const {
@@ -334,18 +332,18 @@ export const EthTransmuterLooper = ({
     }
 
     if (isWithdraw) {
-      if (withdrawError) {
+      if (redeemError) {
         toast.error("Withdraw Error", {
           description:
-            withdrawError.name === "ContractFunctionExecutionError"
-              ? withdrawError.cause.message
-              : withdrawError.message,
+            redeemError.name === "ContractFunctionExecutionError"
+              ? redeemError.cause.message
+              : redeemError.message,
         });
         return;
       }
 
-      if (withdrawConfig) {
-        withdraw(withdrawConfig.request);
+      if (redeemConfig) {
+        redeem(redeemConfig.request);
       } else {
         toast.error("Withdraw Error", {
           description: "Unexpected error. Please contact Alchemix team.",
@@ -434,7 +432,7 @@ export const EthTransmuterLooper = ({
 
     if (selectedToken.address === alEthToken?.address) {
       if (isWithdraw) {
-        return isWithdrawConfigPending;
+        return isRedeemConfigPending;
       }
       if (isAlEthApprovalNeeded === false) {
         return isDepositConfigPending;

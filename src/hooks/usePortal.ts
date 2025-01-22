@@ -1,4 +1,5 @@
 import {
+  useAccount,
   usePrepareTransactionRequest,
   useSendTransaction,
   useSignTypedData,
@@ -6,7 +7,7 @@ import {
 } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
-import { parseUnits } from "viem";
+import { parseUnits, zeroAddress } from "viem";
 import { useEffect } from "react";
 
 import { useChain } from "./useChain";
@@ -73,7 +74,6 @@ type PortalQuoteParams = {
   inputTokenDecimals: number;
   inputAmount: string;
   outputToken: string;
-  address: string;
   shouldQuote: boolean;
   slippage?: string;
 };
@@ -116,17 +116,16 @@ const PORTALS_CHAIN_ID = {
 };
 
 export const usePortalAllowance = ({
-  address,
   inputToken,
   inputAmount,
   inputTokenDecimals,
 }: {
-  address: `0x${string}`;
   inputToken: `0x${string}`;
   inputAmount: string;
   inputTokenDecimals: number;
 }) => {
   const chain = useChain();
+  const { address = zeroAddress } = useAccount();
 
   return useQuery({
     queryKey: [
@@ -284,9 +283,10 @@ export const usePortalApprove = ({
 
 export const usePortalQuote = (params: PortalQuoteParams) => {
   const chain = useChain();
+  const { address = zeroAddress } = useAccount();
 
   return useQuery({
-    queryKey: [QueryKeys.PortalCreateQuote, params],
+    queryKey: [QueryKeys.PortalCreateQuote, address, params],
     queryFn: async () => {
       const url = new URL(`${PORTAL_API_BASE_URI}/portal`);
       url.searchParams.append(
@@ -301,7 +301,7 @@ export const usePortalQuote = (params: PortalQuoteParams) => {
         "outputToken",
         `${PORTALS_CHAIN_ID[chain.id]}:${params.outputToken}`,
       );
-      url.searchParams.append("sender", params.address);
+      url.searchParams.append("sender", address);
 
       if (params.slippage) {
         url.searchParams.append(
