@@ -298,7 +298,7 @@ export const GAlcsWrapper = () => {
                     per gALCX.
                   </p>
                 </div>
-                <div className="flex w-full justify-between gap-6 rounded border-grey10inverse bg-grey10inverse p-4 sm:flex-row md:flex-row lg:flex-col xl:flex-row dark:border-grey10 dark:bg-grey10">
+                <div className="flex w-full justify-between gap-6 rounded border-grey10inverse bg-grey10inverse p-4 lg:flex-col xl:flex-row dark:border-grey10 dark:bg-grey10">
                   <div className="flex-col">
                     <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
                       gALCX Token Supply

@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { Switch } from "../ui/switch";
-import { Button } from "../ui/button";
 import {
   useAccount,
   useReadContracts,
@@ -9,15 +7,19 @@ import {
   useWriteContract,
 } from "wagmi";
 import { formatEther, parseEther, zeroAddress } from "viem";
+import { toast } from "sonner";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+import { fantom } from "viem/chains";
+
+import { Switch } from "../ui/switch";
+import { Button } from "../ui/button";
 import { TokenInput } from "../common/input/TokenInput";
 import { formatNumber } from "@/utils/number";
 import { useChain } from "@/hooks/useChain";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useAllowance } from "@/hooks/useAllowance";
-import { toast } from "sonner";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
-import { EyeOffIcon, EyeIcon } from "lucide-react";
-import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import {
   accordionVariants,
   accordionTransition,
@@ -25,11 +27,7 @@ import {
 } from "@/lib/motion/motion";
 import { tokenizedStrategyAbi } from "@/abi/tokenizedStrategy";
 import { SYNTH_ASSETS, SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
-import { fantom } from "viem/chains";
-import {
-  SupportedTransmuterLooperChainId,
-  TransmuterMetadata,
-} from "@/lib/config/metadataTypes";
+import { TransmuterMetadata } from "@/lib/config/metadataTypes";
 import { ScopeKeys } from "@/lib/queries/queriesSchema";
 import { useWatchQuery } from "@/hooks/useWatchQuery";
 import {
@@ -43,8 +41,8 @@ import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import { GAS_ADDRESS, WETH_ADDRESSES } from "@/lib/constants";
 import { SlippageInput } from "../common/input/SlippageInput";
 import {
-  useApproveInputToken,
-  useCheckApproval,
+  usePortalApprove,
+  usePortalAllowance,
   usePortalQuote,
   useSendPortalTransaction,
 } from "@/hooks/usePortal";
@@ -57,6 +55,9 @@ export const EthTransmuterLooper = ({
 }) => {
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
+
+  const isReducedMotion = useReducedMotion();
+
   const { address = zeroAddress } = useAccount();
 
   const [open, setOpen] = useState(false); // used to toggle the animation pane closed/open
@@ -66,14 +67,13 @@ export const EthTransmuterLooper = ({
   const [selectTokenAddress, setSelectTokenAddress] =
     useState<`0x${string}`>(GAS_ADDRESS);
   const [slippage, setSlippage] = useState("0.5"); // sets the slippage param used for depositing from or withdrawing into ETH, which requires a trade
-  const isReducedMotion = useReducedMotion();
 
   const { data: tokens } = useTokensQuery();
   const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
-  const wethToken = tokens?.find(
-    (token) =>
-      chain.id !== fantom.id && token.address === WETH_ADDRESSES[chain.id],
-  );
+  const wethToken =
+    chain.id !== fantom.id
+      ? tokens?.find((token) => token.address === WETH_ADDRESSES[chain.id])
+      : undefined;
   const alEthToken =
     chain.id !== fantom.id
       ? tokens?.find(
@@ -86,7 +86,7 @@ export const EthTransmuterLooper = ({
     gasToken && wethToken && alEthToken
       ? [gasToken, wethToken, alEthToken]
       : [];
-  const token = selection.find(
+  const selectedToken = selection.find(
     (token) => token.address === selectTokenAddress,
   )!;
 
@@ -109,13 +109,11 @@ export const EthTransmuterLooper = ({
         abi: tokenizedStrategyAbi,
         functionName: "maxDeposit",
         chainId: chain.id,
-        args: [address!],
+        args: [address],
       },
     ],
   });
-  const [decimals, maxDeposit] = (transmuterLooperContractStaticState ?? []) as
-    | [number, bigint]
-    | [];
+  const [decimals, maxDeposit] = transmuterLooperContractStaticState ?? [];
 
   /** EVENT TRIGGERED CONTRACT READS **/
   // Read these contract functions initially, but separately as they will be watched and reread per block in case they are updated
@@ -139,8 +137,7 @@ export const EthTransmuterLooper = ({
       },
     ],
   });
-  const [totalAssets, totalSupply] = (transmuterLooperContractDynamicState ??
-    []) as [bigint, bigint] | [];
+  const [totalAssets, totalSupply] = transmuterLooperContractDynamicState ?? [];
 
   // Watch intermittently updated read values in case they are updated due to the report function or other manual updates to the contract
   useWatchQuery({
@@ -148,41 +145,32 @@ export const EthTransmuterLooper = ({
   });
 
   /** PORTAL APPROVAL */
-  const { data: checkWethApprovalData } = useCheckApproval(
-    address,
-    WETH_ADDRESSES[chain.id as SupportedTransmuterLooperChainId],
-    amount,
-    18,
-  );
   const {
-    shouldApprove: isWethApprovalNeeded,
-    canPermit: isWethEligibleForGaslessSignature,
-    approveTx: approveSpendWethTx,
-    permit: approveSpendWethSignature,
-  } = checkWethApprovalData ?? {};
-
-  const { data: checkSharesApprovalData } = useCheckApproval(
-    address,
-    transmuterLooper.address,
-    amount,
-    6,
-  );
+    data: portalAllowance,
+    isPending: isPortalAllowancePending,
+    isFetching: isPortalAllowanceFetching,
+  } = usePortalAllowance({
+    inputAmount: amount,
+    inputToken: isWithdraw ? transmuterLooper.address : selectedToken.address,
+    // TODO: update when contracts are deployed
+    inputTokenDecimals: isWithdraw ? 6 : 18,
+  });
   const {
-    shouldApprove: isPortalSharesApprovalNeeded,
-    canPermit: isSharesEligibleForGasslessSignature,
-    approveTx: approveSpendSharesTx,
-    permit: approveSpendSharesSignature,
-  } = checkSharesApprovalData ?? {};
+    isPortalApprovalNeeded,
+    canPermit: isEligibleForGaslessSignature,
+    approveTx: approvePortalTx,
+    permit: approvePortalSignature,
+  } = portalAllowance ?? {};
 
-  /** CONTRACT WRITES **/
   /**
-   * Get allowance info for alETH and WETH
+   * Get allowance info for alETH
    */
   const {
-    isApprovalNeeded,
-    approveConfig: alETHApproveConfig,
-    approve: approveSpendAlETH,
-    isPending: isApproveSpendAlEthPending,
+    isApprovalNeeded: isAlEthApprovalNeeded,
+    approveConfig: alEthApproveConfig,
+    approve: approveAlEth,
+    isPending: isAllowanceAlEthPending,
+    isFetching: isAllowanceAlEthFetching,
   } = useAllowance({
     tokenAddress: alEthToken?.address,
     spender: transmuterLooper.address,
@@ -192,89 +180,64 @@ export const EthTransmuterLooper = ({
   });
 
   const {
-    mutate: approveSpendWeth,
-    signature: gaslessSignature,
-    resetGaslessSignature: resetWethApprovalSignature,
-    isLoading: isApproveSpendWethLoading,
-  } = useApproveInputToken({
-    shouldApprove: isWethApprovalNeeded,
-    canPermit: isWethEligibleForGaslessSignature,
-    approveTx: approveSpendWethTx,
-    permit: approveSpendWethSignature,
-  });
-
-  const { mutate: approveSpendShares, isLoading: isApproveSpendSharesLoading } =
-    useApproveInputToken({
-      shouldApprove: isPortalSharesApprovalNeeded,
-      canPermit: isSharesEligibleForGasslessSignature,
-      approveTx: approveSpendSharesTx,
-      permit: approveSpendSharesSignature,
-    });
-
-  /** PORTAL QUOTE */
-  const {
-    data: wethOrEthToVaultSharesQuote,
-    error: wethOrEthToVaultSharesQuoteError,
-    isPending: isWethOrEthToVaultSharesQuotePending,
-  } = usePortalQuote({
-    gaslessSignature,
-    inputToken:
-      selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
-    inputTokenDecimals: 18,
-    inputAmount: amount,
-    outputToken: transmuterLooper.address,
-    sender: address,
-    slippage,
-    shouldQuote:
-      (selectTokenAddress === GAS_ADDRESS ||
-        (selectTokenAddress === wethToken?.address &&
-          (isWethApprovalNeeded === false || !!gaslessSignature))) &&
-      Number(amount || 0) > 0 &&
-      !isWithdraw,
+    mutate: approvePortal,
+    signature: portalGaslessSignature,
+    resetGaslessSignature: resetPortalApprovalSignature,
+    isPending: isPortalApprovalPending,
+  } = usePortalApprove({
+    isPortalApprovalNeeded,
+    canPermit: isEligibleForGaslessSignature,
+    approveTx: approvePortalTx,
+    permit: approvePortalSignature,
   });
 
   const {
-    data: vaultSharesToETHorWethQuote,
-    error: vaultSharesToETHorWethQuoteError,
-    isPending: isVaultSharesToETHorWethQuotePending,
+    data: portalQuote,
+    error: portalQuoteError,
+    isPending: isPendingPortalQuote,
   } = usePortalQuote({
-    gaslessSignature: undefined,
-    inputToken: transmuterLooper.address,
-    inputTokenDecimals: 6,
+    portalGaslessSignature: isWithdraw ? undefined : portalGaslessSignature,
+    inputToken: isWithdraw
+      ? transmuterLooper.address
+      : selectedToken.address === GAS_ADDRESS
+        ? zeroAddress
+        : selectedToken.address,
+    // TODO: update when contracts are deployed
+    inputTokenDecimals: isWithdraw ? 6 : 18,
     inputAmount: amount,
-    outputToken:
-      selectTokenAddress === GAS_ADDRESS ? zeroAddress : selectTokenAddress,
-    sender: address,
+    outputToken: isWithdraw
+      ? selectedToken.address === GAS_ADDRESS
+        ? zeroAddress
+        : selectedToken.address
+      : transmuterLooper.address,
     slippage,
     shouldQuote:
-      isPortalSharesApprovalNeeded === false &&
-      selectTokenAddress !== alEthToken?.address &&
-      Number(amount || 0) > 0 &&
-      isWithdraw,
+      !isInputZero(amount) &&
+      selectedToken.address !== alEthToken?.address &&
+      (isPortalApprovalNeeded === false ||
+        !!portalGaslessSignature ||
+        (!isWithdraw && selectedToken.address === GAS_ADDRESS)),
   });
-
-  const isSelectedTokenApprovalNeeded =
-    selectTokenAddress === alEthToken?.address
-      ? isApprovalNeeded
-      : selectTokenAddress === GAS_ADDRESS
-        ? false
-        : isWethApprovalNeeded && !gaslessSignature;
 
   /**
    * Configure write contract functions for alETH deposit
    */
-  const { data: depositConfig, error: depositError } = useSimulateContract({
+  const {
+    data: depositConfig,
+    error: depositError,
+    isPending: isDepositConfigPending,
+  } = useSimulateContract({
     address: transmuterLooper.address,
     abi: tokenizedStrategyAbi,
     chainId: chain.id,
     functionName: "deposit",
-    args: [parseEther(amount), address!],
+    args: [parseEther(amount), address],
     query: {
       enabled:
         !isInputZero(amount) &&
-        isApprovalNeeded === false &&
+        isAlEthApprovalNeeded === false &&
         !isWithdraw &&
-        selectTokenAddress === alEthToken?.address,
+        selectedToken.address === alEthToken?.address,
     },
   });
 
@@ -295,19 +258,23 @@ export const EthTransmuterLooper = ({
   }, [depositReceipt]);
 
   /**
-   * Configure write contract functions for alETH withdrawl
+   * Configure write contract functions for alETH withdrawal
    */
-  const { data: redeemConfig, error: redeemError } = useSimulateContract({
+  const {
+    data: redeemConfig,
+    error: redeemError,
+    isPending: isRedeemConfigPending,
+  } = useSimulateContract({
     address: transmuterLooper.address,
     abi: tokenizedStrategyAbi,
     chainId: chain.id,
     functionName: "redeem",
-    args: [parseEther(amount), address!, address!],
+    args: [parseEther(amount), address, address],
     query: {
       enabled:
         !isInputZero(amount) &&
         isWithdraw === true &&
-        selectTokenAddress === alEthToken?.address,
+        selectedToken.address === alEthToken?.address,
     },
   });
 
@@ -321,87 +288,52 @@ export const EthTransmuterLooper = ({
     hash: redeemHash,
   });
 
-  /** PORTAL BUNDLER CALLS */
-  const { mutate: depositUsingPortal, isLoading: isPrepareDepositTxLoading } =
-    useSendPortalTransaction(
-      wethOrEthToVaultSharesQuote,
-      wethOrEthToVaultSharesQuoteError,
-      () => {
-        setAmount("");
-
-        if (gaslessSignature) {
-          resetWethApprovalSignature();
-        }
-      },
-    );
-  const { mutate: withdrawUsingPortal, isLoading: isPrepareWithdrawTxLoading } =
-    useSendPortalTransaction(
-      vaultSharesToETHorWethQuote,
-      vaultSharesToETHorWethQuoteError,
-      () => setAmount(""),
-    );
-
   useEffect(() => {
     if (redeemReceipt) {
       setAmount("");
     }
   }, [redeemReceipt]);
 
-  /** UI Actions **/
-  const onDeposit = async () => {
-    if (
-      selectTokenAddress === GAS_ADDRESS ||
-      selectTokenAddress === wethToken?.address
-    ) {
-      if (
-        selectTokenAddress === wethToken?.address &&
-        isWethApprovalNeeded &&
-        !gaslessSignature
-      ) {
-        approveSpendWeth();
-      } else {
-        depositUsingPortal();
+  /** PORTAL BUNDLER CALLS */
+  const {
+    mutate: sendPortalTransaction,
+    isPending: isPortalTransactionPending,
+  } = useSendPortalTransaction({
+    quote: portalQuote,
+    quoteError: portalQuoteError,
+    onSuccess: () => {
+      setAmount("");
+      if (portalGaslessSignature) {
+        resetPortalApprovalSignature();
       }
-    } else {
-      // 1. Check approval
-      if (isApprovalNeeded) {
-        alETHApproveConfig && approveSpendAlETH(alETHApproveConfig.request);
-        return;
-      }
+    },
+  });
 
-      // 2. Check for contract call error
-      if (depositError) {
-        toast.error("Error depositing alETH", {
-          description:
-            depositError.name === "ContractFunctionExecutionError"
-              ? depositError.cause.message
-              : depositError.message,
-        });
-        return;
-      }
-
-      // 3. Deposit
-      if (depositConfig) {
-        deposit(depositConfig.request);
-      } else {
-        toast.error("Error depositing alETH", {
-          description: "Unexpected error. Please contact Alchemix team.",
-        });
-      }
+  const isAnyApprovalNeeded = (() => {
+    if (selectedToken.address === alEthToken?.address) {
+      return isWithdraw ? false : isAlEthApprovalNeeded;
     }
-  };
+    if (selectedToken.address === GAS_ADDRESS && !isWithdraw) return false;
+    return isPortalApprovalNeeded && !portalGaslessSignature;
+  })();
 
-  const onWithdraw = async () => {
-    if (selectTokenAddress !== alEthToken?.address) {
-      if (isPortalSharesApprovalNeeded) {
-        approveSpendShares();
-      } else {
-        withdrawUsingPortal();
+  const onCtaClick = () => {
+    if (isAnyApprovalNeeded) {
+      if (selectedToken.address === alEthToken?.address) {
+        alEthApproveConfig && approveAlEth(alEthApproveConfig.request);
+        return;
       }
-    } else {
-      // 1. Check for contract call error
+      approvePortal();
+    }
+
+    if (selectedToken.address !== alEthToken?.address) {
+      sendPortalTransaction();
+      return;
+    }
+
+    if (isWithdraw) {
       if (redeemError) {
-        toast.error("Error withdrawing alETH", {
+        toast.error("Withdraw Error", {
           description:
             redeemError.name === "ContractFunctionExecutionError"
               ? redeemError.cause.message
@@ -410,14 +342,32 @@ export const EthTransmuterLooper = ({
         return;
       }
 
-      // 2. Withdraw
       if (redeemConfig) {
         redeem(redeemConfig.request);
       } else {
-        toast.error("Error withdrawing alETH", {
+        toast.error("Withdraw Error", {
           description: "Unexpected error. Please contact Alchemix team.",
         });
       }
+      return;
+    }
+
+    if (depositError) {
+      toast.error("Error depositing alETH", {
+        description:
+          depositError.name === "ContractFunctionExecutionError"
+            ? depositError.cause.message
+            : depositError.message,
+      });
+      return;
+    }
+
+    if (depositConfig) {
+      deposit(depositConfig.request);
+    } else {
+      toast.error("Error depositing alETH", {
+        description: "Unexpected error. Please contact Alchemix team.",
+      });
     }
   };
 
@@ -477,74 +427,31 @@ export const EthTransmuterLooper = ({
   const totalSupplyFormatted = formatEther(totalSupply ?? 0n);
   const maxDepositFormatted = formatEther(maxDeposit ?? 0n);
 
-  /* Withdraw Button States */
-  const shouldShowApproveSpendShares =
-    Number(amount || 0) > 0 &&
-    isWithdraw &&
-    isPortalSharesApprovalNeeded &&
-    !isApproveSpendSharesLoading &&
-    !isPrepareWithdrawTxLoading;
-  const shouldShowApproveSpendSharesIsLoading =
-    Number(amount || 0) > 0 &&
-    isWithdraw &&
-    isApproveSpendSharesLoading &&
-    !isVaultSharesToETHorWethQuotePending &&
-    !isPrepareWithdrawTxLoading;
-  const shouldShowFetchingSpendSharesQuote =
-    Number(amount || 0) > 0 &&
-    isWithdraw &&
-    !isPortalSharesApprovalNeeded &&
-    !isApproveSpendSharesLoading &&
-    isVaultSharesToETHorWethQuotePending &&
-    !isPrepareWithdrawTxLoading;
-  const shouldShowPreparingSpendSharesTx =
-    Number(amount || 0) > 0 &&
-    isWithdraw &&
-    !isPortalSharesApprovalNeeded &&
-    !isApproveSpendSharesLoading &&
-    isPrepareWithdrawTxLoading;
-  const shouldShowWithdraw =
-    isWithdraw &&
-    !isPortalSharesApprovalNeeded &&
-    !isApproveSpendSharesLoading &&
-    !isPrepareWithdrawTxLoading;
-  /* Deposit Button States */
-  const shouldShowApproveSpendToken =
-    Number(amount || 0) > 0 &&
-    !isWithdraw &&
-    selectTokenAddress !== GAS_ADDRESS &&
-    isSelectedTokenApprovalNeeded &&
-    !isApproveSpendAlEthPending &&
-    !isApproveSpendWethLoading &&
-    !isPrepareDepositTxLoading;
-  const shouldShowApproveSpendingWethIsLoading =
-    Number(amount || 0) > 0 &&
-    !isWithdraw &&
-    selectTokenAddress === wethToken?.address &&
-    isApproveSpendWethLoading &&
-    !isPrepareDepositTxLoading;
-  const shouldShowApproveSpendingAlEthIsLoading =
-    Number(amount || 0) > 0 &&
-    !isWithdraw &&
-    selectTokenAddress === alEthToken?.address &&
-    isApproveSpendAlEthPending;
-  const shouldShowFetchingSpendWethorEthQuote =
-    Number(amount || 0) > 0 &&
-    !isWithdraw &&
-    (selectTokenAddress === wethToken?.address ||
-      selectTokenAddress === GAS_ADDRESS) &&
-    !isApproveSpendWethLoading &&
-    isWethOrEthToVaultSharesQuotePending &&
-    !isPrepareDepositTxLoading;
-  const shouldShowPreparingSpendEthOrWethTx =
-    Number(amount || 0) > 0 &&
-    !isWithdraw &&
-    (selectTokenAddress === wethToken?.address ||
-      selectTokenAddress === GAS_ADDRESS) &&
-    !isApproveSpendWethLoading &&
-    isPrepareDepositTxLoading;
-  const shouldShowDeposit =
-    !isWithdraw && !isApproveSpendWethLoading && !isPrepareDepositTxLoading;
+  const isPreparing = (() => {
+    if (!amount) return;
+
+    if (selectedToken.address === alEthToken?.address) {
+      if (isWithdraw) {
+        return isRedeemConfigPending;
+      }
+      if (isAlEthApprovalNeeded === false) {
+        return isDepositConfigPending;
+      } else return isAllowanceAlEthPending || isAllowanceAlEthFetching;
+    }
+
+    if (
+      isPortalApprovalNeeded === false ||
+      !!portalGaslessSignature ||
+      (!isWithdraw && selectedToken.address === GAS_ADDRESS)
+    ) {
+      return isPendingPortalQuote || isPortalTransactionPending;
+    } else
+      return (
+        isPortalAllowanceFetching ||
+        (isEligibleForGaslessSignature === false && isPortalApprovalPending) ||
+        isPortalAllowancePending
+      );
+  })();
 
   return (
     <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
@@ -610,12 +517,12 @@ export const EthTransmuterLooper = ({
                         <SelectValue placeholder="Token" asChild>
                           <div className="flex items-center gap-4">
                             <img
-                              src={`/images/token-icons/${token.symbol}.svg`}
-                              alt={token.symbol}
+                              src={`/images/token-icons/${selectedToken.symbol}.svg`}
+                              alt={selectedToken.symbol}
                               className="h-12 w-12"
                             />
                             <span className="hidden text-xl sm:inline">
-                              {token.symbol}
+                              {selectedToken.symbol}
                             </span>
                           </div>
                         </SelectValue>
@@ -634,7 +541,7 @@ export const EthTransmuterLooper = ({
                       tokenAddress={
                         isWithdraw
                           ? transmuterLooper.address
-                          : selectTokenAddress
+                          : selectedToken.address
                       }
                       tokenDecimals={
                         // TODO -- put this back when contract is deployed, and remove below condition which tests using a USDC vault with 6 decimals
@@ -643,7 +550,9 @@ export const EthTransmuterLooper = ({
                       */
                         isWithdraw ? 6 : 18
                       }
-                      tokenSymbol={isWithdraw ? "yvAlETH" : token.symbol}
+                      tokenSymbol={
+                        isWithdraw ? "yvAlETH" : selectedToken.symbol
+                      }
                       dustToZero={isWithdraw}
                     />
                   </div>
@@ -657,15 +566,13 @@ export const EthTransmuterLooper = ({
                     </p>
                   </div>
                 </div>
-                {selectTokenAddress &&
-                  chain.id !== fantom.id &&
-                  selectTokenAddress !== alEthToken?.address && (
-                    <SlippageInput
-                      slippage={slippage}
-                      setSlippage={setSlippage}
-                    />
-                  )}
-                {selectTokenAddress === alEthToken?.address && (
+                {selectedToken.address !== alEthToken?.address && (
+                  <SlippageInput
+                    slippage={slippage}
+                    setSlippage={setSlippage}
+                  />
+                )}
+                {selectedToken.address === alEthToken?.address && (
                   <div className="flex flex-row justify-between">
                     <p className="flex-auto text-sm text-lightgrey10inverse dark:text-lightgrey10">
                       Approval
@@ -694,49 +601,16 @@ export const EthTransmuterLooper = ({
                 <CtaButton
                   variant="outline"
                   width="full"
-                  disabled={
-                    isInputZero(amount) ||
-                    /* deposit conditions */
-                    (!isWithdraw &&
-                      !isSelectedTokenApprovalNeeded &&
-                      isWethOrEthToVaultSharesQuotePending) ||
-                    (!isWithdraw &&
-                      !isSelectedTokenApprovalNeeded &&
-                      isPrepareDepositTxLoading) ||
-                    /* withdraw conditions */
-                    (isWithdraw &&
-                      !isPortalSharesApprovalNeeded &&
-                      isVaultSharesToETHorWethQuotePending) ||
-                    (isWithdraw &&
-                      !isPortalSharesApprovalNeeded &&
-                      isPrepareWithdrawTxLoading)
-                  }
-                  onClick={isWithdraw ? onWithdraw : onDeposit}
+                  disabled={isInputZero(amount) || isPreparing}
+                  onClick={onCtaClick}
                 >
-                  {isWithdraw
-                    ? shouldShowApproveSpendShares
-                      ? "Approve Spend shares"
-                      : shouldShowApproveSpendSharesIsLoading
-                        ? "Approving shares..."
-                        : shouldShowFetchingSpendSharesQuote
-                          ? "Fetching portal quote..."
-                          : shouldShowPreparingSpendSharesTx
-                            ? "Preparing transaction..."
-                            : shouldShowWithdraw
-                              ? "Withdraw"
-                              : "Withdraw?"
-                    : shouldShowApproveSpendToken
-                      ? `Approve Spend ${token.symbol}`
-                      : shouldShowApproveSpendingWethIsLoading ||
-                          shouldShowApproveSpendingAlEthIsLoading
-                        ? `Approving ${token.symbol}...`
-                        : shouldShowFetchingSpendWethorEthQuote
-                          ? "Fetching portal quote..."
-                          : shouldShowPreparingSpendEthOrWethTx
-                            ? "Preparing transaction..."
-                            : shouldShowDeposit
-                              ? "Deposit"
-                              : "Deposit?"}
+                  {isPreparing
+                    ? "Preparing"
+                    : isAnyApprovalNeeded
+                      ? "Approve"
+                      : isWithdraw
+                        ? "Withdraw"
+                        : "Deposit"}
                 </CtaButton>
               </div>
               <div className="flex flex-col justify-between gap-4">

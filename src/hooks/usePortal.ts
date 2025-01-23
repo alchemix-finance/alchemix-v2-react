@@ -1,4 +1,5 @@
 import {
+  useAccount,
   usePrepareTransactionRequest,
   useSendTransaction,
   useSignTypedData,
@@ -6,7 +7,7 @@ import {
 } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
-import { parseUnits } from "viem";
+import { parseUnits, zeroAddress } from "viem";
 import { useEffect } from "react";
 
 import { useChain } from "./useChain";
@@ -14,6 +15,7 @@ import { toast } from "sonner";
 import { queryClient } from "@/components/providers/QueryProvider";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { useWriteContractMutationCallback } from "./useWriteContractMutationCallback";
+import { GAS_ADDRESS } from "@/lib/constants";
 
 type PortalApprovalResponse = {
   context: PortalApprovalContext;
@@ -67,12 +69,11 @@ type TransactionToSubmit = {
 };
 
 type PortalQuoteParams = {
-  gaslessSignature: `0x${string}` | undefined;
+  portalGaslessSignature: `0x${string}` | undefined;
   inputToken: string;
   inputTokenDecimals: number;
   inputAmount: string;
   outputToken: string;
-  sender: string;
   shouldQuote: boolean;
   slippage?: string;
 };
@@ -114,25 +115,29 @@ const PORTALS_CHAIN_ID = {
   [fantom.id]: "fantom",
 };
 
-export const useCheckApproval = (
-  sender: `0x${string}`,
-  inputToken: `0x${string}`,
-  inputAmount: string,
-  inputTokenDecimals: number,
-) => {
+export const usePortalAllowance = ({
+  inputToken,
+  inputAmount,
+  inputTokenDecimals,
+}: {
+  inputToken: `0x${string}`;
+  inputAmount: string;
+  inputTokenDecimals: number;
+}) => {
   const chain = useChain();
+  const { address = zeroAddress } = useAccount();
 
   return useQuery({
     queryKey: [
       QueryKeys.PortalCheckApproval,
-      sender,
+      address,
       inputToken,
-      inputAmount,
       inputTokenDecimals,
+      inputAmount,
     ],
     queryFn: async () => {
       const url = new URL(`${PORTAL_API_BASE_URI}/approval`);
-      url.searchParams.append("sender", sender);
+      url.searchParams.append("sender", address);
       url.searchParams.append(
         "inputToken",
         `${PORTALS_CHAIN_ID[chain.id]}:${inputToken}`,
@@ -154,26 +159,27 @@ export const useCheckApproval = (
         (await response.json()) as PortalApprovalResponse;
 
       return {
-        shouldApprove: portalRouterApprovalData.context.shouldApprove,
+        isPortalApprovalNeeded: portalRouterApprovalData.context.shouldApprove,
         canPermit: portalRouterApprovalData.context.canPermit,
         routerAddress: portalRouterApprovalData.context.target,
         approveTx: portalRouterApprovalData.approve,
         permit: portalRouterApprovalData.permit,
       };
     },
+    enabled: inputToken !== GAS_ADDRESS,
   });
 };
 
-export const useApproveInputToken = ({
+export const usePortalApprove = ({
   approveTx,
   permit,
   canPermit,
-  shouldApprove,
+  isPortalApprovalNeeded,
 }: {
   approveTx: TransactionToSubmit | undefined;
   permit: PermitTx | undefined;
   canPermit: boolean | undefined;
-  shouldApprove: boolean | undefined;
+  isPortalApprovalNeeded: boolean | undefined;
 }) => {
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
@@ -199,7 +205,7 @@ export const useApproveInputToken = ({
 
   const {
     data: approveConfig,
-    isLoading,
+    isPending,
     error: prepareTxError,
   } = usePrepareTransactionRequest({
     to: approveTx?.to,
@@ -207,7 +213,8 @@ export const useApproveInputToken = ({
     account: approveTx?.from,
     chainId: chain.id,
     query: {
-      enabled: !!approveTx && canPermit === false && shouldApprove === true,
+      enabled:
+        !!approveTx && canPermit === false && isPortalApprovalNeeded === true,
     },
   });
 
@@ -239,7 +246,7 @@ export const useApproveInputToken = ({
   }, [approveReceipt, resetApprove]);
 
   const mutate = () => {
-    if (shouldApprove === false) return;
+    if (isPortalApprovalNeeded === false) return;
 
     if (canPermit === true && permit !== undefined) {
       return signTypedData({
@@ -258,28 +265,28 @@ export const useApproveInputToken = ({
     }
 
     if (approveConfig !== undefined) {
-      return approve(approveConfig);
+      approve(approveConfig);
     } else {
       toast.error(
         "Failed to send transaction. This is likely due to a pending prepareTransactionRequest.",
       );
-      return;
     }
   };
 
   return {
     mutate,
     signature,
-    isLoading,
+    isPending,
     resetGaslessSignature,
   };
 };
 
 export const usePortalQuote = (params: PortalQuoteParams) => {
   const chain = useChain();
+  const { address = zeroAddress } = useAccount();
 
   return useQuery({
-    queryKey: [QueryKeys.PortalCreateQuote, params],
+    queryKey: [QueryKeys.PortalCreateQuote, address, params],
     queryFn: async () => {
       const url = new URL(`${PORTAL_API_BASE_URI}/portal`);
       url.searchParams.append(
@@ -294,7 +301,7 @@ export const usePortalQuote = (params: PortalQuoteParams) => {
         "outputToken",
         `${PORTALS_CHAIN_ID[chain.id]}:${params.outputToken}`,
       );
-      url.searchParams.append("sender", params.sender);
+      url.searchParams.append("sender", address);
 
       if (params.slippage) {
         url.searchParams.append(
@@ -303,11 +310,11 @@ export const usePortalQuote = (params: PortalQuoteParams) => {
         );
       }
 
-      if (params.gaslessSignature) {
+      if (params.portalGaslessSignature) {
         // Append the gasless transaction signature
         url.searchParams.append(
           "permitSignature",
-          `${params.gaslessSignature}`,
+          `${params.portalGaslessSignature}`,
         );
       }
 
@@ -324,28 +331,31 @@ export const usePortalQuote = (params: PortalQuoteParams) => {
 
       return portalQuote;
     },
-    retry: false,
     enabled: params.shouldQuote,
   });
 };
 
-export const useSendPortalTransaction = (
-  params: PortalQuoteResponse | undefined,
-  quoteError: Error | null,
-  onSuccess?: () => void,
-) => {
+export const useSendPortalTransaction = ({
+  quote,
+  quoteError,
+  onSuccess,
+}: {
+  quote: PortalQuoteResponse | undefined;
+  quoteError: Error | null;
+  onSuccess?: () => void;
+}) => {
   const chain = useChain();
   const {
     data: transactionConfig,
     error: prepareTxError,
-    isLoading,
+    isPending,
   } = usePrepareTransactionRequest({
-    to: params?.tx.to,
-    data: params?.tx.data,
-    value: params?.tx.value,
+    to: quote?.tx.to,
+    data: quote?.tx.data,
+    value: quote?.tx.value,
     chainId: chain.id,
     query: {
-      enabled: !!params,
+      enabled: !!quote,
     },
   });
   const mutationCallback = useWriteContractMutationCallback();
@@ -400,5 +410,5 @@ export const useSendPortalTransaction = (
     }
   };
 
-  return { mutate, isLoading };
+  return { mutate, isPending };
 };
