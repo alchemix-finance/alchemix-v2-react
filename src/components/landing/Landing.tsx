@@ -9,9 +9,9 @@ import { RiveSection } from "./RiveSection";
 export const Landing = () => {
   return (
     <div className="relative flex flex-col items-center font-alcxTitles">
-      <div className="relative flex max-w-screen-2xl flex-col items-center justify-center gap-4 p-5 text-center after:absolute after:left-1/2 after:top-3/4 after:-z-10 after:size-1/3 after:-translate-x-1/2 lg:px-10 lg:py-12 2xl:px-20 2xl:py-24 dark:after:bg-green2 dark:after:blur-[256px]">
+      <div className="relative flex max-w-screen-2xl flex-col items-center justify-center gap-4 p-5 text-center after:absolute after:left-1/2 after:top-3/4 after:-z-10 after:hidden after:size-1/3 after:-translate-x-1/2 after:bg-green2 after:blur-[256px] lg:px-10 lg:py-12 2xl:px-20 2xl:py-24 dark:after:block">
         <BlurInHeader
-          className="bg-gradient-to-br from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-4xl font-extrabold leading-tight tracking-normal text-transparent sm:text-5xl xl:text-7xl dark:bg-gradient-to-r dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1 dark:drop-shadow-[8px_8px_16px_rgba(0,_0,_0,_0.8)]"
+          className="bg-gradient-to-br from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-4xl font-extrabold leading-tight tracking-normal text-transparent sm:text-5xl xl:text-7xl dark:bg-gradient-to-r dark:from-bronze1 dark:via-[#f5e5da] dark:to-bronze1 dark:drop-shadow-[8px_8px_16px_rgba(0,_0,_0,_0.8)]"
           delay={0.1}
         >
           Self-Repaying Loans,
@@ -36,6 +36,7 @@ export const Landing = () => {
         </div>
         <div className="absolute left-1/2 top-3/4 -z-10 hidden size-full -translate-x-1/2 bg-[url('/images/landing-page/stars.svg')] bg-contain dark:block" />
       </div>
+      <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-bronze1 to-transparent"></div>
 
       <div className="w-full dark:bg-gradient-to-br dark:from-[#0B0D12] dark:to-[#171B24]">
         <div className="mx-auto flex max-w-screen-2xl flex-col gap-4 py-12 2xl:gap-20 2xl:py-20">
@@ -144,17 +145,14 @@ export const Landing = () => {
         <div className="dark:bg-[#080a0e]">
           <div className="mx-auto flex max-w-screen-2xl flex-col items-center pb-5 2xl:pb-20 dark:bg-[#080a0e]">
             <div className="space-y-4 p-5 text-center 2xl:space-y-10 2xl:p-20">
-              <BlurInHeader className="whitespace-nowrap bg-gradient-to-r from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-[24px] font-extrabold text-transparent 2xl:text-[64px] dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1">
+              <BlurInHeader className="whitespace-nowrap bg-gradient-to-r from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-2xl font-extrabold text-transparent lg:text-4xl 2xl:text-6xl dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1">
                 Get started with Alchemix
               </BlurInHeader>
-              <BlurInParagraph className="text-xl font-bold leading-tight text-lightgrey10inverse 2xl:whitespace-nowrap 2xl:text-[28px] dark:text-white">
+              <BlurInParagraph className="font-sans leading-snug text-lightgrey10inverse xl:text-xl dark:text-lightgrey10">
                 Alchemix&apos;s self-repaying loans automatically pay themselves
-                off using the interest earned
-                <br />
-                on your initial deposit. Borrow against your assets, earn yield
-                on the full deposit amount,
-                <br />
-                and enjoy the ability to spend and save at the same time.
+                off using the interest earned on your initial deposit. Borrow
+                against your assets, earn yield on the full deposit amount, and
+                enjoy the ability to spend and save at the same time.
               </BlurInParagraph>
               <LandingCtaButton>Get your Self-Repaying Loan</LandingCtaButton>
             </div>
