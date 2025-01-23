@@ -4,12 +4,12 @@ const ASSETS = [
   { name: "ETH", color: "#627EEA" },
   { name: "WSTETH", color: "#00A3FF" },
   { name: "RETH", color: "#ff0000" },
+  { name: "APXETH", color: "#50af95" },
   { name: "DAI", color: "#f7b32b" },
   { name: "USDC", color: "#2775ca" },
   { name: "USDT", color: "#50af95" },
 ];
 
-// Calculate the width of a single item + gap
 const ITEM_WIDTH = 128; // w-32
 const GAP_WIDTH = 16; // gap-4
 const ITEMS_IN_SET = ASSETS.length;
@@ -19,8 +19,8 @@ export const Tokens = () => {
   return (
     <div className="relative flex max-w-xs flex-col gap-8 sm:max-w-sm 2xl:max-w-lg">
       {/* Gradient Overlays */}
-      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-[16px] bg-gradient-to-r to-transparent dark:from-[#11141B]" />
-      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-[16px] bg-gradient-to-l to-transparent dark:from-[#11141B]" />
+      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-[16px] bg-gradient-to-r from-[#f6f2ef] to-transparent dark:from-[#11141B]" />
+      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-[16px] bg-gradient-to-l from-[#f6f2ef] to-transparent dark:from-[#11141B]" />
 
       {/* First Row - Right to Left */}
       <div className="relative flex w-full overflow-x-clip">
@@ -35,13 +35,12 @@ export const Tokens = () => {
             repeat: Infinity,
           }}
         >
-          {/* Render 4 sets for smoother infinite scroll */}
           {[...Array(4)].map((_, i) => (
             <div key={i} className="flex gap-4">
               {ASSETS.map(({ name }) => (
                 <div
                   key={`${name}-${i}`}
-                  className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-lg bg-slate-800"
+                  className="flex h-32 w-32 items-center justify-center rounded-lg"
                 >
                   <img
                     src={`/images/landing-page/${name.toLowerCase()}.png`}
@@ -68,13 +67,12 @@ export const Tokens = () => {
             repeat: Infinity,
           }}
         >
-          {/* Render 4 sets for smoother infinite scroll */}
           {[...Array(4)].map((_, i) => (
             <div key={i} className="flex gap-4">
               {[...ASSETS].reverse().map(({ name }) => (
                 <div
                   key={`${name}-${i}`}
-                  className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-lg bg-slate-800"
+                  className="flex h-32 w-32 items-center justify-center rounded-lg"
                 >
                   <img
                     src={`/images/landing-page/${name.toLowerCase()}.png`}
