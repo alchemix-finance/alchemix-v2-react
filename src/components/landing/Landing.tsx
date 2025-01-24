@@ -49,7 +49,7 @@ export const Landing = () => {
               />
             </SlideBox>
             <SlideBox
-              className="w-full space-y-6"
+              className="w-full max-w-xl space-y-6"
               direction="bottom"
               delay={0.2}
             >
@@ -68,7 +68,7 @@ export const Landing = () => {
           </div>
 
           <div className="flex flex-col-reverse items-center gap-4 px-5 sm:flex-row lg:px-10 2xl:px-40">
-            <div className="w-full space-y-6">
+            <div className="w-full max-w-xl space-y-6">
               <h2 className="text-xl font-semibold 2xl:text-4xl">
                 Zero Liquidations
               </h2>
@@ -98,7 +98,7 @@ export const Landing = () => {
 
       <div className="w-full dark:bg-[#080a0e]">
         <div className="mx-auto flex max-w-screen-2xl flex-col-reverse items-center gap-4 rounded-sm p-5 sm:flex-row lg:px-10 2xl:px-40 2xl:py-20">
-          <div className="w-full space-y-6">
+          <div className="w-full max-w-xl space-y-6">
             <h2 className="text-xl font-semibold 2xl:text-4xl">
               Security First
             </h2>
@@ -128,7 +128,7 @@ export const Landing = () => {
       <div className="w-full dark:bg-[#11141B]">
         <div className="mx-auto flex max-w-screen-2xl flex-col-reverse items-center gap-6 p-5 sm:flex-row lg:px-10 2xl:gap-16 2xl:px-40 2xl:py-20">
           <Tokens />
-          <div className="flex w-full flex-col items-center justify-center text-center sm:items-start sm:text-left">
+          <div className="flex w-full max-w-xl flex-col items-center justify-center text-center sm:items-start sm:text-left">
             <BlurInHeader className="text-xl font-semibold 2xl:text-4xl">
               Your Favorite Tokens
             </BlurInHeader>
