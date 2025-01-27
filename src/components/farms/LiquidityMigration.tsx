@@ -42,6 +42,7 @@ import {
   accordionTransition,
   reducedMotionAccordionVariants,
 } from "@/lib/motion/motion";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 const TOKENS_FROM = ["SLP"] as const;
 const TOKENS_TO = ["AURA", "BALANCER"] as const;
@@ -125,10 +126,7 @@ export const LiquidityMigration = () => {
 
     if (migrationError) {
       toast.error("Error migrating liquidity", {
-        description:
-          migrationError.name === "ContractFunctionExecutionError"
-            ? migrationError.cause.message
-            : migrationError.message,
+        description: getToastErrorMessage({ error: migrationError }),
       });
       return;
     }

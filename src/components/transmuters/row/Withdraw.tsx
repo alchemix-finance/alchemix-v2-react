@@ -5,6 +5,7 @@ import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { Token, Transmuter } from "@/lib/types";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useQueryClient } from "@tanstack/react-query";
@@ -75,10 +76,7 @@ export const Withdraw = ({
   const onCtaClick = () => {
     if (withdrawConfigError) {
       toast.error("Withdraw failed", {
-        description:
-          withdrawConfigError.name === "ContractFunctionExecutionError"
-            ? withdrawConfigError.cause.message
-            : withdrawConfigError.message,
+        description: getToastErrorMessage({ error: withdrawConfigError }),
       });
       return;
     }

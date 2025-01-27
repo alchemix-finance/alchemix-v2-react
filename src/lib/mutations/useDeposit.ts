@@ -21,6 +21,7 @@ import { QueryKeys, ScopeKeys } from "../queries/queriesSchema";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const useDeposit = ({
   vault,
@@ -265,10 +266,7 @@ export const useDeposit = ({
     ) {
       if (depositGatewayError) {
         toast.error("Deposit failed", {
-          description:
-            depositGatewayError.name === "ContractFunctionExecutionError"
-              ? depositGatewayError.cause.message
-              : depositGatewayError.message,
+          description: getToastErrorMessage({ error: depositGatewayError }),
         });
         return;
       }
@@ -292,10 +290,7 @@ export const useDeposit = ({
     ) {
       if (depositAlchemistError) {
         toast.error("Deposit failed", {
-          description:
-            depositAlchemistError.name === "ContractFunctionExecutionError"
-              ? depositAlchemistError.cause.message
-              : depositAlchemistError.message,
+          description: getToastErrorMessage({ error: depositAlchemistError }),
         });
         return;
       }
@@ -314,10 +309,7 @@ export const useDeposit = ({
     if (selectedToken.address === GAS_ADDRESS) {
       if (depositGasError) {
         toast.error("Deposit failed", {
-          description:
-            depositGasError.name === "ContractFunctionExecutionError"
-              ? depositGasError.cause.message
-              : depositGasError.message,
+          description: getToastErrorMessage({ error: depositGasError }),
         });
         return;
       }
@@ -339,10 +331,7 @@ export const useDeposit = ({
     ) {
       if (depositUnderlyingError) {
         toast.error("Deposit failed", {
-          description:
-            depositUnderlyingError.name === "ContractFunctionExecutionError"
-              ? depositUnderlyingError.cause.message
-              : depositUnderlyingError.message,
+          description: getToastErrorMessage({ error: depositUnderlyingError }),
         });
         return;
       }
