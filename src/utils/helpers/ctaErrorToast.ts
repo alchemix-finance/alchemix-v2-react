@@ -1,6 +1,7 @@
 import { type ExternalToast, toast } from "sonner";
 import {
   AbiErrorSignatureNotFoundError,
+  ContractFunctionRevertedError,
   SimulateContractErrorType,
   decodeErrorResult,
 } from "viem";
@@ -18,13 +19,18 @@ export const ctaErrorToast = (
         const noSignatureError = error.walk(
           (err) => err instanceof AbiErrorSignatureNotFoundError,
         );
-        if (noSignatureError instanceof AbiErrorSignatureNotFoundError) {
+        const dataError = error.walk(
+          (err) => err instanceof ContractFunctionRevertedError,
+        );
+        if (
+          noSignatureError instanceof AbiErrorSignatureNotFoundError &&
+          dataError instanceof ContractFunctionRevertedError &&
+          dataError.raw
+        ) {
           try {
             const decodedError = decodeErrorResult({
               abi: alchemistErrorsAbi,
-              // FIXME: This signature is not data and missing Error arguments.
-              // This causes decodeErrorResult to throw an error, because it cannot parse parameters.
-              data: noSignatureError.signature,
+              data: dataError.raw,
             });
             return decodedError.errorName;
           } catch (e) {
