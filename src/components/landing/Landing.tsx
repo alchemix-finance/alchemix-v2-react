@@ -22,8 +22,8 @@ export const Landing = () => {
           className="mb-4 mt-2 font-sans font-light leading-snug text-lightgrey10inverse xl:text-xl 2xl:mb-12 2xl:mt-8 dark:text-white"
           delay={0.2}
         >
-          Alchemix loans automatically pay themselves off without risk of
-          liquidation.
+          Alchemix loans automatically pay themselves off with the yield
+          generated from your deposit.
           <br />
           Unlock the potential of your assets with secure and stress-free
           borrowing.
