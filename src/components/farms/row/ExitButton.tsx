@@ -7,6 +7,7 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { CURVE, STAKING_POOL_ADDRESSES, SUSHI } from "@/lib/config/farms";
 import { QueryKeys, ScopeKeys } from "@/lib/queries/queriesSchema";
 import { Farm } from "@/lib/types";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
@@ -149,10 +150,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     if (farm.type === "internal") {
       if (internalError) {
         toast.error("Error exiting farm", {
-          description:
-            internalError.name === "ContractFunctionExecutionError"
-              ? internalError.cause.message
-              : internalError.message,
+          description: getToastErrorMessage({ error: internalError }),
         });
         return;
       }
@@ -170,10 +168,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
     if (farm.type === "external-sushi") {
       if (sushiError) {
         toast.error("Error exiting farm", {
-          description:
-            sushiError.name === "ContractFunctionExecutionError"
-              ? sushiError.cause.message
-              : sushiError.message,
+          description: getToastErrorMessage({ error: sushiError }),
         });
         return;
       }
@@ -190,10 +185,7 @@ export const ExitButton = ({ farm }: { farm: Farm }) => {
 
     if (curveError) {
       toast.error("Error exiting farm", {
-        description:
-          curveError.name === "ContractFunctionExecutionError"
-            ? curveError.cause.message
-            : curveError.message,
+        description: getToastErrorMessage({ error: curveError }),
       });
       return;
     }
