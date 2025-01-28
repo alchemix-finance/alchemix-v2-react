@@ -20,6 +20,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useTransmuterApr } from "@/lib/queries/transmuters/useTransmuterApr";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const Deposit = ({
   transmuter,
@@ -117,10 +118,7 @@ export const Deposit = ({
 
     if (depositConfigError) {
       toast.error("Deposit failed", {
-        description:
-          depositConfigError.name === "ContractFunctionExecutionError"
-            ? depositConfigError.cause.message
-            : depositConfigError.message,
+        description: getToastErrorMessage({ error: depositConfigError }),
       });
       return;
     }

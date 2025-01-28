@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { useChain } from "@/hooks/useChain";
 import { formatNumber } from "@/utils/number";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const V1Migration = () => {
   const chain = useChain();
@@ -159,10 +160,7 @@ export const V1Migration = () => {
     if (synth === SYNTH_ASSETS.ALUSD) {
       if (migrationAlUsdError) {
         toast.error("Error migrating liquidity", {
-          description:
-            migrationAlUsdError.name === "ContractFunctionExecutionError"
-              ? migrationAlUsdError.cause.message
-              : migrationAlUsdError.message,
+          description: getToastErrorMessage({ error: migrationAlUsdError }),
         });
         return;
       }
@@ -178,10 +176,7 @@ export const V1Migration = () => {
     } else {
       if (migrationAlEthError) {
         toast.error("Error migrating liquidity", {
-          description:
-            migrationAlEthError.name === "ContractFunctionExecutionError"
-              ? migrationAlEthError.cause.message
-              : migrationAlEthError.message,
+          description: getToastErrorMessage({ error: migrationAlEthError }),
         });
         return;
       }
