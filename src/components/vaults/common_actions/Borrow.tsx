@@ -37,6 +37,7 @@ import {
 } from "@/lib/motion/motion";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const Borrow = () => {
   const queryClient = useQueryClient();
@@ -142,10 +143,7 @@ export const Borrow = () => {
   const onCtaClick = () => {
     if (borrowError) {
       toast.error("Borrow failed", {
-        description:
-          borrowError.name === "ContractFunctionExecutionError"
-            ? borrowError.cause.message
-            : borrowError.message,
+        description: getToastErrorMessage({ error: borrowError }),
       });
       return;
     }

@@ -30,6 +30,7 @@ import { RepayInput } from "@/components/common/input/RepayInput";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { CtaButton } from "@/components/common/CtaButton";
 import { getTokenLogoUrl } from "@/utils/getTokenLogoUrl";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const Repay = () => {
   const queryClient = useQueryClient();
@@ -191,10 +192,9 @@ export const Repay = () => {
     ) {
       if (repayConfigError) {
         toast.error("Repay failed", {
-          description:
-            repayConfigError.name === "ContractFunctionExecutionError"
-              ? repayConfigError.cause.message
-              : repayConfigError.message,
+          description: getToastErrorMessage({
+            error: repayConfigError,
+          }),
         });
         return;
       }
@@ -211,10 +211,7 @@ export const Repay = () => {
 
     if (burnConfigError) {
       toast.error("Repay failed", {
-        description:
-          burnConfigError.name === "ContractFunctionExecutionError"
-            ? burnConfigError.cause.message
-            : burnConfigError.message,
+        description: getToastErrorMessage({ error: burnConfigError }),
       });
       return;
     }
