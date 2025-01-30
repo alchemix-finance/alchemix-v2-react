@@ -35,6 +35,7 @@ import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagm
 import { CtaButton } from "@/components/common/CtaButton";
 import { getTokenLogoUrl } from "@/utils/getTokenLogoUrl";
 import { useVaultsLiquidateAvailableBalance } from "@/lib/queries/vaults/useVaultsLiquidateAvailableBalance";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const Liquidate = () => {
   const queryClient = useQueryClient();
@@ -229,10 +230,7 @@ export const Liquidate = () => {
   const onCtaClick = () => {
     if (liquidateError) {
       toast.error("Liquidate failed", {
-        description:
-          liquidateError.name === "ContractFunctionExecutionError"
-            ? liquidateError.cause.message
-            : liquidateError.message,
+        description: getToastErrorMessage({ error: liquidateError }),
       });
       return;
     }

@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const Delegation = () => {
   const chain = useChain();
@@ -62,10 +63,7 @@ export const Delegation = () => {
   const onDelegateClick = useCallback(() => {
     if (delegateConfigError) {
       toast.error("Error delegating voting power", {
-        description:
-          delegateConfigError.name === "ContractFunctionExecutionError"
-            ? delegateConfigError.cause.message
-            : delegateConfigError.message,
+        description: getToastErrorMessage({ error: delegateConfigError }),
       });
       return;
     }
@@ -81,10 +79,7 @@ export const Delegation = () => {
   const onRevokeClick = useCallback(() => {
     if (revokeConfigError) {
       toast.error("Error revoking delegation", {
-        description:
-          revokeConfigError.name === "ContractFunctionExecutionError"
-            ? revokeConfigError.cause.message
-            : revokeConfigError.message,
+        description: getToastErrorMessage({ error: revokeConfigError }),
       });
       return;
     }

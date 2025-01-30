@@ -23,6 +23,7 @@ import { MAX_UINT256_BN } from "@/lib/constants";
 import { isInputZero } from "@/utils/inputNotZero";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const useMigrate = ({
   currentVault,
@@ -302,10 +303,7 @@ export const useMigrate = ({
 
     if (migrateConfigError) {
       toast.error("Migration failed", {
-        description:
-          migrateConfigError.name === "ContractFunctionExecutionError"
-            ? migrateConfigError.cause.message
-            : migrateConfigError.message,
+        description: getToastErrorMessage({ error: migrateConfigError }),
       });
       return;
     }
