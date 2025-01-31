@@ -24,7 +24,7 @@ export function Header() {
           alt="The Alchemix logo"
         />
       </Link>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 [&>div>button]:!text-center">
         {IS_TENDERLY_FORK && (
           <Link to="/debug">
             <div className="border border-red1 bg-grey5inverse p-2 dark:bg-grey5">
