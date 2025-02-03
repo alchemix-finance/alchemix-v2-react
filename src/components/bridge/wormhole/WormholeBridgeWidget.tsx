@@ -276,9 +276,7 @@ export const WormholeBridgeWidget = () => {
             tokenDecimals={18}
           />
         </div>
-        <div className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between">
-          <StatusBox transactionHash={bridgeTxHash} bridgeProvider="wormhole" />
-        </div>
+        <StatusBox transactionHash={bridgeTxHash} bridgeProvider="wormhole" />
         <Button
           variant="outline"
           width="full"
