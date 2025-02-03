@@ -51,7 +51,7 @@
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-use-measure": "^2.1.1",
+    "react-use-measure": "^2.1.7",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
     "viem": "^2.22.15",

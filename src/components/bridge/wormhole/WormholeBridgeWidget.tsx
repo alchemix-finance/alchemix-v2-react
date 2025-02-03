@@ -28,10 +28,13 @@ import {
   getIsConnectedChainNotSupportedForBridge,
 } from "./lib/utils";
 import { StatusBox } from "../StatusBox";
+import { WormholeWrapModal } from "@/components/bridge/wormhole/modals/WormholeWrapModal";
 
 export const WormholeBridgeWidget = () => {
   const chain = useChain();
   const { switchChain } = useSwitchChain();
+
+  const [isWormholeWrapModalOpen, setIsWormholeWrapModalOpen] = useState(false);
 
   const [originChainId, setOriginChainId] = useState(chain.id);
   const originChain = bridgeChains.find((c) => c.id === originChainId);
@@ -96,7 +99,6 @@ export const WormholeBridgeWidget = () => {
   const {
     writeApprove,
     writeBridge,
-    writeWrap,
     isApprovalNeeded,
     isWrapNeeded,
     bridgeTxHash,
@@ -160,7 +162,7 @@ export const WormholeBridgeWidget = () => {
 
   const onCtaClick = () => {
     if (isWrapNeeded) {
-      writeWrap();
+      setIsWormholeWrapModalOpen(true);
       return;
     }
 
@@ -173,123 +175,136 @@ export const WormholeBridgeWidget = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-col gap-2">
-          <p>Origin chain:</p>
+    <>
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-col gap-2">
+            <p>Origin chain:</p>
+            <Select
+              value={originChainId.toString()}
+              onValueChange={handleOriginChainSelect}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Origin chain">
+                  {originChain?.name ?? "Error"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {bridgeChains.map((chain) => (
+                  <SelectItem key={chain.id} value={chain.id.toString()}>
+                    {chain.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p>Target chain:</p>
+            <Select
+              value={destinationChainId.toString()}
+              onValueChange={handleDestinationChainSelect}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Target chain">
+                  {destinationChain?.name ?? "Error"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {bridgeChains.map((chain) => (
+                  <SelectItem key={chain.id} value={chain.id.toString()}>
+                    {chain.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p>Bridge cost:</p>
+            <Input
+              value={formatNumber(bridgeCost)}
+              readOnly
+              aria-readonly
+              type="text"
+              className="text-right"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p>You receive:</p>
+            <Input
+              value={amount}
+              readOnly
+              aria-readonly
+              type="text"
+              className="text-right"
+            />
+          </div>
+        </div>
+        <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
           <Select
-            value={originChainId.toString()}
-            onValueChange={handleOriginChainSelect}
+            value={originTokenAddress}
+            onValueChange={(value) =>
+              setOriginTokenAddress(value as `0x${string}`)
+            }
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Origin chain">
-                {originChain?.name ?? "Error"}
+            <SelectTrigger className="h-auto w-24 sm:w-56">
+              <SelectValue placeholder="Token" asChild>
+                <div className="flex items-center gap-4">
+                  <img
+                    src={`/images/token-icons/${token?.symbol}.svg`}
+                    alt={token?.symbol}
+                    className="h-12 w-12"
+                  />
+                  <span className="hidden text-xl sm:inline">
+                    {token?.symbol}
+                  </span>
+                </div>
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {bridgeChains.map((chain) => (
-                <SelectItem key={chain.id} value={chain.id.toString()}>
-                  {chain.name}
+              {selection?.map((token) => (
+                <SelectItem key={token.address} value={token.address}>
+                  {token.symbol}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <p>Target chain:</p>
-          <Select
-            value={destinationChainId.toString()}
-            onValueChange={handleDestinationChainSelect}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Target chain">
-                {destinationChain?.name ?? "Error"}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {bridgeChains.map((chain) => (
-                <SelectItem key={chain.id} value={chain.id.toString()}>
-                  {chain.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <p>Bridge cost:</p>
-          <Input
-            value={formatNumber(bridgeCost)}
-            readOnly
-            aria-readonly
-            type="text"
-            className="text-right"
+          <TokenInput
+            amount={amount}
+            setAmount={setAmount}
+            tokenAddress={token?.address ?? zeroAddress}
+            tokenSymbol={token?.symbol ?? ""}
+            tokenDecimals={18}
           />
         </div>
-        <div className="flex flex-col gap-2">
-          <p>You receive:</p>
-          <Input
-            value={amount}
-            readOnly
-            aria-readonly
-            type="text"
-            className="text-right"
-          />
+        <div className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between">
+          <StatusBox transactionHash={bridgeTxHash} bridgeProvider="wormhole" />
         </div>
-      </div>
-      <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
-        <Select
-          value={originTokenAddress}
-          onValueChange={(value) =>
-            setOriginTokenAddress(value as `0x${string}`)
-          }
+        <Button
+          variant="outline"
+          width="full"
+          disabled={isInputZero(amount) || isPending}
+          onClick={onCtaClick}
         >
-          <SelectTrigger className="h-auto w-24 sm:w-56">
-            <SelectValue placeholder="Token" asChild>
-              <div className="flex items-center gap-4">
-                <img
-                  src={`/images/token-icons/${token?.symbol}.svg`}
-                  alt={token?.symbol}
-                  className="h-12 w-12"
-                />
-                <span className="hidden text-xl sm:inline">
-                  {token?.symbol}
-                </span>
-              </div>
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {selection?.map((token) => (
-              <SelectItem key={token.address} value={token.address}>
-                {token.symbol}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <TokenInput
-          amount={amount}
-          setAmount={setAmount}
-          tokenAddress={token?.address ?? zeroAddress}
-          tokenSymbol={token?.symbol ?? ""}
-          tokenDecimals={18}
-        />
+          {isWrapNeeded
+            ? "Bridge "
+            : isPending
+              ? "Preparing"
+              : isApprovalNeeded === true
+                ? "Approve"
+                : "Bridge"}
+        </Button>
       </div>
-      <div className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between">
-        <StatusBox transactionHash={bridgeTxHash} bridgeProvider="wormhole" />
-      </div>
-      <Button
-        variant="outline"
-        width="full"
-        disabled={isInputZero(amount) || isPending}
-        onClick={onCtaClick}
-      >
-        {isPending
-          ? "Preparing"
-          : isApprovalNeeded === true
-            ? "Approve"
-            : isWrapNeeded
-              ? "Wrap"
-              : "Bridge"}
-      </Button>
-    </div>
+      <WormholeWrapModal
+        open={isWormholeWrapModalOpen}
+        onOpenChange={setIsWormholeWrapModalOpen}
+        amount={amount}
+        originChainId={originChainId}
+        destinationChainId={destinationChainId}
+        destinationChainName={destinationChain?.name}
+        originTokenAddress={originTokenAddress}
+        originTokenSymbol={token?.symbol}
+        bridgeCost={bridgeCost}
+      />
+    </>
   );
 };

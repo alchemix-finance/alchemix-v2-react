@@ -109,10 +109,11 @@ export const useAllowance = ({
     }),
   });
 
-  const { data: approvalReceipt } = useWaitForTransactionReceipt({
-    chainId: chain.id,
-    hash: approveTxHash,
-  });
+  const { data: approvalReceipt, isLoading: isLoadingApprovalReceipt } =
+    useWaitForTransactionReceipt({
+      chainId: chain.id,
+      hash: approveTxHash,
+    });
 
   useEffect(() => {
     if (approvalReceipt) {
@@ -137,5 +138,6 @@ export const useAllowance = ({
     approveUsdtEthConfig,
     isPending,
     isFetching: isFetchingAllowance,
+    isLoadingApprovalReceipt,
   };
 };

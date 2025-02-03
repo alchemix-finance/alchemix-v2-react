@@ -4,20 +4,21 @@ import {
   useAccount,
   useReadContract,
   useSimulateContract,
-  useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { toast } from "sonner";
 
 import { wormholeBridgeAdapterAbi } from "@/abi/wormholeBridgeAdapter";
-import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
+import {
+  SYNTHS_TO_XERC20_MAPPING,
+  SYNTH_ASSETS_ADDRESSES,
+} from "@/lib/config/synths";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { useChain } from "@/hooks/useChain";
 import { useAllowance } from "@/hooks/useAllowance";
 import { getDestinationWormholeChainId, getSpender } from "./utils";
-import { lockboxAbi } from "@/abi/lockbox";
-import { useEffect } from "react";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const bridgeChains = [mainnet, optimism, arbitrum];
 export type SupportedBridgeChainIds = (typeof bridgeChains)[number]["id"];
@@ -39,6 +40,8 @@ export const chainToAvailableTokensMapping: AvailableTokensMapping = {
   [mainnet.id]: [
     SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD,
     SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH,
+    SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD],
+    SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH],
   ],
 
   [optimism.id]: [
@@ -52,18 +55,15 @@ export const chainToAvailableTokensMapping: AvailableTokensMapping = {
   ],
 };
 
-export const synthsToXErc20Mapping: Record<`0x${string}`, `0x${string}`> = {
-  [SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]:
-    "0xe9D672f89493c7286A9BAfC6b763364EC0BFe4Fe",
-  [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]:
-    "0xab2e847b6bA3F772d385038e5b4fF131c161AB4B",
-};
-
 export const targetMapping: TargetMapping = {
   [mainnet.id]: {
     [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]:
       "0xA9e28396B4259B51444af21B2B80897920917360",
     [SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]:
+      "0x862A205494516e57D33b7F5182fC305E2B17Bc45",
+    [SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]]:
+      "0xA9e28396B4259B51444af21B2B80897920917360",
+    [SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]]:
       "0x862A205494516e57D33b7F5182fC305E2B17Bc45",
   },
   [optimism.id]: {
@@ -100,8 +100,6 @@ export const useBridgeCost = ({
     address: getSpender({
       originChainId,
       originTokenAddress,
-      // Hardcoded to false, because we want to get adapter address anyhow
-      isWrapNeeded: false,
     }),
     abi: wormholeBridgeAdapterAbi,
     functionName: "bridgeCost",
@@ -119,7 +117,6 @@ export const useWormholeWriteBridge = ({
   destinationChainId,
   originTokenAddress,
   decimals,
-  setOriginTokenAddress,
   bridgeCost,
 }: {
   amount: string;
@@ -135,7 +132,9 @@ export const useWormholeWriteBridge = ({
 
   const { address } = useAccount();
 
-  const isWrapNeeded = false;
+  const isWrapNeeded = Object.keys(SYNTHS_TO_XERC20_MAPPING).includes(
+    originTokenAddress,
+  );
 
   const {
     isApprovalNeeded,
@@ -146,53 +145,16 @@ export const useWormholeWriteBridge = ({
   } = useAllowance({
     amount,
     tokenAddress: originTokenAddress,
-    spender: getSpender({ originChainId, originTokenAddress, isWrapNeeded }),
+    spender: getSpender({ originChainId, originTokenAddress }),
     decimals,
   });
-
-  const {
-    data: wrapConfig,
-    error: wrapError,
-    isPending: isWrapConfigPending,
-  } = useSimulateContract({
-    address: getSpender({ originChainId, originTokenAddress, isWrapNeeded }),
-    abi: lockboxAbi,
-    functionName: "deposit",
-    args: [parseEther(amount)],
-    chainId: chain.id,
-    query: {
-      enabled: isWrapNeeded && !isInputZero(amount),
-    },
-  });
-
-  const {
-    writeContract: wrap,
-    data: wrapTxHash,
-    reset: resetWrap,
-  } = useWriteContract({
-    mutation: mutationCallback({
-      action: "Wrap",
-    }),
-  });
-
-  const { data: wrapReceipt } = useWaitForTransactionReceipt({
-    hash: wrapTxHash,
-    chainId: chain.id,
-  });
-
-  useEffect(() => {
-    if (wrapReceipt) {
-      setOriginTokenAddress(synthsToXErc20Mapping[originTokenAddress]);
-      resetWrap();
-    }
-  }, [setOriginTokenAddress, resetWrap, wrapReceipt, originTokenAddress]);
 
   const {
     data: bridgeConfig,
     error: bridgeError,
     isPending: isBridgeConfigPending,
   } = useSimulateContract({
-    address: getSpender({ originChainId, originTokenAddress, isWrapNeeded }),
+    address: getSpender({ originChainId, originTokenAddress }),
     abi: wormholeBridgeAdapterAbi,
     functionName: "bridge",
     args: [
@@ -222,32 +184,10 @@ export const useWormholeWriteBridge = ({
     approveConfig?.request && approve(approveConfig.request);
   };
 
-  const writeWrap = () => {
-    if (wrapError) {
-      toast.error("Wrap failed", {
-        description:
-          wrapError.name === "ContractFunctionExecutionError"
-            ? wrapError.cause.message
-            : wrapError.message,
-      });
-      return;
-    }
-    if (wrapConfig) {
-      wrap(wrapConfig.request);
-    } else {
-      toast.error("Wrap failed", {
-        description: "Wrap unknown error. Please notify Alchemix team.",
-      });
-    }
-  };
-
   const writeBridge = () => {
     if (bridgeError) {
       toast.error("Bridge failed", {
-        description:
-          bridgeError.name === "ContractFunctionExecutionError"
-            ? bridgeError.cause.message
-            : bridgeError.message,
+        description: getToastErrorMessage({ error: bridgeError }),
       });
       return;
     }
@@ -262,16 +202,16 @@ export const useWormholeWriteBridge = ({
 
   const isPending = (() => {
     if (!amount) return;
+    if (isWrapNeeded) return;
 
     if (isApprovalNeeded === false) {
-      return isWrapNeeded ? isWrapConfigPending : isBridgeConfigPending;
+      return isBridgeConfigPending;
     } else return isPendingAllowance || isFetchingAllowance;
   })();
 
   return {
     writeBridge,
     writeApprove,
-    writeWrap,
     isApprovalNeeded,
     isWrapNeeded,
     bridgeTxHash,

@@ -2,7 +2,6 @@ import {
   bridgeChains,
   chainIdToWormholeChainIdMapping,
   chainToAvailableTokensMapping,
-  lockboxMapping,
   SupportedBridgeChainIds,
   targetMapping,
 } from "./wormhole";
@@ -20,16 +19,10 @@ export const getInitialOriginTokenAddresses = (chainId: number) => {
 export const getSpender = ({
   originChainId,
   originTokenAddress,
-  isWrapNeeded,
 }: {
   originChainId: number;
   originTokenAddress: `0x${string}`;
-  isWrapNeeded: boolean;
 }) => {
-  if (isWrapNeeded) {
-    return lockboxMapping[originTokenAddress];
-  }
-
   if (getIsConnectedChainNotSupportedForBridge(originChainId)) {
     return targetMapping[bridgeChains[0].id][originTokenAddress];
   }
