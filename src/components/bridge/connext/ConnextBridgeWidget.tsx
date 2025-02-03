@@ -34,6 +34,7 @@ import {
   getSpender,
 } from "./lib/utils";
 import { StatusBox } from "./StatusBox";
+import { TriangleAlertIcon } from "lucide-react";
 
 export const ConnextBridgeWidget = () => {
   const chain = useChain();
@@ -194,6 +195,12 @@ export const ConnextBridgeWidget = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center gap-2 text-yellow-600">
+        <TriangleAlertIcon />
+        <p>
+          Connext congestion. It takes abnormal times to complete the bridge.
+        </p>
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-col gap-2">
           <p>Origin chain:</p>
