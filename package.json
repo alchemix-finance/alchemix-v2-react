@@ -55,7 +55,7 @@
     "react-use-measure": "^2.1.1",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
-    "viem": "^2.22.15",
+    "viem": "^2.22.19",
     "wagmi": "^2.14.9"
   },
   "devDependencies": {
