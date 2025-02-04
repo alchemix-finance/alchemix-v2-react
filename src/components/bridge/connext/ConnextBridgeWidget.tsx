@@ -1,6 +1,7 @@
 import { useSwitchChain } from "wagmi";
 import { useCallback, useEffect, useState } from "react";
 import { zeroAddress } from "viem";
+import { TriangleAlertIcon } from "lucide-react";
 
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
 import {
@@ -33,8 +34,7 @@ import {
   getOriginDomain,
   getSpender,
 } from "./lib/utils";
-import { StatusBox } from "./StatusBox";
-import { TriangleAlertIcon } from "lucide-react";
+import { StatusBox } from "../StatusBox";
 
 export const ConnextBridgeWidget = () => {
   const chain = useChain();
@@ -320,7 +320,7 @@ export const ConnextBridgeWidget = () => {
       </div>
       <div className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between">
         <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-        <StatusBox transactionHash={transactionHash} />
+        <StatusBox transactionHash={transactionHash} bridgeProvider="connext" />
       </div>
       <Button
         variant="outline"
