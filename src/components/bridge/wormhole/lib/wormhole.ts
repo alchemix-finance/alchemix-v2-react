@@ -4,6 +4,7 @@ import {
   useAccount,
   useReadContract,
   useSimulateContract,
+  useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { toast } from "sonner";
@@ -19,6 +20,7 @@ import { useChain } from "@/hooks/useChain";
 import { useAllowance } from "@/hooks/useAllowance";
 import { getDestinationWormholeChainId, getSpender } from "./utils";
 import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
+import { useEffect } from "react";
 
 export const bridgeChains = [mainnet, optimism, arbitrum];
 export type SupportedBridgeChainIds = (typeof bridgeChains)[number]["id"];
@@ -118,6 +120,7 @@ export const useWormholeWriteBridge = ({
   originTokenAddress,
   decimals,
   bridgeCost,
+  updateBridgeTxHash,
 }: {
   amount: string;
   originChainId: number;
@@ -126,6 +129,7 @@ export const useWormholeWriteBridge = ({
   decimals: number | undefined;
   setOriginTokenAddress: (address: `0x${string}`) => void;
   bridgeCost: string | undefined;
+  updateBridgeTxHash: (amount: `0x${string}`) => void;
 }) => {
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
@@ -174,11 +178,27 @@ export const useWormholeWriteBridge = ({
     },
   });
 
-  const { writeContract: bridge, data: bridgeTxHash } = useWriteContract({
+  const {
+    writeContract: bridge,
+    data: bridgeTxHash,
+    reset: resetBridge,
+  } = useWriteContract({
     mutation: mutationCallback({
       action: "Bridge",
     }),
   });
+
+  const { data: receipt } = useWaitForTransactionReceipt({
+    hash: bridgeTxHash,
+    chainId: chain.id,
+  });
+
+  useEffect(() => {
+    if (receipt) {
+      updateBridgeTxHash(receipt.transactionHash);
+      resetBridge();
+    }
+  }, [receipt, resetBridge, updateBridgeTxHash]);
 
   const writeApprove = () => {
     approveConfig?.request && approve(approveConfig.request);

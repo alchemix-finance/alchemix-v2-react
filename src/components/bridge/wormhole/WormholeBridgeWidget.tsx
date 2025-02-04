@@ -35,6 +35,7 @@ export const WormholeBridgeWidget = () => {
   const { switchChain } = useSwitchChain();
 
   const [isWormholeWrapModalOpen, setIsWormholeWrapModalOpen] = useState(false);
+  const [bridgeTxHash, setBridgeTxHash] = useState<`0x${string}`>();
 
   const [originChainId, setOriginChainId] = useState(chain.id);
   const originChain = bridgeChains.find((c) => c.id === originChainId);
@@ -96,12 +97,16 @@ export const WormholeBridgeWidget = () => {
     originTokenAddress,
   });
 
+  const updateBridgeTxHash = useCallback((hash: `0x${string}`) => {
+    setBridgeTxHash(hash);
+    setAmount("");
+  }, []);
+
   const {
     writeApprove,
     writeBridge,
     isApprovalNeeded,
     isWrapNeeded,
-    bridgeTxHash,
     isPending,
   } = useWormholeWriteBridge({
     amount,
@@ -111,6 +116,7 @@ export const WormholeBridgeWidget = () => {
     decimals: token?.decimals,
     setOriginTokenAddress,
     bridgeCost,
+    updateBridgeTxHash,
   });
 
   const handleOriginChainSelect = useCallback(
@@ -220,13 +226,15 @@ export const WormholeBridgeWidget = () => {
           </div>
           <div className="flex flex-col gap-2">
             <p>Bridge cost:</p>
-            <Input
-              value={formatNumber(bridgeCost)}
-              readOnly
-              aria-readonly
-              type="text"
-              className="text-right"
-            />
+            <div>
+              <Input
+                value={`${formatNumber(bridgeCost)} ETH`}
+                readOnly
+                aria-readonly
+                type="text"
+                className="text-right"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <p>You receive:</p>
@@ -296,6 +304,8 @@ export const WormholeBridgeWidget = () => {
         open={isWormholeWrapModalOpen}
         onOpenChange={setIsWormholeWrapModalOpen}
         amount={amount}
+        bridgeTxHash={bridgeTxHash}
+        updateBridgeTxHash={updateBridgeTxHash}
         originChainId={originChainId}
         destinationChainId={destinationChainId}
         destinationChainName={destinationChain?.name}

@@ -21,6 +21,8 @@ interface WormholeWrapModalProps {
   destinationChainId: number;
   destinationChainName: string | undefined;
   bridgeCost: string | undefined;
+  bridgeTxHash: `0x${string}` | undefined;
+  updateBridgeTxHash: (hash: `0x${string}`) => void;
 }
 
 export const WormholeWrapModal = ({
@@ -33,16 +35,13 @@ export const WormholeWrapModal = ({
   destinationChainId,
   destinationChainName,
   bridgeCost,
+  bridgeTxHash,
+  updateBridgeTxHash,
 }: WormholeWrapModalProps) => {
   const [step, setStep] = useState<"wrap" | "bridge">("wrap");
-  const [bridgeTxHash, setBridgeTxHash] = useState<`0x${string}`>();
 
   const setBridgeStep = () => {
     setStep("bridge");
-  };
-
-  const updateBridgeTxHash = (hash: `0x${string}`) => {
-    setBridgeTxHash(hash);
   };
 
   return (
@@ -60,7 +59,7 @@ export const WormholeWrapModal = ({
             From Ethereum to {destinationChainName}
           </p>
         </div>
-        <div className="space-y-5 rounded-md bg-grey10inverse p-4 dark:bg-grey10">
+        <div className="space-y-4 rounded-md bg-grey10inverse p-4 dark:bg-grey10">
           <WrapStep
             originTokenAddress={originTokenAddress}
             amount={amount}

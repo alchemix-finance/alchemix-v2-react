@@ -120,9 +120,9 @@ export const WrapStep = ({
   })();
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2">
+        <h2 className="flex items-center gap-2 leading-8">
           {isApprovalNeeded === false ? (
             <CircleCheckIcon className="h-4 w-4" />
           ) : (
@@ -135,7 +135,7 @@ export const WrapStep = ({
             size="sm"
             variant="outline"
             weight="normal"
-            className="text-base"
+            className="w-1/3 text-base"
             disabled={
               isPreparing || isInputZero(amount) || isLoadingApprovalReceipt
             }
@@ -146,7 +146,7 @@ export const WrapStep = ({
         )}
       </div>
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2">
+        <h2 className="flex items-center gap-2 leading-8">
           {isApprovalNeeded === false && !isActive ? (
             <CircleCheckIcon className="h-4 w-4" />
           ) : (
@@ -159,7 +159,7 @@ export const WrapStep = ({
             size="sm"
             variant="outline"
             weight="normal"
-            className="text-base"
+            className="w-1/3 text-base"
             disabled={
               isPreparing || isInputZero(amount) || isLoadingWrapReceipt
             }

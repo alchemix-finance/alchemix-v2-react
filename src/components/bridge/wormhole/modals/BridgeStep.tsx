@@ -144,9 +144,9 @@ export const BridgeStep = ({
   })();
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2">
+        <h2 className="flex items-center gap-2 leading-8">
           {isApprovalNeeded === false ? (
             <CircleCheckIcon className="h-4 w-4" />
           ) : (
@@ -159,7 +159,7 @@ export const BridgeStep = ({
             variant="outline"
             size="sm"
             weight="normal"
-            className="text-base"
+            className="w-1/3 text-base"
             disabled={isPending || isLoadingApprovalReceipt}
             onClick={onCtaClick}
           >
@@ -168,7 +168,7 @@ export const BridgeStep = ({
         )}
       </div>
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2">
+        <h2 className="flex items-center gap-2 leading-8">
           {hasBridged ? (
             <CircleCheckIcon className="h-4 w-4" />
           ) : (
@@ -176,12 +176,12 @@ export const BridgeStep = ({
           )}
           <span>Bridge via Wormhole</span>
         </h2>
-        {isApprovalNeeded === false && isActive && (
+        {isApprovalNeeded === false && isActive && !hasBridged && (
           <CtaButton
             variant="outline"
             size="sm"
             weight="normal"
-            className="text-base"
+            className="w-1/3 text-base"
             disabled={isPending || isLoadingBridgeReceipt}
             onClick={onCtaClick}
           >
