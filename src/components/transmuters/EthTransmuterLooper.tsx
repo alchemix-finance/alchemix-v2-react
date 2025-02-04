@@ -151,7 +151,7 @@ export const EthTransmuterLooper = ({
     isFetching: isPortalAllowanceFetching,
   } = usePortalAllowance({
     inputAmount: amount,
-    inputToken: isWithdraw ? transmuterLooper.address : selectedToken.address,
+    inputToken: isWithdraw ? transmuterLooper.address : selectTokenAddress,
     // TODO: update when contracts are deployed
     inputTokenDecimals: isWithdraw ? 6 : 18,
   });
@@ -199,24 +199,24 @@ export const EthTransmuterLooper = ({
     portalGaslessSignature: isWithdraw ? undefined : portalGaslessSignature,
     inputToken: isWithdraw
       ? transmuterLooper.address
-      : selectedToken.address === GAS_ADDRESS
+      : selectTokenAddress === GAS_ADDRESS
         ? zeroAddress
-        : selectedToken.address,
+        : selectedToken?.address,
     // TODO: update when contracts are deployed
     inputTokenDecimals: isWithdraw ? 6 : 18,
     inputAmount: amount,
     outputToken: isWithdraw
-      ? selectedToken.address === GAS_ADDRESS
+      ? selectedToken?.address === GAS_ADDRESS
         ? zeroAddress
-        : selectedToken.address
+        : selectedToken?.address
       : transmuterLooper.address,
     slippage,
     shouldQuote:
       !isInputZero(amount) &&
-      selectedToken.address !== alEthToken?.address &&
+      selectedToken?.address !== alEthToken?.address &&
       (isPortalApprovalNeeded === false ||
         !!portalGaslessSignature ||
-        (!isWithdraw && selectedToken.address === GAS_ADDRESS)),
+        (!isWithdraw && selectedToken?.address === GAS_ADDRESS)),
   });
 
   /**
@@ -237,7 +237,7 @@ export const EthTransmuterLooper = ({
         !isInputZero(amount) &&
         isAlEthApprovalNeeded === false &&
         !isWithdraw &&
-        selectedToken.address === alEthToken?.address,
+        selectedToken?.address === alEthToken?.address,
     },
   });
 
@@ -274,7 +274,7 @@ export const EthTransmuterLooper = ({
       enabled:
         !isInputZero(amount) &&
         isWithdraw === true &&
-        selectedToken.address === alEthToken?.address,
+        selectedToken?.address === alEthToken?.address,
     },
   });
 
@@ -310,23 +310,23 @@ export const EthTransmuterLooper = ({
   });
 
   const isAnyApprovalNeeded = (() => {
-    if (selectedToken.address === alEthToken?.address) {
+    if (selectedToken?.address === alEthToken?.address) {
       return isWithdraw ? false : isAlEthApprovalNeeded;
     }
-    if (selectedToken.address === GAS_ADDRESS && !isWithdraw) return false;
+    if (selectedToken?.address === GAS_ADDRESS && !isWithdraw) return false;
     return isPortalApprovalNeeded && !portalGaslessSignature;
   })();
 
   const onCtaClick = () => {
     if (isAnyApprovalNeeded) {
-      if (selectedToken.address === alEthToken?.address) {
+      if (selectedToken?.address === alEthToken?.address) {
         alEthApproveConfig && approveAlEth(alEthApproveConfig.request);
         return;
       }
       approvePortal();
     }
 
-    if (selectedToken.address !== alEthToken?.address) {
+    if (selectedToken?.address !== alEthToken?.address) {
       sendPortalTransaction();
       return;
     }
@@ -430,7 +430,7 @@ export const EthTransmuterLooper = ({
   const isPreparing = (() => {
     if (!amount) return;
 
-    if (selectedToken.address === alEthToken?.address) {
+    if (selectedToken?.address === alEthToken?.address) {
       if (isWithdraw) {
         return isRedeemConfigPending;
       }
@@ -442,7 +442,7 @@ export const EthTransmuterLooper = ({
     if (
       isPortalApprovalNeeded === false ||
       !!portalGaslessSignature ||
-      (!isWithdraw && selectedToken.address === GAS_ADDRESS)
+      (!isWithdraw && selectedToken?.address === GAS_ADDRESS)
     ) {
       return isPendingPortalQuote || isPortalTransactionPending;
     } else
@@ -517,12 +517,12 @@ export const EthTransmuterLooper = ({
                         <SelectValue placeholder="Token" asChild>
                           <div className="flex items-center gap-4">
                             <img
-                              src={`/images/token-icons/${selectedToken.symbol}.svg`}
-                              alt={selectedToken.symbol}
+                              src={`/images/token-icons/${selectedToken?.symbol}.svg`}
+                              alt={selectedToken?.symbol}
                               className="h-12 w-12"
                             />
                             <span className="hidden text-xl sm:inline">
-                              {selectedToken.symbol}
+                              {selectedToken?.symbol}
                             </span>
                           </div>
                         </SelectValue>
@@ -541,7 +541,7 @@ export const EthTransmuterLooper = ({
                       tokenAddress={
                         isWithdraw
                           ? transmuterLooper.address
-                          : selectedToken.address
+                          : selectedToken?.address
                       }
                       tokenDecimals={
                         // TODO -- put this back when contract is deployed, and remove below condition which tests using a USDC vault with 6 decimals
@@ -551,7 +551,7 @@ export const EthTransmuterLooper = ({
                         isWithdraw ? 6 : 18
                       }
                       tokenSymbol={
-                        isWithdraw ? "yvAlETH" : selectedToken.symbol
+                        isWithdraw ? "yvAlETH" : selectedToken?.symbol
                       }
                       dustToZero={isWithdraw}
                     />
@@ -566,13 +566,13 @@ export const EthTransmuterLooper = ({
                     </p>
                   </div>
                 </div>
-                {selectedToken.address !== alEthToken?.address && (
+                {selectedToken?.address !== alEthToken?.address && (
                   <SlippageInput
                     slippage={slippage}
                     setSlippage={setSlippage}
                   />
                 )}
-                {selectedToken.address === alEthToken?.address && (
+                {selectedToken?.address === alEthToken?.address && (
                   <div className="flex flex-row justify-between">
                     <p className="flex-auto text-sm text-lightgrey10inverse dark:text-lightgrey10">
                       Approval
