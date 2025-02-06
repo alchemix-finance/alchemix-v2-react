@@ -22,6 +22,7 @@ import {
   chainToAvailableTokensMapping,
   SupportedBridgeChainIds,
   useWormholeWriteBridge,
+  useBridgeLimit,
 } from "./lib/wormhole";
 import {
   getInitialOriginTokenAddresses,
@@ -119,6 +120,15 @@ export const WormholeBridgeWidget = () => {
     updateBridgeTxHash,
   });
 
+  const {
+    data: bridgeLimit,
+    isPending: isBridgeLimitPending,
+    isError: isBridgeLimitError,
+  } = useBridgeLimit({
+    destinationChainId,
+    originTokenAddress,
+  });
+
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
       const newChainId = Number(chainId) as SupportedBridgeChainIds;
@@ -179,6 +189,9 @@ export const WormholeBridgeWidget = () => {
 
     writeBridge();
   };
+
+  const isLimitExceeded =
+    !isBridgeLimitPending && !isBridgeLimitError && +bridgeLimit < +amount;
 
   return (
     <>
@@ -288,16 +301,24 @@ export const WormholeBridgeWidget = () => {
         <Button
           variant="outline"
           width="full"
-          disabled={isInputZero(amount) || isPending}
+          disabled={
+            isInputZero(amount) ||
+            isPending ||
+            isLimitExceeded ||
+            isBridgeLimitPending ||
+            isBridgeLimitError
+          }
           onClick={onCtaClick}
         >
-          {isWrapNeeded
-            ? "Bridge "
-            : isPending
-              ? "Preparing"
-              : isApprovalNeeded === true
-                ? "Approve"
-                : "Bridge"}
+          {isLimitExceeded
+            ? "Exceeds Wormhole limit"
+            : isWrapNeeded
+              ? "Bridge "
+              : isPending
+                ? "Preparing"
+                : isApprovalNeeded === true
+                  ? "Approve"
+                  : "Bridge"}
         </Button>
       </div>
       <WormholeWrapModal
