@@ -82,6 +82,40 @@ export const targetMapping: TargetMapping = {
   },
 };
 
+const originToDestinationTokenAddressMapping: Record<
+  `0x${string}`,
+  Record<number, `0x${string}`>
+> = {
+  [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]: {
+    [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alETH,
+    [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
+  },
+  [SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]: {
+    [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD,
+    [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
+  },
+  [SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]]: {
+    [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alETH,
+    [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
+  },
+  [SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]]: {
+    [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD,
+    [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
+  },
+  [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]: {
+    [mainnet.id]:
+      SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH],
+    [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
+    [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alETH,
+  },
+  [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]: {
+    [mainnet.id]:
+      SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD],
+    [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
+    [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD,
+  },
+};
+
 export const lockboxMapping: LockboxMapping = {
   [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]:
     "0x9141776017D6A8a8522f913fddFAcAe3e84a7CDb",
@@ -109,6 +143,41 @@ export const useBridgeCost = ({
     chainId: originChainId,
     query: {
       select: (bridgeCost) => formatEther(bridgeCost),
+    },
+  });
+};
+
+export const useBridgeLimit = ({
+  destinationChainId,
+  originTokenAddress,
+}: {
+  destinationChainId: number;
+  originTokenAddress: `0x${string}`;
+}) => {
+  const xErc20Address =
+    originToDestinationTokenAddressMapping[originTokenAddress][
+      destinationChainId
+    ];
+  return useReadContract({
+    address: xErc20Address,
+    abi: [
+      {
+        inputs: [{ internalType: "address", name: "adapter", type: "address" }],
+        name: "mintingCurrentLimitOf",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function",
+      },
+    ],
+    functionName: "mintingCurrentLimitOf",
+    args: [
+      targetMapping[destinationChainId as SupportedBridgeChainIds][
+        xErc20Address
+      ],
+    ],
+    chainId: destinationChainId,
+    query: {
+      select: (limit) => formatEther(limit),
     },
   });
 };
