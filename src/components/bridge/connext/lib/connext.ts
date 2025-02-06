@@ -223,6 +223,12 @@ export const useConnextWriteBridge = () => {
       if (!walletClient) throw new Error("Wallet not ready");
       if (!relayerFee) throw new Error("Relayer fee not ready");
 
+      if (originChainId !== chain.id) {
+        await walletClient.switchChain({
+          id: originChainId,
+        });
+      }
+
       const bridgeConfig: XCallParams = {
         origin: originDomain,
         destination: destinationDomain,

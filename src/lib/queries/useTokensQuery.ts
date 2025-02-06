@@ -17,6 +17,7 @@ import {
 } from "@/lib/constants";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "./queriesSchema";
+import { SYNTHS_TO_XERC20_MAPPING } from "../config/synths";
 
 export const useTokensQuery = () => {
   const chain = useChain();
@@ -48,6 +49,8 @@ export const useTokensQuery = () => {
       if (chain.id === mainnet.id) {
         tokensAddresses.push(G_ALCX_MAINNET_ADDRESS);
         tokensAddresses.push(ALCX_MAINNET_ADDRESS);
+        const xAlAssets = Object.values(SYNTHS_TO_XERC20_MAPPING);
+        tokensAddresses.push(...xAlAssets);
       }
       if (chain.id === arbitrum.id) {
         tokensAddresses.push(ALCX_ARBITRUM_ADDRESS);
