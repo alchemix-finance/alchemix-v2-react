@@ -74,6 +74,12 @@ export const useEthArbExternalFarmsAprs = () => {
           "Curve x Convex ALCX-FRAXBP":
             responseConvex.apys["factory-crypto-96"].baseApy +
             responseConvex.apys["factory-crypto-96"].crvApy,
+          "Curve x Convex alUSD-sDOLA":
+            responseConvex.apys["factory-stable-ng-320"].baseApy +
+            responseConvex.apys["factory-stable-ng-320"].crvApy,
+          "Curve x Convex alETH-pxETH":
+            responseConvex.apys["factory-stable-ng-268"].baseApy +
+            responseConvex.apys["factory-stable-ng-268"].crvApy,
         } as Record<string, number>;
       }
 
@@ -165,7 +171,7 @@ export const useOpExternalFarmsAprs = () => {
       const opPrice = ethPriceData.coins["coingecko:optimism"].price;
       const veloPrice = ethPriceData.coins["coingecko:velodrome-finance"].price;
 
-      const [pool0, pool1, pool2, pool3, pool4, pool5, pool6, pool7] =
+      const [pool0, pool1, pool2, pool3, pool4, pool5, pool6, pool7, pool8] =
         await publicClient.multicall({
           allowFailure: false,
           contracts: [
@@ -216,6 +222,12 @@ export const useOpExternalFarmsAprs = () => {
               abi: veloStatsAbi,
               functionName: "byIndex",
               args: [82n],
+            },
+            {
+              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              abi: veloStatsAbi,
+              functionName: "byIndex",
+              args: [1239n],
             },
           ],
         });
@@ -277,6 +289,13 @@ export const useOpExternalFarmsAprs = () => {
           ethPrice,
           opPrice,
         }),
+        "Velodrome CL200-alETH-alUSD": calculateVeloApr({
+          pool: pool8,
+          poolSymbol: "CL200-alETH/alUSD",
+          veloPrice,
+          ethPrice,
+          opPrice,
+        }),
       } as Record<string, number>;
     },
     enabled: chain.id === optimism.id,
@@ -299,7 +318,10 @@ const calculateVeloApr = ({
     reserve0: bigint;
     reserve1: bigint;
   };
-  poolSymbol: `sAMMV2-${string}/${string}` | `vAMMV2-${string}/${string}`;
+  poolSymbol:
+    | `sAMMV2-${string}/${string}`
+    | `vAMMV2-${string}/${string}`
+    | `CL200-${string}/${string}`;
   veloPrice: number | undefined;
   ethPrice: number | undefined;
   opPrice: number | undefined;
