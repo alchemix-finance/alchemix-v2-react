@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   useAccount,
   useReadContracts,
@@ -74,14 +74,15 @@ export const EthTransmuterLooper = ({
     chain.id !== fantom.id
       ? tokens?.find((token) => token.address === WETH_ADDRESSES[chain.id])
       : undefined;
-  const alEthToken =
-    chain.id !== fantom.id
+  const alEthToken = useMemo(() => {
+    return chain.id !== fantom.id
       ? tokens?.find(
           (token) =>
             token.address ===
             SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH],
         )
       : undefined;
+  }, [tokens, chain]);
   const selection =
     gasToken && wethToken && alEthToken
       ? [gasToken, wethToken, alEthToken]
@@ -89,6 +90,10 @@ export const EthTransmuterLooper = ({
   const selectedToken = selection.find(
     (token) => token.address === selectTokenAddress,
   )!;
+
+  useEffect(() => {
+    setSelectTokenAddress(alEthToken?.address ?? GAS_ADDRESS);
+  }, [alEthToken]);
 
   // ** INITIAL CONTRACT READS ** //
   // Read these contract functions once when the component renders for the first time. Return refetch functions for
