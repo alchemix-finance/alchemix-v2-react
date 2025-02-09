@@ -1,6 +1,7 @@
 import { useAccount } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { gql, request } from "graphql-request";
+import { fantom } from "viem/chains";
 
 import { Vault } from "@/lib/types";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
@@ -17,7 +18,7 @@ export const useVaultEarned = ({ vault }: { vault: Vault }) => {
     queryKey: [QueryKeys.GeneratedEarned, chain.id, address, vault.address],
     queryFn: async () => {
       if (!address) throw new Error("No address");
-      if (chain.id === 250)
+      if (chain.id === fantom.id)
         throw new Error("Generated earned is not supported on this chain");
 
       const url = EARNED_ENDPOINTS[chain.id];
