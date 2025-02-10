@@ -1,105 +1,59 @@
-import { useAccount, usePublicClient } from "wagmi";
+import { useAccount } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
-import { div, mul, toNumber } from "dnum";
+import { gql, request } from "graphql-request";
+import { fantom } from "viem/chains";
 
 import { Vault } from "@/lib/types";
-import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
-import { useHarvests } from "@/lib/queries/vaults/useHarvests";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
-import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useChain } from "@/hooks/useChain";
+import { EARNED_ENDPOINTS } from "@/lib/config/harvests";
 
-export const useVaultEarned = ({
-  vault,
-  harvestsAndBonuses,
-}: {
-  vault: Vault;
-  harvestsAndBonuses: ReturnType<typeof useHarvests>["data"];
-}) => {
+export const useVaultEarned = ({ vault }: { vault: Vault }) => {
   const chain = useChain();
-
-  const publicClient = usePublicClient<typeof wagmiConfig>({
-    chainId: chain.id,
-  });
 
   const { address } = useAccount();
 
   return useQuery({
-    queryKey: [
-      QueryKeys.GeneratedEarned,
-      chain.id,
-      address,
-      vault.address,
-      harvestsAndBonuses,
-    ],
+    queryKey: [QueryKeys.VaultEarned, chain.id, address, vault.address],
     queryFn: async () => {
       if (!address) throw new Error("No address");
-      if (chain.id === 250)
+      if (chain.id === fantom.id)
         throw new Error("Generated earned is not supported on this chain");
-      if (!harvestsAndBonuses) throw new Error("No harvests and bonuses data");
 
-      let totalEarned = 0;
+      const url = EARNED_ENDPOINTS[chain.id];
 
-      for (const harvest of harvestsAndBonuses.harvests) {
-        const { blockNumber } = await publicClient.getTransaction({
-          hash: harvest.transaction.hash,
-        });
-        const { totalShares: totalSharesAtBlockNumber } =
-          await publicClient.readContract({
-            address: vault.alchemist.address,
-            abi: alchemistV2Abi,
-            functionName: "getYieldTokenParameters",
-            args: [vault.address],
-            blockNumber,
-          });
-        const userPositionsAtBlockNumber = await publicClient.readContract({
-          address: vault.alchemist.address,
-          abi: alchemistV2Abi,
-          functionName: "positions",
-          args: [address, vault.address],
-          blockNumber,
-        });
-        const userSharesAtBlockNumber = userPositionsAtBlockNumber[0];
-        const ratio = div(
-          [userSharesAtBlockNumber, 18],
-          [totalSharesAtBlockNumber, 18],
-        );
-        const userHarvested = toNumber(mul(harvest.totalHarvested, ratio));
-        totalEarned += userHarvested;
-      }
+      const earnedQuery = gql`
+        query earned($id: String!) {
+          depositor(id: $id) {
+            totalDonationsReceived
+            totalUnderlyingTokenEarned
+          }
+        }
+      `;
 
-      for (const bonus of harvestsAndBonuses.bonuses) {
-        const { blockNumber } = await publicClient.getTransaction({
-          hash: bonus.transaction.hash,
-        });
-        const { totalShares: totalSharesAtBlockNumber } =
-          await publicClient.readContract({
-            address: vault.alchemist.address,
-            abi: alchemistV2Abi,
-            functionName: "getYieldTokenParameters",
-            args: [vault.address],
-            blockNumber,
-          });
-        const userPositionsAtBlockNumber = await publicClient.readContract({
-          address: vault.alchemist.address,
-          abi: alchemistV2Abi,
-          functionName: "positions",
-          args: [address, vault.address],
-          blockNumber,
-        });
-        const userSharesAtBlockNumber = userPositionsAtBlockNumber[0];
-        const ratio = div(
-          [userSharesAtBlockNumber, 18],
-          [totalSharesAtBlockNumber, 18],
-        );
-        const userHarvested = toNumber(mul(bonus.amount, ratio));
-        totalEarned += userHarvested;
-      }
+      const response = await request<
+        {
+          depositor: {
+            totalDonationsReceived: string;
+            totalUnderlyingTokenEarned: string;
+          };
+        },
+        {
+          id: string;
+        }
+      >(url, earnedQuery, {
+        id: `${address.toLowerCase()}-${vault.address.toLowerCase()}`,
+      });
+
+      const { totalDonationsReceived, totalUnderlyingTokenEarned } =
+        response.depositor;
+
+      const totalEarned = +totalUnderlyingTokenEarned + +totalDonationsReceived;
 
       return totalEarned;
     },
-    enabled: false,
+    enabled: !!address,
     staleTime: ONE_DAY_IN_MS,
   });
 };
