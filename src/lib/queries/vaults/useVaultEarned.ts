@@ -15,7 +15,7 @@ export const useVaultEarned = ({ vault }: { vault: Vault }) => {
   const { address } = useAccount();
 
   return useQuery({
-    queryKey: [QueryKeys.GeneratedEarned, chain.id, address, vault.address],
+    queryKey: [QueryKeys.VaultEarned, chain.id, address, vault.address],
     queryFn: async () => {
       if (!address) throw new Error("No address");
       if (chain.id === fantom.id)
