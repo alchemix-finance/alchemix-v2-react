@@ -54,34 +54,39 @@ export const EthTransmuterLooper = ({
   transmuterLooper: TransmuterMetadata;
 }) => {
   const chain = useChain();
+
+  if (chain.id === fantom.id) {
+    throw new Error("The Transmuter Looper is incompatible with Fantom");
+  }
+
   const mutationCallback = useWriteContractMutationCallback();
 
   const isReducedMotion = useReducedMotion();
 
   const { address = zeroAddress } = useAccount();
 
+  const getInitialTokenAddress = () =>
+    SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH];
+
   const [open, setOpen] = useState(false); // used to toggle the animation pane closed/open
   const [amount, setAmount] = useState(""); // represents amount of assets or shares depending on deposit or withdraw state
   const [isWithdraw, setIsWithdraw] = useState(false); // sets state of token input to accept input in assets or input in shares
   const [isInfiniteApproval, setIsInfiniteApproval] = useState(false);
-  const [selectTokenAddress, setSelectTokenAddress] =
-    useState<`0x${string}`>(GAS_ADDRESS);
+  const [selectTokenAddress, setSelectTokenAddress] = useState<`0x${string}`>(
+    () => getInitialTokenAddress(),
+  );
   const [slippage, setSlippage] = useState("0.5"); // sets the slippage param used for depositing from or withdrawing into ETH, which requires a trade
 
   const { data: tokens } = useTokensQuery();
   const gasToken = tokens?.find((token) => token.address === GAS_ADDRESS);
-  const wethToken =
-    chain.id !== fantom.id
-      ? tokens?.find((token) => token.address === WETH_ADDRESSES[chain.id])
-      : undefined;
+  const wethToken = tokens?.find(
+    (token) => token.address === WETH_ADDRESSES[chain.id],
+  );
   const alEthToken = useMemo(() => {
-    return chain.id !== fantom.id
-      ? tokens?.find(
-          (token) =>
-            token.address ===
-            SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH],
-        )
-      : undefined;
+    return tokens?.find(
+      (token) =>
+        token.address === SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH],
+    );
   }, [tokens, chain]);
   const selection =
     gasToken && wethToken && alEthToken
