@@ -2,6 +2,7 @@ import { useReducedMotion, m, AnimatePresence } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { useSwitchChain } from "wagmi";
 import { zeroAddress } from "viem";
+import { fantom } from "viem/chains";
 
 import {
   BridgeQuote,
@@ -9,7 +10,6 @@ import {
   bridgeChains,
   chainToAvailableTokensMapping,
   getInitialOriginTokenAddresses,
-  getIsConnectedChainNotSupportedForBridge,
 } from "./lib/constants";
 import { useChain } from "@/hooks/useChain";
 import {
@@ -53,9 +53,7 @@ export const Bridge = () => {
   );
 
   useEffect(() => {
-    const isConnectedChainNotSupportedForBridge =
-      getIsConnectedChainNotSupportedForBridge(chain.id);
-    if (isConnectedChainNotSupportedForBridge) {
+    if (chain.id === fantom.id) {
       switchChain({
         chainId: bridgeChains[0].id,
       });
@@ -71,8 +69,7 @@ export const Bridge = () => {
       }
     } else if (chain.id !== originChainId) {
       setOriginChainId(chain.id);
-      const newChainTokenAddress =
-        chainToAvailableTokensMapping[chain.id as SupportedBridgeChainIds][0];
+      const newChainTokenAddress = chainToAvailableTokensMapping[chain.id][0];
       setOriginTokenAddress(newChainTokenAddress);
       const newDestinationChainId = bridgeChains.find(
         (c) => c.id !== chain.id,

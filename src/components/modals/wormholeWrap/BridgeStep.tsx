@@ -1,5 +1,6 @@
 import { toast } from "sonner";
 import { parseEther } from "viem";
+import { fantom } from "viem/chains";
 import {
   useAccount,
   useSimulateContract,
@@ -21,7 +22,6 @@ import {
   SupportedBridgeChainIds,
   bridgeChains,
   chainIdToWormholeChainIdMapping,
-  getIsConnectedChainNotSupportedForBridge,
   wormholeTargetMapping,
 } from "@/components/bridge/lib/constants";
 import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
@@ -52,11 +52,10 @@ export const BridgeStep = ({
 
   const { address } = useAccount();
 
-  const spender = getIsConnectedChainNotSupportedForBridge(originChainId)
-    ? wormholeTargetMapping[bridgeChains[0].id][originTokenAddress]
-    : wormholeTargetMapping[originChainId as SupportedBridgeChainIds][
-        originTokenAddress
-      ];
+  const spender =
+    originChainId === fantom.id
+      ? wormholeTargetMapping[bridgeChains[0].id][originTokenAddress]
+      : wormholeTargetMapping[originChainId][originTokenAddress];
   const destinationWormholeChainId =
     chainIdToWormholeChainIdMapping[destinationChainId];
 

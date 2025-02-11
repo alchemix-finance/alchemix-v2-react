@@ -1,4 +1,4 @@
-import { arbitrum, mainnet, optimism } from "viem/chains";
+import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 
 import {
   SYNTHS_TO_XERC20_MAPPING,
@@ -9,15 +9,12 @@ import {
   ALCX_MAINNET_ADDRESS,
   ALCX_OPTIMISM_ADDRESS,
 } from "@/lib/constants";
+import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 
 /* CHAIN */
 
 export const bridgeChains = [mainnet, optimism, arbitrum];
 export type SupportedBridgeChainIds = (typeof bridgeChains)[number]["id"];
-
-export const getIsConnectedChainNotSupportedForBridge = (chainId: number) => {
-  return !bridgeChains.some((c) => c.id === chainId);
-};
 
 export const chainIdToWormholeChainIdMapping = {
   [mainnet.id]: 2,
@@ -91,10 +88,10 @@ export const originToDestinationTokenAddressMapping: Record<
   },
 };
 
-export const getInitialOriginTokenAddresses = (chainId: number) => {
-  return getIsConnectedChainNotSupportedForBridge(chainId)
+export const getInitialOriginTokenAddresses = (chainId: SupportedChainId) => {
+  return chainId === fantom.id
     ? chainToAvailableTokensMapping[bridgeChains[0].id]
-    : chainToAvailableTokensMapping[chainId as SupportedBridgeChainIds];
+    : chainToAvailableTokensMapping[chainId];
 };
 
 /* TARGETS */
