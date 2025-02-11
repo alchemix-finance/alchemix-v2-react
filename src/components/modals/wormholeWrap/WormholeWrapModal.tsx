@@ -9,7 +9,9 @@ import {
 import { WrapStep } from "./WrapStep";
 import { BridgeStep } from "./BridgeStep";
 import { formatNumber } from "@/utils/number";
-import { StatusBox } from "../../StatusBox";
+import { StatusBox } from "@/components/bridge/StatusBox";
+import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
+import { SupportedBridgeChainIds } from "@/components/bridge/lib/constants";
 
 interface WormholeWrapModalProps {
   open: boolean;
@@ -17,8 +19,8 @@ interface WormholeWrapModalProps {
   amount: string;
   originTokenAddress: `0x${string}`;
   originTokenSymbol: string | undefined;
-  originChainId: number;
-  destinationChainId: number;
+  originChainId: SupportedChainId;
+  destinationChainId: SupportedBridgeChainIds;
   destinationChainName: string | undefined;
   bridgeCost: string | undefined;
   bridgeTxHash: `0x${string}` | undefined;
@@ -77,7 +79,7 @@ export const WormholeWrapModal = ({
             isActive={step === "bridge"}
           />
         </div>
-        <StatusBox transactionHash={bridgeTxHash} bridgeProvider="wormhole" />
+        <StatusBox transactionHash={bridgeTxHash} bridgeProvider="Wormhole" />
       </DialogContent>
     </Dialog>
   );
