@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { UsePublicClientReturnType, useReadContract } from "wagmi";
-import { encodeFunctionData, formatEther, parseEther } from "viem";
+import { encodeFunctionData, formatEther, parseEther, zeroAddress } from "viem";
 import { fantom } from "viem/chains";
 
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
@@ -14,7 +14,17 @@ import {
 import { wormholeBridgeAdapterAbi } from "@/abi/wormholeBridgeAdapter";
 import { SYNTHS_TO_XERC20_MAPPING } from "@/lib/config/synths";
 import { isInputZero } from "@/utils/inputNotZero";
-import { ONE_MINUTE_IN_MS } from "@/lib/constants";
+import {
+  ALCX_ARBITRUM_ADDRESS,
+  ALCX_MAINNET_ADDRESS,
+  ALCX_OPTIMISM_ADDRESS,
+  ONE_MINUTE_IN_MS,
+} from "@/lib/constants";
+
+const getIsAlcx = (originTokenAddress: `0x${string}`) =>
+  [ALCX_ARBITRUM_ADDRESS, ALCX_MAINNET_ADDRESS, ALCX_OPTIMISM_ADDRESS].includes(
+    originTokenAddress,
+  );
 
 export const getWormholeQuoteQueryOptions = ({
   originChainId,
@@ -31,6 +41,8 @@ export const getWormholeQuoteQueryOptions = ({
   amount: string;
   address: `0x${string}`;
   publicClient: UsePublicClientReturnType<typeof wagmiConfig>;
+  /** NOTE: We pass bridge limit from the useHook, instead of reading within queryFn,
+   * because we need to read bridge limit on the destination chain, but we pass publicClient with origin chainId. */
   bridgeLimit: string | undefined;
 }) =>
   queryOptions({
@@ -51,6 +63,9 @@ export const getWormholeQuoteQueryOptions = ({
       }
       if (bridgeLimit === undefined) {
         throw new Error("Bridge limit not ready");
+      }
+      if (getIsAlcx(originTokenAddress)) {
+        throw new Error("Wormhole doesn't support ALCX");
       }
 
       const isLimitExceeded = +bridgeLimit < +amount;
@@ -114,10 +129,11 @@ export const useBridgeLimit = ({
   destinationChainId: SupportedBridgeChainIds;
   originTokenAddress: `0x${string}`;
 }) => {
-  const xErc20Address =
-    originToDestinationTokenAddressMapping[originTokenAddress][
-      destinationChainId
-    ];
+  const xErc20Address = !getIsAlcx(originTokenAddress)
+    ? originToDestinationTokenAddressMapping[originTokenAddress][
+        destinationChainId
+      ]
+    : zeroAddress;
   return useReadContract({
     address: xErc20Address,
     abi: [
@@ -134,6 +150,7 @@ export const useBridgeLimit = ({
     chainId: destinationChainId,
     query: {
       select: (limit) => formatEther(limit),
+      enabled: !getIsAlcx(originTokenAddress),
     },
   });
 };

@@ -86,6 +86,12 @@ export const originToDestinationTokenAddressMapping: Record<
     [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
     [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD,
   },
+  [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH]: {
+    [mainnet.id]:
+      SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH],
+    [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alETH,
+    [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
+  },
 };
 
 export const getInitialOriginTokenAddresses = (chainId: SupportedChainId) => {
