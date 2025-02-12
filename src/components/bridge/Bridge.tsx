@@ -200,7 +200,7 @@ export const Bridge = () => {
 
   return (
     <>
-      <div className="flex justify-center gap-10">
+      <div className="flex flex-col justify-center gap-10 md:flex-row">
         <m.div
           layout={!isReducedMotion}
           transition={{ type: "spring", duration: 0.3, bounce: 0 }}
