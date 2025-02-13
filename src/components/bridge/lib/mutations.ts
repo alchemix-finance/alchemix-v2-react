@@ -117,7 +117,6 @@ export const useWriteBridge = ({
     writeBridge,
     writeApprove,
     isApprovalNeeded,
-    bridgeTxHash,
     isPending,
   };
 };
