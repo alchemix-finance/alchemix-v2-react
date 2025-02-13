@@ -341,7 +341,7 @@ export const STATIC_EXTERNAL_FARMS = {
       actions: [
         {
           label: "Manage",
-          url: "https://velodrome.finance/deposit?token0=0x3E29D3A9316dAB217754d13b28646B76607c5f04&token1=0xCB8FA9a76b8e203D8C3797bF438d8FB81Ea3326A&type=-1&chain=10&factory=0xF1046053aa5682b4F9a81b5481394DA16BE5FF5a",
+          url: "https://velodrome.finance/deposit?token0=0x3E29D3A9316dAB217754d13b28646B76607c5f04&token1=0xCB8FA9a76b8e203D8C3797bF438d8FB81Ea3326A&type=200&chain=10&factory=0xCc0bDDB707055e04e497aB22a59c2aF4391cd12F",
         },
       ],
     },

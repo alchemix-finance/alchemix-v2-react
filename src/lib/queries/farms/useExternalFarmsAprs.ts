@@ -227,7 +227,7 @@ export const useOpExternalFarmsAprs = () => {
               address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
               abi: veloStatsAbi,
               functionName: "byIndex",
-              args: [1239n],
+              args: [1242n],
             },
           ],
         });
@@ -313,10 +313,14 @@ const calculateVeloApr = ({
   opPrice,
 }: {
   pool: {
+    lp: `0x${string}`;
     symbol: string;
     emissions: bigint;
     reserve0: bigint;
     reserve1: bigint;
+    staked0: bigint;
+    staked1: bigint;
+    type: number;
   };
   poolSymbol:
     | `sAMMV2-${string}/${string}`
@@ -347,9 +351,16 @@ const calculateVeloApr = ({
       : 1;
   const decimals1 = token1 === "USDC" ? 6 : 18;
 
-  const tvl =
+  let tvl =
     +formatUnits(pool.reserve0, decimals0) * price0 +
     +formatUnits(pool.reserve1, decimals1) * price1;
 
-  return (emissions / tvl) * 100;
+  const isCLPool = pool.type > 0;
+  if (isCLPool) {
+    const stakedValue0 = Number(formatUnits(pool.staked0, decimals0)) * price0;
+    const stakedValue1 = Number(formatUnits(pool.staked1, decimals1)) * price1;
+    tvl = stakedValue0 + stakedValue1;
+  }
+
+  return tvl > 0 ? (emissions / tvl) * 100 : 0;
 };
