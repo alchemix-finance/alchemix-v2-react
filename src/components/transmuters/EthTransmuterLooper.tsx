@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useAccount,
   useReadContracts,
@@ -65,15 +65,12 @@ export const EthTransmuterLooper = ({
 
   const { address = zeroAddress } = useAccount();
 
-  const getInitialTokenAddress = () =>
-    SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH];
-
   const [open, setOpen] = useState(false); // used to toggle the animation pane closed/open
   const [amount, setAmount] = useState(""); // represents amount of assets or shares depending on deposit or withdraw state
   const [isWithdraw, setIsWithdraw] = useState(false); // sets state of token input to accept input in assets or input in shares
   const [isInfiniteApproval, setIsInfiniteApproval] = useState(false);
   const [selectTokenAddress, setSelectTokenAddress] = useState<`0x${string}`>(
-    () => getInitialTokenAddress(),
+    SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH],
   );
   const [slippage, setSlippage] = useState("0.5"); // sets the slippage param used for depositing from or withdrawing into ETH, which requires a trade
 
@@ -82,23 +79,17 @@ export const EthTransmuterLooper = ({
   const wethToken = tokens?.find(
     (token) => token.address === WETH_ADDRESSES[chain.id],
   );
-  const alEthToken = useMemo(() => {
-    return tokens?.find(
-      (token) =>
-        token.address === SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH],
-    );
-  }, [tokens, chain]);
+  const alEthToken = tokens?.find(
+    (token) =>
+      token.address === SYNTH_ASSETS_ADDRESSES[chain.id][SYNTH_ASSETS.ALETH],
+  );
   const selection =
     gasToken && wethToken && alEthToken
       ? [gasToken, wethToken, alEthToken]
       : [];
   const selectedToken = selection.find(
     (token) => token.address === selectTokenAddress,
-  )!;
-
-  useEffect(() => {
-    setSelectTokenAddress(alEthToken?.address ?? GAS_ADDRESS);
-  }, [alEthToken]);
+  );
 
   // ** INITIAL CONTRACT READS ** //
   // Read these contract functions once when the component renders for the first time. Return refetch functions for
@@ -561,7 +552,7 @@ export const EthTransmuterLooper = ({
                         isWithdraw ? 6 : 18
                       }
                       tokenSymbol={
-                        isWithdraw ? "yvAlETH" : selectedToken?.symbol
+                        isWithdraw ? "yvAlETH" : (selectedToken?.symbol ?? "")
                       }
                       dustToZero={isWithdraw}
                     />
