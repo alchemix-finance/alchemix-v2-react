@@ -14,7 +14,7 @@ export const VaultMessage = (props: { message: VaultMessageType }) => {
   return (
     <div
       className={cn(
-        "text-l flex w-full flex-row items-center space-x-4 rounded border p-2 pl-4 text-grey15",
+        "flex w-full flex-row items-center space-x-4 rounded border p-2 pl-4 text-grey15",
         type === "info" && "border-blue1 bg-blue1/50",
         type === "warning" && "border-orange2 bg-orange1",
         type === "error" && "border-red3 bg-red1",

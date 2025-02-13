@@ -31,6 +31,7 @@ export const QueryKeys = {
   PortalCheckApproval: "portalCheckApproval",
   PortalCreateQuote: "portalCreateQuote",
   GeneratedEarned: "generatedEarned",
+  VaultEarned: "vaultEarned",
   ExternalFarmsApr: "externalFarmsApr",
 } as const;
 

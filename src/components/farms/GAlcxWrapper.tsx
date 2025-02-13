@@ -25,6 +25,7 @@ import {
   accordionTransition,
   reducedMotionAccordionVariants,
 } from "@/lib/motion/motion";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const GAlcsWrapper = () => {
   const chain = useChain();
@@ -136,10 +137,7 @@ export const GAlcsWrapper = () => {
 
     if (wrapError) {
       toast.error("Error wrapping ALCX", {
-        description:
-          wrapError.name === "ContractFunctionExecutionError"
-            ? wrapError.cause.message
-            : wrapError.message,
+        description: getToastErrorMessage({ error: wrapError }),
       });
       return;
     }
@@ -156,10 +154,7 @@ export const GAlcsWrapper = () => {
   const onUnwrap = () => {
     if (unwrapError) {
       toast.error("Error unwrapping ALCX", {
-        description:
-          unwrapError.name === "ContractFunctionExecutionError"
-            ? unwrapError.cause.message
-            : unwrapError.message,
+        description: getToastErrorMessage({ error: unwrapError }),
       });
       return;
     }

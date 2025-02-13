@@ -31,7 +31,7 @@ const utilities = [
     image: "contract_params_dashboard.png",
   },
   {
-    label: "Alchemix Tidbits",
+    label: "alAsset University",
     author: "DoDao",
     url: "https://alchemix.tidbitshub.org/",
     image: "alchemix_tidbits.png",

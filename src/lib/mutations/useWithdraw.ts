@@ -21,6 +21,7 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { isInputZero } from "@/utils/inputNotZero";
 import { useStaticTokenAdapterWithdraw } from "@/hooks/useStaticTokenAdapterWithdraw";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
+import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 
 export const useWithdraw = ({
   vault,
@@ -423,10 +424,7 @@ export const useWithdraw = ({
     ) {
       if (withdrawGatewayError) {
         toast.error("Withdraw failed", {
-          description:
-            withdrawGatewayError.name === "ContractFunctionExecutionError"
-              ? withdrawGatewayError.cause.message
-              : withdrawGatewayError.message,
+          description: getToastErrorMessage({ error: withdrawGatewayError }),
         });
         return;
       }
@@ -449,10 +447,7 @@ export const useWithdraw = ({
     ) {
       if (withdrawAlchemistError) {
         toast.error("Withdraw failed", {
-          description:
-            withdrawAlchemistError.name === "ContractFunctionExecutionError"
-              ? withdrawAlchemistError.cause.message
-              : withdrawAlchemistError.message,
+          description: getToastErrorMessage({ error: withdrawAlchemistError }),
         });
         return;
       }
@@ -471,10 +466,7 @@ export const useWithdraw = ({
     if (selectedToken.address === GAS_ADDRESS && !!vault.metadata.wethGateway) {
       if (withdrawGasError) {
         toast.error("Withdraw failed", {
-          description:
-            withdrawGasError.name === "ContractFunctionExecutionError"
-              ? withdrawGasError.cause.message
-              : withdrawGasError.message,
+          description: getToastErrorMessage({ error: withdrawGasError }),
         });
         return;
       }
@@ -496,10 +488,7 @@ export const useWithdraw = ({
     ) {
       if (withdrawUnderlyingError) {
         toast.error("Withdraw failed", {
-          description:
-            withdrawUnderlyingError.name === "ContractFunctionExecutionError"
-              ? withdrawUnderlyingError.cause.message
-              : withdrawUnderlyingError.message,
+          description: getToastErrorMessage({ error: withdrawUnderlyingError }),
         });
         return;
       }
