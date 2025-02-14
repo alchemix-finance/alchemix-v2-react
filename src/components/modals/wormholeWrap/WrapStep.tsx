@@ -8,7 +8,6 @@ import {
 import { CircleCheckIcon, CircleIcon } from "lucide-react";
 import { parseEther } from "viem";
 
-import { lockboxMapping } from "@/components/bridge/wormhole/lib/wormhole";
 import { lockboxAbi } from "@/abi/lockbox";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { isInputZero } from "@/utils/inputNotZero";
@@ -16,6 +15,7 @@ import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
 import { CtaButton } from "@/components/common/CtaButton";
+import { lockboxMapping } from "@/components/bridge/lib/constants";
 
 export const WrapStep = ({
   originTokenAddress,

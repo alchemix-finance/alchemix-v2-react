@@ -6,7 +6,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useChain } from "@/hooks/useChain";
-import { erc20Abi, parseAbi, parseUnits } from "viem";
+import { erc20Abi, parseAbi, parseUnits, zeroAddress } from "viem";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -48,7 +48,10 @@ export const useAllowance = ({
     chainId: chain.id,
     query: {
       enabled:
-        !!address && tokenAddress !== GAS_ADDRESS && !isInputZero(amount),
+        !!address &&
+        tokenAddress !== GAS_ADDRESS &&
+        !isInputZero(amount) &&
+        spender !== zeroAddress,
       select: (allowance) => ({
         isApprovalNeeded: allowance < parseUnits(amount, decimals),
         allowance,
