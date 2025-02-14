@@ -28,6 +28,9 @@ export const QueryKeys = {
   ) => `connextSdk-${type}`,
   HarvestsAndBonuses: "harvests-and-bonuses",
   HistoricYield: "historicYield",
+  PortalCheckApproval: "portalCheckApproval",
+  PortalCreateQuote: "portalCreateQuote",
+  GeneratedEarned: "generatedEarned",
   VaultEarned: "vaultEarned",
   ExternalFarmsApr: "externalFarmsApr",
 } as const;
@@ -52,6 +55,7 @@ export const ScopeKeys = {
   CurveFarmContent: "curve-farm-content",
   SushiFarmContent: "sushi-farm-content",
   InternalFarmContent: "internal-farm-content",
+  TransmuterLooperReported: "transmuter-looper-reported-content",
 } as const;
 export type ScopeKey = (typeof ScopeKeys)[keyof typeof ScopeKeys];
 

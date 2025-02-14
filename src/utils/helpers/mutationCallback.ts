@@ -1,10 +1,17 @@
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
+import { UseMutationOptions } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   TransactionNotFoundError,
   WaitForTransactionReceiptTimeoutError,
 } from "viem";
-import { UsePublicClientReturnType, UseWriteContractParameters } from "wagmi";
+import { UsePublicClientReturnType } from "wagmi";
+import {
+  WriteContractParameters,
+  WriteContractReturnType,
+  SendTransactionParameters,
+  SendTransactionReturnType,
+} from "@wagmi/core";
 
 interface MutationCallbackArgs {
   action: string;
@@ -19,7 +26,11 @@ export const mutationCallback = ({
   action,
   addRecentTransaction,
   publicClient,
-}: MutationCallbackArgs): UseWriteContractParameters["mutation"] =>
+}: MutationCallbackArgs): UseMutationOptions<
+  WriteContractReturnType | SendTransactionReturnType,
+  Error,
+  WriteContractParameters | SendTransactionParameters
+> =>
   ({
     onSuccess: (hash) => {
       addRecentTransaction({

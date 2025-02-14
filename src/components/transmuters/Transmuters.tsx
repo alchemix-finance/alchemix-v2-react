@@ -11,6 +11,9 @@ import { EXTERNAL_LIQUIDITY_PROVIDERS } from "@/lib/config/externalLiquidityProv
 import { windowOpen } from "@/utils/windowOpen";
 import { LoadingBar } from "../common/LoadingBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { EthTransmuterLooper } from "@/components/transmuters/EthTransmuterLooper";
+import { TRANSMUTER_LOOPERS_VAULTS } from "@/lib/config/transmuters";
+import { fantom } from "viem/chains";
 
 export const Transmuters = () => {
   const chain = useChain();
@@ -52,7 +55,7 @@ export const Transmuters = () => {
                 External Swap Providers
               </p>
             </div>
-            <div className="flex max-h-44 flex-col gap-4 overflow-y-auto px-6 py-4 lg:flex-row">
+            <div className="flex max-h-44 flex-col gap-4 overflow-y-auto px-6 py-4 lg:flex-row lg:flex-wrap">
               {EXTERNAL_LIQUIDITY_PROVIDERS[chain.id].map((provider) => (
                 <Button
                   key={provider.label}
@@ -71,6 +74,22 @@ export const Transmuters = () => {
               ))}
             </div>
           </div>
+          {chain.id !== fantom.id ? (
+            TRANSMUTER_LOOPERS_VAULTS[chain.id].map((transmuterLooper) => {
+              if (transmuterLooper.synthAsset === SYNTH_ASSETS.ALETH) {
+                return (
+                  <EthTransmuterLooper
+                    transmuterLooper={transmuterLooper}
+                    key="EthTransmuterLooper"
+                  />
+                );
+              } else {
+                return null;
+              }
+            })
+          ) : (
+            <div>No transmuters loopers for selected chain</div>
+          )}
           <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
               <Tabs value={synthTab} onValueChange={onSynthTabChange}>
