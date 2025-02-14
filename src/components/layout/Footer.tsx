@@ -193,26 +193,12 @@ export const Footer = () => {
           </ul>
         </div>
         <div>
-          <p className="alcxTitle mb-5 text-sm uppercase">CARBON FOOTPRINT</p>
-          <ul className="space-y-3 text-sm">
-            <li className="opacity-50 transition-opacity hover:opacity-100">
-              <a
-                href="https://www.klimadao.finance/pledge/0xffaa3cda4f169d33291dd9ddbea8578d1398430e"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  src="./images/integrations/klima.svg"
-                  className="w-32"
-                  alt="Alchemix pledged to offset 4,390.96 Carbon Tonnes"
-                  loading="lazy"
-                />
-              </a>
-            </li>
-          </ul>
-          <p className="mt-3 w-60 text-justify text-sm opacity-50">
-            Our historical carbon emissions have been offset using KlimaDAO
-          </p>
+          <img
+            src="./images/integrations/built-on-ethereum.png"
+            className="w-32 invert dark:invert-0"
+            alt="Built on Ethereum"
+            loading="lazy"
+          />
         </div>
       </div>
     </footer>
