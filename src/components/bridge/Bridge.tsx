@@ -11,6 +11,7 @@ import {
   chainToAvailableTokensMapping,
   getInitialOriginTokenAddress,
   getInitialOriginTokenAddresses,
+  getInitialDestinationChainId,
 } from "./lib/constants";
 import { useChain } from "@/hooks/useChain";
 import {
@@ -46,8 +47,8 @@ export const Bridge = () => {
   const [originChainId, setOriginChainId] = useState(chain.id);
   const originChain = bridgeChains.find((c) => c.id === originChainId);
 
-  const [destinationChainId, setDestinationChainId] = useState(
-    bridgeChains.find((c) => c.id !== originChainId)!.id,
+  const [destinationChainId, setDestinationChainId] = useState(() =>
+    getInitialDestinationChainId(originChainId),
   );
   const destinationChain = bridgeChains.find(
     (c) => c.id === destinationChainId,

@@ -28,6 +28,9 @@ export const chainIdToDomainMapping = {
   [arbitrum.id]: "1634886255",
 } as const;
 
+export const getInitialDestinationChainId = (originChainId: SupportedChainId) =>
+  bridgeChains.find((c) => c.id !== originChainId)!.id;
+
 /* TOKENS */
 
 type AvailableTokensMapping = Record<SupportedBridgeChainIds, `0x${string}`[]>;
