@@ -1,6 +1,4 @@
 import { useMemo, useState } from "react";
-import { optimism } from "viem/chains";
-import { formatUnits } from "viem";
 import { divide, multiply, toString } from "dnum";
 
 import { Vault } from "@/lib/types";
@@ -14,7 +12,6 @@ import {
 import { MigrateTokenInput } from "@/components/common/input/MigrateTokenInput";
 import { CtaButton } from "@/components/common/CtaButton";
 import { SlippageInput } from "@/components/common/input/SlippageInput";
-import { useChain } from "@/hooks/useChain";
 import { useMigrate } from "@/lib/mutations/useMigrate";
 import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
@@ -26,8 +23,6 @@ export const Migrate = ({
   vault: Vault;
   selection: Vault[];
 }) => {
-  const chain = useChain();
-
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
 
@@ -46,7 +41,6 @@ export const Migrate = ({
     writeMintApprove,
     writeMigrate,
     isPending,
-    minOrNewUnderlying,
   } = useMigrate({
     currentVault: vault,
     amount,
@@ -128,20 +122,7 @@ export const Migrate = ({
           vault={vault}
         />
       </div>
-      {chain.id === optimism.id ? (
-        <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-      ) : (
-        <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
-          Minimum underlying after migration:{" "}
-          {formatNumber(
-            formatUnits(
-              minOrNewUnderlying ?? 0n,
-              selectedVault.underlyingTokensParams.decimals,
-            ),
-          )}{" "}
-          {selectedVault.metadata.underlyingSymbol}
-        </p>
-      )}
+      <SlippageInput slippage={slippage} setSlippage={setSlippage} />
       <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
         If you have no available credit in the respective Alchemist, trying to
         migrate will likely result in a failed transaction. Your current LTV for
