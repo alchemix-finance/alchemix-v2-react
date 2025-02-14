@@ -107,15 +107,16 @@ const originToDestinationTokenAddressMapping: Record<
       SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH],
     [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
   },
-  [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]: {
-    [mainnet.id]:
-      SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD],
-    [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
-  },
   [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH]: {
     [mainnet.id]:
       SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH],
     [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alETH,
+  },
+  [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]: {
+    [mainnet.id]:
+      SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD],
+    [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
+    [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD,
   },
 };
 
@@ -161,6 +162,7 @@ export const useBridgeLimit = ({
     originToDestinationTokenAddressMapping[originTokenAddress][
       destinationChainId
     ];
+
   return useReadContract({
     address: xErc20Address,
     abi: [
