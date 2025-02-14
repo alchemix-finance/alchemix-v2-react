@@ -105,7 +105,7 @@ export const getConnexQuoteQueryOptions = ({
       );
       if (!amountOutResponse.ok) {
         throw new Error(
-          `Error calling estimateRelayerFee: ${amountOutResponse.status} ${amountOutResponse.statusText}`,
+          `Error calling calculateAmountReceived: ${amountOutResponse.status} ${amountOutResponse.statusText}`,
         );
       }
 

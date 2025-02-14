@@ -9,6 +9,7 @@ import {
   SupportedBridgeChainIds,
   bridgeChains,
   chainToAvailableTokensMapping,
+  getInitialOriginTokenAddress,
   getInitialOriginTokenAddresses,
 } from "./lib/constants";
 import { useChain } from "@/hooks/useChain";
@@ -81,8 +82,8 @@ export const Bridge = () => {
   }, [chain.id, originChainId, switchChain]);
 
   const { data: tokens } = useTokensQuery();
-  const [originTokenAddress, setOriginTokenAddress] = useState(
-    getInitialOriginTokenAddresses(originChainId)[0],
+  const [originTokenAddress, setOriginTokenAddress] = useState(() =>
+    getInitialOriginTokenAddress(chain.id),
   );
   const token = tokens?.find(
     (t) => t.address.toLowerCase() === originTokenAddress.toLowerCase(),

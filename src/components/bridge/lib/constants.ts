@@ -101,6 +101,9 @@ export const getInitialOriginTokenAddresses = (chainId: SupportedChainId) => {
     ? chainToAvailableTokensMapping[bridgeChains[0].id]
     : chainToAvailableTokensMapping[chainId];
 };
+export const getInitialOriginTokenAddress = (chainId: SupportedChainId) => {
+  return getInitialOriginTokenAddresses(chainId)[0];
+};
 
 /* TARGETS */
 
