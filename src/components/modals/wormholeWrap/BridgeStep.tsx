@@ -1,5 +1,6 @@
 import { toast } from "sonner";
 import { parseEther } from "viem";
+import { fantom } from "viem/chains";
 import {
   useAccount,
   useSimulateContract,
@@ -10,10 +11,6 @@ import { useEffect } from "react";
 import { CircleCheckIcon, CircleIcon } from "lucide-react";
 
 import { wormholeBridgeAdapterAbi } from "@/abi/wormholeBridgeAdapter";
-import {
-  getDestinationWormholeChainId,
-  getSpender,
-} from "@/components/bridge/wormhole/lib/utils";
 import { CtaButton } from "@/components/common/CtaButton";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useChain } from "@/hooks/useChain";
@@ -21,6 +18,13 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 import { isInputZero } from "@/utils/inputNotZero";
 import { SYNTHS_TO_XERC20_MAPPING } from "@/lib/config/synths";
+import {
+  SupportedBridgeChainIds,
+  bridgeChains,
+  chainIdToWormholeChainIdMapping,
+  wormholeTargetMapping,
+} from "@/components/bridge/lib/constants";
+import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 
 const AL_ASSETS_DECIMALS = 18;
 
@@ -37,8 +41,8 @@ export const BridgeStep = ({
   originTokenAddress: `0x${string}`;
   amount: string;
   updateBridgeTxHash: (hash: `0x${string}`) => void;
-  originChainId: number;
-  destinationChainId: number;
+  originChainId: SupportedChainId;
+  destinationChainId: SupportedBridgeChainIds;
   bridgeCost: string | undefined;
   isActive: boolean;
   hasBridged: boolean;
@@ -47,6 +51,13 @@ export const BridgeStep = ({
   const mutationCallback = useWriteContractMutationCallback();
 
   const { address } = useAccount();
+
+  const spender =
+    originChainId === fantom.id
+      ? wormholeTargetMapping[bridgeChains[0].id][originTokenAddress]
+      : wormholeTargetMapping[originChainId][originTokenAddress];
+  const destinationWormholeChainId =
+    chainIdToWormholeChainIdMapping[destinationChainId];
 
   const {
     isApprovalNeeded,
@@ -58,7 +69,7 @@ export const BridgeStep = ({
   } = useAllowance({
     amount,
     tokenAddress: SYNTHS_TO_XERC20_MAPPING[originTokenAddress],
-    spender: getSpender({ originChainId, originTokenAddress }),
+    spender: spender,
     decimals: AL_ASSETS_DECIMALS,
   });
 
@@ -67,14 +78,10 @@ export const BridgeStep = ({
     error: bridgeError,
     isPending: isBridgeConfigPending,
   } = useSimulateContract({
-    address: getSpender({ originChainId, originTokenAddress }),
+    address: spender,
     abi: wormholeBridgeAdapterAbi,
     functionName: "bridge",
-    args: [
-      BigInt(getDestinationWormholeChainId(destinationChainId)),
-      parseEther(amount),
-      address!,
-    ],
+    args: [BigInt(destinationWormholeChainId), parseEther(amount), address!],
     value: parseEther(bridgeCost ?? "0"),
     chainId: chain.id,
     query: {

@@ -1,8 +1,8 @@
-type BridgeProvider = "connext" | "wormhole";
+type BridgeProvider = "Connext" | "Wormhole";
 
 const EXPLORERS_MAPPING = {
-  connext: "https://connextscan.io/tx",
-  wormhole: "https://wormholescan.io/#/tx",
+  Connext: "https://connextscan.io/tx",
+  Wormhole: "https://wormholescan.io/#/tx",
 } as const satisfies Record<BridgeProvider, string>;
 
 export const StatusBox = ({
@@ -10,10 +10,10 @@ export const StatusBox = ({
   bridgeProvider,
 }: {
   transactionHash: `0x${string}` | undefined;
-  bridgeProvider: BridgeProvider;
+  bridgeProvider: BridgeProvider | undefined;
 }) => {
-  return transactionHash ? (
-    <div className="flex flex-col justify-center text-sm sm:items-end">
+  return transactionHash && bridgeProvider ? (
+    <div className="flex flex-col justify-center text-sm">
       <p>
         Transaction has been submitted, check{" "}
         <span className="capitalize">{bridgeProvider}</span> Explorer for
