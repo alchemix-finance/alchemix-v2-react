@@ -65,7 +65,8 @@ export const BridgeQuoter = forwardRef<
           key={`${data?.provider}-${i}`}
           className={cn(
             "flex min-h-28 flex-col justify-center rounded-md bg-grey10inverse px-6 py-4 hover:cursor-pointer dark:bg-grey10",
-            "shadow-[0px_0px_0px_1px_rgba(9,9,11,0.08),0px_1px_2px_-1px_rgba(9,9,11,0.08),0px_2px_4px_0px_rgba(9,9,11,0.04)]",
+            "shadow-[0px_0px_0px_1px_rgba(9,9,11,0.1),0px_1px_2px_-1px_rgba(9,9,11,0.08),0px_2px_4px_0px_rgba(9,9,11,0.04)]",
+            "dark:shadow-[0px_0px_0px_1px_rgba(100,100,100,0.1),0px_1px_2px_-1px_rgba(100,100,100,0.1),0px_2px_4px_0px_rgba(100,100,100,0.08)]",
             "transition-colors focus-within:bg-grey15inverse hover:bg-grey15inverse dark:focus-within:bg-grey15 dark:hover:bg-grey15",
             selectedQuoteProvider === data?.provider &&
               "bg-grey15inverse dark:bg-grey15",
