@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
-import { UsePublicClientReturnType, useReadContract } from "wagmi";
-import { encodeFunctionData, formatEther, parseEther, zeroAddress } from "viem";
+import { UsePublicClientReturnType } from "wagmi";
+import { encodeFunctionData, formatEther, parseEther } from "viem";
 import { fantom } from "viem/chains";
 
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
@@ -32,28 +32,26 @@ export const getWormholeQuoteQueryOptions = ({
   originTokenAddress,
   amount,
   address,
-  publicClient,
-  bridgeLimit,
+  originPublicClient,
+  destinationPublicClient,
 }: {
   originChainId: SupportedChainId;
   destinationChainId: SupportedBridgeChainIds;
   originTokenAddress: `0x${string}`;
   amount: string;
   address: `0x${string}`;
-  publicClient: UsePublicClientReturnType<typeof wagmiConfig>;
-  /** NOTE: We pass bridge limit from the useHook, instead of reading within queryFn,
-   * because we need to read bridge limit on the destination chain, but we pass publicClient with origin chainId. */
-  bridgeLimit: string | undefined;
+  originPublicClient: UsePublicClientReturnType<typeof wagmiConfig>;
+  destinationPublicClient: UsePublicClientReturnType<typeof wagmiConfig>;
 }) =>
   queryOptions({
     queryKey: [
       "bridgeQuote",
       "wormhole",
       originChainId,
-      publicClient,
+      originPublicClient,
+      destinationPublicClient,
       address,
       destinationChainId,
-      bridgeLimit,
       originTokenAddress,
       amount,
     ],
@@ -61,21 +59,41 @@ export const getWormholeQuoteQueryOptions = ({
       if (originChainId === fantom.id) {
         throw new Error("Unsupported origin chain");
       }
-      if (bridgeLimit === undefined) {
-        throw new Error("Bridge limit not ready");
-      }
       if (getIsAlcx(originTokenAddress)) {
         throw new Error("Wormhole doesn't support ALCX");
       }
 
-      const isLimitExceeded = +bridgeLimit < +amount;
+      const xErc20Address =
+        originToDestinationTokenAddressMapping[originTokenAddress][
+          destinationChainId
+        ];
+
+      const bridgeLimit = await destinationPublicClient.readContract({
+        address: xErc20Address,
+        abi: [
+          {
+            inputs: [
+              { internalType: "address", name: "adapter", type: "address" },
+            ],
+            name: "mintingCurrentLimitOf",
+            outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+            stateMutability: "view",
+            type: "function",
+          },
+        ],
+        functionName: "mintingCurrentLimitOf",
+        args: [wormholeTargetMapping[destinationChainId][xErc20Address]],
+      });
+      const bridgeLimitFormatted = formatEther(bridgeLimit);
+
+      const isLimitExceeded = +bridgeLimitFormatted < +amount;
 
       const spender = wormholeTargetMapping[originChainId][originTokenAddress];
 
       const destinationWormholeChainId =
         chainIdToWormholeChainIdMapping[destinationChainId];
 
-      const bridgeCost = await publicClient.readContract({
+      const bridgeCost = await originPublicClient.readContract({
         address: spender,
         abi: wormholeBridgeAdapterAbi,
         functionName: "bridgeCost",
@@ -116,41 +134,14 @@ export const getWormholeQuoteQueryOptions = ({
       return quote;
     },
     refetchInterval: ONE_MINUTE_IN_MS,
-    enabled:
-      originChainId !== fantom.id &&
-      !isInputZero(amount) &&
-      bridgeLimit !== undefined,
-  });
-
-export const useBridgeLimit = ({
-  destinationChainId,
-  originTokenAddress,
-}: {
-  destinationChainId: SupportedBridgeChainIds;
-  originTokenAddress: `0x${string}`;
-}) => {
-  const xErc20Address = !getIsAlcx(originTokenAddress)
-    ? originToDestinationTokenAddressMapping[originTokenAddress][
-        destinationChainId
-      ]
-    : zeroAddress;
-  return useReadContract({
-    address: xErc20Address,
-    abi: [
-      {
-        inputs: [{ internalType: "address", name: "adapter", type: "address" }],
-        name: "mintingCurrentLimitOf",
-        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-        stateMutability: "view",
-        type: "function",
-      },
-    ],
-    functionName: "mintingCurrentLimitOf",
-    args: [wormholeTargetMapping[destinationChainId][xErc20Address]],
-    chainId: destinationChainId,
-    query: {
-      select: (limit) => formatEther(limit),
-      enabled: !getIsAlcx(originTokenAddress),
+    enabled: originChainId !== fantom.id && !isInputZero(amount),
+    retry: (failureCount, error) => {
+      if (error.message === "Wormhole doesn't support ALCX") {
+        return false;
+      }
+      if (error.message === "Unsupported origin chain") {
+        return false;
+      }
+      return failureCount < 3;
     },
   });
-};

@@ -6,7 +6,7 @@ import { useAccount, usePublicClient } from "wagmi";
 import { BridgeQuote, SupportedBridgeChainIds } from "./constants";
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { getConnexQuoteQueryOptions } from "./connext";
-import { getWormholeQuoteQueryOptions, useBridgeLimit } from "./wormhole";
+import { getWormholeQuoteQueryOptions } from "./wormhole";
 
 const combine = (quotes: UseQueryResult<BridgeQuote>[]) => ({
   quotes: quotes
@@ -42,27 +42,25 @@ export const useBridgeQuotes = ({
   const [selectedQuoteProvider, setSelectedQuoteProvider] =
     useState<BridgeQuote["provider"]>();
 
-  const publicClient = usePublicClient<typeof wagmiConfig>({
+  const originPublicClient = usePublicClient<typeof wagmiConfig>({
     chainId: originChainId,
+  });
+  const destinationPublicClient = usePublicClient<typeof wagmiConfig>({
+    chainId: destinationChainId,
   });
 
   const { address = zeroAddress } = useAccount();
-
-  const { data: bridgeLimit } = useBridgeLimit({
-    destinationChainId,
-    originTokenAddress,
-  });
 
   const { quotes, showQuotes } = useQueries({
     queries: [
       getWormholeQuoteQueryOptions({
         originChainId,
         destinationChainId,
-        bridgeLimit,
         originTokenAddress,
         amount,
         address,
-        publicClient,
+        originPublicClient,
+        destinationPublicClient,
       }),
       getConnexQuoteQueryOptions({
         originChainId,
@@ -71,7 +69,7 @@ export const useBridgeQuotes = ({
         amount,
         slippage,
         address,
-        publicClient,
+        publicClient: originPublicClient,
       }),
     ],
     combine,
