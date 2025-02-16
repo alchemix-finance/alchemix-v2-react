@@ -163,6 +163,12 @@ export const getConnexQuoteQueryOptions = ({
     },
     refetchInterval: ONE_MINUTE_IN_MS,
     enabled: !isInputZero(amount) && originChainId !== fantom.id,
+    retry: (failureCount, error) => {
+      if (error.message === "Unsupported origin chain") {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
 interface XCallParams {
