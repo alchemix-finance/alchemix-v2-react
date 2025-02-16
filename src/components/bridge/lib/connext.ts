@@ -1,4 +1,3 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import { queryOptions } from "@tanstack/react-query";
 import { UsePublicClientReturnType } from "wagmi";
 import { fantom, mainnet } from "viem/chains";
@@ -11,6 +10,7 @@ import {
   parseEther,
   parseUnits,
   toHex,
+  hexToBigInt,
 } from "viem";
 
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
@@ -28,6 +28,11 @@ import {
 } from "@/lib/constants";
 
 const CONNEXT_BASE_URI = "https://sdk-server.mainnet.connext.ninja";
+
+interface BigNumber {
+  type: "BigNumber";
+  hex: `0x${string}`;
+}
 
 export const getConnexQuoteQueryOptions = ({
   originChainId,
@@ -86,7 +91,7 @@ export const getConnexQuoteQueryOptions = ({
       }
 
       const relayerFeeResult = (await relayerFeeResponse.json()) as BigNumber;
-      const relayerFee = BigInt(BigNumber.from(relayerFeeResult).toString());
+      const relayerFee = hexToBigInt(relayerFeeResult.hex);
 
       const amountOutResponse = await fetch(
         `${CONNEXT_BASE_URI}/calculateAmountReceived`,
@@ -124,15 +129,10 @@ export const getConnexQuoteQueryOptions = ({
       };
 
       const formattedResult = {
-        amountReceived: BigInt(BigNumber.from(amountReceived).toString()),
-
-        originSlippage: BigInt(BigNumber.from(originSlippage).toString()),
-
-        routerFee: BigInt(BigNumber.from(routerFee).toString()),
-
-        destinationSlippage: BigInt(
-          BigNumber.from(destinationSlippage).toString(),
-        ),
+        amountReceived: hexToBigInt(amountReceived.hex),
+        originSlippage: hexToBigInt(originSlippage.hex),
+        routerFee: hexToBigInt(routerFee.hex),
+        destinationSlippage: hexToBigInt(destinationSlippage.hex),
         isFastPath: isFastPath,
       };
 
