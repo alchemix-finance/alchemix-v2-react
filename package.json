@@ -13,7 +13,6 @@
     "pre-commit": "lint-staged"
   },
   "dependencies": {
-    "@ethersproject/bignumber": "^5.7.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-dialog": "^1.1.4",
     "@radix-ui/react-popover": "^1.1.4",
