@@ -141,12 +141,17 @@ export const getWormholeQuoteQueryOptions = ({
       return quote;
     },
     refetchInterval: ONE_MINUTE_IN_MS,
-    enabled:
-      !isInputZero(amount) &&
-      originChainId !== fantom.id &&
-      originChainId !== linea.id &&
-      originChainId !== metis.id &&
-      destinationChainId !== linea.id &&
-      destinationChainId !== metis.id &&
-      !getIsAlcx(originTokenAddress),
+    enabled: !isInputZero(amount),
+    retry: (failureCount, error) => {
+      if (error.message === "Wormhole doesn't support ALCX") {
+        return false;
+      }
+      if (error.message === "Unsupported origin chain") {
+        return false;
+      }
+      if (error.message === "Unsupported destination chain") {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });

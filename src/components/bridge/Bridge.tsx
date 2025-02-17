@@ -66,8 +66,20 @@ export const Bridge = () => {
         chainToAvailableTokensMapping[newOriginChainId][0];
       setOriginTokenAddress(newChainTokenAddress);
       setDestinationChainId(newDestinationChainId);
+    } else if (chain.id !== originChainId) {
+      setOriginChainId(chain.id);
+      const newChainTokenAddress = chainToAvailableTokensMapping[chain.id][0];
+      setOriginTokenAddress(newChainTokenAddress);
+      if (chain.id === destinationChainId) {
+        const newDestinationChainId = bridgeChains.find(
+          (c) => c.id !== chain.id,
+        )?.id;
+        if (newDestinationChainId) {
+          setDestinationChainId(newDestinationChainId);
+        }
+      }
     }
-  }, [chain.id, switchChain]);
+  }, [chain.id, destinationChainId, originChainId, switchChain]);
 
   const { data: tokens } = useTokensQuery();
   const [originTokenAddress, setOriginTokenAddress] = useState(() =>
@@ -118,22 +130,11 @@ export const Bridge = () => {
       setAmount("");
 
       const newChainId = Number(chainId) as SupportedBridgeChainIds;
-      setOriginChainId(newChainId);
-      const newChainTokenAddress = chainToAvailableTokensMapping[newChainId][0];
-      setOriginTokenAddress(newChainTokenAddress);
-      if (newChainId === destinationChainId) {
-        const newDestinationChainId = bridgeChains.find(
-          (c) => c.id !== newChainId,
-        )?.id;
-        if (newDestinationChainId) {
-          setDestinationChainId(newDestinationChainId);
-        }
-      }
       switchChain({
         chainId: newChainId,
       });
     },
-    [destinationChainId, switchChain],
+    [switchChain],
   );
 
   const handleDestinationChainSelect = useCallback(
@@ -147,13 +148,9 @@ export const Bridge = () => {
           (c) => c.id !== newChainId,
         )?.id;
         if (newOriginChainId) {
-          setOriginChainId(newOriginChainId);
           switchChain({
             chainId: newOriginChainId,
           });
-          const newChainTokenAddress =
-            chainToAvailableTokensMapping[newOriginChainId][0];
-          setOriginTokenAddress(newChainTokenAddress);
         }
       }
     },
