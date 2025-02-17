@@ -199,6 +199,42 @@ export const STATIC_EXTERNAL_FARMS = {
         },
       ],
     },
+    {
+      icon: "crv.svg",
+      collabicon: "convex.svg",
+      name: "Curve x Convex",
+      symbol: "alUSD-sDOLA",
+      subtitle:
+        "Deposit and stake alUSD and sDOLA to earn CRV and CVX in addition to Curve's native rewards.",
+      actions: [
+        {
+          label: "Deposit",
+          url: "https://curve.fi/dex/#/ethereum/pools/factory-stable-ng-320/deposit",
+        },
+        {
+          label: "Stake",
+          url: "https://curve.convexfinance.com/stake",
+        },
+      ],
+    },
+    {
+      icon: "crv.svg",
+      collabicon: "convex.svg",
+      name: "Curve x Convex",
+      symbol: "alETH-pxETH",
+      subtitle:
+        "Deposit and stake alETH and pxETH to earn CRV and CVX in addition to Curve's native rewards.",
+      actions: [
+        {
+          label: "Deposit",
+          url: "https://curve.fi/dex/#/ethereum/pools/factory-stable-ng-268/deposit",
+        },
+        {
+          label: "Stake",
+          url: "https://curve.convexfinance.com/stake",
+        },
+      ],
+    },
   ],
   [optimism.id]: [
     {
@@ -294,6 +330,18 @@ export const STATIC_EXTERNAL_FARMS = {
         {
           label: "Manage",
           url: "https://velo.drome.eth.limo/deposit?token0=0x3E29D3A9316dAB217754d13b28646B76607c5f04&token1=0x4200000000000000000000000000000000000042&type=-1",
+        },
+      ],
+    },
+    {
+      symbol: "CL200-alETH-alUSD",
+      icon: "velodrome.svg",
+      collabicon: "",
+      name: "Velodrome",
+      actions: [
+        {
+          label: "Manage",
+          url: "https://velodrome.finance/deposit?token0=0x3E29D3A9316dAB217754d13b28646B76607c5f04&token1=0xCB8FA9a76b8e203D8C3797bF438d8FB81Ea3326A&type=200&chain=10&factory=0xCc0bDDB707055e04e497aB22a59c2aF4391cd12F",
         },
       ],
     },
