@@ -55,8 +55,6 @@ export const Bridge = () => {
   );
 
   useEffect(() => {
-    if (chain.id === originChainId) return;
-
     if (chain.id === fantom.id) {
       switchChain({
         chainId: bridgeChains[0].id,
@@ -72,7 +70,7 @@ export const Bridge = () => {
         setDestinationChainId(newDestinationChainId);
       }
     }
-  }, [chain.id, destinationChainId, originChainId, switchChain]);
+  }, [chain.id, switchChain]);
 
   const { data: tokens } = useTokensQuery();
   const [originTokenAddress, setOriginTokenAddress] = useState(() =>
@@ -120,13 +118,25 @@ export const Bridge = () => {
 
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
-      setAmount("");
       const newChainId = Number(chainId) as SupportedBridgeChainIds;
+
+      setOriginChainId(newChainId);
+      const newChainTokenAddress = chainToAvailableTokensMapping[newChainId][0];
+      setOriginTokenAddress(newChainTokenAddress);
+      setAmount("");
+      if (newChainId === destinationChainId) {
+        const newDestinationChainId = bridgeChains.find(
+          (c) => c.id !== newChainId,
+        )?.id;
+        if (newDestinationChainId) {
+          setDestinationChainId(newDestinationChainId);
+        }
+      }
       switchChain({
         chainId: newChainId,
       });
     },
-    [switchChain],
+    [destinationChainId, switchChain],
   );
 
   const handleDestinationChainSelect = useCallback(
@@ -140,9 +150,13 @@ export const Bridge = () => {
           (c) => c.id !== newChainId,
         )?.id;
         if (newOriginChainId) {
+          setOriginChainId(newOriginChainId);
           switchChain({
             chainId: newOriginChainId,
           });
+          const newChainTokenAddress =
+            chainToAvailableTokensMapping[newOriginChainId][0];
+          setOriginTokenAddress(newChainTokenAddress);
         }
       }
     },
