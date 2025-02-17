@@ -75,7 +75,6 @@ export const Bridge = () => {
       setOriginChainId(chain.id);
       const newChainTokenAddress = chainToAvailableTokensMapping[chain.id][0];
       setOriginTokenAddress(newChainTokenAddress);
-      setAmount("");
       if (chain.id === destinationChainId) {
         const newDestinationChainId = bridgeChains.find(
           (c) => c.id !== chain.id,
@@ -133,6 +132,7 @@ export const Bridge = () => {
 
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
+      setAmount("");
       const newChainId = Number(chainId) as SupportedBridgeChainIds;
       switchChain({
         chainId: newChainId,
