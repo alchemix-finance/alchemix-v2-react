@@ -55,8 +55,9 @@ export const BridgeQuoter = forwardRef<
       animate="visible"
       exit="exit"
       transition={{ ease: [0.165, 0.84, 0.44, 1], duration: 0.3 }}
-      className="relative min-w-56 space-y-4 rounded-md border border-grey10inverse bg-grey15inverse p-5 dark:border-grey10 dark:bg-grey15"
+      className="relative min-w-60 space-y-4 rounded-md border border-grey10inverse bg-grey15inverse p-5 dark:border-grey10 dark:bg-grey15"
     >
+      <h1>Select a bridge quote</h1>
       {quotes.map(({ data, isLoading }, i) => (
         <m.div
           role="button"
