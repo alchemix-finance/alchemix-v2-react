@@ -227,7 +227,7 @@ export const useOpExternalFarmsAprs = () => {
               address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
               abi: veloStatsAbi,
               functionName: "byIndex",
-              args: [1242n],
+              args: [1243n],
             },
           ],
         });
