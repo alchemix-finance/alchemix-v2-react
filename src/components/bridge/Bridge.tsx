@@ -70,7 +70,7 @@ export const Bridge = () => {
         setDestinationChainId(newDestinationChainId);
       }
     }
-  }, [chain.id, destinationChainId, originChainId, switchChain]);
+  }, [chain.id, switchChain]);
 
   const { data: tokens } = useTokensQuery();
   const [originTokenAddress, setOriginTokenAddress] = useState(() =>
