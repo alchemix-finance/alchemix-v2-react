@@ -69,8 +69,18 @@ export const Bridge = () => {
       if (newDestinationChainId) {
         setDestinationChainId(newDestinationChainId);
       }
+    } else if (chain.id !== originChainId) {
+      setOriginChainId(chain.id);
+      const newChainTokenAddress = chainToAvailableTokensMapping[chain.id][0];
+      setOriginTokenAddress(newChainTokenAddress);
+      const newDestinationChainId = bridgeChains.find(
+        (c) => c.id !== chain.id,
+      )?.id;
+      if (newDestinationChainId) {
+        setDestinationChainId(newDestinationChainId);
+      }
     }
-  }, [chain.id, switchChain]);
+  }, [chain.id, originChainId, switchChain]);
 
   const { data: tokens } = useTokensQuery();
   const [originTokenAddress, setOriginTokenAddress] = useState(() =>
