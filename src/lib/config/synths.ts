@@ -1,5 +1,5 @@
 import { SynthAssetMetadata } from "@/lib/config/metadataTypes";
-import { arbitrum, mainnet, optimism } from "viem/chains";
+import { arbitrum, linea, mainnet, metis, optimism } from "viem/chains";
 
 export const SYNTH_ASSETS = {
   ALUSD: "alUSD",
@@ -31,6 +31,14 @@ export const SYNTH_ASSETS_ADDRESSES = {
   [arbitrum.id]: {
     [SYNTH_ASSETS.ALUSD]: "0xCB8FA9a76b8e203D8C3797bF438d8FB81Ea3326A",
     [SYNTH_ASSETS.ALETH]: "0x17573150d67d820542EFb24210371545a4868B03",
+  },
+  [linea.id]: {
+    [SYNTH_ASSETS.ALUSD]: "0x0E17934B9735D479B2388347fAeF0F4e58b9cc06",
+    [SYNTH_ASSETS.ALETH]: "0x303241e2B3b4aeD0bb0F8623e7442368FED8Faf3",
+  },
+  [metis.id]: {
+    [SYNTH_ASSETS.ALUSD]: "0x303241e2B3b4aeD0bb0F8623e7442368FED8Faf3",
+    [SYNTH_ASSETS.ALETH]: "0x0E17934B9735D479B2388347fAeF0F4e58b9cc06",
   },
 } as const;
 

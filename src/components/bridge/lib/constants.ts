@@ -1,4 +1,4 @@
-import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
+import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
 
 import {
   SYNTHS_TO_XERC20_MAPPING,
@@ -8,12 +8,14 @@ import {
   ALCX_ARBITRUM_ADDRESS,
   ALCX_MAINNET_ADDRESS,
   ALCX_OPTIMISM_ADDRESS,
+  ALCX_LINEA_ADDRESS,
+  ALCX_METIS_ADDRESS,
 } from "@/lib/constants";
 import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 
 /* CHAIN */
 
-export const bridgeChains = [mainnet, optimism, arbitrum];
+export const bridgeChains = [mainnet, optimism, arbitrum, linea, metis];
 export type SupportedBridgeChainIds = (typeof bridgeChains)[number]["id"];
 
 export const chainIdToWormholeChainIdMapping = {
@@ -26,6 +28,8 @@ export const chainIdToDomainMapping = {
   [mainnet.id]: "6648936",
   [optimism.id]: "1869640809",
   [arbitrum.id]: "1634886255",
+  [linea.id]: "1818848877",
+  [metis.id]: "1835365481",
 } as const;
 
 export const getInitialDestinationChainId = (originChainId: SupportedChainId) =>
@@ -54,6 +58,18 @@ export const chainToAvailableTokensMapping: AvailableTokensMapping = {
     SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
     SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH,
     ALCX_ARBITRUM_ADDRESS,
+  ],
+
+  [linea.id]: [
+    SYNTH_ASSETS_ADDRESSES[linea.id].alUSD,
+    SYNTH_ASSETS_ADDRESSES[linea.id].alETH,
+    ALCX_LINEA_ADDRESS,
+  ],
+
+  [metis.id]: [
+    SYNTH_ASSETS_ADDRESSES[metis.id].alUSD,
+    SYNTH_ASSETS_ADDRESSES[metis.id].alETH,
+    ALCX_METIS_ADDRESS,
   ],
 };
 
@@ -115,7 +131,7 @@ type WormholeTargetMapping = Record<
   Record<`0x${string}`, `0x${string}`>
 >;
 type LockboxMapping = Record<`0x${string}`, `0x${string}`>;
-type TargetMapping = Record<SupportedBridgeChainIds, `0x${string}`>;
+type ConnextTargetMapping = Record<SupportedBridgeChainIds, `0x${string}`>;
 
 export const wormholeTargetMapping: WormholeTargetMapping = {
   [mainnet.id]: {
@@ -140,12 +156,17 @@ export const wormholeTargetMapping: WormholeTargetMapping = {
     [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD]:
       "0x19bedE3d7Addf500eC6777384DD48A5715836c85",
   },
+
+  [linea.id]: {},
+  [metis.id]: {},
 };
 
-export const connextTargetMapping: TargetMapping = {
+export const connextTargetMapping: ConnextTargetMapping = {
   [mainnet.id]: "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68",
   [optimism.id]: "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
   [arbitrum.id]: "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
+  [linea.id]: "0xa05eF29e9aC8C75c530c2795Fa6A800e188dE0a9",
+  [metis.id]: "0x6B142227A277CE62808E0Df93202483547Ec0188",
 };
 
 export const lockboxMapping: LockboxMapping = {

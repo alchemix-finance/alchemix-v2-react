@@ -3,13 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { lsService } from "@/lib/localStorage";
 import { useAlchemists } from "./useAlchemists";
 import { VAULTS } from "@/lib/config/vaults";
-import { arbitrum, mainnet, optimism } from "viem/chains";
+import { arbitrum, linea, mainnet, metis, optimism } from "viem/chains";
 import { erc20Abi } from "viem";
 import { usePublicClient } from "wagmi";
 import { Token } from "@/lib/types";
 import {
   ALCX_ARBITRUM_ADDRESS,
+  ALCX_LINEA_ADDRESS,
   ALCX_MAINNET_ADDRESS,
+  ALCX_METIS_ADDRESS,
   ALCX_OPTIMISM_ADDRESS,
   GAS_ADDRESS,
   G_ALCX_MAINNET_ADDRESS,
@@ -17,7 +19,10 @@ import {
 } from "@/lib/constants";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "./queriesSchema";
-import { SYNTHS_TO_XERC20_MAPPING } from "../config/synths";
+import {
+  SYNTHS_TO_XERC20_MAPPING,
+  SYNTH_ASSETS_ADDRESSES,
+} from "../config/synths";
 
 export const useTokensQuery = () => {
   const chain = useChain();
@@ -57,6 +62,16 @@ export const useTokensQuery = () => {
       }
       if (chain.id === optimism.id) {
         tokensAddresses.push(ALCX_OPTIMISM_ADDRESS);
+      }
+      if (chain.id === linea.id) {
+        tokensAddresses.push(ALCX_LINEA_ADDRESS);
+        tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[linea.id].alUSD);
+        tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[linea.id].alETH);
+      }
+      if (chain.id === metis.id) {
+        tokensAddresses.push(ALCX_METIS_ADDRESS);
+        tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[metis.id].alUSD);
+        tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[metis.id].alETH);
       }
 
       const calls = tokensAddresses.flatMap(

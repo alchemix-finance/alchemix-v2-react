@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { UsePublicClientReturnType } from "wagmi";
 import { encodeFunctionData, formatEther, parseEther } from "viem";
-import { fantom } from "viem/chains";
+import { fantom, linea, metis } from "viem/chains";
 
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import {
@@ -56,8 +56,15 @@ export const getWormholeQuoteQueryOptions = ({
       amount,
     ],
     queryFn: async () => {
-      if (originChainId === fantom.id) {
+      if (
+        originChainId === linea.id ||
+        originChainId === metis.id ||
+        originChainId === fantom.id
+      ) {
         throw new Error("Unsupported origin chain");
+      }
+      if (destinationChainId === linea.id || destinationChainId === metis.id) {
+        throw new Error("Unsupported destination chain");
       }
       if (getIsAlcx(originTokenAddress)) {
         throw new Error("Wormhole doesn't support ALCX");
@@ -134,14 +141,12 @@ export const getWormholeQuoteQueryOptions = ({
       return quote;
     },
     refetchInterval: ONE_MINUTE_IN_MS,
-    enabled: originChainId !== fantom.id && !isInputZero(amount),
-    retry: (failureCount, error) => {
-      if (error.message === "Wormhole doesn't support ALCX") {
-        return false;
-      }
-      if (error.message === "Unsupported origin chain") {
-        return false;
-      }
-      return failureCount < 3;
-    },
+    enabled:
+      !isInputZero(amount) &&
+      originChainId !== fantom.id &&
+      originChainId !== linea.id &&
+      originChainId !== metis.id &&
+      destinationChainId !== linea.id &&
+      destinationChainId !== metis.id &&
+      !getIsAlcx(originTokenAddress),
   });

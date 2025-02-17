@@ -1,7 +1,7 @@
 import { useAccount } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { gql, request } from "graphql-request";
-import { fantom } from "viem/chains";
+import { fantom, linea, metis } from "viem/chains";
 
 import { Vault } from "@/lib/types";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
@@ -18,7 +18,11 @@ export const useVaultEarned = ({ vault }: { vault: Vault }) => {
     queryKey: [QueryKeys.VaultEarned, chain.id, address, vault.address],
     queryFn: async () => {
       if (!address) throw new Error("No address");
-      if (chain.id === fantom.id)
+      if (
+        chain.id === fantom.id ||
+        chain.id === linea.id ||
+        chain.id === metis.id
+      )
         throw new Error("Generated earned is not supported on this chain");
 
       const url = EARNED_ENDPOINTS[chain.id];
@@ -53,7 +57,11 @@ export const useVaultEarned = ({ vault }: { vault: Vault }) => {
 
       return totalEarned;
     },
-    enabled: !!address,
+    enabled:
+      !!address &&
+      chain.id !== fantom.id &&
+      chain.id !== linea.id &&
+      chain.id !== metis.id,
     staleTime: ONE_DAY_IN_MS,
   });
 };

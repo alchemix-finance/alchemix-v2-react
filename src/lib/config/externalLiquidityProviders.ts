@@ -1,4 +1,4 @@
-import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
+import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
 
 const DEFAULT_SWAP_PROVIDERS = [
   {
@@ -42,4 +42,6 @@ export const EXTERNAL_LIQUIDITY_PROVIDERS = {
     },
   ],
   [fantom.id]: DEFAULT_SWAP_PROVIDERS,
+  [linea.id]: DEFAULT_SWAP_PROVIDERS,
+  [metis.id]: DEFAULT_SWAP_PROVIDERS,
 };
