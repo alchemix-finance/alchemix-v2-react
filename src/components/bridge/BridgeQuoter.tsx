@@ -69,7 +69,22 @@ export const BridgeQuoter = forwardRef<
         className="relative min-w-60 space-y-4 rounded-md border border-grey10inverse bg-grey15inverse p-5 dark:border-grey10 dark:bg-grey15"
       >
         <h1>Select a bridge quote</h1>
-        {quotes.length === 0 && <p>No quotes available.</p>}
+        {quotes.length === 0 && (
+          <p>
+            No quotes available.
+            <br />
+            Try to quote in
+            <br />
+            <a
+              href="https://bridge.connext.network/ALCHEMIX-from-linea-to-arbitrum"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:no-underline"
+            >
+              Connext UI
+            </a>
+          </p>
+        )}
         {quotes.length > 0 &&
           quotes.map(({ data, isLoading }, i) => (
             <m.div
