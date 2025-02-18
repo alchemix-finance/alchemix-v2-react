@@ -26,6 +26,7 @@ import {
   ALCX_OPTIMISM_ADDRESS,
   ONE_MINUTE_IN_MS,
 } from "@/lib/constants";
+import { QueryKeys } from "@/lib/queries/queriesSchema";
 
 const CONNEXT_BASE_URI = "https://sdk-server.mainnet.connext.ninja";
 
@@ -40,7 +41,7 @@ export const getConnexQuoteQueryOptions = ({
   originTokenAddress,
   amount,
   slippage,
-  address,
+  receipient,
   publicClient,
 }: {
   originChainId: SupportedChainId;
@@ -48,16 +49,15 @@ export const getConnexQuoteQueryOptions = ({
   originTokenAddress: `0x${string}`;
   amount: string;
   slippage: string;
-  address: `0x${string}`;
+  receipient: `0x${string}`;
   publicClient: UsePublicClientReturnType<typeof wagmiConfig>;
 }) =>
   queryOptions({
     queryKey: [
-      "bridgeQuote",
-      "connext",
+      QueryKeys.BridgeQuote("connext"),
       originChainId,
       publicClient,
-      address,
+      receipient,
       destinationChainId,
       originTokenAddress,
       amount,
@@ -147,7 +147,7 @@ export const getConnexQuoteQueryOptions = ({
         relayerFee,
         originChainId,
         destinationChainId,
-        address,
+        receipient,
         slippage,
         publicClient,
       });
@@ -192,7 +192,7 @@ const generateConnextTransaction = ({
   slippage,
   originChainId,
   destinationChainId,
-  address,
+  receipient,
 }: {
   originDomain: string;
   destinationDomain: string;
@@ -202,7 +202,7 @@ const generateConnextTransaction = ({
   slippage: string;
   originChainId: SupportedBridgeChainIds;
   destinationChainId: SupportedBridgeChainIds;
-  address: `0x${string}`;
+  receipient: `0x${string}`;
   publicClient: UsePublicClientReturnType<typeof wagmiConfig>;
 }) => {
   const bridgeConfig: XCallParams = {
@@ -218,7 +218,7 @@ const generateConnextTransaction = ({
   const isToEth = destinationChainId === mainnet.id;
 
   if (isFromEth) {
-    bridgeConfig.to = address;
+    bridgeConfig.to = receipient;
     bridgeConfig.callData = toHex("");
   } else if (isToEth) {
     // if we bridge ALCX to ETH we use alchemix lockbox adapter, for alusd and aleth we use connext lockbox adapter
@@ -234,11 +234,11 @@ const generateConnextTransaction = ({
       bridgeConfig.to = "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68";
     }
     bridgeConfig.callData = encodeAbiParameters(parseAbiParameters("address"), [
-      address,
+      receipient,
     ]);
   } else {
     // L2 to L2
-    bridgeConfig.to = address;
+    bridgeConfig.to = receipient;
     bridgeConfig.callData = toHex("");
   }
 

@@ -1,8 +1,8 @@
 import { useReducedMotion, m, AnimatePresence } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
-import { useSwitchChain } from "wagmi";
-import { zeroAddress } from "viem";
-import { fantom } from "viem/chains";
+import { useCallback, useState } from "react";
+import { useAccount, useReadContract, useSwitchChain } from "wagmi";
+import { erc20Abi, formatEther, isAddress, zeroAddress } from "viem";
+import { toast } from "sonner";
 
 import {
   BridgeQuote,
@@ -12,6 +12,7 @@ import {
   getInitialOriginTokenAddress,
   getInitialOriginTokenAddresses,
   getInitialDestinationChainId,
+  getInitialOriginChainId,
 } from "./lib/constants";
 import { useChain } from "@/hooks/useChain";
 import {
@@ -31,6 +32,14 @@ import { SlippageInput } from "../common/input/SlippageInput";
 import { isInputZero } from "@/utils/inputNotZero";
 import { useWriteBridge } from "./lib/mutations";
 import { useBridgeQuotes } from "./lib/queries";
+import { Switch } from "../ui/switch";
+import {
+  accordionTransition,
+  accordionVariants,
+  reducedMotionAccordionVariants,
+} from "@/lib/motion/motion";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 export const Bridge = () => {
   const isReducedMotion = useReducedMotion();
@@ -44,7 +53,9 @@ export const Bridge = () => {
   const [bridgeTxProvider, setBridgeTxProvider] =
     useState<BridgeQuote["provider"]>();
 
-  const [originChainId, setOriginChainId] = useState(chain.id);
+  const [originChainId, setOriginChainId] = useState(() =>
+    getInitialOriginChainId(chain.id),
+  );
   const originChain = bridgeChains.find((c) => c.id === originChainId);
 
   const [destinationChainId, setDestinationChainId] = useState(() =>
@@ -54,34 +65,7 @@ export const Bridge = () => {
     (c) => c.id === destinationChainId,
   );
 
-  useEffect(() => {
-    if (chain.id === fantom.id) {
-      const newOriginChainId = bridgeChains[0].id;
-      const newDestinationChainId = bridgeChains[1].id;
-      switchChain({
-        chainId: newOriginChainId,
-      });
-      setOriginChainId(newOriginChainId);
-      const newChainTokenAddress =
-        chainToAvailableTokensMapping[newOriginChainId][0];
-      setOriginTokenAddress(newChainTokenAddress);
-      setDestinationChainId(newDestinationChainId);
-    } else if (chain.id !== originChainId) {
-      setOriginChainId(chain.id);
-      const newChainTokenAddress = chainToAvailableTokensMapping[chain.id][0];
-      setOriginTokenAddress(newChainTokenAddress);
-      if (chain.id === destinationChainId) {
-        const newDestinationChainId = bridgeChains.find(
-          (c) => c.id !== chain.id,
-        )?.id;
-        if (newDestinationChainId) {
-          setDestinationChainId(newDestinationChainId);
-        }
-      }
-    }
-  }, [chain.id, destinationChainId, originChainId, switchChain]);
-
-  const { data: tokens } = useTokensQuery();
+  const { data: tokens } = useTokensQuery(originChainId);
   const [originTokenAddress, setOriginTokenAddress] = useState(() =>
     getInitialOriginTokenAddress(originChainId),
   );
@@ -95,6 +79,27 @@ export const Bridge = () => {
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
 
+  const [isDifferentAddress, setIsDifferentAddress] = useState(false);
+  const [receipientAddress, setReceipientAddress] = useState("");
+  const [confirmedDifferentAddress, setConfirmedDifferentAddress] =
+    useState(false);
+
+  const { address = zeroAddress } = useAccount();
+  const { data: overrideBalance } = useReadContract({
+    address: originTokenAddress,
+    abi: erc20Abi,
+    functionName: "balanceOf",
+    args: [address],
+    chainId: originChainId,
+    query: {
+      select: (balance) => formatEther(balance),
+    },
+  });
+
+  const receipient =
+    confirmedDifferentAddress && isAddress(receipientAddress)
+      ? receipientAddress
+      : address;
   const {
     quotes,
     quote,
@@ -107,6 +112,7 @@ export const Bridge = () => {
     originTokenAddress,
     amount,
     slippage,
+    receipient,
   });
 
   const updateBridgeTxHash = useCallback(
@@ -128,20 +134,31 @@ export const Bridge = () => {
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
       setAmount("");
-
       const newChainId = Number(chainId) as SupportedBridgeChainIds;
+
       switchChain({
         chainId: newChainId,
       });
+      setOriginChainId(newChainId);
+      const newChainTokenAddress = chainToAvailableTokensMapping[newChainId][0];
+      setOriginTokenAddress(newChainTokenAddress);
+      if (newChainId === destinationChainId) {
+        const newDestinationChainId = bridgeChains.find(
+          (c) => c.id !== newChainId,
+        )?.id;
+        if (newDestinationChainId) {
+          setDestinationChainId(newDestinationChainId);
+        }
+      }
     },
-    [switchChain],
+    [destinationChainId, switchChain],
   );
 
   const handleDestinationChainSelect = useCallback(
     (chainId: string) => {
       setAmount("");
-
       const newChainId = Number(chainId) as SupportedBridgeChainIds;
+
       setDestinationChainId(newChainId);
       if (newChainId === originChainId) {
         const newOriginChainId = bridgeChains.find(
@@ -151,22 +168,53 @@ export const Bridge = () => {
           switchChain({
             chainId: newOriginChainId,
           });
+          setOriginChainId(newOriginChainId);
+          const newChainTokenAddress =
+            chainToAvailableTokensMapping[newOriginChainId][0];
+          setOriginTokenAddress(newChainTokenAddress);
         }
       }
     },
     [originChainId, switchChain],
   );
 
+  const handleDifferentAddressSwitch = () => {
+    setReceipientAddress("");
+    setIsDifferentAddress((prev) => !prev);
+    setConfirmedDifferentAddress(false);
+  };
+
+  const handleClearDifferentAddress = () => {
+    setReceipientAddress("");
+    setConfirmedDifferentAddress(false);
+  };
+
+  const handleConfirmedDifferentAddress = () => {
+    if (!isAddress(receipientAddress)) {
+      toast.error("Invalid address");
+      return;
+    }
+    setConfirmedDifferentAddress((prev) => !prev);
+  };
+
   const { isApprovalNeeded, isPending, writeApprove, writeBridge } =
     useWriteBridge({
       amount,
       originTokenAddress,
+      originChainId,
       token,
       quote,
       updateBridgeTxHash,
     });
 
   const onCtaClick = () => {
+    if (originChainId !== chain.id) {
+      switchChain({
+        chainId: originChainId,
+      });
+      return;
+    }
+
     if (!quote) {
       return;
     }
@@ -269,6 +317,7 @@ export const Bridge = () => {
               tokenAddress={token?.address ?? zeroAddress}
               tokenSymbol={token?.symbol ?? ""}
               tokenDecimals={18}
+              overrideBalance={overrideBalance ?? "0"}
             />
           </div>
           <div className="flex w-full flex-col gap-2">
@@ -278,19 +327,91 @@ export const Bridge = () => {
               bridgeProvider={bridgeTxProvider}
             />
           </div>
+          <div className="flex items-center">
+            <Switch
+              checked={isDifferentAddress}
+              onCheckedChange={handleDifferentAddressSwitch}
+              id="is-different-address"
+            />
+            <label
+              className="cursor-pointer pl-2 text-sm text-lightgrey10inverse dark:text-lightgrey10"
+              htmlFor="is-different-address"
+            >
+              Bridge to different wallet
+            </label>
+          </div>
+          <div>
+            <AnimatePresence initial={false}>
+              {isDifferentAddress && (
+                <m.div
+                  key="differentAddressInput"
+                  initial="collapsed"
+                  animate="open"
+                  exit="collapsed"
+                  variants={
+                    isReducedMotion
+                      ? reducedMotionAccordionVariants
+                      : accordionVariants
+                  }
+                  transition={accordionTransition}
+                  className="space-y-4"
+                >
+                  <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+                    <Input
+                      readOnly={confirmedDifferentAddress}
+                      type="text"
+                      value={receipientAddress}
+                      onChange={(e) => setReceipientAddress(e.target.value)}
+                      className="relative h-full flex-grow rounded-none p-4 text-right text-sm"
+                      placeholder="0x..."
+                    />
+                    <Button
+                      variant="action"
+                      weight="normal"
+                      className="flex h-auto border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey3 dark:text-lightgrey10 dark:hover:bg-grey1"
+                      onClick={handleClearDifferentAddress}
+                    >
+                      CLEAR
+                    </Button>
+                  </div>
+                  <div className="flex items-center">
+                    <Switch
+                      checked={confirmedDifferentAddress}
+                      onCheckedChange={handleConfirmedDifferentAddress}
+                      id="confirmed-different-address"
+                    />
+                    <label
+                      className="cursor-pointer pl-2 text-sm text-lightgrey10inverse dark:text-lightgrey10"
+                      htmlFor="confirmed-different-address"
+                    >
+                      I have verified the above address
+                    </label>
+                  </div>
+                </m.div>
+              )}
+            </AnimatePresence>
+          </div>
           <CtaButton
             variant="outline"
             width="full"
-            disabled={!quote || isInputZero(amount) || isPending}
+            disabled={
+              !quote ||
+              isInputZero(amount) ||
+              isPending ||
+              (isDifferentAddress && !isAddress(receipientAddress)) ||
+              (isDifferentAddress && !confirmedDifferentAddress)
+            }
             onClick={onCtaClick}
           >
-            {quote?.isWrapNeeded
-              ? "Bridge "
-              : isPending
-                ? "Preparing"
-                : isApprovalNeeded === true
-                  ? "Approve"
-                  : "Bridge"}
+            {chain.id !== originChainId
+              ? "Switch chain"
+              : quote?.isWrapNeeded
+                ? "Bridge "
+                : isPending
+                  ? "Preparing"
+                  : isApprovalNeeded === true
+                    ? "Approve"
+                    : "Bridge"}
           </CtaButton>
         </m.div>
         <AnimatePresence mode="popLayout">
@@ -301,6 +422,7 @@ export const Bridge = () => {
               quotes={quotes}
               originTokenSymbol={token?.symbol}
               updateQuote={updateQuote}
+              originNativeSymbol={originChain?.nativeCurrency.symbol}
             />
           )}
         </AnimatePresence>

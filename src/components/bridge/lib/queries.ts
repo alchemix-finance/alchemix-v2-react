@@ -1,7 +1,6 @@
 import { UseQueryResult, useQueries } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { zeroAddress } from "viem";
-import { useAccount, usePublicClient } from "wagmi";
+import { usePublicClient } from "wagmi";
 
 import { BridgeQuote, SupportedBridgeChainIds } from "./constants";
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
@@ -32,12 +31,14 @@ export const useBridgeQuotes = ({
   originTokenAddress,
   amount,
   slippage,
+  receipient,
 }: {
   originChainId: SupportedChainId;
   destinationChainId: SupportedBridgeChainIds;
   originTokenAddress: `0x${string}`;
   amount: string;
   slippage: string;
+  receipient: `0x${string}`;
 }) => {
   const [selectedQuoteProvider, setSelectedQuoteProvider] =
     useState<BridgeQuote["provider"]>();
@@ -49,8 +50,6 @@ export const useBridgeQuotes = ({
     chainId: destinationChainId,
   });
 
-  const { address = zeroAddress } = useAccount();
-
   const { quotes, showQuotes } = useQueries({
     queries: [
       getWormholeQuoteQueryOptions({
@@ -58,7 +57,7 @@ export const useBridgeQuotes = ({
         destinationChainId,
         originTokenAddress,
         amount,
-        address,
+        receipient,
         originPublicClient,
         destinationPublicClient,
       }),
@@ -68,7 +67,7 @@ export const useBridgeQuotes = ({
         originTokenAddress,
         amount,
         slippage,
-        address,
+        receipient,
         publicClient: originPublicClient,
       }),
     ],

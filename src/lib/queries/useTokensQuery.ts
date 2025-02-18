@@ -1,11 +1,12 @@
-import { useChain } from "@/hooks/useChain";
+import { erc20Abi } from "viem";
+import { usePublicClient } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
+
+import { useChain } from "@/hooks/useChain";
 import { lsService } from "@/lib/localStorage";
 import { useAlchemists } from "./useAlchemists";
 import { VAULTS } from "@/lib/config/vaults";
 import { arbitrum, linea, mainnet, metis, optimism } from "viem/chains";
-import { erc20Abi } from "viem";
-import { usePublicClient } from "wagmi";
 import { Token } from "@/lib/types";
 import {
   ALCX_ARBITRUM_ADDRESS,
@@ -17,19 +18,24 @@ import {
   G_ALCX_MAINNET_ADDRESS,
   ONE_DAY_IN_MS,
 } from "@/lib/constants";
-import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
+import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "./queriesSchema";
 import {
   SYNTHS_TO_XERC20_MAPPING,
   SYNTH_ASSETS_ADDRESSES,
 } from "../config/synths";
 
-export const useTokensQuery = () => {
-  const chain = useChain();
+export const useTokensQuery = (overrideChainId?: SupportedChainId) => {
+  const overrideChain = wagmiConfig.chains.find(
+    (c) => c.id === overrideChainId,
+  );
+  const _chain = useChain();
+  const chain = overrideChain ?? _chain;
+
   const publicClient = usePublicClient<typeof wagmiConfig>({
     chainId: chain.id,
   });
-  const { data: alchemists } = useAlchemists();
+  const { data: alchemists } = useAlchemists(overrideChainId);
   return useQuery({
     queryKey: [
       QueryKeys.Tokens,

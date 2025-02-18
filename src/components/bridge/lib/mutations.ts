@@ -13,16 +13,19 @@ import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutati
 import { useAllowance } from "@/hooks/useAllowance";
 import { Token } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
+import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 
 export const useWriteBridge = ({
   quote,
   originTokenAddress,
+  originChainId,
   token,
   amount,
   updateBridgeTxHash,
 }: {
   quote: BridgeQuote | undefined;
   originTokenAddress: `0x${string}`;
+  originChainId: SupportedChainId;
   token: Token | undefined;
   amount: string;
   updateBridgeTxHash: (hash: `0x${string}`) => void;
@@ -41,6 +44,7 @@ export const useWriteBridge = ({
     amount,
     decimals: token?.decimals,
     spender: quote?.tx.to ?? zeroAddress,
+    enabled: chain.id === originChainId,
   });
 
   const {
@@ -106,6 +110,7 @@ export const useWriteBridge = ({
 
   const isPending = (() => {
     if (!amount) return;
+    if (originChainId !== chain.id) return;
     if (!quote || quote.isWrapNeeded) return;
 
     if (isApprovalNeeded === false) {

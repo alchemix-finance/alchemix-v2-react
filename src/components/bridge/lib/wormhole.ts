@@ -20,6 +20,7 @@ import {
   ALCX_OPTIMISM_ADDRESS,
   ONE_MINUTE_IN_MS,
 } from "@/lib/constants";
+import { QueryKeys } from "@/lib/queries/queriesSchema";
 
 const getIsAlcx = (originTokenAddress: `0x${string}`) =>
   [ALCX_ARBITRUM_ADDRESS, ALCX_MAINNET_ADDRESS, ALCX_OPTIMISM_ADDRESS].includes(
@@ -31,7 +32,7 @@ export const getWormholeQuoteQueryOptions = ({
   destinationChainId,
   originTokenAddress,
   amount,
-  address,
+  receipient,
   originPublicClient,
   destinationPublicClient,
 }: {
@@ -39,18 +40,17 @@ export const getWormholeQuoteQueryOptions = ({
   destinationChainId: SupportedBridgeChainIds;
   originTokenAddress: `0x${string}`;
   amount: string;
-  address: `0x${string}`;
+  receipient: `0x${string}`;
   originPublicClient: UsePublicClientReturnType<typeof wagmiConfig>;
   destinationPublicClient: UsePublicClientReturnType<typeof wagmiConfig>;
 }) =>
   queryOptions({
     queryKey: [
-      "bridgeQuote",
-      "wormhole",
+      QueryKeys.BridgeQuote("wormhole"),
       originChainId,
       originPublicClient,
       destinationPublicClient,
-      address,
+      receipient,
       destinationChainId,
       originTokenAddress,
       amount,
@@ -118,7 +118,11 @@ export const getWormholeQuoteQueryOptions = ({
       const data = encodeFunctionData({
         abi: wormholeBridgeAdapterAbi,
         functionName: "bridge",
-        args: [BigInt(destinationWormholeChainId), parseEther(amount), address],
+        args: [
+          BigInt(destinationWormholeChainId),
+          parseEther(amount),
+          receipient,
+        ],
       });
 
       const tx = {

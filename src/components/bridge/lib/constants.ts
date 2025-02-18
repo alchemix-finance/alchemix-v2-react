@@ -32,6 +32,8 @@ export const chainIdToDomainMapping = {
   [metis.id]: "1835365481",
 } as const;
 
+export const getInitialOriginChainId = (originChainId: SupportedChainId) =>
+  originChainId === fantom.id ? bridgeChains[0].id : originChainId;
 export const getInitialDestinationChainId = (originChainId: SupportedChainId) =>
   bridgeChains.find((c) => c.id !== originChainId)!.id;
 
