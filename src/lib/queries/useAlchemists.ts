@@ -1,16 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { useChain } from "@/hooks/useChain";
 import { useAccount, usePublicClient } from "wagmi";
 import { Address, zeroAddress } from "viem";
+
+import { useChain } from "@/hooks/useChain";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
+import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "./queriesSchema";
 import { ONE_MINUTE_IN_MS } from "@/lib/constants";
 
-export const useAlchemists = () => {
-  const chain = useChain();
+export const useAlchemists = (overrideChainId?: SupportedChainId) => {
+  const overrideChain = wagmiConfig.chains.find(
+    (c) => c.id === overrideChainId,
+  );
+  const _chain = useChain();
+  const chain = overrideChain ?? _chain;
+
   const { address = zeroAddress } = useAccount();
   const publicClient = usePublicClient<typeof wagmiConfig>({
     chainId: chain.id,

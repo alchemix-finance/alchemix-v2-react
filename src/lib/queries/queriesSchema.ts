@@ -18,18 +18,11 @@ export const QueryKeys = {
   Migration: (v: string) => `migrate-${v}`,
   VotesForAddress: "votesForAddress",
   Farms: (type: "internal" | "sushi" | "curve") => `farms-${type}`,
-  ConnextSdk: (
-    type:
-      | "relayerFee"
-      | "amountOut"
-      | "approval"
-      | "originTxSubgraph"
-      | "destinationTxSubgraph",
-  ) => `connextSdk-${type}`,
   HarvestsAndBonuses: "harvests-and-bonuses",
   HistoricYield: "historicYield",
   VaultEarned: "vaultEarned",
   ExternalFarmsApr: "externalFarmsApr",
+  BridgeQuote: (p: string) => `bridgeQuote-${p}`,
 } as const;
 
 /**

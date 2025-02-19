@@ -7,7 +7,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { parseUnits } from "viem";
-import { arbitrum, fantom } from "viem/chains";
+import { arbitrum, fantom, linea, metis } from "viem/chains";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -41,8 +41,15 @@ export const useMigrate = ({
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
 
-  if (chain.id === fantom.id || chain.id === arbitrum.id) {
-    throw new Error("Migrate is not supported on Fantom or Arbitrum");
+  if (
+    chain.id === fantom.id ||
+    chain.id === arbitrum.id ||
+    chain.id === linea.id ||
+    chain.id === metis.id
+  ) {
+    throw new Error(
+      "Migrate is not supported on Fantom, Arbitrum, Linea or Metis",
+    );
   }
 
   const { data: underlyingTokens } = useReadContract({

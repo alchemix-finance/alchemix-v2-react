@@ -3,7 +3,7 @@
  * If the app is running on the production url, we use infura rpcs.
  */
 
-import { arbitrum, mainnet, optimism, fantom } from "viem/chains";
+import { arbitrum, mainnet, optimism, fantom, linea, metis } from "viem/chains";
 import type { Chain } from "@rainbow-me/rainbowkit";
 
 const IS_VERCEL_PRODUCTION = __VERCEL_ENV__ === "production";
@@ -92,9 +92,29 @@ const fantomWithRpcsAndIcon = {
   iconUrl: "/images/icons/fantom_blue.svg",
 } as const satisfies Chain;
 
+const lineaWithRpcs = {
+  ...linea,
+  rpcUrls: {
+    default: {
+      http: ["https://linea.drpc.org", "https://linea-rpc.publicnode.com"],
+    },
+  },
+};
+
+const metisWithRpcs = {
+  ...metis,
+  rpcUrls: {
+    default: {
+      http: ["https://metis.drpc.org", "https://metis-rpc.publicnode.com"],
+    },
+  },
+};
+
 export const chains = [
   mainnetWithRpcs,
   optimismWithRpcs,
   arbitrumWithRpcs,
   fantomWithRpcsAndIcon,
+  lineaWithRpcs,
+  metisWithRpcs,
 ] as const;

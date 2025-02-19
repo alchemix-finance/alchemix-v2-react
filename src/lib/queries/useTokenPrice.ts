@@ -1,5 +1,5 @@
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
-import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
+import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
 
 import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 import { useChain } from "@/hooks/useChain";
@@ -22,12 +22,15 @@ const chainIdToLlamaChainNameMapping = {
   [mainnet.id]: "ethereum",
   [arbitrum.id]: "arbitrum",
   [optimism.id]: "optimism",
+  [linea.id]: "linea",
+  [metis.id]: "metis",
 };
 
 const wethMapping = {
   [mainnet.id]: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
   [arbitrum.id]: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
   [optimism.id]: "0x4200000000000000000000000000000000000006",
+  [linea.id]: "0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f",
 };
 
 export const ethPriceQueryOptions = queryOptions({
@@ -53,7 +56,7 @@ export const ethPriceQueryOptions = queryOptions({
   staleTime: FIVE_MIN_IN_MS,
 });
 
-const useEthPrice = () => {
+export const useEthPrice = () => {
   return useQuery(ethPriceQueryOptions);
 };
 
@@ -189,6 +192,7 @@ const isTokenIsEthOrWeth = ({
 }) => {
   return (
     chainId !== fantom.id &&
+    chainId !== metis.id &&
     (tokenAddress === GAS_ADDRESS ||
       tokenAddress.toLowerCase() === wethMapping[chainId].toLowerCase())
   );

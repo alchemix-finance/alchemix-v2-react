@@ -23,12 +23,14 @@ export const useAllowance = ({
   amount,
   decimals = 18,
   isInfiniteApproval = false,
+  enabled = true,
 }: {
   tokenAddress: `0x${string}` | undefined;
   spender: `0x${string}`;
   amount: string;
   decimals: number | undefined;
   isInfiniteApproval?: boolean;
+  enabled?: boolean;
 }) => {
   const chain = useChain();
   const { address } = useAccount();
@@ -51,7 +53,8 @@ export const useAllowance = ({
         !!address &&
         tokenAddress !== GAS_ADDRESS &&
         !isInputZero(amount) &&
-        spender !== zeroAddress,
+        spender !== zeroAddress &&
+        enabled,
       select: (allowance) => ({
         isApprovalNeeded: allowance < parseUnits(amount, decimals),
         allowance,
