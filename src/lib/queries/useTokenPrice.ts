@@ -56,7 +56,7 @@ export const ethPriceQueryOptions = queryOptions({
   staleTime: FIVE_MIN_IN_MS,
 });
 
-const useEthPrice = () => {
+export const useEthPrice = () => {
   return useQuery(ethPriceQueryOptions);
 };
 
