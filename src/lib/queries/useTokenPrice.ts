@@ -34,7 +34,7 @@ const wethMapping = {
 };
 
 export const ethPriceQueryOptions = queryOptions({
-  queryKey: [QueryKeys.TokenPrice, LLAMA_API_URL],
+  queryKey: [QueryKeys.TokenPrice, "coingecko:ethereum"],
   queryFn: async () => {
     const ethPriceRes = await fetch(`${LLAMA_API_URL}coingecko:ethereum`);
     const ethPriceData = (await ethPriceRes.json()) as {
