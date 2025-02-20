@@ -1,7 +1,7 @@
-import { arbitrum, mainnet, optimism, fantom } from "viem/chains";
+import { zeroAddress } from "viem";
+import { arbitrum, mainnet, optimism, fantom, linea, metis } from "viem/chains";
 import type { AlchemistsMetadata } from "@/lib/config/metadataTypes";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
-import { zeroAddress } from "viem";
 
 export const ALCHEMISTS_METADATA = {
   [mainnet.id]: {
@@ -19,5 +19,13 @@ export const ALCHEMISTS_METADATA = {
   [arbitrum.id]: {
     [SYNTH_ASSETS.ALUSD]: "0xb46eE2E4165F629b4aBCE04B7Eb4237f951AC66F",
     [SYNTH_ASSETS.ALETH]: "0x654e16a0b161b150F5d1C8a5ba6E7A7B7760703A",
+  },
+  [linea.id]: {
+    [SYNTH_ASSETS.ALUSD]: zeroAddress,
+    [SYNTH_ASSETS.ALETH]: zeroAddress,
+  },
+  [metis.id]: {
+    [SYNTH_ASSETS.ALUSD]: zeroAddress,
+    [SYNTH_ASSETS.ALETH]: zeroAddress,
   },
 } as const satisfies AlchemistsMetadata;

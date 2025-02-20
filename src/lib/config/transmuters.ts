@@ -1,4 +1,4 @@
-import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
+import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
 import type { TransmutersMetadata } from "@/lib/config/metadataTypes";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
 
@@ -123,4 +123,6 @@ export const TRANSMUTERS = {
       aprSelector: "weth",
     },
   ],
+  [linea.id]: [],
+  [metis.id]: [],
 } as const satisfies TransmutersMetadata;

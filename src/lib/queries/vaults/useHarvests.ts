@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { gql, request } from "graphql-request";
 import { formatEther } from "viem";
+import { fantom, linea, metis } from "viem/chains";
 import { mul, toString } from "dnum";
 
 import { QueryKeys } from "@/lib/queries/queriesSchema";
@@ -32,7 +33,11 @@ export const useHarvests = ({ vault }: { vault: Vault }) => {
   return useQuery({
     queryKey: [QueryKeys.HarvestsAndBonuses, chain.id, vault.address],
     queryFn: async () => {
-      if (chain.id === 250)
+      if (
+        chain.id === fantom.id ||
+        chain.id === linea.id ||
+        chain.id === metis.id
+      )
         throw new Error("Harvests are not supported on this chain");
 
       const url = HARVESTS_ENDPOINTS[chain.id];
@@ -123,7 +128,8 @@ export const useHarvests = ({ vault }: { vault: Vault }) => {
 
       return { harvests: formattedHarvests, bonuses: donationsFormatted };
     },
-    enabled: chain.id !== 250,
+    enabled:
+      chain.id !== fantom.id && chain.id !== linea.id && chain.id !== metis.id,
     staleTime: ONE_DAY_IN_MS,
   });
 };

@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { parseEther } from "viem";
-import { fantom } from "viem/chains";
+import { fantom, linea, metis } from "viem/chains";
 import {
   useAccount,
   useSimulateContract,
@@ -56,6 +56,10 @@ export const BridgeStep = ({
     originChainId === fantom.id
       ? wormholeTargetMapping[bridgeChains[0].id][originTokenAddress]
       : wormholeTargetMapping[originChainId][originTokenAddress];
+
+  if (destinationChainId === linea.id || destinationChainId === metis.id) {
+    throw new Error("BridgeStep is not supported on this chain");
+  }
   const destinationWormholeChainId =
     chainIdToWormholeChainIdMapping[destinationChainId];
 

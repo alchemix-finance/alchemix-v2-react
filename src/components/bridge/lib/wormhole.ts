@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { UsePublicClientReturnType } from "wagmi";
 import { encodeFunctionData, formatEther, parseEther } from "viem";
-import { fantom } from "viem/chains";
+import { fantom, linea, metis } from "viem/chains";
 
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import {
@@ -20,6 +20,7 @@ import {
   ALCX_OPTIMISM_ADDRESS,
   ONE_MINUTE_IN_MS,
 } from "@/lib/constants";
+import { QueryKeys } from "@/lib/queries/queriesSchema";
 
 const getIsAlcx = (originTokenAddress: `0x${string}`) =>
   [ALCX_ARBITRUM_ADDRESS, ALCX_MAINNET_ADDRESS, ALCX_OPTIMISM_ADDRESS].includes(
@@ -31,7 +32,7 @@ export const getWormholeQuoteQueryOptions = ({
   destinationChainId,
   originTokenAddress,
   amount,
-  address,
+  receipient,
   originPublicClient,
   destinationPublicClient,
 }: {
@@ -39,25 +40,31 @@ export const getWormholeQuoteQueryOptions = ({
   destinationChainId: SupportedBridgeChainIds;
   originTokenAddress: `0x${string}`;
   amount: string;
-  address: `0x${string}`;
+  receipient: `0x${string}`;
   originPublicClient: UsePublicClientReturnType<typeof wagmiConfig>;
   destinationPublicClient: UsePublicClientReturnType<typeof wagmiConfig>;
 }) =>
   queryOptions({
     queryKey: [
-      "bridgeQuote",
-      "wormhole",
+      QueryKeys.BridgeQuote("wormhole"),
       originChainId,
       originPublicClient,
       destinationPublicClient,
-      address,
+      receipient,
       destinationChainId,
       originTokenAddress,
       amount,
     ],
     queryFn: async () => {
-      if (originChainId === fantom.id) {
+      if (
+        originChainId === linea.id ||
+        originChainId === metis.id ||
+        originChainId === fantom.id
+      ) {
         throw new Error("Unsupported origin chain");
+      }
+      if (destinationChainId === linea.id || destinationChainId === metis.id) {
+        throw new Error("Unsupported destination chain");
       }
       if (getIsAlcx(originTokenAddress)) {
         throw new Error("Wormhole doesn't support ALCX");
@@ -111,7 +118,11 @@ export const getWormholeQuoteQueryOptions = ({
       const data = encodeFunctionData({
         abi: wormholeBridgeAdapterAbi,
         functionName: "bridge",
-        args: [BigInt(destinationWormholeChainId), parseEther(amount), address],
+        args: [
+          BigInt(destinationWormholeChainId),
+          parseEther(amount),
+          receipient,
+        ],
       });
 
       const tx = {
@@ -134,12 +145,15 @@ export const getWormholeQuoteQueryOptions = ({
       return quote;
     },
     refetchInterval: ONE_MINUTE_IN_MS,
-    enabled: originChainId !== fantom.id && !isInputZero(amount),
+    enabled: !isInputZero(amount),
     retry: (failureCount, error) => {
       if (error.message === "Wormhole doesn't support ALCX") {
         return false;
       }
       if (error.message === "Unsupported origin chain") {
+        return false;
+      }
+      if (error.message === "Unsupported destination chain") {
         return false;
       }
       return failureCount < 3;
