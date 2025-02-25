@@ -461,14 +461,7 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "USDC",
       yieldSymbol: "yvUSDC",
       image: "yvUSDC.svg",
-      messages: [
-        {
-          message:
-            "Yearn yvUSDC is currently disabled for underlying token deposit and withdraw.",
-          type: "warning",
-          linkHref: "https://discord.com/invite/yearn",
-        },
-      ],
+      messages: [],
       gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
       yieldTokenOverride: "0xaD17A225074191d5c8a37B50FdA1AE278a2EE6A2",
       api: {
@@ -477,7 +470,7 @@ export const VAULTS: VaultsConfig = {
         provider: "yearn",
         bonus: getNoBonus,
       },
-      disabledDepositTokens: [],
+      disabledDepositTokens: ["0x7F5c764cBc14f9669B88837ca1490cCa17c31607"],
       disabledWithdrawTokens: [],
     },
     "0x0A86aDbF58424EE2e304b395aF0697E850730eCD": {
@@ -486,14 +479,7 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "DAI",
       yieldSymbol: "yvDAI",
       image: "yvDAI.svg",
-      messages: [
-        {
-          message:
-            "Yearn yvDAI is currently disabled for underlying token deposit and withdraw.",
-          type: "warning",
-          linkHref: "https://discord.com/invite/yearn",
-        },
-      ],
+      messages: [],
       gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
       yieldTokenOverride: "0x65343F414FFD6c97b0f6add33d16F6845Ac22BAc",
       api: {
@@ -502,7 +488,7 @@ export const VAULTS: VaultsConfig = {
         provider: "yearn",
         bonus: getNoBonus,
       },
-      disabledDepositTokens: [],
+      disabledDepositTokens: ["0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"],
       disabledWithdrawTokens: [],
     },
     //alETH
@@ -548,14 +534,7 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "WETH",
       yieldSymbol: "yvWETH",
       image: "yvWETH.svg",
-      messages: [
-        {
-          message:
-            "Yearn yvWETH is currently disabled for underlying token deposit and withdraw.",
-          type: "warning",
-          linkHref: "https://discord.com/invite/yearn",
-        },
-      ],
+      messages: [],
       gateway: "0xedE36d3F423EF198abE82D2463E0a18bcF2d9397",
       yieldTokenOverride: "0x5B977577Eb8a480f63e11FC615D6753adB8652Ae",
       api: {
@@ -564,7 +543,7 @@ export const VAULTS: VaultsConfig = {
         provider: "yearn",
         bonus: getNoBonus,
       },
-      disabledDepositTokens: [],
+      disabledDepositTokens: ["0x4200000000000000000000000000000000000006"],
       disabledWithdrawTokens: [],
     },
   },
