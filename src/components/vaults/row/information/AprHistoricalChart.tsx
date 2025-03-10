@@ -171,8 +171,8 @@ const AprHistoricalGraph = ({ width, height, data }: AreaProps) => {
                   />
                   <Annotation x={annotationX} y={annotationY}>
                     <HtmlLabel showAnchorLine={false}>
-                      <div className="mx-2 my-0.5 flex items-center justify-center rounded-full bg-grey10inverse text-xs dark:bg-grey10">
-                        <p className="m-1 text-nowrap text-xs">
+                      <div className="bg-grey10inverse dark:bg-grey10 mx-2 my-0.5 flex items-center justify-center rounded-full text-xs">
+                        <p className="m-1 text-xs text-nowrap">
                           Avg {avgFormatted}%
                         </p>
                       </div>
@@ -260,7 +260,7 @@ const AprHistoricalGraph = ({ width, height, data }: AreaProps) => {
           left={tooltipLeft + 40}
           style={tooltipStyles}
         >
-          <p className="mb-2 mr-2 text-xs text-lightgrey10">
+          <p className="text-lightgrey10 mr-2 mb-2 text-xs">
             {tooltipData.formattedDate}
           </p>
           <div className="flex items-center justify-between gap-2 text-xs">

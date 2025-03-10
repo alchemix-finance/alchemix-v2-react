@@ -14,7 +14,7 @@ export const ApeModal = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" shadow-sm="shadowed">
+        <Button size="sm" variant="outline" shadow="shadowed">
           Ape
         </Button>
       </DialogTrigger>
