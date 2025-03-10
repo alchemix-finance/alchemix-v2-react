@@ -1,6 +1,5 @@
-import { HTMLAttributes, Ref, forwardRef } from "react";
-import { useMatchRoute, createLink } from "@tanstack/react-router";
-import { m, MotionProps, useReducedMotion } from "framer-motion";
+import { useMatchRoute, Link } from "@tanstack/react-router";
+import { m, useReducedMotion } from "framer-motion";
 
 import { cn } from "@/utils/cn";
 import {
@@ -9,29 +8,17 @@ import {
 } from "@/components/layout/Header";
 import { useSentinel } from "@/lib/queries/sentinel/useSentinel";
 
-const MotionLinkForwardRef = forwardRef(
-  (
-    props: MotionProps & HTMLAttributes<HTMLAnchorElement>,
-    ref: Ref<HTMLAnchorElement>,
-  ) => {
-    return <m.a {...props} ref={ref} />;
-  },
-);
-MotionLinkForwardRef.displayName = "MotionLinkForwardRef";
-
-const MotionLink = createLink(MotionLinkForwardRef);
-
 export function LeftNav() {
   const matchRoute = useMatchRoute();
   const isReducedMotion = useReducedMotion();
   const { data: isSentinel } = useSentinel();
   return (
     <nav className="space-y-5">
-      <p className="my-4 text-xs font-medium uppercase tracking-wider opacity-30">
+      <p className="my-4 text-xs font-medium tracking-wider uppercase opacity-30">
         Navigation
       </p>
       {Object.keys(routeTitleToPathMapping).map((item) => (
-        <MotionLink
+        <Link
           key={item}
           to={routeTitleToPathMapping[item as RouteTitle].to}
           className={cn(
@@ -65,13 +52,13 @@ export function LeftNav() {
           }) ? (
             <m.div
               layoutId="tab-indicator"
-              className="absolute inset-0 -z-10 rounded-xl bg-grey10inverse dark:bg-grey10"
+              className="bg-grey10inverse dark:bg-grey10 absolute inset-0 -z-10 rounded-xl"
             />
           ) : null}
-        </MotionLink>
+        </Link>
       ))}
       {isSentinel && (
-        <MotionLink
+        <Link
           to="/sentinel"
           className={cn(
             "relative flex cursor-pointer justify-between rounded-xl p-4 transition-all",
@@ -103,10 +90,10 @@ export function LeftNav() {
           }) ? (
             <m.div
               layoutId="tab-indicator"
-              className="absolute inset-0 -z-10 rounded-xl bg-grey10inverse dark:bg-grey10"
+              className="bg-grey10inverse dark:bg-grey10 absolute inset-0 -z-10 rounded-xl"
             />
           ) : null}
-        </MotionLink>
+        </Link>
       )}
     </nav>
   );
