@@ -84,7 +84,7 @@ export const Vaults = () => {
   return (
     <>
       {isPending ? (
-        <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+        <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
           <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
             <p className="inline-block self-center">Fetching data</p>
           </div>
@@ -96,8 +96,8 @@ export const Vaults = () => {
       {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
       {isSuccess && (
         <div className="space-y-8">
-          <div className="top-0 z-10 space-y-8 pt-4 drop-shadow-xl backdrop-blur backdrop-filter md:sticky">
-            <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+          <div className="top-0 z-10 space-y-8 pt-4 drop-shadow-xl backdrop-blur-sm backdrop-filter md:sticky">
+            <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
               <Tabs value={synthTab} onValueChange={handleSynthTabChange}>
                 <TabsList>
                   <TabsTrigger value="all" className="space-x-4">
@@ -132,9 +132,9 @@ export const Vaults = () => {
                 filteredVaults={filteredVaults}
                 selectedSynth={synthTab}
               />
-              <div className="rounded border border-grey3inverse dark:border-grey3">
+              <div className="rounded-sm border border-grey3inverse dark:border-grey3">
                 <div className="flex space-x-4 bg-grey10inverse p-4 dark:bg-grey10">
-                  <div className="flex flex-grow flex-col gap-4 sm:flex-row">
+                  <div className="flex grow flex-col gap-4 sm:flex-row">
                     {(
                       [
                         {
@@ -208,7 +208,7 @@ export const Vaults = () => {
               </div>
             </div>
           </div>
-          <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+          <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
               <Tabs
                 value={usedTab}

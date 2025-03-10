@@ -19,8 +19,8 @@ export const Tokens = () => {
   return (
     <div className="relative flex max-w-xs flex-col gap-8 sm:max-w-sm 2xl:max-w-lg">
       {/* Gradient Overlays */}
-      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-[16px] bg-gradient-to-r from-[#f6f2ef] to-transparent dark:from-[#11141B]" />
-      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-[16px] bg-gradient-to-l from-[#f6f2ef] to-transparent dark:from-[#11141B]" />
+      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-[16px] bg-linear-to-r from-[#f6f2ef] to-transparent dark:from-[#11141B]" />
+      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-[16px] bg-linear-to-l from-[#f6f2ef] to-transparent dark:from-[#11141B]" />
 
       {/* First Row - Right to Left */}
       <div className="relative flex w-full overflow-x-clip">

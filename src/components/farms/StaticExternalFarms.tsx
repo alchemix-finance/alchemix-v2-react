@@ -33,14 +33,14 @@ export const StaticExternalFarms = () => {
   const chain = useChain();
   const externalFarms = STATIC_EXTERNAL_FARMS[chain.id];
   return (
-    <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-      <div className="flex w-full flex-col gap-2 bg-grey10inverse px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0 dark:bg-grey10">
+    <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative w-full rounded-sm border">
+      <div className="bg-grey10inverse dark:bg-grey10 flex w-full flex-col gap-2 px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
         <p className="text-sm">External Farms</p>
         <Button
           variant="action"
           weight="normal"
           onClick={() => windowOpen("https://alchemix-stats.com/earn")}
-          className="h-8 border-grey5inverse text-opacity-80 hover:text-opacity-100 dark:border-grey5"
+          className="border-grey5inverse text-white2inverse/80 hover:text-white2inverse dark:text-white2/80 dark:hover:text-white2 dark:border-grey5 h-8"
         >
           Learn more
         </Button>
@@ -50,7 +50,7 @@ export const StaticExternalFarms = () => {
           externalFarms.map((farm) => (
             <div
               key={farm.name + farm.symbol}
-              className="flex flex-col justify-between gap-2 rounded border border-grey5inverse bg-grey10inverse p-2 dark:bg-grey10"
+              className="border-grey5inverse bg-grey10inverse dark:bg-grey10 flex flex-col justify-between gap-2 rounded-sm border p-2"
             >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">

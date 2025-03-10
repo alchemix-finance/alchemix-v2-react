@@ -11,13 +11,13 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     <div>
       <div className="relative flex min-h-dvh flex-col overflow-x-clip">
         <Header />
-        <div className="flex flex-grow">
+        <div className="flex grow">
           <LeftBlock />
-          <div className="flex flex-grow flex-col border-grey5inverse lg:border-l dark:border-grey5">
+          <div className="flex grow flex-col border-grey5inverse lg:border-l dark:border-grey5">
             <main
               className={cn(
-                "mx-auto w-full flex-grow",
-                !isLanding && "max-w-screen-xl",
+                "mx-auto w-full grow",
+                !isLanding && "max-w-(--breakpoint-xl)",
               )}
             >
               {children}

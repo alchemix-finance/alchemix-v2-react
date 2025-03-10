@@ -41,7 +41,7 @@ export const TransmuterAccordionRow = ({
   );
   return (
     <AccordionItem value={transmuter.address}>
-      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 sm:grid-cols-4 xl:grid-cols-6 dark:border-grey3 dark:bg-grey10">
+      <AccordionTrigger className="grid grid-cols-2 gap-2 rounded-sm border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 sm:grid-cols-4 xl:grid-cols-6 dark:border-grey3 dark:bg-grey10">
         <div className="col-span-2 flex justify-start pl-4 sm:col-span-4 xl:col-span-2">
           <div className="flex flex-row space-x-8">
             <div className="relative">
@@ -112,19 +112,19 @@ export const TransmuterAccordionRow = ({
         <TransmuterApr transmuter={transmuter} />
       </AccordionTrigger>
       <AccordionContent className="flex flex-col gap-5 rounded-b border border-t-0 border-grey3inverse bg-grey15inverse p-4 lg:flex-row dark:border-grey3 dark:bg-grey15">
-        <div className="flex w-full flex-col justify-between gap-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
+        <div className="flex w-full flex-col justify-between gap-4 rounded-sm bg-grey10inverse p-4 dark:bg-grey10">
           {syntheticToken && (
             <Deposit transmuter={transmuter} syntheticToken={syntheticToken} />
           )}
         </div>
 
-        <div className="flex w-full flex-col justify-between space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
+        <div className="flex w-full flex-col justify-between space-y-4 rounded-sm bg-grey10inverse p-4 dark:bg-grey10">
           {syntheticToken && (
             <Withdraw transmuter={transmuter} syntheticToken={syntheticToken} />
           )}
         </div>
 
-        <div className="flex w-full flex-col justify-between space-y-4 rounded bg-grey10inverse p-4 dark:bg-grey10">
+        <div className="flex w-full flex-col justify-between space-y-4 rounded-sm bg-grey10inverse p-4 dark:bg-grey10">
           {underlyingToken && (
             <Claim transmuter={transmuter} underlyingToken={underlyingToken} />
           )}

@@ -132,7 +132,7 @@ const AprHistoricalGraph = ({ width, height, data }: AreaProps) => {
             scale={yValueScale}
             width={innerWidth}
             strokeDasharray="3,3"
-            className="[&>*]:stroke-lightgrey1"
+            className="*:stroke-lightgrey1"
             pointerEvents="none"
             numTicks={3}
           />

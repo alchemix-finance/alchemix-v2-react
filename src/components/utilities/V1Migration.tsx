@@ -200,7 +200,7 @@ export const V1Migration = () => {
   const disabledAlEthMigration = !!hasMigratedAlETH || !alEthAmount;
 
   return (
-    <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+    <div className="relative w-full rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
       <div
         className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer dark:bg-grey10"
         onClick={handleOpen}
@@ -241,8 +241,8 @@ export const V1Migration = () => {
                   Alchemist's "withdraw" function.`}
                 </p>
               </div>
-              <div className="flex items-center gap-4 rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
-                <div className="flex w-full flex-col gap-4 rounded p-4">
+              <div className="flex items-center gap-4 rounded-sm border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+                <div className="flex w-full flex-col gap-4 rounded-sm p-4">
                   <p className="text-lightgrey10inverse dark:text-lightgrey10">
                     Alchemist: alUSD
                   </p>
@@ -263,7 +263,7 @@ export const V1Migration = () => {
                       : "Migrate legacy position"}
                   </Button>
                 </div>
-                <div className="flex w-full flex-col gap-4 rounded p-4">
+                <div className="flex w-full flex-col gap-4 rounded-sm p-4">
                   <p className="text-lightgrey10inverse dark:text-lightgrey10">
                     Alchemist: alETH
                   </p>

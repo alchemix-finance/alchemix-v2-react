@@ -238,7 +238,7 @@ export const Bridge = () => {
         <m.div
           layout={!isReducedMotion}
           transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-          className="relative space-y-4 rounded-md border border-grey10inverse bg-grey15inverse p-5 dark:border-grey10 dark:bg-grey15"
+          className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative space-y-4 rounded-md border p-5"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-col gap-2">
@@ -282,7 +282,7 @@ export const Bridge = () => {
               </Select>
             </div>
           </div>
-          <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+          <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
             <Select
               value={originTokenAddress}
               onValueChange={(value) =>
@@ -334,7 +334,7 @@ export const Bridge = () => {
               id="is-different-address"
             />
             <label
-              className="cursor-pointer pl-2 text-sm text-lightgrey10inverse dark:text-lightgrey10"
+              className="text-lightgrey10inverse dark:text-lightgrey10 cursor-pointer pl-2 text-sm"
               htmlFor="is-different-address"
             >
               Bridge to different wallet
@@ -356,19 +356,19 @@ export const Bridge = () => {
                   transition={accordionTransition}
                   className="space-y-4"
                 >
-                  <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+                  <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
                     <Input
                       readOnly={confirmedDifferentAddress}
                       type="text"
                       value={receipientAddress}
                       onChange={(e) => setReceipientAddress(e.target.value)}
-                      className="relative h-full flex-grow rounded-none p-4 text-right text-sm"
+                      className="relative h-full grow rounded-none p-4 text-right text-sm"
                       placeholder="0x..."
                     />
                     <Button
                       variant="action"
                       weight="normal"
-                      className="flex h-auto border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey3 dark:text-lightgrey10 dark:hover:bg-grey1"
+                      className="bg-grey3inverse text-lightgrey10inverse/80 hover:bg-grey1inverse hover:text-lightgrey10inverse dark:hover:text-lightgrey10 dark:bg-grey3 dark:text-lightgrey10/80 dark:hover:bg-grey1 flex h-auto border-0 transition-all"
                       onClick={handleClearDifferentAddress}
                     >
                       CLEAR
@@ -381,7 +381,7 @@ export const Bridge = () => {
                       id="confirmed-different-address"
                     />
                     <label
-                      className="cursor-pointer pl-2 text-sm text-lightgrey10inverse dark:text-lightgrey10"
+                      className="text-lightgrey10inverse dark:text-lightgrey10 cursor-pointer pl-2 text-sm"
                       htmlFor="confirmed-different-address"
                     >
                       I have verified the above address

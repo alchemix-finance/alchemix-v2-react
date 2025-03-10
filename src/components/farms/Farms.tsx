@@ -95,7 +95,7 @@ const MainnetFarms = () => {
       <LiquidityMigration />
       <div>
         {isPending ? (
-          <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+          <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
               <p className="inline-block self-center">Fetching data</p>
             </div>
@@ -106,7 +106,7 @@ const MainnetFarms = () => {
         ) : null}
         {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
         {filteredFarms && (
-          <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+          <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
               <Tabs
                 value={filter}

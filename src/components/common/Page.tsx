@@ -24,7 +24,7 @@ export const Page = ({
           <p className="text-sm text-lightgrey10">{description}</p>
         </div>
       </div>
-      <div className="flex-grow px-4 pb-36 pt-4 md:px-8 md:pt-8">
+      <div className="grow px-4 pb-36 pt-4 md:px-8 md:pt-8">
         {children}
       </div>
     </div>

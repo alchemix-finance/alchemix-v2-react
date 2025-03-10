@@ -1,10 +1,236 @@
-@import "NeueKabel.css";
-@import "Montserrat.css";
+@import "./NeueKabel.css" layer(base);
+@import "./Montserrat.css" layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-body {
-  @apply !bg-bodyGradient bg-fixed bg-no-repeat text-white2inverse dark:!bg-bodyGradientInverse dark:text-white2;
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --breakpoint-2xl: 1400px;
+
+  --default-font-family: "Montserrat";
+  --font-alcxMono: "monospace";
+
+  --color-black1: #0e251d;
+  --color-black2: #10141a;
+  --color-bronze1: #f5c59f;
+  --color-bronze1inverse: #0a3a60;
+  --color-bronze2: #f7c19b;
+  --color-bronze2inverse: #113d61;
+  --color-bronze3: #ad937c;
+  --color-bronze4: #353130;
+  --color-bronze4inverse: #cacecf;
+  --color-blue1: #0e8ad0;
+  --color-blue2: #0557e8;
+  --color-blue3: #6c93c7;
+  --color-blue4: #0e8ad0;
+  --color-blue5: #0557e8;
+  --color-green1: #2ecc94;
+  --color-green2: #3eb88e;
+  --color-green3: #01ffd4;
+  --color-green4: #42b792;
+  --color-green5: #75ffd3;
+  --color-green6: #01ffd4;
+  --color-green7: #7eb79b;
+  --color-darkgreen1: #1c2e31;
+  --color-darkgreen2: #2b4246;
+  --color-darkgrey1: #908486;
+  --color-grey1: #282d3a;
+  --color-grey1inverse: #d6d2c6;
+  --color-grey2: #b2b4b6;
+  --color-grey3: #232833;
+  --color-grey3inverse: #dcd7cc;
+  --color-grey5: #20242c;
+  --color-grey5inverse: #dedbd3;
+  --color-grey10: #171b24;
+  --color-grey10inverse: #e8e4db;
+  --color-grey15: #10151b;
+  --color-grey15inverse: #efeae4;
+  --color-grey18: #11161c;
+  --color-grey18inverse: #eee9e3;
+  --color-grey20: #10141a;
+  --color-grey20inverse: #efebe5;
+  --color-grey30: #0e1116;
+  --color-grey30inverse: #f1eee9;
+  --color-lightbronze1: #ffdfc9;
+  --color-lightgrey1: #b7b7b7;
+  --color-lightgrey1inverse: #484848;
+  --color-lightgrey5: #b0b0b0;
+  --color-lightgrey5inverse: #4f4f4f;
+  --color-lightgrey10: #979ba2;
+  --color-lightgrey10inverse: #68645d;
+  --color-lightgrey20: #4d5466;
+  --color-lightgrey20inverse: #b2ab99;
+  --color-red1: #fc4544;
+  --color-red2: #220908;
+  --color-red3: #dc1d1d;
+  --color-red4: #471311;
+  --color-red5: #931c18;
+  --color-orange1: #ec8339;
+  --color-orange2: #fe6a02;
+  --color-orange3: #f4c19d;
+  --color-orange4: #f5c09a;
+  --color-orange4inverse: #103d61;
+  --color-white2: #f5f5f5;
+  --color-white2inverse: #0a0a0a;
+  --color-twitter: #4cabfa;
+  --color-discord: #7289da;
+  --color-iconsInverse: #003e63;
+  --color-fantom: #1969ff;
+  --color-ethereum: #647fe5;
+  --color-arbitrum: #93b4d5;
+  --color-optimism: #ed3a2a;
+
+  --animate-reduced-motion-accordion-down: reduced-motion-accordion-down 0.2s
+    ease-out;
+  @keyframes reduced-motion-accordion-down {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  --animate-reduced-motion-accordion-up: reduced-motion-accordion-up 0.2s
+    ease-out;
+  @keyframes reduced-motion-accordion-up {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  --animate-loading-bar: loading-bar 2.1s
+    cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal none running;
+  @keyframes loading-bar {
+    0% {
+      left: -35%;
+      right: 100%;
+    }
+    60% {
+      left: 100%;
+      right: -90%;
+    }
+    100% {
+      left: 100%;
+      right: -90%;
+    }
+  }
+
+  --animate-tokensScroll: tokensScroll 15s linear infinite;
+  @keyframes tokensScroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  --animate-tokensScrollReverse: tokensScrollReverse 15s linear infinite;
+  @keyframes tokensScrollReverse {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(50%);
+    }
+  }
+}
+
+@theme inline {
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  @keyframes accordion-down {
+    from {
+      opacity: 0;
+      height: 0;
+    }
+    to {
+      opacity: 1;
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  @keyframes accordion-up {
+    from {
+      opacity: 1;
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      opacity: 0;
+      height: 0;
+    }
+  }
+
+  --animate-buttonMovingGradientBg: buttonMovingGradientBg var(--speed, 2s)
+    infinite linear;
+  @keyframes buttonMovingGradientBg {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 200% 0%;
+    }
+  }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+
+@utility bodyGradient {
+  background: linear-gradient(
+    171.08deg,
+    #fefefe -11.16%,
+    #ebe6de 6.1%,
+    #f5f2ee 49.05%,
+    #fff 93.22%
+  );
+}
+
+@utility bodyGradientInverse {
+  background: linear-gradient(
+    171.08deg,
+    #010101 -11.16%,
+    #141921 6.1%,
+    #0a0d11 49.05%,
+    #000000 93.22%
+  );
+}
+
+@utility glow {
+  box-shadow: 0 0 15px #f5c09a80;
+}
+
+@utility hoveredGlow {
+  box-shadow: 0 0 15px 9px #f5c09a99;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  body {
+    @apply bodyGradient! text-white2inverse dark:bodyGradientInverse! dark:text-white2;
+  }
 }

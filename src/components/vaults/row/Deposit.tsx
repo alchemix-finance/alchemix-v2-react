@@ -100,7 +100,7 @@ export const Deposit = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+      <div className="flex rounded-sm border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
         <Select
           value={tokenAddress}
           onValueChange={(value) => setTokenAddress(value as `0x${string}`)}
