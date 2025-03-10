@@ -23,13 +23,13 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
     <AccordionItem value={farm.uuid} disabled={!isActive}>
       <AccordionTrigger
         className={cn(
-          "relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded-sm border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:flex-nowrap lg:space-y-0 dark:border-grey3 dark:bg-grey10",
+          "border-grey3inverse bg-grey10inverse dark:border-grey3 dark:bg-grey10 relative flex w-full flex-row flex-wrap items-center justify-between space-y-5 rounded-sm border px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 lg:flex-nowrap lg:space-y-0",
           isActive
             ? "grid-cols-7 hover:cursor-pointer"
             : "grid-cols-5 hover:cursor-default",
         )}
       >
-        <div className="flex-2 flex w-full space-x-8">
+        <div className="flex w-full space-x-8">
           <div className="relative">
             <img
               src={`/images/icons/${farm.metadata.farmIcon}`}
@@ -40,32 +40,32 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
               <img
                 src={`/images/icons/${farm.metadata.tokenIcon}.svg`}
                 alt={farm.metadata.title}
-                className="absolute left-6 top-6 h-9 w-9"
+                className="absolute top-6 left-6 h-9 w-9"
               />
             )}
           </div>
           <div>
             <p className="font-bold">{farm.metadata.title}</p>
-            <p className="text-sm text-lightgrey10">{farm.metadata.subtitle}</p>
+            <p className="text-lightgrey10 text-sm">{farm.metadata.subtitle}</p>
           </div>
         </div>
-        <div className="flex-2 w-1/2 text-center">
-          <p className="text-sm text-lightgrey10">Staked Token</p>
+        <div className="w-1/2 text-center">
+          <p className="text-lightgrey10 text-sm">Staked Token</p>
           <div className="w-full">
             <p className="">{formatNumber(farm.staked.amount)}</p>
-            <p className="text-sm text-lightgrey10">
+            <p className="text-lightgrey10 text-sm">
               {farm.staked.tokenSymbol}
             </p>
           </div>
         </div>
         {isActive ? (
           <>
-            <div className="flex-2 w-1/2 text-center">
-              <p className="text-sm text-lightgrey10">TVL</p>
+            <div className="w-1/2 text-center">
+              <p className="text-lightgrey10 text-sm">TVL</p>
               <TvlCell farm={farm} />
             </div>
-            <div className="flex-2 w-1/2 text-center">
-              <p className="text-sm text-lightgrey10">Rewards</p>
+            <div className="w-1/2 text-center">
+              <p className="text-lightgrey10 text-sm">Rewards</p>
               <div className="flex flex-row justify-center space-x-2">
                 {farm.rewards.map((reward, i) => (
                   <Fragment key={reward.tokenAddress}>
@@ -75,7 +75,7 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
                         alt="{reward.tokenName}"
                         className="mx-auto h-7 w-7"
                       />
-                      <p className="text-center text-sm text-lightgrey10">
+                      <p className="text-lightgrey10 text-center text-sm">
                         {reward.tokenName}
                       </p>
                     </div>
@@ -86,12 +86,12 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
                 ))}
               </div>
             </div>
-            <div className="flex-2 w-1/2 text-center">
-              <p className="text-sm text-lightgrey10">Yield</p>
+            <div className="w-1/2 text-center">
+              <p className="text-lightgrey10 text-sm">Yield</p>
               <p>{formatNumber(farm.yield.rate)}%</p>
             </div>
-            <div className="flex-2 w-full text-center lg:w-1/2">
-              <p className="text-sm text-lightgrey10">Action</p>
+            <div className="w-full text-center lg:w-1/2">
+              <p className="text-lightgrey10 text-sm">Action</p>
               <div className="flex justify-between space-x-2">
                 <Button size="sm" weight="normal" variant="action">
                   Manage
@@ -102,8 +102,8 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
           </>
         ) : (
           <>
-            <div className="flex-2 w-1/2">
-              <p className="text-center text-sm text-lightgrey10">
+            <div className="w-1/2">
+              <p className="text-lightgrey10 text-center text-sm">
                 Claimable Rewards
               </p>
               {farm.rewards.map((reward) => (
@@ -114,14 +114,14 @@ export const FarmsAccordionRow = ({ farm }: { farm: Farm }) => {
                 </div>
               ))}
             </div>
-            <div className="flex-2 w-1/2 text-center">
-              <p className="text-sm text-lightgrey10">Action</p>
+            <div className="w-1/2 text-center">
+              <p className="text-lightgrey10 text-sm">Action</p>
               <ExitButton farm={farm} />
             </div>
           </>
         )}
       </AccordionTrigger>
-      <AccordionContent className="rounded-sm rounded-t-none border border-t-0 border-grey3inverse dark:border-grey3">
+      <AccordionContent className="border-grey3inverse dark:border-grey3 rounded-sm rounded-t-none border border-t-0">
         {farm.type === "internal" && <InternalFarmContent farm={farm} />}
         {farm.type === "external-sushi" && <SushiFarmContent farm={farm} />}
         {farm.type === "external-curve" && <CurveFarmContent farm={farm} />}
@@ -154,7 +154,7 @@ const TvlCell = ({ farm }: { farm: Farm }) => {
         })}
       </p>
       {farm.type === "internal" && (
-        <p className="text-sm text-lightgrey10">
+        <p className="text-lightgrey10 text-sm">
           {formatNumber(farm.reserve)} {farm.tokenSymbol}
         </p>
       )}

@@ -10,8 +10,11 @@
 @theme {
   --breakpoint-2xl: 1400px;
 
-  --default-font-family: "Montserrat";
-  --font-alcxMono: "monospace";
+  --font-sans:
+    "Montserrat", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-alcxMono: monospace;
+  --font-alcxTitles: "Neue Kabel", "Montserrat", sans-serif;
 
   --color-black1: #0e251d;
   --color-black2: #10141a;

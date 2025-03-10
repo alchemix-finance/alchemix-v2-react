@@ -8,10 +8,10 @@ import { RiveSection } from "./RiveSection";
 
 export const Landing = () => {
   return (
-    <div className="relative flex flex-col items-center font-alcxTitles">
-      <div className="relative flex max-w-(--breakpoint-2xl) flex-col items-center justify-center gap-4 p-5 text-center after:absolute after:left-1/2 after:top-3/4 after:-z-10 after:hidden after:size-1/3 after:-translate-x-1/2 after:bg-green2 after:blur-[256px] lg:px-10 lg:py-12 2xl:px-20 2xl:py-24 dark:after:block">
+    <div className="font-alcxTitles relative flex flex-col items-center">
+      <div className="after:bg-green2 relative flex max-w-(--breakpoint-2xl) flex-col items-center justify-center gap-4 p-5 text-center after:absolute after:top-3/4 after:left-1/2 after:-z-10 after:hidden after:size-1/3 after:-translate-x-1/2 after:blur-[256px] lg:px-10 lg:py-12 2xl:px-20 2xl:py-24 dark:after:block">
         <BlurInHeader
-          className="bg-linear-to-br from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-4xl font-extrabold leading-tight tracking-normal text-transparent sm:text-5xl xl:text-7xl dark:bg-linear-to-r dark:from-bronze1 dark:via-[#f5e5da] dark:to-bronze1 dark:drop-shadow-[8px_8px_16px_rgba(0,_0,_0,_0.8)]"
+          className="from-bronze1 via-bronze3 to-bronze1 dark:from-bronze1 dark:to-bronze1 bg-linear-to-br bg-clip-text text-4xl leading-tight font-extrabold tracking-normal text-transparent sm:text-5xl xl:text-7xl dark:bg-linear-to-r dark:via-[#f5e5da] dark:drop-shadow-[8px_8px_16px_rgba(0,_0,_0,_0.8)]"
           delay={0.1}
         >
           Self-Repaying Loans,
@@ -19,7 +19,7 @@ export const Landing = () => {
           Without Liquidations
         </BlurInHeader>
         <BlurInParagraph
-          className="mb-4 mt-2 font-sans font-light leading-snug text-lightgrey10inverse xl:text-xl 2xl:mb-12 2xl:mt-8 dark:text-white"
+          className="text-lightgrey10inverse mt-2 mb-4 font-sans leading-snug font-light xl:text-xl 2xl:mt-8 2xl:mb-12 dark:text-white"
           delay={0.2}
         >
           Alchemix loans automatically pay themselves off with the yield
@@ -34,9 +34,9 @@ export const Landing = () => {
           </LandingCtaButton>
           <VideoModal delay={0.2} />
         </div>
-        <div className="absolute left-1/2 top-3/4 -z-10 hidden size-full -translate-x-1/2 bg-[url('/images/landing-page/stars.svg')] bg-contain dark:block" />
+        <div className="absolute top-3/4 left-1/2 -z-10 hidden size-full -translate-x-1/2 bg-[url('/images/landing-page/stars.svg')] bg-contain dark:block" />
       </div>
-      <div className="h-[1px] w-full bg-linear-to-r from-transparent via-bronze1 to-transparent"></div>
+      <div className="via-bronze1 h-[1px] w-full bg-linear-to-r from-transparent to-transparent"></div>
 
       <div className="w-full dark:bg-linear-to-br dark:from-[#0B0D12] dark:to-[#171B24]">
         <div className="mx-auto flex max-w-(--breakpoint-2xl) flex-col gap-4 py-12 2xl:gap-20 2xl:py-20">
@@ -56,7 +56,7 @@ export const Landing = () => {
               <h2 className="text-xl font-semibold 2xl:text-4xl">
                 Completely Flexible
               </h2>
-              <p className="mb-7 mt-3 font-sans font-light leading-snug text-lightgrey10inverse xl:text-xl dark:text-lightgrey10">
+              <p className="text-lightgrey10inverse dark:text-lightgrey10 mt-3 mb-7 font-sans leading-snug font-light xl:text-xl">
                 Alchemix gives you full control of your finances with no hidden
                 fees. Repay on your terms, keep your assets working for you, and
                 borrow against your collateral to secure future&nbsp;yield.
@@ -72,7 +72,7 @@ export const Landing = () => {
               <h2 className="text-xl font-semibold 2xl:text-4xl">
                 Zero Liquidations
               </h2>
-              <p className="mb-7 mt-3 font-sans font-light leading-snug text-lightgrey10inverse xl:text-xl dark:text-lightgrey10">
+              <p className="text-lightgrey10inverse dark:text-lightgrey10 mt-3 mb-7 font-sans leading-snug font-light xl:text-xl">
                 With Alchemix, market volatility won&apos;t touch your vault.
                 Your debt is securely tied to your collateral, ensuring that
                 price swings never put you at risk.
@@ -102,7 +102,7 @@ export const Landing = () => {
             <h2 className="text-xl font-semibold 2xl:text-4xl">
               Security First
             </h2>
-            <p className="mb-7 mt-3 font-sans font-light leading-snug text-lightgrey10inverse xl:text-xl dark:text-lightgrey10">
+            <p className="text-lightgrey10inverse dark:text-lightgrey10 mt-3 mb-7 font-sans leading-snug font-light xl:text-xl">
               We are the original battle-tested DeFi platform with a priority of
               asset protection. As a pioneer in DeFi, we ensure your assets are
               preserved at every step.
@@ -133,7 +133,7 @@ export const Landing = () => {
               Your Favorite Tokens
             </BlurInHeader>
             <BlurInParagraph
-              className="mt-3 text-left font-sans leading-snug text-lightgrey10inverse xl:text-xl dark:text-lightgrey10"
+              className="text-lightgrey10inverse dark:text-lightgrey10 mt-3 text-left font-sans leading-snug xl:text-xl"
               delay={0.2}
             >
               Borrow up to 50% of your collateral, whist earning yield on your
@@ -145,10 +145,10 @@ export const Landing = () => {
         <div className="dark:bg-[#080a0e]">
           <div className="mx-auto flex max-w-(--breakpoint-2xl) flex-col items-center pb-5 2xl:pb-20 dark:bg-[#080a0e]">
             <div className="space-y-4 p-5 text-center 2xl:space-y-10 2xl:p-20">
-              <BlurInHeader className="whitespace-nowrap bg-linear-to-r from-bronze1 via-bronze3 to-bronze1 bg-clip-text text-2xl font-extrabold text-transparent lg:text-4xl 2xl:text-6xl dark:from-bronze1 dark:via-neutral-100 dark:to-bronze1">
+              <BlurInHeader className="from-bronze1 via-bronze3 to-bronze1 dark:from-bronze1 dark:to-bronze1 bg-linear-to-r bg-clip-text text-2xl font-extrabold whitespace-nowrap text-transparent lg:text-4xl 2xl:text-6xl dark:via-neutral-100">
                 Get started with Alchemix
               </BlurInHeader>
-              <BlurInParagraph className="font-sans leading-snug text-lightgrey10inverse xl:text-xl dark:text-lightgrey10">
+              <BlurInParagraph className="text-lightgrey10inverse dark:text-lightgrey10 font-sans leading-snug xl:text-xl">
                 Alchemix&apos;s self-repaying loans automatically pay themselves
                 off using the interest earned on your initial deposit. Borrow
                 against your assets, earn yield on the full deposit amount, and
