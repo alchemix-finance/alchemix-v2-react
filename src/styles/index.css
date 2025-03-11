@@ -8,7 +8,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --breakpoint-2xl: 1400px;
+  --breakpoint-2xl: 87.5rem;
 
   --font-sans:
     "Montserrat", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
@@ -183,13 +183,8 @@
   }
 }
 
-@utility container {
-  margin-inline: auto;
-  padding-inline: 2rem;
-}
-
 @utility bodyGradient {
-  background: linear-gradient(
+  background-image: linear-gradient(
     171.08deg,
     #fefefe -11.16%,
     #ebe6de 6.1%,
@@ -199,7 +194,7 @@
 }
 
 @utility bodyGradientInverse {
-  background: linear-gradient(
+  background-image: linear-gradient(
     171.08deg,
     #010101 -11.16%,
     #141921 6.1%,
@@ -234,6 +229,6 @@
   }
 
   body {
-    @apply bodyGradient! text-white2inverse dark:bodyGradientInverse! dark:text-white2;
+    @apply bodyGradient text-white2inverse dark:bodyGradientInverse dark:text-white2 bg-fixed;
   }
 }
