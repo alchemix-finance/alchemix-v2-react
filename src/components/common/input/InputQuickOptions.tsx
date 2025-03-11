@@ -51,7 +51,7 @@ export const PercentQuickOptions = ({
           key={option}
           onClick={() => handleClick(option)}
           className={cn(
-            "border-sankoBlue/50 hover:ring-sankoBlue focus:ring-sankoBlue w-full rounded-md border transition-colors hover:ring-1 focus:outline-none focus:ring-1",
+            "border-sankoBlue/50 hover:ring-sankoBlue focus:ring-sankoBlue w-full rounded-md border transition-colors hover:ring-1 focus:outline-hidden focus:ring-1",
             value === option
               ? "bg-sankoBlue/50 ring-sankoBlue ring-1"
               : "bg-sankoBlue/10",

@@ -34,7 +34,7 @@ export const Transmuters = () => {
   return (
     <>
       {isPending ? (
-        <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+        <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
           <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
             <p className="inline-block self-center">Fetching data</p>
           </div>
@@ -46,7 +46,7 @@ export const Transmuters = () => {
       {isError && <div>Error</div>}
       {isSuccess && (
         <div className="space-y-5">
-          <div className="w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+          <div className="w-full rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="bg-grey10inverse px-6 py-4 text-sm dark:bg-grey10">
               <p className="inline-block self-center">
                 External Swap Providers
@@ -71,7 +71,7 @@ export const Transmuters = () => {
               ))}
             </div>
           </div>
-          <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+          <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
             <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
               <Tabs value={synthTab} onValueChange={onSynthTabChange}>
                 <ScrollArea className="max-w-full">

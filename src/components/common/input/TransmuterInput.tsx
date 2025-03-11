@@ -106,11 +106,11 @@ export const TransmuterInput = ({
 
   return (
     <div className="space-y-4">
-      <p className="text-xs font-light text-lightgrey10 lg:text-sm">
+      <p className="text-lightgrey10 text-xs font-light lg:text-sm">
         {type}: {formatNumber(balance)} {tokenSymbol}
       </p>
       <div className="flex flex-col lg:flex-row">
-        <div className="relative flex-grow">
+        <div className="relative grow">
           <Input
             type="text"
             inputMode="decimal"
@@ -131,7 +131,7 @@ export const TransmuterInput = ({
           <Button
             variant="action"
             weight="normal"
-            className="h-10 w-full rounded-b-none rounded-l-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey3 dark:text-lightgrey10 dark:hover:bg-grey1"
+            className="bg-grey3inverse text-lightgrey10inverse/80 hover:bg-grey1inverse hover:text-lightgrey10inverse dark:bg-grey3 dark:text-lightgrey10/80 dark:hover:text-lightgrey10 dark:hover:bg-grey1 h-10 w-full rounded-l-none rounded-b-none border-0 transition-all"
             onClick={handleMax}
           >
             MAX
@@ -139,7 +139,7 @@ export const TransmuterInput = ({
           <Button
             variant="action"
             weight="normal"
-            className="h-10 w-full rounded-l-none rounded-t-none border-0 bg-grey3inverse text-lightgrey10inverse text-opacity-80 transition-all hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey3 dark:text-lightgrey10 dark:hover:bg-grey1"
+            className="bg-grey3inverse text-lightgrey10inverse/80 hover:bg-grey1inverse hover:text-lightgrey10inverse dark:bg-grey3 dark:text-lightgrey10/80 dark:hover:text-lightgrey10 dark:hover:bg-grey1 h-10 w-full rounded-t-none rounded-l-none border-0 transition-all"
             onClick={handleClear}
           >
             CLEAR

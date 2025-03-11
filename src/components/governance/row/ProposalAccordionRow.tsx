@@ -173,7 +173,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
 
   return (
     <AccordionItem value={proposal.id}>
-      <AccordionTrigger className="rounded border border-grey3inverse bg-grey10inverse px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 dark:border-grey3 dark:bg-grey10">
+      <AccordionTrigger className="border-grey3inverse bg-grey10inverse dark:border-grey3 dark:bg-grey10 rounded-sm border px-8 py-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0">
         <div className="flex w-full flex-col gap-4">
           <div className="flex space-x-4">
             <BadgeCheckIcon
@@ -189,7 +189,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
           </div>
           <div className="flex flex-wrap gap-2 lg:flex-nowrap lg:gap-0">
             <div className="flex w-full flex-1 flex-col items-start lg:items-center">
-              <p className="text-center text-sm text-lightgrey10">Status</p>
+              <p className="text-lightgrey10 text-center text-sm">Status</p>
               <div className="flex flex-row space-x-2">
                 <div
                   className={cn(
@@ -210,7 +210,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               </div>
             </div>
             <div className="flex w-full flex-1 flex-col items-start lg:items-center">
-              <p className="text-center text-sm text-lightgrey10">Type</p>
+              <p className="text-lightgrey10 text-center text-sm">Type</p>
               <p
                 className={cn(
                   "text-center",
@@ -221,7 +221,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               </p>
             </div>
             <div className="flex w-full flex-1 flex-col items-start lg:items-center">
-              <p className="text-center text-sm text-lightgrey10">Start</p>
+              <p className="text-lightgrey10 text-center text-sm">Start</p>
               <p
                 className={cn(
                   "text-center",
@@ -232,7 +232,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               </p>
             </div>
             <div className="flex w-full flex-1 flex-col items-start lg:items-center">
-              <p className="text-center text-sm text-lightgrey10">End</p>
+              <p className="text-lightgrey10 text-center text-sm">End</p>
               <p
                 className={cn(
                   "text-center",
@@ -243,7 +243,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               </p>
             </div>
             <div className="flex w-full flex-1 flex-col items-start lg:items-center">
-              <p className="text-center text-sm text-lightgrey10">Snapshot</p>
+              <p className="text-lightgrey10 text-center text-sm">Snapshot</p>
               <a
                 className={cn(
                   "text-center underline hover:no-underline",
@@ -258,7 +258,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               </a>
             </div>
             <div className="flex w-full flex-1 flex-col items-start lg:items-center">
-              <p className="text-center text-sm text-lightgrey10">IPFS</p>
+              <p className="text-lightgrey10 text-center text-sm">IPFS</p>
               <a
                 href={`https://cloudflare-ipfs.com/ipfs/${proposal.ipfs}`}
                 target="_blank"
@@ -275,17 +275,17 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="flex flex-col gap-4 rounded rounded-t-none border border-t-0 border-grey3inverse bg-grey10inverse px-4 dark:border-grey3 dark:bg-grey10">
-        <div className="rounded border border-grey3inverse bg-grey15inverse p-4 dark:border-grey3 dark:bg-grey15">
+      <AccordionContent className="border-grey3inverse bg-grey10inverse dark:border-grey3 dark:bg-grey10 flex flex-col gap-4 rounded-sm rounded-t-none border border-t-0 px-4">
+        <div className="border-grey3inverse bg-grey15inverse dark:border-grey3 dark:bg-grey15 rounded-sm border p-4">
           <p className="mb-3 text-sm opacity-50">Description</p>
           <div
-            className="w-full max-w-[calc(100vw-10rem)] overflow-x-auto whitespace-pre-wrap text-justify lg:max-w-[calc(100vw-32rem)]"
+            className="w-full max-w-[calc(100vw-10rem)] overflow-x-auto text-justify whitespace-pre-wrap lg:max-w-[calc(100vw-32rem)]"
             dangerouslySetInnerHTML={{
               __html: Dompurify.sanitize(proposal.body),
             }}
           ></div>
         </div>
-        <div className="flex min-w-max flex-col rounded border border-grey3inverse bg-grey15inverse p-4 dark:border-grey3 dark:bg-grey15">
+        <div className="border-grey3inverse bg-grey15inverse dark:border-grey3 dark:bg-grey15 flex min-w-max flex-col rounded-sm border p-4">
           <p className="mb-3 opacity-50">Your vote</p>
           <div id="selection" className="mb-6 w-auto space-y-1">
             {proposal.state !== "closed" && !isSupported && (
@@ -338,7 +338,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                 <Button
                   variant="action"
                   weight="normal"
-                  className="border-grey5inverse text-opacity-80 hover:text-opacity-100 dark:border-grey5"
+                  className="border-grey5inverse text-white2inverse/80 dark:text-white2/80 hover:text-white2inverse dark:hover:text-white2 dark:border-grey5"
                   onClick={() => openOnForum(proposal.discussion)}
                 >
                   <MessagesSquareIcon className="h-5 w-5" />
@@ -348,7 +348,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               <Button
                 variant="action"
                 weight="normal"
-                className="border-grey5inverse text-opacity-80 hover:text-opacity-100 dark:border-grey5"
+                className="border-grey5inverse text-white2inverse/80 dark:text-white2/80 hover:text-white2inverse dark:hover:text-white2 dark:border-grey5"
                 onClick={() => openOnSnapshot(proposal.id)}
               >
                 <SnapshotIcon className="h-5 w-5" />
@@ -372,7 +372,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
               </div>
               <div className="mb-4 text-center">
                 <div className="relative pt-1">
-                  <div className="flex h-2 overflow-hidden rounded text-xs">
+                  <div className="flex h-2 overflow-hidden rounded-sm text-xs">
                     <div
                       style={{
                         width: `${
@@ -382,7 +382,7 @@ export const ProposalsAccordionRow = ({ proposal }: { proposal: Proposal }) => {
                           ).toFixed(2) || 0
                         }%`,
                       }}
-                      className="flex flex-col justify-center whitespace-nowrap bg-bronze1 text-center text-white shadow-none"
+                      className="bg-bronze1 flex flex-col justify-center text-center whitespace-nowrap text-white shadow-none"
                     ></div>
                   </div>
                 </div>

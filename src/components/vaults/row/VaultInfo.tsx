@@ -44,7 +44,7 @@ export const VaultInfo = ({ vault }: VaultInfoProps) => {
   };
 
   return (
-    <div className="flex w-full flex-col space-y-5 rounded border border-grey1inverse md:w-1/3 dark:border-grey1">
+    <div className="flex w-full flex-col space-y-5 rounded-sm border border-grey1inverse md:w-1/3 dark:border-grey1">
       <div className="rounded-t border-b border-grey1inverse bg-grey3inverse p-2 dark:border-grey1 dark:bg-grey3">
         <Tabs value={tab} onValueChange={onTabChange}>
           <ScrollArea className="max-w-full">

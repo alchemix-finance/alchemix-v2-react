@@ -50,7 +50,7 @@ export const DebtSelection = ({
         <div
           key={synthAsset}
           className={cn(
-            "flex w-full gap-4 rounded border py-2 pl-4 pr-2",
+            "flex w-full gap-4 rounded-sm border py-2 pl-4 pr-2",
             selectedSynthAsset === synthAsset
               ? "border-green4 hover:cursor-default"
               : "border-grey5inverse opacity-60 hover:cursor-pointer dark:border-grey5",

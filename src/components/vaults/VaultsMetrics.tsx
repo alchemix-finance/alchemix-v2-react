@@ -64,7 +64,7 @@ export const VaultsMetrics = ({
   );
 
   return (
-    <div className="rounded bg-grey10inverse dark:bg-grey10">
+    <div className="rounded-sm bg-grey10inverse dark:bg-grey10">
       <div className="px-6 py-4">
         <div className="flex flex-col justify-between gap-2 font-alcxTitles text-lg tracking-wide md:flex-row">
           <div className="flex-col">
