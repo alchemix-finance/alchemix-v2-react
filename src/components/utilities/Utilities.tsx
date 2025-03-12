@@ -51,13 +51,13 @@ export const Utilities = () => {
         {utilities.map((utility) => (
           <div
             key={utility.label}
-            className="flex w-full flex-col rounded border border-grey10inverse bg-grey15inverse sm:w-[48%] lg:w-1/4 dark:border-grey10 dark:bg-grey15"
+            className="flex w-full flex-col rounded-sm border border-grey10inverse bg-grey15inverse sm:w-[48%] lg:w-1/4 dark:border-grey10 dark:bg-grey15"
           >
             <p className="border-b border-grey10inverse px-4 py-2 dark:border-grey10">
               {utility.label}
             </p>
             <div
-              className="h-48 flex-grow bg-cover bg-center"
+              className="h-48 grow bg-cover bg-center"
               style={{
                 backgroundImage: `url('../images/screenshots/${utility.image}')`,
               }}

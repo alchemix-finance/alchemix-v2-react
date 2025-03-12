@@ -173,7 +173,7 @@ export const GAlcsWrapper = () => {
   };
 
   return (
-    <div className="relative w-full rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+    <div className="relative w-full rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
       <div
         className="flex select-none items-center justify-between bg-grey10inverse px-6 py-4 text-sm hover:cursor-pointer dark:bg-grey10"
         onClick={handleOpen}
@@ -202,7 +202,7 @@ export const GAlcsWrapper = () => {
             transition={accordionTransition}
           >
             <div className="flex flex-col gap-8 p-4 lg:flex-row">
-              <div className="flex w-full flex-col space-y-4 rounded border border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10">
+              <div className="flex w-full flex-col space-y-4 rounded-sm border border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10">
                 <div className="flex flex-row justify-end">
                   <div className="flex items-center">
                     <label
@@ -225,7 +225,7 @@ export const GAlcsWrapper = () => {
                   </div>
                 </div>
                 <div className="relative flex w-full flex-row">
-                  <div className="flex w-full justify-end rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+                  <div className="flex w-full justify-end rounded-sm border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
                     <TokenInput
                       amount={amount}
                       setAmount={setAmount}
@@ -238,7 +238,7 @@ export const GAlcsWrapper = () => {
                   </div>
                 </div>
                 <div className="flex h-8 flex-row space-x-4">
-                  <div className="flex w-full rounded bg-grey3inverse p-4 text-center text-xl dark:bg-grey3">
+                  <div className="flex w-full rounded-sm bg-grey3inverse p-4 text-center text-xl dark:bg-grey3">
                     <p className="w-full self-center text-right text-sm text-lightgrey10">
                       {isUnwrap
                         ? `${formatNumber(projectedAlcx)} ALCX`
@@ -279,7 +279,7 @@ export const GAlcsWrapper = () => {
                 </Button>
               </div>
               <div className="flex flex-col justify-between gap-4">
-                <div className="w-full rounded border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10">
+                <div className="w-full rounded-sm border-grey10inverse bg-grey10inverse p-4 dark:border-grey10 dark:bg-grey10">
                   <p className="mb-4">
                     A liquid ALCX wrapper for single-sided staking.
                   </p>
@@ -293,7 +293,7 @@ export const GAlcsWrapper = () => {
                     per gALCX.
                   </p>
                 </div>
-                <div className="flex w-full flex-col justify-between gap-6 rounded border-grey10inverse bg-grey10inverse p-4 lg:flex-row dark:border-grey10 dark:bg-grey10">
+                <div className="flex w-full flex-col justify-between gap-6 rounded-sm border-grey10inverse bg-grey10inverse p-4 lg:flex-row dark:border-grey10 dark:bg-grey10">
                   <div className="flex-col">
                     <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
                       gALCX Token Supply

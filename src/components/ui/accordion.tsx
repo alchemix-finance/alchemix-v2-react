@@ -27,8 +27,8 @@ const AccordionTrigger = React.forwardRef<
         )}
       >
         {children}
-        <button className="absolute -left-2 top-8 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-bronze3 bg-grey10inverse text-opacity-80 transition-transform duration-200 hover:bg-grey1inverse hover:text-opacity-100 dark:bg-grey10 dark:hover:bg-grey1">
-          <PlusIcon className="hidden h-3 w-3 animate-in fade-in-50 group-data-[state=closed]:block" />
+        <button className="border-bronze3 bg-grey10inverse text-white2inverse/80 hover:bg-grey1inverse hover:text-white2inverse dark:bg-grey10 dark:hover:bg-grey1 dark:text-white2/80 dark:hover:text-white2 absolute top-8 -left-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm border transition-transform duration-200">
+          <PlusIcon className="animate-in fade-in-50 hidden h-3 w-3 group-data-[state=closed]:block" />
           <MinusIcon className="hidden h-3 w-3 -rotate-90 group-data-[state=open]:block" />
         </button>
       </div>
@@ -43,10 +43,10 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="data-[state=closed]:animate-reduced-motion-accordion-up data-[state=open]:animate-reduced-motion-accordion-down overflow-hidden text-sm transition-all motion-safe:data-[state=closed]:animate-accordion-up motion-safe:data-[state=open]:animate-accordion-down"
+    className="data-[state=closed]:animate-reduced-motion-accordion-up data-[state=open]:animate-reduced-motion-accordion-down motion-safe:data-[state=closed]:animate-accordion-up motion-safe:data-[state=open]:animate-accordion-down overflow-hidden text-sm transition-all"
     {...props}
   >
-    <div className={cn("pb-4 pt-0", className)}>{children}</div>
+    <div className={cn("pt-0 pb-4", className)}>{children}</div>
   </AccordionPrimitive.Content>
 ));
 

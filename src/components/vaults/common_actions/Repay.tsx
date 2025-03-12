@@ -243,7 +243,7 @@ export const Repay = () => {
       {(!avaiableRepaymentTokens || !repaymentToken) && <p>Loading...</p>}
       {!!avaiableRepaymentTokens && !!repaymentToken && (
         <>
-          <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+          <div className="flex rounded-sm border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
             <Select
               value={repaymentTokenAddress}
               onValueChange={(value) =>

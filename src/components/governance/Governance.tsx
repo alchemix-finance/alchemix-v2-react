@@ -24,14 +24,14 @@ export const Governance = () => {
 
   return (
     <div className="space-y-5">
-      <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-        <div className="flex w-full flex-col gap-2 bg-grey10inverse px-6 py-4 text-sm dark:bg-grey10 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+      <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 rounded-sm border">
+        <div className="bg-grey10inverse dark:bg-grey10 flex w-full flex-col gap-2 px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
           <p>Delegation Hub</p>
           <Button
             variant="action"
             weight="normal"
             onClick={() => windowOpen("https://snapshot.org/#/delegate")}
-            className="h-8 border-grey5inverse text-opacity-80 hover:text-opacity-100 dark:border-grey5"
+            className="border-grey5inverse text-white2inverse/80 dark:text-white2/80 hover:text-white2inverse dark:hover:text-white2 dark:border-grey5 h-8"
           >
             <SnapshotIcon className="h-5 w-5" />
             <p className="ml-4">Open on Snapshot</p>
@@ -39,8 +39,8 @@ export const Governance = () => {
         </div>
         <Delegation />
       </div>
-      <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-        <div className="flex w-full flex-col gap-2 bg-grey10inverse px-6 py-4 text-sm dark:bg-grey10 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+      <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 rounded-sm border">
+        <div className="bg-grey10inverse dark:bg-grey10 flex w-full flex-col gap-2 px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
           <Tabs
             value={proposalsFilter}
             onValueChange={(value) =>
@@ -59,15 +59,15 @@ export const Governance = () => {
             onClick={() =>
               windowOpen("https://snapshot.org/#/alchemixstakers.eth")
             }
-            className="h-8 border-grey5inverse text-opacity-80 hover:text-opacity-100 dark:border-grey5"
+            className="border-grey5inverse text-white2inverse/80 dark:text-white2/80 hover:text-white2inverse dark:hover:text-white2 dark:border-grey5 h-8"
           >
             <SnapshotIcon className="h-5 w-5" />
             <p className="ml-4">All proposals</p>
           </Button>
         </div>
         {isPending ? (
-          <div className="rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-            <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
+          <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 rounded-sm border">
+            <div className="bg-grey10inverse dark:bg-grey10 flex space-x-4 px-6 py-4">
               <p className="inline-block self-center">Fetching data</p>
             </div>
             <div className="my-4 flex justify-center">

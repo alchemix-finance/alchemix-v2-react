@@ -23,7 +23,7 @@ export const VideoModal = ({
         }}
         className={cn(
           "transition-all [transition-duration:1.1s]",
-          isInView ? "opacity-100 blur-0" : "opacity-0 blur-sm",
+          isInView ? "opacity-100 blur-0" : "opacity-0 blur-xs",
           className,
         )}
       >
@@ -42,7 +42,7 @@ export const VideoModal = ({
             // Background layers for the gradient effect
             "bg-[linear-gradient(#DEDBD3,#DEDBD3),linear-gradient(#3eb88e,#3eb88e),linear-gradient(90deg,#3eb88e,#3eb88e,#3eb88e,#3eb88e,#3eb88e)] dark:bg-[linear-gradient(#080a0e,#080a0e),linear-gradient(#1BEAA5,#1BEAA5),linear-gradient(90deg,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5,#1BEAA5)]",
             // Animate in when in view
-            isInView ? "opacity-100 blur-0" : "opacity-0 blur-sm",
+            isInView ? "opacity-100 blur-0" : "opacity-0 blur-xs",
             // Base styles for before pseudo-element
             "before:absolute before:bottom-[-10%] before:left-0 before:z-0 before:h-[30%] before:w-full before:animate-buttonMovingGradientBg before:bg-[linear-gradient(90deg,#DEDBD3,#3eb88e,#DEDBD3,#3eb88e,#DEDBD3)] before:bg-[length:200%] before:opacity-15 before:transition-opacity before:[filter:blur(1rem)] dark:before:bg-[linear-gradient(90deg,#080a0e,#1BEAA5,#080a0e,#1BEAA5,#080a0e)]",
             // Hover pseudo-element for the glow effect

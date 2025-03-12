@@ -95,7 +95,7 @@ export const Withdraw = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex rounded border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+      <div className="flex rounded-sm border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
         <Select value={tokenAddress} onValueChange={onSelectChange}>
           <SelectTrigger className="h-auto w-24 sm:w-56">
             <SelectValue placeholder="Token" asChild>

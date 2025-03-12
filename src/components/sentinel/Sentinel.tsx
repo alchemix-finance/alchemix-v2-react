@@ -168,7 +168,7 @@ export const Sentinel = () => {
   };
 
   return (
-    <div className="relative rounded border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+    <div className="relative rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
       <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
         <h5 className="text-sm">Alchemix Control Panel</h5>
       </div>
@@ -185,7 +185,7 @@ export const Sentinel = () => {
                   alTokens.map((alToken) => (
                     <div
                       key={alToken.address}
-                      className="flex items-center justify-between rounded p-2"
+                      className="flex items-center justify-between rounded-sm p-2"
                     >
                       <div className="flex flex-col">
                         <p className="text-sm">{alToken.label}</p>
@@ -209,7 +209,7 @@ export const Sentinel = () => {
                         </p>
                       </div>
                       <button
-                        className="rounded border border-red1 bg-red5 px-4 py-2 transition-all hover:bg-red3"
+                        className="rounded-sm border border-red1 bg-red5 px-4 py-2 transition-all hover:bg-red3"
                         onClick={() =>
                           toggleAlTokenState({
                             pause: !alToken.paused,
@@ -233,7 +233,7 @@ export const Sentinel = () => {
                   transmutersWithTokenLabel.map((transmuter) => (
                     <div
                       key={transmuter.address}
-                      className="flex items-center justify-between rounded p-2"
+                      className="flex items-center justify-between rounded-sm p-2"
                     >
                       <div className="flex flex-col">
                         <p className="text-sm">Token</p>
@@ -261,7 +261,7 @@ export const Sentinel = () => {
                         </a>
                       </div>
                       <button
-                        className="rounded border border-red1 bg-red5 px-4 py-2 transition-all hover:bg-red3"
+                        className="rounded-sm border border-red1 bg-red5 px-4 py-2 transition-all hover:bg-red3"
                         onClick={() =>
                           toggleTransmuterState({
                             pause: !transmuter.isPaused,
@@ -284,7 +284,7 @@ export const Sentinel = () => {
                   filteredVaults.map((vault) => (
                     <div
                       key={vault.address}
-                      className="flex items-center justify-between rounded p-2"
+                      className="flex items-center justify-between rounded-sm p-2"
                     >
                       <div className="flex flex-col">
                         <p className="text-sm">Alchemist</p>
@@ -312,7 +312,7 @@ export const Sentinel = () => {
                         </a>
                       </div>
                       <button
-                        className="rounded border border-red1 bg-red5 px-4 py-2 transition-all hover:bg-red3"
+                        className="rounded-sm border border-red1 bg-red5 px-4 py-2 transition-all hover:bg-red3"
                         onClick={() =>
                           toggleVaultState({
                             unpause: !vault.yieldTokenParams.enabled,
