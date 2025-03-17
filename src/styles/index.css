@@ -1,9 +1,9 @@
 @import "./NeueKabel.css" layer(base);
 @import "./Montserrat.css" layer(base);
 
-@import "tailwindcss";
+@import "./tw-animate.css";
 
-@plugin "tailwindcss-animate";
+@import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
