@@ -46,7 +46,7 @@
     "dayjs": "^1.11.12",
     "dnum": "^2.14.0",
     "dompurify": "^3.2.4",
-    "framer-motion": "^12.4.10",
+    "framer-motion": "^12.5.0",
     "graphql": "^16.10.0",
     "graphql-request": "^7.1.2",
     "lucide-react": "^0.476.0",
