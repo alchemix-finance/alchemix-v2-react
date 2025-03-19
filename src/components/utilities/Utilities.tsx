@@ -34,7 +34,7 @@ const utilities = [
     label: "alAsset University",
     author: "DoDao",
     url: "https://alchemix.tidbitshub.org/",
-    image: "alchemix_tidbits.png",
+    image: "alchemix_tidbits.jpeg",
   },
 ];
 
@@ -51,9 +51,9 @@ export const Utilities = () => {
         {utilities.map((utility) => (
           <div
             key={utility.label}
-            className="flex w-full flex-col rounded-sm border border-grey10inverse bg-grey15inverse sm:w-[48%] lg:w-1/4 dark:border-grey10 dark:bg-grey15"
+            className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 flex w-full flex-col rounded-sm border sm:w-[48%] lg:w-1/4"
           >
-            <p className="border-b border-grey10inverse px-4 py-2 dark:border-grey10">
+            <p className="border-grey10inverse dark:border-grey10 border-b px-4 py-2">
               {utility.label}
             </p>
             <div
@@ -62,13 +62,13 @@ export const Utilities = () => {
                 backgroundImage: `url('../images/screenshots/${utility.image}')`,
               }}
             />
-            <div className="flex flex-row items-center justify-between border-t border-grey10inverse px-4 py-2 dark:border-grey10">
+            <div className="border-grey10inverse dark:border-grey10 flex flex-row items-center justify-between border-t px-4 py-2">
               <div className="flex flex-row space-x-4">
                 <p>{utility.author}</p>
               </div>
               <Button
                 variant="ghost"
-                className="h-8 min-w-[5rem] max-w-[6rem] border border-bronze1 text-base"
+                className="border-bronze1 h-8 max-w-[6rem] min-w-[5rem] border text-base"
                 onClick={() => windowOpen(utility.url)}
               >
                 Open
