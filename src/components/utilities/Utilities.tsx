@@ -53,11 +53,11 @@ export const Utilities = () => {
             key={utility.label}
             className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 flex w-full flex-col rounded-sm border sm:w-[48%] lg:w-1/4"
           >
-            <p className="border-grey10inverse dark:border-grey10 border-b px-4 py-2">
+            <p className="border-grey10inverse dark:border-grey10 grow border-b px-4 py-2">
               {utility.label}
             </p>
             <div
-              className="h-48 grow bg-cover bg-center"
+              className="h-48 bg-cover bg-center"
               style={{
                 backgroundImage: `url('../images/screenshots/${utility.image}')`,
               }}
