@@ -50,7 +50,7 @@ export const useVaultEarned = ({ vault }: { vault: Vault }) => {
         id: `${address.toLowerCase()}-${vault.address.toLowerCase()}`,
       });
 
-      if (!response.depositor) return 0;
+      if (response.depositor === null) return 0;
 
       const { totalDonationsReceived, totalUnderlyingTokenEarned } =
         response.depositor;
