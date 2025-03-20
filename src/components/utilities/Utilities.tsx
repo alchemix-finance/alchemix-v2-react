@@ -45,7 +45,8 @@ export const Utilities = () => {
       {chain.id === mainnet.id && <V1Migration />}
       <p className="my-6 text-center text-xs opacity-50">
         These tools are developed and maintained by our awesome community
-        members.
+        members, and are not officially audited or reviewed by Alchemix. Use at
+        your own risk.
       </p>
       <div className="flex w-full flex-row flex-wrap gap-4">
         {utilities.map((utility) => (
