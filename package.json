@@ -39,7 +39,7 @@
     "@visx/scale": "^3.12.0",
     "@visx/shape": "^3.12.0",
     "@visx/tooltip": "^3.12.0",
-    "@wagmi/core": "^2.16.5",
+    "@wagmi/core": "^2.16.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "d3-array": "^3.2.4",
@@ -56,8 +56,8 @@
     "sonner": "^2.0.1",
     "tailwind-merge": "^2.4.0",
     "tailwindcss": "^4.0.14",
-    "viem": "^2.23.11",
-    "wagmi": "^2.14.13"
+    "viem": "^2.23.14",
+    "wagmi": "^2.14.15"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.14",
