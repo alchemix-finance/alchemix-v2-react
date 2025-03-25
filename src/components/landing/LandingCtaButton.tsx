@@ -27,7 +27,7 @@ export const LandingSubButton = ({
     color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)`,
       }}
-      to={href ? undefined : "/vaults"}
+      to="/vaults"
       href={href}
       target={href ? "_blank" : undefined}
       rel={href ? "noopener noreferrer" : undefined}
