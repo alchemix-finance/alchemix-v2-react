@@ -7,13 +7,12 @@ import { arbitrum, mainnet, optimism, fantom, linea, metis } from "viem/chains";
 import type { Chain } from "@rainbow-me/rainbowkit";
 
 const IS_VERCEL_PRODUCTION = __VERCEL_ENV__ === "production";
-const INFURA_KEY = import.meta.env.VITE_INFURA_API_KEY;
+const MAINNET_BLAST_RPC = import.meta.env.VITE_BLAST_MAINNET_API_KEY;
+const OPTIMISM_BLAST_RPC = import.meta.env.VITE_BLAST_OPTIMISM_API_KEY;
+const ARBITRUM_BLAST_RPC = import.meta.env.VITE_BLAST_ARBITRUM_API_KEY;
 
 const mainnetRpcs = IS_VERCEL_PRODUCTION
-  ? [
-      `https://mainnet.infura.io/v3/${INFURA_KEY}`,
-      "https://ethereum-rpc.publicnode.com",
-    ]
+  ? [MAINNET_BLAST_RPC, "https://ethereum-rpc.publicnode.com"]
   : [
       "https://1rpc.io/eth",
       "https://ethereum-rpc.publicnode.com",
@@ -33,10 +32,7 @@ const mainnetWithRpcs = {
 } as const satisfies Chain;
 
 const optimismRpcs = IS_VERCEL_PRODUCTION
-  ? [
-      `https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`,
-      "https://optimism-rpc.publicnode.com",
-    ]
+  ? [OPTIMISM_BLAST_RPC, "https://optimism-rpc.publicnode.com"]
   : [
       "https://optimism.blockpi.network/v1/rpc/public",
       "https://1rpc.io/op",
@@ -55,10 +51,7 @@ const optimismWithRpcs = {
 } as const satisfies Chain;
 
 const arbitrumRpcs = IS_VERCEL_PRODUCTION
-  ? [
-      `https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`,
-      "https://arbitrum-one-rpc.publicnode.com",
-    ]
+  ? [ARBITRUM_BLAST_RPC, "https://arbitrum-one-rpc.publicnode.com"]
   : [
       "https://arb1.arbitrum.io/rpc",
       "https://1rpc.io/arb",
