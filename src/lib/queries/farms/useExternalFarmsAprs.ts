@@ -171,63 +171,75 @@ export const useOpExternalFarmsAprs = () => {
       const opPrice = ethPriceData.coins["coingecko:optimism"].price;
       const veloPrice = ethPriceData.coins["coingecko:velodrome-finance"].price;
 
+      const veloPoolAddresses: `0x${string}`[] = [
+        "0x124D69DaeDA338b1b31fFC8e429e39c9A991164e", // sAMMV2-USDC/alUSD
+        "0xaF03f51DE7a0E62BF061F6Fc3931cF79166B0a29", // sAMMV2-FRAX/alUSD
+        "0x67C253eB6C2e69F9E1114aEeAD0DB4FA8F417AC3", // sAMMV2-DOLA/alUSD
+        "0x60BE3FB22DDF30C17604b86eC005F6173B1170Aa", // vAMMV2-OP/alUSD
+        "0xa1055762336F92b4B8d2eDC032A0Ce45ead6280a", // sAMMV2-alETH/WETH
+        "0x1AD06Ca54de04DBe9e2817F4C13eCB406DCbeAf0", // sAMMV2-alETH/frxETH
+        "0x03799d6A59624AbDd50f8774D360A64f4FBfdCF5", // sAMMV2-pxETH/alETH
+        "0xA5EDb0EF932f7c2f37B8FC75CB01948F6258a4f8", // vAMMV2-alETH/OP
+        "0x844bda8c554d3f14c2c068314b294a5b0ed2e0df", // CL200-alETH/alUSD
+      ];
+      const veloLpSugarAddress = "0xa64db2d254f07977609def75c3a7db3edc72ee1d";
       const [pool0, pool1, pool2, pool3, pool4, pool5, pool6, pool7, pool8] =
         await publicClient.multicall({
           allowFailure: false,
           contracts: [
             {
-              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              address: veloLpSugarAddress,
               abi: veloStatsAbi,
-              functionName: "byIndex",
-              args: [667n],
+              functionName: "byAddress",
+              args: [veloPoolAddresses[0]],
             },
             {
-              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              address: veloLpSugarAddress,
               abi: veloStatsAbi,
-              functionName: "byIndex",
-              args: [54n],
+              functionName: "byAddress",
+              args: [veloPoolAddresses[1]],
             },
             {
-              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              address: veloLpSugarAddress,
               abi: veloStatsAbi,
-              functionName: "byIndex",
-              args: [680n],
+              functionName: "byAddress",
+              args: [veloPoolAddresses[2]],
             },
             {
-              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              address: veloLpSugarAddress,
               abi: veloStatsAbi,
-              functionName: "byIndex",
-              args: [81n],
+              functionName: "byAddress",
+              args: [veloPoolAddresses[3]],
             },
             {
-              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              address: veloLpSugarAddress,
               abi: veloStatsAbi,
-              functionName: "byIndex",
-              args: [53n],
+              functionName: "byAddress",
+              args: [veloPoolAddresses[4]],
             },
             {
-              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              address: veloLpSugarAddress,
               abi: veloStatsAbi,
-              functionName: "byIndex",
-              args: [5n],
+              functionName: "byAddress",
+              args: [veloPoolAddresses[5]],
             },
             {
-              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              address: veloLpSugarAddress,
               abi: veloStatsAbi,
-              functionName: "byIndex",
-              args: [909n],
+              functionName: "byAddress",
+              args: [veloPoolAddresses[6]],
             },
             {
-              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              address: veloLpSugarAddress,
               abi: veloStatsAbi,
-              functionName: "byIndex",
-              args: [82n],
+              functionName: "byAddress",
+              args: [veloPoolAddresses[7]],
             },
             {
-              address: "0x5b29e481f663ec2857487567E1383CBdE83fa2f1",
+              address: veloLpSugarAddress,
               abi: veloStatsAbi,
-              functionName: "byIndex",
-              args: [1243n],
+              functionName: "byAddress",
+              args: [veloPoolAddresses[8]],
             },
           ],
         });
