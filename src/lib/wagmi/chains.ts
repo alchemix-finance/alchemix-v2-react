@@ -22,15 +22,6 @@ const mainnetRpcs = IS_VERCEL_PRODUCTION
       "https://rpc.ankr.com/eth",
     ];
 
-const mainnetWithRpcs = {
-  ...mainnet,
-  rpcUrls: {
-    default: {
-      http: mainnetRpcs,
-    },
-  },
-} as const satisfies Chain;
-
 const optimismRpcs = IS_VERCEL_PRODUCTION
   ? [OPTIMISM_BLAST_RPC, "https://optimism-rpc.publicnode.com"]
   : [
@@ -40,15 +31,6 @@ const optimismRpcs = IS_VERCEL_PRODUCTION
       "https://optimism-mainnet.public.blastapi.io",
       "https://rpc.ankr.com/optimism",
     ];
-
-const optimismWithRpcs = {
-  ...optimism,
-  rpcUrls: {
-    default: {
-      http: optimismRpcs,
-    },
-  },
-} as const satisfies Chain;
 
 const arbitrumRpcs = IS_VERCEL_PRODUCTION
   ? [ARBITRUM_BLAST_RPC, "https://arbitrum-one-rpc.publicnode.com"]
@@ -61,53 +43,42 @@ const arbitrumRpcs = IS_VERCEL_PRODUCTION
       "https://arbitrum-one.public.blastapi.io",
     ];
 
-const arbitrumWithRpcs = {
-  ...arbitrum,
-  rpcUrls: {
-    default: {
-      http: arbitrumRpcs,
-    },
-  },
-} as const satisfies Chain;
+const fantomRpcs = [
+  "https://rpc.ankr.com/fantom",
+  "https://fantom-rpc.publicnode.com",
+  "https://1rpc.io/ftm",
+  "https://fantom.blockpi.network/v1/rpc/public",
+];
 
-const fantomWithRpcsAndIcon = {
+const lineaRpcs = [
+  "https://linea.drpc.org",
+  "https://linea-rpc.publicnode.com",
+];
+
+const metisRpcs = [
+  "https://metis.drpc.org",
+  "https://metis-rpc.publicnode.com",
+];
+
+export const RPCS = {
+  [mainnet.id]: mainnetRpcs,
+  [optimism.id]: optimismRpcs,
+  [arbitrum.id]: arbitrumRpcs,
+  [fantom.id]: fantomRpcs,
+  [linea.id]: lineaRpcs,
+  [metis.id]: metisRpcs,
+} as const;
+
+export const fantomWithIcon = {
   ...fantom,
-  rpcUrls: {
-    default: {
-      http: [
-        "https://rpc.ankr.com/fantom",
-        "https://fantom-rpc.publicnode.com",
-        "https://1rpc.io/ftm",
-        "https://fantom.blockpi.network/v1/rpc/public",
-      ],
-    },
-  },
   iconUrl: "/images/icons/fantom_blue.svg",
 } as const satisfies Chain;
 
-const lineaWithRpcs = {
-  ...linea,
-  rpcUrls: {
-    default: {
-      http: ["https://linea.drpc.org", "https://linea-rpc.publicnode.com"],
-    },
-  },
-};
-
-const metisWithRpcs = {
-  ...metis,
-  rpcUrls: {
-    default: {
-      http: ["https://metis.drpc.org", "https://metis-rpc.publicnode.com"],
-    },
-  },
-};
-
 export const chains = [
-  mainnetWithRpcs,
-  optimismWithRpcs,
-  arbitrumWithRpcs,
-  fantomWithRpcsAndIcon,
-  lineaWithRpcs,
-  metisWithRpcs,
+  mainnet,
+  optimism,
+  arbitrum,
+  fantomWithIcon,
+  linea,
+  metis,
 ] as const;

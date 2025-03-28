@@ -1,8 +1,9 @@
 import { Hex } from "viem";
-import { lsService } from "../localStorage";
-import { chains } from "./chains";
 import { UsePublicClientReturnType } from "wagmi";
+
+import { lsService } from "../localStorage";
 import { wagmiConfig } from "./wagmiConfig";
+import { chains } from "./chains";
 
 //-- TENDERLY FORK SET UP --//
 
