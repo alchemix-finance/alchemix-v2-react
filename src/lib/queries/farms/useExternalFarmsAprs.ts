@@ -171,7 +171,7 @@ export const useOpExternalFarmsAprs = () => {
       const opPrice = ethPriceData.coins["coingecko:optimism"].price;
       const veloPrice = ethPriceData.coins["coingecko:velodrome-finance"].price;
 
-      const veloPoolAddresses: `0x${string}`[] = [
+      const veloPoolAddresses = [
         "0x124D69DaeDA338b1b31fFC8e429e39c9A991164e", // sAMMV2-USDC/alUSD
         "0xaF03f51DE7a0E62BF061F6Fc3931cF79166B0a29", // sAMMV2-FRAX/alUSD
         "0x67C253eB6C2e69F9E1114aEeAD0DB4FA8F417AC3", // sAMMV2-DOLA/alUSD
@@ -181,7 +181,7 @@ export const useOpExternalFarmsAprs = () => {
         "0x03799d6A59624AbDd50f8774D360A64f4FBfdCF5", // sAMMV2-pxETH/alETH
         "0xA5EDb0EF932f7c2f37B8FC75CB01948F6258a4f8", // vAMMV2-alETH/OP
         "0x844bda8c554d3f14c2c068314b294a5b0ed2e0df", // CL200-alETH/alUSD
-      ];
+      ] as const;
       const veloLpSugarAddress = "0xa64db2d254f07977609def75c3a7db3edc72ee1d";
       const [pool0, pool1, pool2, pool3, pool4, pool5, pool6, pool7, pool8] =
         await publicClient.multicall({
