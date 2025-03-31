@@ -49,7 +49,7 @@
     "framer-motion": "^12.5.0",
     "graphql": "^16.10.0",
     "graphql-request": "^7.1.2",
-    "lucide-react": "^0.476.0",
+    "lucide-react": "^0.485.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-use-measure": "^2.1.7",
