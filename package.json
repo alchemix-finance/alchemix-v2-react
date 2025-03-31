@@ -56,7 +56,7 @@
     "sonner": "^2.0.1",
     "tailwind-merge": "^2.4.0",
     "tailwindcss": "^4.0.14",
-    "viem": "^2.23.14",
+    "viem": "^2.24.2",
     "wagmi": "^2.14.15"
   },
   "devDependencies": {
