@@ -506,7 +506,7 @@ export const VAULTS: VaultsConfig = {
         apr: getAaveApr,
         yieldType: "APR",
         provider: "aave",
-        bonus: getNoBonus,
+        bonus: getMeltedRewardsBonusData,
       },
       disabledDepositTokens: [],
       disabledWithdrawTokens: [],
