@@ -21,12 +21,13 @@ export const BONUS_REWARDS_END_TIMESTAMPS: Record<
   typeof optimism.id | typeof arbitrum.id,
   Record<`0x${string}`, number>
 > = {
-  // December 13th
   [optimism.id]: {
-    // Aave aUSDC
-    "0x4186Eb285b1efdf372AC5896a08C346c7E373cC4": 1734048000,
-    // Lido wstETH
+    // Lido wstETH December 13th
     "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": 1752192000,
+    // Aave aUSDC July 3rd
+    "0x4186Eb285b1efdf372AC5896a08C346c7E373cC4": 1751551200,
+    // Aave aWETH July 3rd
+    "0x337B4B933d60F40CB57DD19AE834Af103F049810": 1751551200,
   },
   // September 28th
   [arbitrum.id]: {
