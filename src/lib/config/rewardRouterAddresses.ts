@@ -24,10 +24,10 @@ export const BONUS_REWARDS_END_TIMESTAMPS: Record<
   [optimism.id]: {
     // Lido wstETH December 13th
     "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb": 1752192000,
-    // Aave aUSDC July 3rd
-    "0x4186Eb285b1efdf372AC5896a08C346c7E373cC4": 1751551200,
-    // Aave aWETH July 3rd
-    "0x337B4B933d60F40CB57DD19AE834Af103F049810": 1751551200,
+    // Aave aUSDC Oct 3rd
+    "0x4186Eb285b1efdf372AC5896a08C346c7E373cC4": 1759500000,
+    // Aave aWETH Oct 3rd
+    "0x337B4B933d60F40CB57DD19AE834Af103F049810": 1759500000,
   },
   // September 28th
   [arbitrum.id]: {
