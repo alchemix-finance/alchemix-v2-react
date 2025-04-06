@@ -1,4 +1,4 @@
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount, useReadContract, useReadContracts } from "wagmi";
 import { formatEther, formatUnits, parseUnits } from "viem";
 
 import { useChain } from "@/hooks/useChain";
@@ -20,18 +20,43 @@ export const useVaultsWithdrawAvailableBalance = ({
   const chain = useChain();
   const { address } = useAccount();
 
-  const { data: sharesBalance } = useReadContract({
-    address: vault.alchemist.address,
-    chainId: chain.id,
-    abi: alchemistV2Abi,
-    functionName: "positions",
-    args: [address!, vault.yieldToken],
+  const { data: debitCreditSharesBalances } = useReadContracts({
+    allowFailure: false,
+    contracts: [
+      {
+        address: vault.alchemist.address,
+        chainId: chain.id,
+        abi: alchemistV2Abi,
+        functionName: "accounts",
+        args: [address!],
+      },
+      {
+        address: vault.alchemist.address,
+        chainId: chain.id,
+        abi: alchemistV2Abi,
+        functionName: "totalValue",
+        args: [address!],
+      },
+      {
+        address: vault.alchemist.address,
+        chainId: chain.id,
+        abi: alchemistV2Abi,
+        functionName: "positions",
+        args: [address!, vault.yieldToken],
+      },
+    ] as const,
     scopeKey: ScopeKeys.VaultWithdrawInput,
     query: {
       enabled: !!address,
-      select: ([shares]) => shares,
+      select: ([[debt], totalValue, [sharesBalance]]) => [
+        debt,
+        totalValue,
+        sharesBalance,
+      ],
     },
   });
+  const [debt, totalCollateralInDebtToken, sharesBalance] =
+    debitCreditSharesBalances ?? [];
 
   const { data: underlyingTokenCollateral } = useReadContract({
     address: vault.alchemist.address,
@@ -55,33 +80,21 @@ export const useVaultsWithdrawAvailableBalance = ({
     },
   });
 
-  const { data: totalCollateralInDebtToken } = useReadContract({
-    address: vault.alchemist.address,
-    chainId: chain.id,
-    abi: alchemistV2Abi,
-    functionName: "totalValue",
-    args: [address!],
-    scopeKey: ScopeKeys.VaultWithdrawInput,
-    query: {
-      enabled: !!address,
-    },
-  });
-
   const balanceInDebt = (() => {
-    if (collateralInDebtToken === undefined) {
+    if (
+      debt === undefined ||
+      totalCollateralInDebtToken === undefined ||
+      collateralInDebtToken === undefined
+    ) {
       return 0n;
     }
+
     const requiredCoverInDebt =
-      vault.alchemist.position.debt *
-      BigInt(formatEther(vault.alchemist.minimumCollateralization));
+      debt * BigInt(formatEther(vault.alchemist.minimumCollateralization));
 
-    const maxWithdrawAmount = collateralInDebtToken - requiredCoverInDebt;
+    const maxWithdrawAmount = totalCollateralInDebtToken - requiredCoverInDebt;
 
-    const otherCoverInDebt =
-      totalCollateralInDebtToken !== undefined &&
-      collateralInDebtToken !== undefined
-        ? totalCollateralInDebtToken - collateralInDebtToken
-        : 0n;
+    const otherCoverInDebt = totalCollateralInDebtToken - collateralInDebtToken;
 
     if (otherCoverInDebt >= requiredCoverInDebt) {
       return collateralInDebtToken;
