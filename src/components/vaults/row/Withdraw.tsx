@@ -84,18 +84,19 @@ export const Withdraw = ({
     setTokenAddress(value as `0x${string}`);
   };
 
-  const { balance } = useVaultsWithdrawAvailableBalance({
+  const { availableBalance } = useVaultsWithdrawAvailableBalance({
     vault,
     isSelectedTokenYieldToken,
   });
 
-  const isInsufficientBalance = balance !== undefined && +amount > +balance;
+  const isInsufficientBalance =
+    availableBalance !== undefined && +amount > +availableBalance;
   const isDisabledCta =
     isPending || isInputZero(amount) || isInsufficientBalance;
 
   return (
     <div className="space-y-4">
-      <div className="flex rounded-sm border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+      <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
         <Select value={tokenAddress} onValueChange={onSelectChange}>
           <SelectTrigger className="h-auto w-24 sm:w-56">
             <SelectValue placeholder="Token" asChild>
@@ -129,7 +130,7 @@ export const Withdraw = ({
       {!isSelectedTokenYieldToken && (
         <SlippageInput slippage={slippage} setSlippage={setSlippage} />
       )}
-      <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
+      <p className="text-lightgrey10inverse dark:text-lightgrey10 text-sm">
         Current debt:{" "}
         {formatNumber(
           formatEther(

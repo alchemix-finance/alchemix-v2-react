@@ -20,7 +20,7 @@ export const VaultWithdrawTokenInput = ({
   vault: Vault;
   isSelectedTokenYieldToken: boolean;
 }) => {
-  const { balance } = useVaultsWithdrawAvailableBalance({
+  const { availableBalance } = useVaultsWithdrawAvailableBalance({
     vault,
     isSelectedTokenYieldToken,
   });
@@ -33,7 +33,7 @@ export const VaultWithdrawTokenInput = ({
       setAmount={setAmount}
       tokenSymbol={tokenSymbol}
       type="Available"
-      overrideBalance={balance}
+      overrideBalance={availableBalance}
       dustToZero={true}
     />
   );
