@@ -22,6 +22,7 @@ import { isInputZero } from "@/utils/inputNotZero";
 import { useStaticTokenAdapterWithdraw } from "@/hooks/useStaticTokenAdapterWithdraw";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
+import { useVaultsWithdrawAvailableBalance } from "@/lib/queries/vaults/useVaultsWithdrawAvailableBalance";
 
 export const useWithdraw = ({
   vault,
@@ -100,16 +101,9 @@ export const useWithdraw = ({
     },
   });
 
-  const { data: depositedSharesBalance } = useReadContract({
-    address: vault.alchemist.address,
-    abi: alchemistV2Abi,
-    chainId: chain.id,
-    functionName: "positions",
-    args: [address!, vault.yieldToken],
-    query: {
-      enabled: !!address,
-      select: ([shares]) => shares,
-    },
+  const { availableShares } = useVaultsWithdrawAvailableBalance({
+    vault,
+    isSelectedTokenYieldToken,
   });
 
   let shares = isSelectedTokenYieldToken
@@ -122,11 +116,12 @@ export const useWithdraw = ({
    * And here we use conversion rate at the time of crafting withdrawal tx (yield token -> shares).
    */
   if (
-    depositedSharesBalance !== undefined &&
+    isSelectedTokenYieldToken &&
+    availableShares !== undefined &&
     shares !== undefined &&
-    depositedSharesBalance < shares
+    availableShares < shares
   ) {
-    shares = depositedSharesBalance - 1n;
+    shares = availableShares;
   }
 
   const minimumOutUnderlying = !isSelectedTokenYieldToken
