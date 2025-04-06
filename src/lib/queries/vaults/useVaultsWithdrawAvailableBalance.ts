@@ -170,9 +170,9 @@ export const useVaultsWithdrawAvailableBalance = ({
   });
 
   /**
-   * NOTE: Watch queries for changes in debitCreditSharesBalances, underlyingTokenCollateral.
+   * NOTE: Watch queries for changes in debitCreditSharesBalances, balanceForYieldTokenAndForShares.
    * debitCreditSharesBalances - if user deposited or withdrawed from vault for yield token;
-   * underlyingTokenCollateral - watch because of conversion rate changes (triggers refetch of dependent queries as well)
+   * balanceForYieldTokenAndForShares - watch because of conversion rate changes.
    */
   useWatchQuery({
     scopeKey: ScopeKeys.VaultWithdrawInput,
