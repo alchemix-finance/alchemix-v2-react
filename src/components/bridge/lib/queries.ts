@@ -10,9 +10,7 @@ import { getWormholeQuoteQueryOptions } from "./wormhole";
 const combine = (quotes: UseQueryResult<BridgeQuote>[]) => ({
   quotes: quotes
     .filter(
-      (quote) =>
-        !quote.isError &&
-        !(quote.data?.provider === "Wormhole" && quote.data.isLimitExceeded),
+      (quote) => !quote.isError && !(quote.data && quote.data.isLimitExceeded),
     )
     .sort((a, b) => {
       if (!a.data && !b.data) return 0;
@@ -68,7 +66,8 @@ export const useBridgeQuotes = ({
         amount,
         slippage,
         receipient,
-        publicClient: originPublicClient,
+        originPublicClient,
+        destinationPublicClient,
       }),
     ],
     combine,

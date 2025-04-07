@@ -75,7 +75,8 @@ export const chainToAvailableTokensMapping: AvailableTokensMapping = {
   ],
 };
 
-export const originToDestinationTokenAddressMapping: Record<
+// returns xERC20 on destination chain (for bridging limits check)
+export const originToDestinationXTokenAddressMapping: Record<
   `0x${string}`,
   Record<number, `0x${string}`>
 > = {
@@ -115,6 +116,23 @@ export const originToDestinationTokenAddressMapping: Record<
     [arbitrum.id]: SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD,
     [optimism.id]: SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD,
   },
+};
+
+// returns alAsset on mainnet (for lockbox balance check)
+export const originToDestinationAlAssetTokenAddressMapping: Record<
+  `0x${string}`,
+  `0x${string}`
+> = {
+  [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]:
+    SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH,
+  [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH]:
+    SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH,
+  /*
+    alUSD on optimism and arbitrum are the same, so we use the same address for both.
+    Thus provide optimism for destination as well.
+  */
+  [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]:
+    SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD,
 };
 
 export const getInitialOriginTokenAddresses = (chainId: SupportedChainId) => {
@@ -190,23 +208,21 @@ interface BaseQuote {
     value: bigint;
   };
   provider: "Connext" | "Wormhole";
+  isLimitExceeded: boolean;
   bridgeCost?: string;
   isWrapNeeded?: boolean;
-  isLimitExceeded?: boolean;
 }
 
 interface ConnextQuote extends BaseQuote {
   provider: "Connext";
   bridgeCost?: never;
   isWrapNeeded?: never;
-  isLimitExceeded?: never;
 }
 
 interface WormholeQuote extends BaseQuote {
   provider: "Wormhole";
   bridgeCost: string;
   isWrapNeeded: boolean;
-  isLimitExceeded?: boolean;
 }
 
 export type BridgeQuote = ConnextQuote | WormholeQuote;
