@@ -11,6 +11,7 @@ import {
   parseUnits,
   toHex,
   hexToBigInt,
+  erc20Abi,
 } from "viem";
 
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
@@ -19,6 +20,8 @@ import {
   SupportedBridgeChainIds,
   chainIdToDomainMapping,
   connextTargetMapping,
+  lockboxMapping,
+  originToDestinationAlAssetTokenAddressMapping,
 } from "./constants";
 import { isInputZero } from "@/utils/inputNotZero";
 import {
@@ -42,7 +45,8 @@ export const getConnexQuoteQueryOptions = ({
   amount,
   slippage,
   receipient,
-  publicClient,
+  originPublicClient,
+  destinationPublicClient,
 }: {
   originChainId: SupportedChainId;
   destinationChainId: SupportedBridgeChainIds;
@@ -50,13 +54,15 @@ export const getConnexQuoteQueryOptions = ({
   amount: string;
   slippage: string;
   receipient: `0x${string}`;
-  publicClient: UsePublicClientReturnType<typeof wagmiConfig>;
+  originPublicClient: UsePublicClientReturnType<typeof wagmiConfig>;
+  destinationPublicClient: UsePublicClientReturnType<typeof wagmiConfig>;
 }) =>
   queryOptions({
     queryKey: [
       QueryKeys.BridgeQuote("connext"),
       originChainId,
-      publicClient,
+      originPublicClient,
+      destinationPublicClient,
       receipient,
       destinationChainId,
       originTokenAddress,
@@ -70,6 +76,24 @@ export const getConnexQuoteQueryOptions = ({
 
       const originDomain = chainIdToDomainMapping[originChainId];
       const destinationDomain = chainIdToDomainMapping[destinationChainId];
+
+      // NOTE: We do not check bridge limit for connext, because it has MAX_UINT_256 limit
+      let isLimitExceeded = false;
+
+      if (destinationChainId === mainnet.id) {
+        const destinationTokenAddress =
+          originToDestinationAlAssetTokenAddressMapping[originTokenAddress];
+
+        const lockboxBalance = await destinationPublicClient.readContract({
+          address: destinationTokenAddress,
+          abi: erc20Abi,
+          functionName: "balanceOf",
+          args: [lockboxMapping[destinationTokenAddress]],
+        });
+        const lockboxBalanceFormatted = formatEther(lockboxBalance);
+
+        isLimitExceeded = +lockboxBalanceFormatted < +amount;
+      }
 
       const relayerFeeResponse = await fetch(
         `${CONNEXT_BASE_URI}/estimateRelayerFee`,
@@ -149,7 +173,7 @@ export const getConnexQuoteQueryOptions = ({
         destinationChainId,
         receipient,
         slippage,
-        publicClient,
+        publicClient: originPublicClient,
       });
 
       const quote = {
@@ -157,6 +181,7 @@ export const getConnexQuoteQueryOptions = ({
         amountOut,
         provider: "Connext",
         tx,
+        isLimitExceeded,
       } as const satisfies BridgeQuote;
 
       return quote;

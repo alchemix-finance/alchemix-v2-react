@@ -1,14 +1,16 @@
 import { queryOptions } from "@tanstack/react-query";
 import { UsePublicClientReturnType } from "wagmi";
-import { encodeFunctionData, formatEther, parseEther } from "viem";
-import { fantom, linea, metis } from "viem/chains";
+import { encodeFunctionData, erc20Abi, formatEther, parseEther } from "viem";
+import { fantom, linea, mainnet, metis } from "viem/chains";
 
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import {
   BridgeQuote,
   SupportedBridgeChainIds,
   chainIdToWormholeChainIdMapping,
-  originToDestinationTokenAddressMapping,
+  lockboxMapping,
+  originToDestinationXTokenAddressMapping,
+  originToDestinationAlAssetTokenAddressMapping,
   wormholeTargetMapping,
 } from "./constants";
 import { wormholeBridgeAdapterAbi } from "@/abi/wormholeBridgeAdapter";
@@ -71,7 +73,7 @@ export const getWormholeQuoteQueryOptions = ({
       }
 
       const xErc20Address =
-        originToDestinationTokenAddressMapping[originTokenAddress][
+        originToDestinationXTokenAddressMapping[originTokenAddress][
           destinationChainId
         ];
 
@@ -93,7 +95,22 @@ export const getWormholeQuoteQueryOptions = ({
       });
       const bridgeLimitFormatted = formatEther(bridgeLimit);
 
-      const isLimitExceeded = +bridgeLimitFormatted < +amount;
+      let isLimitExceeded = +bridgeLimitFormatted < +amount;
+
+      if (destinationChainId === mainnet.id) {
+        const destinationTokenAddress =
+          originToDestinationAlAssetTokenAddressMapping[originTokenAddress];
+
+        const lockboxBalance = await destinationPublicClient.readContract({
+          address: destinationTokenAddress,
+          abi: erc20Abi,
+          functionName: "balanceOf",
+          args: [lockboxMapping[destinationTokenAddress]],
+        });
+        const lockboxBalanceFormatted = formatEther(lockboxBalance);
+
+        isLimitExceeded = +lockboxBalanceFormatted < +amount;
+      }
 
       const spender = wormholeTargetMapping[originChainId][originTokenAddress];
 
