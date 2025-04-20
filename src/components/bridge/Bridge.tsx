@@ -33,11 +33,7 @@ import { isInputZero } from "@/utils/inputNotZero";
 import { useWriteBridge } from "./lib/mutations";
 import { useBridgeQuotes } from "./lib/queries";
 import { Switch } from "../ui/switch";
-import {
-  accordionTransition,
-  accordionVariants,
-  reducedMotionAccordionVariants,
-} from "@/lib/motion/motion";
+import { reducedMotionAccordionVariants } from "@/lib/motion/motion";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
@@ -234,13 +230,16 @@ export const Bridge = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center gap-10 md:flex-row">
+      <div className="flex flex-col justify-center gap-4 xl:flex-row xl:gap-10">
         <m.div
           layout={!isReducedMotion}
-          transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-          className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative space-y-4 rounded-md border p-5"
+          transition={{ type: "spring", duration: 0.25, bounce: 0 }}
+          className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative space-y-4 rounded-md border p-5 xl:max-w-lg"
         >
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          <m.div
+            layout={!isReducedMotion}
+            className="flex flex-wrap items-center justify-between gap-2"
+          >
             <div className="flex flex-col gap-2">
               <p>Origin chain:</p>
               <Select
@@ -281,8 +280,11 @@ export const Bridge = () => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-          <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
+          </m.div>
+          <m.div
+            layout={!isReducedMotion}
+            className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border"
+          >
             <Select
               value={originTokenAddress}
               onValueChange={(value) =>
@@ -319,15 +321,18 @@ export const Bridge = () => {
               tokenDecimals={18}
               overrideBalance={overrideBalance ?? "0"}
             />
-          </div>
-          <div className="flex w-full flex-col gap-2">
+          </m.div>
+          <m.div
+            layout={!isReducedMotion}
+            className="flex w-full flex-col gap-2"
+          >
             <SlippageInput slippage={slippage} setSlippage={setSlippage} />
             <StatusBox
               transactionHash={bridgeTxHash}
               bridgeProvider={bridgeTxProvider}
             />
-          </div>
-          <div className="flex items-center">
+          </m.div>
+          <m.div layout={!isReducedMotion} className="flex items-center">
             <Switch
               checked={isDifferentAddress}
               onCheckedChange={handleDifferentAddressSwitch}
@@ -339,82 +344,89 @@ export const Bridge = () => {
             >
               Bridge to different wallet
             </label>
-          </div>
-          <div>
-            <AnimatePresence initial={false}>
-              {isDifferentAddress && (
-                <m.div
-                  key="differentAddressInput"
-                  initial="collapsed"
-                  animate="open"
-                  exit="collapsed"
-                  variants={
-                    isReducedMotion
-                      ? reducedMotionAccordionVariants
-                      : accordionVariants
-                  }
-                  transition={accordionTransition}
-                  className="space-y-4"
-                >
-                  <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
-                    <Input
-                      readOnly={confirmedDifferentAddress}
-                      type="text"
-                      value={receipientAddress}
-                      onChange={(e) => setReceipientAddress(e.target.value)}
-                      className="relative h-full grow rounded-none p-4 text-right text-sm"
-                      placeholder="0x..."
-                    />
-                    <Button
-                      variant="action"
-                      weight="normal"
-                      className="bg-grey3inverse text-lightgrey10inverse/80 hover:bg-grey1inverse hover:text-lightgrey10inverse dark:hover:text-lightgrey10 dark:bg-grey3 dark:text-lightgrey10/80 dark:hover:bg-grey1 flex h-auto border-0 transition-all"
-                      onClick={handleClearDifferentAddress}
-                    >
-                      CLEAR
-                    </Button>
-                  </div>
-                  <div className="flex items-center">
-                    <Switch
-                      checked={confirmedDifferentAddress}
-                      onCheckedChange={handleConfirmedDifferentAddress}
-                      id="confirmed-different-address"
-                    />
-                    <label
-                      className="text-lightgrey10inverse dark:text-lightgrey10 cursor-pointer pl-2 text-sm"
-                      htmlFor="confirmed-different-address"
-                    >
-                      I have verified the above address
-                    </label>
-                  </div>
-                </m.div>
-              )}
-            </AnimatePresence>
-          </div>
-          <CtaButton
-            variant="outline"
-            width="full"
-            disabled={
-              !quote ||
-              isInputZero(amount) ||
-              isPending ||
-              (isDifferentAddress && !isAddress(receipientAddress)) ||
-              (isDifferentAddress && !confirmedDifferentAddress)
-            }
-            onClick={onCtaClick}
+          </m.div>
+          <AnimatePresence initial={false} mode="popLayout">
+            {isDifferentAddress && (
+              <m.div
+                layout={!isReducedMotion}
+                key="differentAddressInput"
+                initial="collapsed"
+                animate="open"
+                exit="collapsed"
+                variants={
+                  isReducedMotion
+                    ? reducedMotionAccordionVariants
+                    : {
+                        collapsed: { opacity: 0, y: -10 },
+                        open: { opacity: 1, y: 0 },
+                      }
+                }
+                transition={{ type: "spring", duration: 0.35, bounce: 0 }}
+                className="space-y-4"
+              >
+                <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
+                  <Input
+                    readOnly={confirmedDifferentAddress}
+                    type="text"
+                    value={receipientAddress}
+                    onChange={(e) => setReceipientAddress(e.target.value)}
+                    className="relative h-full grow rounded-none p-4 text-right text-sm"
+                    placeholder="0x..."
+                  />
+                  <Button
+                    variant="action"
+                    weight="normal"
+                    className="bg-grey3inverse text-lightgrey10inverse/80 hover:bg-grey1inverse hover:text-lightgrey10inverse dark:hover:text-lightgrey10 dark:bg-grey3 dark:text-lightgrey10/80 dark:hover:bg-grey1 flex h-auto border-0 transition-all"
+                    onClick={handleClearDifferentAddress}
+                  >
+                    CLEAR
+                  </Button>
+                </div>
+                <div className="flex items-center">
+                  <Switch
+                    checked={confirmedDifferentAddress}
+                    onCheckedChange={handleConfirmedDifferentAddress}
+                    id="confirmed-different-address"
+                  />
+                  <label
+                    className="text-lightgrey10inverse dark:text-lightgrey10 cursor-pointer pl-2 text-sm"
+                    htmlFor="confirmed-different-address"
+                  >
+                    I have verified the above address
+                  </label>
+                </div>
+              </m.div>
+            )}
+          </AnimatePresence>
+          <m.div
+            layout={isReducedMotion ? false : "position"}
+            transition={{ type: "easeInOut", duration: 0.25 }}
           >
-            {chain.id !== originChainId
-              ? "Switch chain"
-              : quote?.isWrapNeeded
-                ? "Bridge "
-                : isPending
-                  ? "Preparing"
-                  : isApprovalNeeded === true
-                    ? "Approve"
-                    : "Bridge"}
-          </CtaButton>
+            <CtaButton
+              variant="outline"
+              width="full"
+              disabled={
+                !quote ||
+                isInputZero(amount) ||
+                isPending ||
+                (isDifferentAddress && !isAddress(receipientAddress)) ||
+                (isDifferentAddress && !confirmedDifferentAddress)
+              }
+              onClick={onCtaClick}
+            >
+              {chain.id !== originChainId
+                ? "Switch chain"
+                : quote?.isWrapNeeded
+                  ? "Bridge "
+                  : isPending
+                    ? "Preparing"
+                    : isApprovalNeeded === true
+                      ? "Approve"
+                      : "Bridge"}
+            </CtaButton>
+          </m.div>
         </m.div>
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence initial={false} mode="popLayout">
           {showQuotes && (
             <BridgeQuoter
               key="BridgeQuoter"
