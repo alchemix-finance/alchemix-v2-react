@@ -230,11 +230,11 @@ export const Bridge = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center gap-10 md:flex-row">
+      <div className="flex flex-col justify-center gap-4 xl:flex-row xl:gap-10">
         <m.div
           layout={!isReducedMotion}
           transition={{ type: "spring", duration: 0.25, bounce: 0 }}
-          className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative space-y-4 rounded-md border p-5"
+          className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative space-y-4 rounded-md border p-5 xl:max-w-lg"
         >
           <m.div
             layout={!isReducedMotion}
@@ -426,7 +426,7 @@ export const Bridge = () => {
             </CtaButton>
           </m.div>
         </m.div>
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence initial={false} mode="popLayout">
           {showQuotes && (
             <BridgeQuoter
               key="BridgeQuoter"
