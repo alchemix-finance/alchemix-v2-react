@@ -239,10 +239,12 @@ export const Bridge = () => {
       <div className="flex flex-col justify-center gap-10 md:flex-row">
         <m.div
           layout={!isReducedMotion ? "position" : false}
-          transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+          // animate={!isReducedMotion ? { height } : {}}
+          transition={{ type: "spring", duration: 0.25, bounce: 0 }}
           style={{ borderRadius: "0.375rem" }}
-          className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative space-y-4 border p-5"
+          className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 border"
         >
+          {/* <div ref={ref} className="relative space-y-4 p-5"> */}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-col gap-2">
               <p>Origin chain:</p>
@@ -358,7 +360,7 @@ export const Bridge = () => {
                         open: { opacity: 1, y: 0 },
                       }
                 }
-                transition={{ type: "spring", duration: 0.15, bounce: 0 }}
+                transition={{ type: "spring", duration: 0.35, bounce: 0 }}
                 className="space-y-4"
               >
                 <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
@@ -397,7 +399,7 @@ export const Bridge = () => {
           </AnimatePresence>
           <m.div
             layout={!isReducedMotion ? "position" : false}
-            transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+            transition={{ type: "spring", duration: 0.5, bounce: 0 }}
           >
             <CtaButton
               variant="outline"
@@ -422,6 +424,7 @@ export const Bridge = () => {
                       : "Bridge"}
             </CtaButton>
           </m.div>
+          {/* </div> */}
         </m.div>
         <AnimatePresence mode="popLayout">
           {showQuotes && (
