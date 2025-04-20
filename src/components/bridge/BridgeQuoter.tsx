@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { Ref } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
 import { m, useReducedMotion } from "framer-motion";
 
@@ -39,127 +39,119 @@ const reducedMotionVariants = {
   },
 };
 
-export const BridgeQuoter = forwardRef<
-  HTMLDivElement,
-  {
-    originTokenSymbol: string | undefined;
-    originTokenAddress: `0x${string}`;
-    selectedQuoteProvider: string | undefined;
-    updateQuote: (quote: BridgeQuote | undefined) => void;
-    quotes: UseQueryResult<BridgeQuote>[];
-  }
->(
-  (
-    {
-      selectedQuoteProvider,
-      originTokenSymbol,
-      originTokenAddress,
-      updateQuote,
-      quotes,
-    },
-    ref,
-  ) => {
-    const isReducedMotion = useReducedMotion();
-    const { currency } = useSettings();
-    const { data: ethPrice } = useEthPrice();
-    const { data: originTokenPrice } = useGetTokenPrice(originTokenAddress);
-    const costs = quotes.map((quote) => {
-      if (quote.data?.provider === "Connext" && originTokenPrice) {
-        return +quote.data.fee * originTokenPrice;
-      }
-      if (quote.data?.provider === "Wormhole" && ethPrice) {
-        return +quote.data.fee * ethPrice;
-      }
-      return 0;
-    });
-    return (
-      <m.div
-        ref={ref}
-        variants={isReducedMotion ? reducedMotionVariants : variants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        transition={{ ease: [0.165, 0.84, 0.44, 1], duration: 0.3 }}
-        className="relative min-w-60 space-y-4 rounded-md border border-grey10inverse bg-grey15inverse p-5 dark:border-grey10 dark:bg-grey15"
-      >
-        <h1>Select a bridge quote</h1>
-        {quotes.length === 0 && (
-          <p>
-            No quotes available.
-            <br />
-            Try to quote in
-            <br />
-            <a
-              href="https://bridge.connext.network/ALCHEMIX-from-linea-to-arbitrum"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:no-underline"
-            >
-              Connext UI
-            </a>
-          </p>
-        )}
-        {quotes.length > 0 &&
-          quotes.map(({ data, isLoading }, i) => (
-            <m.div
-              role="button"
-              tabIndex={0}
-              aria-label="Select quote"
-              key={`${data?.provider}-${i}`}
-              className={cn(
-                "flex min-h-32 flex-col justify-center rounded-md bg-grey10inverse px-6 py-4 hover:cursor-pointer dark:bg-grey10",
-                "shadow-[0px_0px_0px_1px_rgba(9,9,11,0.1),0px_1px_2px_-1px_rgba(9,9,11,0.08),0px_2px_4px_0px_rgba(9,9,11,0.04)]",
-                "dark:shadow-[0px_0px_0px_1px_rgba(100,100,100,0.1),0px_1px_2px_-1px_rgba(100,100,100,0.1),0px_2px_4px_0px_rgba(100,100,100,0.08)]",
-                "transition-colors focus-within:bg-grey15inverse hover:bg-grey15inverse dark:focus-within:bg-grey15 dark:hover:bg-grey15",
-                isLoading && "items-center",
-                selectedQuoteProvider === data?.provider &&
-                  "bg-grey15inverse dark:bg-grey15",
-              )}
-              whileTap={{ scale: 0.95, transition: { ease: "linear" } }}
-              onClick={() => updateQuote(data)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  updateQuote(data);
-                }
-              }}
-            >
-              {isLoading && <LoadingBar />}
-              {/* 
+export const BridgeQuoter = ({
+  selectedQuoteProvider,
+  originTokenSymbol,
+  originTokenAddress,
+  updateQuote,
+  quotes,
+  ref,
+}: {
+  originTokenSymbol: string | undefined;
+  originTokenAddress: `0x${string}`;
+  selectedQuoteProvider: string | undefined;
+  updateQuote: (quote: BridgeQuote | undefined) => void;
+  quotes: UseQueryResult<BridgeQuote>[];
+  ref?: Ref<HTMLDivElement>;
+}) => {
+  const isReducedMotion = useReducedMotion();
+  const { currency } = useSettings();
+  const { data: ethPrice } = useEthPrice();
+  const { data: originTokenPrice } = useGetTokenPrice(originTokenAddress);
+  const costs = quotes.map((quote) => {
+    if (quote.data?.provider === "Connext" && originTokenPrice) {
+      return +quote.data.fee * originTokenPrice;
+    }
+    if (quote.data?.provider === "Wormhole" && ethPrice) {
+      return +quote.data.fee * ethPrice;
+    }
+    return 0;
+  });
+  return (
+    <m.div
+      ref={ref}
+      variants={isReducedMotion ? reducedMotionVariants : variants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      transition={{ ease: [0.165, 0.84, 0.44, 1], duration: 0.3 }}
+      className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative min-w-60 space-y-4 rounded-md border p-5"
+    >
+      <h1>Select a bridge quote</h1>
+      {quotes.length === 0 && (
+        <p>
+          No quotes available.
+          <br />
+          Try to quote in
+          <br />
+          <a
+            href="https://bridge.connext.network/ALCHEMIX-from-linea-to-arbitrum"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:no-underline"
+          >
+            Connext UI
+          </a>
+        </p>
+      )}
+      {quotes.length > 0 &&
+        quotes.map(({ data, isLoading }, i) => (
+          <m.div
+            role="button"
+            tabIndex={0}
+            aria-label="Select quote"
+            key={`${data?.provider}-${i}`}
+            className={cn(
+              "bg-grey10inverse dark:bg-grey10 flex min-h-32 flex-col justify-center rounded-md px-6 py-4 hover:cursor-pointer",
+              "shadow-[0px_0px_0px_1px_rgba(9,9,11,0.1),0px_1px_2px_-1px_rgba(9,9,11,0.08),0px_2px_4px_0px_rgba(9,9,11,0.04)]",
+              "dark:shadow-[0px_0px_0px_1px_rgba(100,100,100,0.1),0px_1px_2px_-1px_rgba(100,100,100,0.1),0px_2px_4px_0px_rgba(100,100,100,0.08)]",
+              "focus-within:bg-grey15inverse hover:bg-grey15inverse dark:focus-within:bg-grey15 dark:hover:bg-grey15 transition-colors",
+              isLoading && "items-center",
+              selectedQuoteProvider === data?.provider &&
+                "bg-grey15inverse dark:bg-grey15",
+            )}
+            whileTap={{ scale: 0.95, transition: { ease: "linear" } }}
+            onClick={() => updateQuote(data)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                updateQuote(data);
+              }
+            }}
+          >
+            {isLoading && <LoadingBar />}
+            {/* 
                 NOTE: Connext takes cost in bridging token.
                 Wormhole takes cost always in ETH (not deployed on Metis).
                 useEthPrice doesn't adhere to currency setting (1ETH = 1ETH).
               */}
-              {!isLoading && (
-                <>
-                  <p>{data?.provider}</p>
-                  <p className="font-medium">
-                    {formatNumber(data?.amountOut, {
-                      decimals: 6,
-                    })}{" "}
-                    {originTokenSymbol}
+            {!isLoading && (
+              <>
+                <p>{data?.provider}</p>
+                <p className="font-medium">
+                  {formatNumber(data?.amountOut, {
+                    decimals: 6,
+                  })}{" "}
+                  {originTokenSymbol}
+                </p>
+                <p className="text-sm">
+                  Cost{" "}
+                  {formatNumber(data?.fee, {
+                    decimals: 4,
+                  })}{" "}
+                  {data?.provider === "Connext" ? originTokenSymbol : "ETH"}
+                </p>
+                {data?.provider === "Connext" ? (
+                  <p className="text-xs">
+                    ≈ {formatNumber(costs[i], { isCurrency: true, currency })}
                   </p>
-                  <p className="text-sm">
-                    Cost{" "}
-                    {formatNumber(data?.fee, {
-                      decimals: 4,
-                    })}{" "}
-                    {data?.provider === "Connext" ? originTokenSymbol : "ETH"}
-                  </p>
-                  {data?.provider === "Connext" ? (
-                    <p className="text-xs">
-                      ≈ {formatNumber(costs[i], { isCurrency: true, currency })}
-                    </p>
-                  ) : (
-                    <p className="text-xs">≈ ${formatNumber(costs[i])}</p>
-                  )}
-                </>
-              )}
-            </m.div>
-          ))}
-      </m.div>
-    );
-  },
-);
-
-BridgeQuoter.displayName = "BridgeQuoter";
+                ) : (
+                  <p className="text-xs">≈ ${formatNumber(costs[i])}</p>
+                )}
+              </>
+            )}
+          </m.div>
+        ))}
+    </m.div>
+  );
+};
