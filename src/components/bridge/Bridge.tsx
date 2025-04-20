@@ -3,7 +3,6 @@ import { useCallback, useState } from "react";
 import { useAccount, useReadContract, useSwitchChain } from "wagmi";
 import { erc20Abi, formatEther, isAddress, zeroAddress } from "viem";
 import { toast } from "sonner";
-// import useMeasure from "react-use-measure";
 
 import {
   BridgeQuote,
@@ -34,17 +33,12 @@ import { isInputZero } from "@/utils/inputNotZero";
 import { useWriteBridge } from "./lib/mutations";
 import { useBridgeQuotes } from "./lib/queries";
 import { Switch } from "../ui/switch";
-import {
-  // accordionTransition,
-  // accordionVariants,
-  reducedMotionAccordionVariants,
-} from "@/lib/motion/motion";
+import { reducedMotionAccordionVariants } from "@/lib/motion/motion";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
 export const Bridge = () => {
   const isReducedMotion = useReducedMotion();
-  // const [ref, { height }] = useMeasure();
 
   const chain = useChain();
   const { switchChain } = useSwitchChain();
@@ -238,14 +232,14 @@ export const Bridge = () => {
     <>
       <div className="flex flex-col justify-center gap-10 md:flex-row">
         <m.div
-          layout={!isReducedMotion ? "position" : false}
-          // animate={!isReducedMotion ? { height } : {}}
+          layout={!isReducedMotion}
           transition={{ type: "spring", duration: 0.25, bounce: 0 }}
-          style={{ borderRadius: "0.375rem" }}
-          className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 border"
+          className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative space-y-4 rounded-md border p-5"
         >
-          {/* <div ref={ref} className="relative space-y-4 p-5"> */}
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          <m.div
+            layout={!isReducedMotion}
+            className="flex flex-wrap items-center justify-between gap-2"
+          >
             <div className="flex flex-col gap-2">
               <p>Origin chain:</p>
               <Select
@@ -286,8 +280,11 @@ export const Bridge = () => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-          <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
+          </m.div>
+          <m.div
+            layout={!isReducedMotion}
+            className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border"
+          >
             <Select
               value={originTokenAddress}
               onValueChange={(value) =>
@@ -324,15 +321,18 @@ export const Bridge = () => {
               tokenDecimals={18}
               overrideBalance={overrideBalance ?? "0"}
             />
-          </div>
-          <div className="flex w-full flex-col gap-2">
+          </m.div>
+          <m.div
+            layout={!isReducedMotion}
+            className="flex w-full flex-col gap-2"
+          >
             <SlippageInput slippage={slippage} setSlippage={setSlippage} />
             <StatusBox
               transactionHash={bridgeTxHash}
               bridgeProvider={bridgeTxProvider}
             />
-          </div>
-          <div className="flex items-center">
+          </m.div>
+          <m.div layout={!isReducedMotion} className="flex items-center">
             <Switch
               checked={isDifferentAddress}
               onCheckedChange={handleDifferentAddressSwitch}
@@ -344,10 +344,11 @@ export const Bridge = () => {
             >
               Bridge to different wallet
             </label>
-          </div>
+          </m.div>
           <AnimatePresence initial={false} mode="popLayout">
             {isDifferentAddress && (
               <m.div
+                layout={!isReducedMotion}
                 key="differentAddressInput"
                 initial="collapsed"
                 animate="open"
@@ -398,8 +399,8 @@ export const Bridge = () => {
             )}
           </AnimatePresence>
           <m.div
-            layout={!isReducedMotion ? "position" : false}
-            transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+            layout={isReducedMotion ? false : "position"}
+            transition={{ type: "easeInOut", duration: 0.25 }}
           >
             <CtaButton
               variant="outline"
@@ -424,7 +425,6 @@ export const Bridge = () => {
                       : "Bridge"}
             </CtaButton>
           </m.div>
-          {/* </div> */}
         </m.div>
         <AnimatePresence mode="popLayout">
           {showQuotes && (
