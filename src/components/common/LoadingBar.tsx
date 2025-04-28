@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as ProgressPrimitive from "@radix-ui/react-progress";
+import { Progress as ProgressPrimitive } from "radix-ui";
 
 import { cn } from "@/utils/cn";
 
@@ -10,12 +10,12 @@ const LoadingBar = React.forwardRef<
   <ProgressPrimitive.Root
     ref={ref}
     className={cn(
-      "relative h-1 w-32 overflow-hidden bg-blue3/20 dark:bg-bronze1/20",
+      "bg-blue3/20 dark:bg-bronze1/20 relative h-1 w-32 overflow-hidden",
       className,
     )}
     {...props}
   >
-    <ProgressPrimitive.Indicator className="absolute h-full flex-1 animate-loading-bar rounded-xs bg-blue3 will-change-transform fill-mode-forwards dark:bg-bronze1" />
+    <ProgressPrimitive.Indicator className="animate-loading-bar bg-blue3 fill-mode-forwards dark:bg-bronze1 absolute h-full flex-1 rounded-xs will-change-transform" />
   </ProgressPrimitive.Root>
 ));
 LoadingBar.displayName = ProgressPrimitive.Root.displayName;
