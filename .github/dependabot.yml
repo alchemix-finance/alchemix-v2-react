@@ -12,6 +12,3 @@ updates:
           - "viem"
           - "@wagmi/core"
           - "@rainbow-me/rainbowkit"
-      radix:
-        patterns:
-          - "@radix-ui/*"
