@@ -97,7 +97,7 @@ export const VAULTS: VaultsConfig = {
       image: "aDAI.svg",
       messages: [],
       yieldTokenOverride: "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
-      gateway: "0x67EC822A2F981Ef2db6Afce4E8dF57ff1439f4d3",
+      gateway: "0xf5EEDB7e9f424e8a457b8C9AC8CF942aDc40178D",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -115,7 +115,7 @@ export const VAULTS: VaultsConfig = {
       image: "aUSDC.svg",
       messages: [],
       yieldTokenOverride: "0xBcca60bB61934080951369a648Fb03DF4F96263C",
-      gateway: "0x67EC822A2F981Ef2db6Afce4E8dF57ff1439f4d3",
+      gateway: "0xf5EEDB7e9f424e8a457b8C9AC8CF942aDc40178D",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -133,7 +133,7 @@ export const VAULTS: VaultsConfig = {
       image: "aUSDT.svg",
       messages: [],
       yieldTokenOverride: "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
-      gateway: "0x67EC822A2F981Ef2db6Afce4E8dF57ff1439f4d3",
+      gateway: "0xf5EEDB7e9f424e8a457b8C9AC8CF942aDc40178D",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -215,7 +215,7 @@ export const VAULTS: VaultsConfig = {
       image: "aFRAX.svg",
       messages: [],
       yieldTokenOverride: "0xd4937682df3C8aEF4FE912A96A74121C0829E664",
-      gateway: "0x67EC822A2F981Ef2db6Afce4E8dF57ff1439f4d3",
+      gateway: "0xf5EEDB7e9f424e8a457b8C9AC8CF942aDc40178D",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -233,7 +233,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "yvWETH",
       image: "yvWETH.svg",
       messages: [],
-      wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
+      wethGateway: "0xAe8E5EDD84800e77F80Efff9c95d9c283e21a881",
       api: {
         apr: getYearnApy,
         yieldType: "APY",
@@ -250,7 +250,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "wstETH",
       image: "wstETH.svg",
       messages: [],
-      wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
+      wethGateway: "0xAe8E5EDD84800e77F80Efff9c95d9c283e21a881",
       api: {
         apr: getLidoApy,
         yieldType: "APR",
@@ -267,7 +267,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "rETH",
       image: "rETH.svg",
       messages: [],
-      wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
+      wethGateway: "0xAe8E5EDD84800e77F80Efff9c95d9c283e21a881",
       api: {
         apr: getRocketApr,
         yieldType: "APR",
@@ -284,9 +284,9 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "aWETH",
       image: "aWETH.svg",
       messages: [],
-      wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
+      wethGateway: "0xAe8E5EDD84800e77F80Efff9c95d9c283e21a881",
       yieldTokenOverride: "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
-      gateway: "0xA067C885d958aec176eC3D8dAdc847e0c9384809",
+      gateway: "0x52E4C31933B466CD8A7cb0aAb819abAF7BE7Fc0e",
       api: {
         apr: getAaveApr,
         yieldType: "APR",
@@ -303,7 +303,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "vaETH",
       image: "vaETH.svg",
       messages: [],
-      wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
+      wethGateway: "0xAe8E5EDD84800e77F80Efff9c95d9c283e21a881",
       api: {
         apr: getVesperApr,
         yieldType: "APR",
@@ -336,7 +336,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "apxETH",
       image: "apxETH.png",
       messages: [],
-      wethGateway: "0xA22a7ec2d82A471B1DAcC4B37345Cf428E76D67A",
+      wethGateway: "0xAe8E5EDD84800e77F80Efff9c95d9c283e21a881",
       api: {
         apr: getDineroApr,
         yieldType: "APR",
@@ -407,7 +407,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "aDAI",
       image: "aDAI.svg",
       messages: [],
-      gateway: "0x6076A6B474F336c566E4Ba551a5934E3ba5e7193",
+      gateway: "0xcA921d7C22C6D90a44F5468ea9aDc9789D67013A",
       yieldTokenOverride: "0x82E64f49Ed5EC1bC6e43DAD4FC8Af9bb3A2312EE",
       api: {
         apr: getAaveApr,
@@ -426,7 +426,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "aUSDC",
       image: "aUSDC.svg",
       messages: [],
-      gateway: "0x6076A6B474F336c566E4Ba551a5934E3ba5e7193",
+      gateway: "0xcA921d7C22C6D90a44F5468ea9aDc9789D67013A",
       yieldTokenOverride: "0x625E7708f30cA75bfd92586e17077590C60eb4cD",
       api: {
         apr: getAaveApr,
@@ -444,7 +444,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "aUSDT",
       image: "aUSDT.svg",
       messages: [],
-      gateway: "0x6076A6B474F336c566E4Ba551a5934E3ba5e7193",
+      gateway: "0xcA921d7C22C6D90a44F5468ea9aDc9789D67013A",
       yieldTokenOverride: "0x6ab707Aca953eDAeFBc4fD23bA73294241490620",
       api: {
         apr: getAaveApr,
@@ -462,7 +462,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "yvUSDC",
       image: "yvUSDC.svg",
       messages: [],
-      gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
+      gateway: "0x734074fAc8e6245E7a3b63A4DA4007bE0C34868B",
       yieldTokenOverride: "0xaD17A225074191d5c8a37B50FdA1AE278a2EE6A2",
       api: {
         apr: getYearnApy,
@@ -480,7 +480,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "yvDAI",
       image: "yvDAI.svg",
       messages: [],
-      gateway: "0xC02670867efac6D988F40878a5559a8D96002A56",
+      gateway: "0x734074fAc8e6245E7a3b63A4DA4007bE0C34868B",
       yieldTokenOverride: "0x65343F414FFD6c97b0f6add33d16F6845Ac22BAc",
       api: {
         apr: getYearnApy,
@@ -499,8 +499,8 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "aWETH",
       image: "aWETH.svg",
       messages: [],
-      wethGateway: "0xDB3fE4Da32c2A79654D98e5a41B22173a0AF3933",
-      gateway: "0xBa3e8437a06397430036E23fF9153408a3203aFD",
+      wethGateway: "0x6b0E91eb763b37C1F26CA6686F1Db23eb26f3890",
+      gateway: "0xeb1ae6Bd23b07078F9cbceF75Cbd243d7aC35c41",
       yieldTokenOverride: "0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8",
       api: {
         apr: getAaveApr,
@@ -518,7 +518,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "wstETH",
       image: "wstETH.svg",
       messages: [],
-      wethGateway: "0xDB3fE4Da32c2A79654D98e5a41B22173a0AF3933",
+      wethGateway: "0x6b0E91eb763b37C1F26CA6686F1Db23eb26f3890",
       api: {
         apr: getLidoApy,
         yieldType: "APR",
@@ -535,7 +535,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "yvWETH",
       image: "yvWETH.svg",
       messages: [],
-      gateway: "0xedE36d3F423EF198abE82D2463E0a18bcF2d9397",
+      gateway: "0x258dfEDb1623101C3Bf6466f2dB53dD11d1d83c8",
       yieldTokenOverride: "0x5B977577Eb8a480f63e11FC615D6753adB8652Ae",
       api: {
         apr: getYearnApy,
@@ -556,7 +556,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "aUSDC",
       image: "aUSDC.svg",
       messages: [],
-      gateway: "0x3e1ccc66c755Fdbc7fbf7D667aA843c062Daf304",
+      gateway: "0x0bAfd3c37fd891bd6C3a99A2c00f34FB6EC66C03",
       yieldTokenOverride: "0x724dc807b04555b71ed48a6896b6F41593b8C637",
       api: {
         apr: getAaveApr,
@@ -599,7 +599,7 @@ export const VAULTS: VaultsConfig = {
       yieldSymbol: "wstETH",
       image: "wstETH.svg",
       messages: [],
-      wethGateway: "0x7C679D851688072e23fE41d1753004eb11E98D8c",
+      wethGateway: "0x39299E7153C28FAF4420CA4126f0d834874e5453",
       api: {
         apr: getLidoApy,
         yieldType: "APR",

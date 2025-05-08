@@ -1,7 +1,7 @@
 import { usePublicClient } from "wagmi";
 import { gql, request } from "graphql-request";
 import { formatEther, formatUnits } from "viem";
-import { arbitrum, mainnet, optimism } from "viem/chains";
+import { arbitrum, fantom, mainnet, optimism } from "viem/chains";
 import { useQuery } from "@tanstack/react-query";
 
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
@@ -138,8 +138,10 @@ export const useEthArbExternalFarmsAprs = () => {
             )?.lpApr ?? 0,
         } as Record<string, number>;
       }
+
+      throw new Error("Unsupported chain");
     },
-    enabled: chain.id !== optimism.id,
+    enabled: chain.id !== optimism.id && chain.id !== fantom.id,
     staleTime: FIVE_MIN_IN_MS,
   });
 };
