@@ -36,6 +36,12 @@ const utilities = [
     url: "https://alchemix.tidbitshub.org/",
     image: "alchemix_tidbits.jpeg",
   },
+  {
+    label: "Alchemix UI Status",
+    author: "Alchemix",
+    url: "https://status.alchemix.fi/",
+    image: "status.png",
+  },
 ];
 
 export const Utilities = () => {
