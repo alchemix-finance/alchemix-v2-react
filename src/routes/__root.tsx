@@ -6,6 +6,7 @@ import "@/styles/index.css";
 import { Layout } from "@/components/layout/Layout";
 import { Toaster } from "@/components/ui/sonner";
 import { ErrorComponent } from "@/components/error/ErrorComponent";
+import { SmartAccountNotice } from "@/components/common/SmartAccountNotice";
 
 const TanStackRouterDevtools = import.meta.env.PROD
   ? () => null // Render nothing in production
@@ -26,6 +27,7 @@ export const Route = createRootRoute({
           <Outlet />
         </Layout>
         <Toaster position="top-center" />
+        <SmartAccountNotice />
         <Suspense>
           <TanStackRouterDevtools />
         </Suspense>
