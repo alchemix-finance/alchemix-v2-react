@@ -36,11 +36,11 @@ export const SmartAccountNotice = () => {
           </h1>
           <div className="space-y-1">
             <p>
-              Unfortunaly, Alchemix V2 does not support smart accounts, unless
-              whitelisted.
+              Alchemix does not support smart contract interaction unless
+              whitelisted nor smart account interaction.
             </p>
             <p>
-              Please reach out to us on{" "}
+              To get your smart contract whitelisted, reach out in{" "}
               <a
                 href="http://discord.com/invite/alchemix"
                 target="_blank"
@@ -48,8 +48,12 @@ export const SmartAccountNotice = () => {
                 className="underline"
               >
                 Discord
-              </a>{" "}
-              if you want to use Alchemix. Subscribe to our{" "}
+              </a>
+              . To use Alchemix with an EOA, you must disable smart account
+              functionality.
+            </p>
+            <p>
+              Subscribe to our{" "}
               <a
                 href="https://x.com/AlchemixFi"
                 target="_blank"
@@ -58,13 +62,14 @@ export const SmartAccountNotice = () => {
               >
                 X (Twitter)
               </a>{" "}
-              for updates on Alchemix V3 with smart accounts support!
+              for updates on Alchemix V3, which includes support for smart
+              accounts!
             </p>
           </div>
         </div>,
         {
           dismissible: false,
-          duration: 1000 * 300, // 5 minutes
+          duration: 1000 * 120, // 2 minutes
         },
       );
     }
