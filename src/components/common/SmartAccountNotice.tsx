@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { useChain } from "@/hooks/useChain";
 
-const noticeShown: Record<`0x${string}`, boolean> = {};
-
 export const SmartAccountNotice = () => {
+  const toastId = useRef<string | number | null>(null);
+
   const chain = useChain();
   const publicClient = usePublicClient<typeof wagmiConfig>({
     chainId: chain.id,
@@ -27,20 +27,19 @@ export const SmartAccountNotice = () => {
   });
 
   useEffect(() => {
-    if (isSmartAccountUser && !noticeShown[address]) {
-      noticeShown[address] = true;
-      toast(
+    if (isSmartAccountUser && !toastId.current) {
+      toastId.current = toast(
         <div className="space-y-2">
           <h1 className="font-semibold">
             We noticed you are using a smart account.
           </h1>
           <div className="space-y-1">
             <p>
-              Unfortunaly, Alchemix V2 does not support smart accounts, unless
-              whitelisted.
+              Alchemix does not support Smart Contract or Smart Account
+              interaction unless whitelisted.
             </p>
             <p>
-              Please reach out to us on{" "}
+              To get your smart contract whitelisted, reach out in{" "}
               <a
                 href="http://discord.com/invite/alchemix"
                 target="_blank"
@@ -48,27 +47,42 @@ export const SmartAccountNotice = () => {
                 className="underline"
               >
                 Discord
-              </a>{" "}
-              if you want to use Alchemix. Subscribe to our{" "}
+              </a>
+              . To use Alchemix with a standard EOA, you must disable smart
+              account functionality.
+            </p>
+            <p>
+              Subscribe to our{" "}
               <a
                 href="https://x.com/AlchemixFi"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline"
               >
-                X (Twitter)
+                X (@AlchemixFi)
               </a>{" "}
-              for updates on Alchemix V3 with smart accounts support!
+              for updates on Alchemix v3, which includes support for Smart
+              Accounts!
             </p>
           </div>
         </div>,
         {
           dismissible: false,
-          duration: 1000 * 300, // 5 minutes
+          duration: 1000 * 120, // 2 minutes
         },
       );
     }
-  }, [address, isSmartAccountUser]);
+    if (!isSmartAccountUser && toastId.current) {
+      toast.dismiss(toastId.current);
+      toastId.current = null;
+    }
+    return () => {
+      if (toastId.current) {
+        toast.dismiss(toastId.current);
+        toastId.current = null;
+      }
+    };
+  }, [isSmartAccountUser]);
 
   return null;
 };
