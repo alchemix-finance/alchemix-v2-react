@@ -44,7 +44,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-use-measure": "^2.1.7",
-    "sonner": "^2.0.1",
+    "sonner": "^2.0.3",
     "tailwind-merge": "^3.2.0",
     "tailwindcss": "^4.1.4",
     "viem": "^2.29.2",
