@@ -17,39 +17,51 @@ export const SmartAccountNotice = () => {
   });
   const { address = zeroAddress } = useAccount();
 
-  const { data: isSmartAccountUser } = useQuery({
+  const { data: smartAccountData } = useQuery({
     queryKey: [QueryKeys.SmartAccountUser, publicClient, address],
     queryFn: async () => {
       const code = await publicClient.getCode({ address });
-      // viem returns undefined if the address is not a contract
-      return !!code;
+
+      const isSmartAccountUser = !!code;
+      const isEip7702User = !!code && code.startsWith("0xef0100");
+
+      return { isSmartAccountUser, isEip7702User };
     },
   });
 
   useEffect(() => {
+    const { isSmartAccountUser, isEip7702User } = smartAccountData ?? {};
     if (isSmartAccountUser && !toastId.current) {
       toastId.current = toast(
         <div className="space-y-2">
           <h1 className="font-semibold">
-            We noticed you are using a smart account.
+            We noticed you are using a{" "}
+            {isEip7702User ? "Smart Acount." : "Smart Contract."}
           </h1>
           <div className="space-y-1">
             <p>
-              Alchemix does not support Smart Contract or Smart Account
-              interaction unless whitelisted.
+              Alchemix does not support{" "}
+              {isEip7702User
+                ? "Smart Acount interaction."
+                : "Smart Contract interaction unless whitelisted."}
             </p>
             <p>
-              To get your smart contract whitelisted, reach out in{" "}
-              <a
-                href="http://discord.com/invite/alchemix"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
-                Discord
-              </a>
-              . To use Alchemix with a standard EOA, you must disable smart
-              account functionality.
+              {isEip7702User ? (
+                "To use Alchemix with a standard EOA, you must disable smart account functionality."
+              ) : (
+                <>
+                  To get your smart contract whitelisted, reach out in{" "}
+                  <a
+                    href="http://discord.com/invite/alchemix"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    Discord
+                  </a>
+                  .
+                </>
+              )}
             </p>
             <p>
               Subscribe to our{" "}
@@ -82,7 +94,7 @@ export const SmartAccountNotice = () => {
         toastId.current = null;
       }
     };
-  }, [isSmartAccountUser]);
+  }, [smartAccountData]);
 
   return null;
 };
