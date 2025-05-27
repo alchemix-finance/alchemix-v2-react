@@ -42,6 +42,12 @@ const utilities = [
     url: "https://status.alchemix.fi/",
     image: "status.png",
   },
+  {
+    label: "Alchemix Deep Dive",
+    author: "Alea Research",
+    url: "https://alearesearch.io/deep-dives/alchemix/",
+    image: "alea_deep_dive.png",
+  },
 ];
 
 export const Utilities = () => {
