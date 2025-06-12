@@ -432,7 +432,6 @@ export const Bridge = () => {
               key="BridgeQuoter"
               selectedQuoteProvider={quote?.provider}
               quotes={quotes}
-              originTokenAddress={originTokenAddress}
               originTokenSymbol={token?.symbol}
               updateQuote={updateQuote}
             />
