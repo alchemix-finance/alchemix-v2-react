@@ -24,14 +24,6 @@ export const chainIdToWormholeChainIdMapping = {
   [arbitrum.id]: 23,
 } as const;
 
-export const chainIdToDomainMapping = {
-  [mainnet.id]: "6648936",
-  [optimism.id]: "1869640809",
-  [arbitrum.id]: "1634886255",
-  [linea.id]: "1818848877",
-  [metis.id]: "1835365481",
-} as const;
-
 export const getInitialOriginChainId = (originChainId: SupportedChainId) =>
   originChainId === fantom.id ? bridgeChains[0].id : originChainId;
 export const getInitialDestinationChainId = (originChainId: SupportedChainId) =>
@@ -151,7 +143,6 @@ type WormholeTargetMapping = Record<
   Record<`0x${string}`, `0x${string}`>
 >;
 type LockboxMapping = Record<`0x${string}`, `0x${string}`>;
-type ConnextTargetMapping = Record<SupportedBridgeChainIds, `0x${string}`>;
 
 export const wormholeTargetMapping: WormholeTargetMapping = {
   [mainnet.id]: {
@@ -181,14 +172,6 @@ export const wormholeTargetMapping: WormholeTargetMapping = {
   [metis.id]: {},
 };
 
-export const connextTargetMapping: ConnextTargetMapping = {
-  [mainnet.id]: "0x45BF3c737e57B059a5855280CA1ADb8e9606AC68",
-  [optimism.id]: "0x8f7492DE823025b4CfaAB1D34c58963F2af5DEDA",
-  [arbitrum.id]: "0xEE9deC2712cCE65174B561151701Bf54b99C24C8",
-  [linea.id]: "0xa05eF29e9aC8C75c530c2795Fa6A800e188dE0a9",
-  [metis.id]: "0x6B142227A277CE62808E0Df93202483547Ec0188",
-};
-
 export const lockboxMapping: LockboxMapping = {
   [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]:
     "0x9141776017D6A8a8522f913fddFAcAe3e84a7CDb",
@@ -198,7 +181,7 @@ export const lockboxMapping: LockboxMapping = {
 
 /* QUOTES */
 
-interface BaseQuote {
+interface WormholeQuote {
   amountOut: string;
   fee: string;
   tx: {
@@ -207,22 +190,10 @@ interface BaseQuote {
     chainId: SupportedBridgeChainIds;
     value: bigint;
   };
-  provider: "Connext" | "Wormhole";
-  isLimitExceeded: boolean;
-  bridgeCost?: string;
-  isWrapNeeded?: boolean;
-}
-
-interface ConnextQuote extends BaseQuote {
-  provider: "Connext";
-  bridgeCost?: never;
-  isWrapNeeded?: never;
-}
-
-interface WormholeQuote extends BaseQuote {
   provider: "Wormhole";
+  isLimitExceeded: boolean;
   bridgeCost: string;
   isWrapNeeded: boolean;
 }
 
-export type BridgeQuote = ConnextQuote | WormholeQuote;
+export type BridgeQuote = WormholeQuote;
