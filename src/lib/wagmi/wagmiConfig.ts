@@ -8,11 +8,17 @@ import {
   metaMaskWallet,
   coinbaseWallet,
 } from "@rainbow-me/rainbowkit/wallets";
+import { Buffer } from "buffer";
 
 import { chains, RPCS } from "./chains";
 import { tenderlyForkChain } from "./tenderly";
 
 const projectId = import.meta.env.VITE_WC_PROJECT_ID;
+
+// https://github.com/wevm/wagmi/issues/261
+if (!window.Buffer) {
+  window.Buffer = Buffer;
+}
 
 // Alchemix v2 doesn't support contract wallets
 coinbaseWallet.preference = "eoaOnly";
