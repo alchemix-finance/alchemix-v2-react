@@ -4,7 +4,6 @@ import { usePublicClient } from "wagmi";
 
 import { BridgeQuote, SupportedBridgeChainIds } from "./constants";
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
-import { getConnexQuoteQueryOptions } from "./connext";
 import { getWormholeQuoteQueryOptions } from "./wormhole";
 
 const combine = (quotes: UseQueryResult<BridgeQuote>[]) => ({
@@ -55,16 +54,6 @@ export const useBridgeQuotes = ({
         destinationChainId,
         originTokenAddress,
         amount,
-        receipient,
-        originPublicClient,
-        destinationPublicClient,
-      }),
-      getConnexQuoteQueryOptions({
-        originChainId,
-        destinationChainId,
-        originTokenAddress,
-        amount,
-        slippage,
         receipient,
         originPublicClient,
         destinationPublicClient,
