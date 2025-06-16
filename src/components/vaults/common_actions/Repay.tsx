@@ -65,7 +65,7 @@ export const Repay = () => {
     return tokens?.filter(
       (token) =>
         token.address === alchemist?.debtToken ||
-        alchemist?.underlyingTokens.includes(token.address),
+        alchemist?.underlyingTokensAddresses.includes(token.address),
     );
   }, [alchemists, selectedSynthAsset, tokens]);
 
@@ -171,7 +171,7 @@ export const Repay = () => {
     const newRepaymentTokenAddress = tokens?.filter(
       (token) =>
         token.address === alchemist?.debtToken ||
-        alchemist?.underlyingTokens.includes(token.address),
+        alchemist?.underlyingTokensAddresses.includes(token.address),
     )[0].address;
     setRepaymentTokenAddress(newRepaymentTokenAddress);
     setSelectedSynthAsset(newSynthAsset);
@@ -234,7 +234,7 @@ export const Repay = () => {
       : isPendingAllowance || isFetchingAllowance;
 
   return (
-    <div className="space-y-4 bg-grey15inverse p-4 dark:bg-grey15">
+    <div className="bg-grey15inverse dark:bg-grey15 space-y-4 p-4">
       <DebtSelection
         selectedSynthAsset={selectedSynthAsset}
         availableSynthAssets={availableSynthAssets}
@@ -243,7 +243,7 @@ export const Repay = () => {
       {(!avaiableRepaymentTokens || !repaymentToken) && <p>Loading...</p>}
       {!!avaiableRepaymentTokens && !!repaymentToken && (
         <>
-          <div className="flex rounded-sm border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
+          <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
             <Select
               value={repaymentTokenAddress}
               onValueChange={(value) =>
