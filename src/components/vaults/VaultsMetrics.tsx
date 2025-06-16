@@ -34,7 +34,9 @@ export const VaultsMetrics = ({
 
   const debtTokenPrices = useGetMultipleTokenPrices([
     ...new Set(
-      filteredAlchemists?.map((alchemist) => alchemist.underlyingTokens[0]),
+      filteredAlchemists?.map(
+        (alchemist) => alchemist.underlyingTokensAddresses[0],
+      ),
     ),
   ]);
   const underlyingTokensPrices = useGetMultipleTokenPrices([
@@ -64,11 +66,11 @@ export const VaultsMetrics = ({
   );
 
   return (
-    <div className="rounded-sm bg-grey10inverse dark:bg-grey10">
+    <div className="bg-grey10inverse dark:bg-grey10 rounded-sm">
       <div className="px-6 py-4">
-        <div className="flex flex-col justify-between gap-2 font-alcxTitles text-lg tracking-wide md:flex-row">
+        <div className="font-alcxTitles flex flex-col justify-between gap-2 text-lg tracking-wide md:flex-row">
           <div className="flex-col">
-            <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
+            <div className="text-bronze3 mr-2 text-sm whitespace-nowrap uppercase">
               Total Deposit
             </div>
             <div className="flex">
@@ -82,7 +84,7 @@ export const VaultsMetrics = ({
             </div>
           </div>
           <div className="flex-col">
-            <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
+            <div className="text-bronze3 mr-2 text-sm whitespace-nowrap uppercase">
               Current Debt
             </div>
             <div className="flex">
@@ -97,7 +99,7 @@ export const VaultsMetrics = ({
             </div>
           </div>
           <div className="flex-col">
-            <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
+            <div className="text-bronze3 mr-2 text-sm whitespace-nowrap uppercase">
               Available Credit
             </div>
             <div className="flex">
@@ -111,8 +113,8 @@ export const VaultsMetrics = ({
               </div>
             </div>
           </div>
-          <div className="flex-col border-t border-dashed border-bronze3 md:border-l md:border-t-0 md:pl-6 md:pt-0">
-            <div className="mr-2 whitespace-nowrap text-sm uppercase text-bronze3">
+          <div className="border-bronze3 flex-col border-t border-dashed md:border-t-0 md:border-l md:pt-0 md:pl-6">
+            <div className="text-bronze3 mr-2 text-sm whitespace-nowrap uppercase">
               Global TVL
             </div>
             <div className="flex">

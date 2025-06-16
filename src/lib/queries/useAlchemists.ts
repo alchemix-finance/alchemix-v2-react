@@ -92,7 +92,7 @@ export const useAlchemists = (overrideChainId?: SupportedChainId) => {
           [debt, depositedTokens],
           totalValue,
           yieldTokens,
-          underlyingTokens,
+          underlyingTokensAddresses,
         ] = results.slice(i * 7, i * 7 + 7) as [
           Address,
           Address,
@@ -117,12 +117,51 @@ export const useAlchemists = (overrideChainId?: SupportedChainId) => {
           },
           totalValue,
           yieldTokens,
-          underlyingTokens,
+          underlyingTokensAddresses,
           minimumCollateralization,
         } as const;
       });
 
-      return alchemists;
+      const underlyingTokensCalls = alchemists.flatMap((alchemist) =>
+        alchemist.underlyingTokensAddresses.map(
+          (underlyingTokenAddress) =>
+            ({
+              abi: alchemistV2Abi,
+              address: alchemist.address,
+              functionName: "getUnderlyingTokenParameters",
+              args: [underlyingTokenAddress],
+            }) as const,
+        ),
+      );
+
+      const underlyingTokensResults = await publicClient.multicall({
+        allowFailure: false,
+        contracts: underlyingTokensCalls,
+      });
+
+      const underlyingTokens = alchemists.flatMap((alchemist) => {
+        const underlyingTokenResult = underlyingTokensResults.splice(
+          0,
+          alchemist.underlyingTokensAddresses.length,
+        );
+        return alchemist.underlyingTokensAddresses.map((underlyingToken, i) => {
+          const [underlyingTokenParams] = underlyingTokenResult.slice(i);
+          return {
+            address: underlyingToken,
+            alchemist,
+            underlyingTokenParams,
+          };
+        });
+      });
+
+      const alchemistsWithUnderlyingTokens = alchemists.map((alchemist) => {
+        return {
+          ...alchemist,
+          underlyingTokens,
+        };
+      });
+
+      return alchemistsWithUnderlyingTokens;
     },
     staleTime: ONE_MINUTE_IN_MS,
   });
