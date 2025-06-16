@@ -1,12 +1,14 @@
-import { useSentinel } from "@/lib/queries/sentinel/useSentinel";
-import { LoadingBar } from "../common/LoadingBar";
-import { useAlchemists } from "@/lib/queries/useAlchemists";
 import {
   useReadContracts,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { useSentinel } from "@/lib/queries/sentinel/useSentinel";
+import { LoadingBar } from "@/components/common/LoadingBar";
+import { useAlchemists } from "@/lib/queries/useAlchemists";
 import { alTokenAbi } from "@/abi/alToken";
 import { useTransmuters } from "@/lib/queries/transmuters/useTransmuters";
 import { useVaults } from "@/lib/queries/vaults/useVaults";
@@ -15,14 +17,14 @@ import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import {
   AccordionTrigger,
   Accordion,
   AccordionItem,
   AccordionContent,
-} from "../ui/accordion";
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 
 export const Sentinel = () => {
   const chain = useChain();
@@ -226,8 +228,8 @@ export const Sentinel = () => {
                           )}
                         </p>
                       </div>
-                      <button
-                        className="border-red1 bg-red5 hover:bg-red3 rounded-sm border px-4 py-2 transition-all"
+                      <Button
+                        className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
                         onClick={() =>
                           toggleAlTokenState({
                             pause: !alToken.paused,
@@ -237,7 +239,7 @@ export const Sentinel = () => {
                         }
                       >
                         {alToken.paused ? "Unpause" : "Pause"}
-                      </button>
+                      </Button>
                     </div>
                   ))}
               </AccordionContent>
@@ -283,8 +285,8 @@ export const Sentinel = () => {
                             )}
                           </p>
                         </div>
-                        <button
-                          className="border-red1 bg-red5 hover:bg-red3 rounded-sm border px-4 py-2 transition-all"
+                        <Button
+                          className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
                           onClick={() =>
                             toggleAlchemistUnderlyingToken({
                               enabled: token.underlyingTokenParams.enabled,
@@ -296,7 +298,7 @@ export const Sentinel = () => {
                           {token.underlyingTokenParams.enabled
                             ? "Pause"
                             : "Unpause"}
-                        </button>
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -339,8 +341,8 @@ export const Sentinel = () => {
                           {transmuter.address}
                         </a>
                       </div>
-                      <button
-                        className="border-red1 bg-red5 hover:bg-red3 rounded-sm border px-4 py-2 transition-all"
+                      <Button
+                        className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
                         onClick={() =>
                           toggleTransmuterState({
                             pause: !transmuter.isPaused,
@@ -349,7 +351,7 @@ export const Sentinel = () => {
                         }
                       >
                         {transmuter.isPaused ? "Unpause" : "Pause"}
-                      </button>
+                      </Button>
                     </div>
                   ))}
               </AccordionContent>
@@ -390,8 +392,8 @@ export const Sentinel = () => {
                           {vault.address}
                         </a>
                       </div>
-                      <button
-                        className="border-red1 bg-red5 hover:bg-red3 rounded-sm border px-4 py-2 transition-all"
+                      <Button
+                        className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
                         onClick={() =>
                           toggleVaultState({
                             unpause: !vault.yieldTokenParams.enabled,
@@ -401,7 +403,7 @@ export const Sentinel = () => {
                         }
                       >
                         {vault.yieldTokenParams.enabled ? "Pause" : "Unpause"}
-                      </button>
+                      </Button>
                     </div>
                   ))}
               </AccordionContent>
