@@ -49,7 +49,7 @@ export const useTokensQuery = (overrideChainId?: SupportedChainId) => {
       if (!alchemists) throw new Error("Alchemists not loaded");
       const tokensAddresses = alchemists.flatMap((alchemist) => [
         alchemist.debtToken,
-        ...alchemist.underlyingTokens,
+        ...alchemist.underlyingTokensAddresses,
         ...alchemist.yieldTokens,
       ]);
       const vaultsMetadata = VAULTS[chain.id];

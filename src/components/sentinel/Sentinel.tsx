@@ -1,12 +1,14 @@
-import { useSentinel } from "@/lib/queries/sentinel/useSentinel";
-import { LoadingBar } from "../common/LoadingBar";
-import { useAlchemists } from "@/lib/queries/useAlchemists";
 import {
   useReadContracts,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { useSentinel } from "@/lib/queries/sentinel/useSentinel";
+import { LoadingBar } from "@/components/common/LoadingBar";
+import { useAlchemists } from "@/lib/queries/useAlchemists";
 import { alTokenAbi } from "@/abi/alToken";
 import { useTransmuters } from "@/lib/queries/transmuters/useTransmuters";
 import { useVaults } from "@/lib/queries/vaults/useVaults";
@@ -15,14 +17,14 @@ import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { transmuterV2Abi } from "@/abi/transmuterV2";
 import { alchemistV2Abi } from "@/abi/alchemistV2";
-import { useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import {
   AccordionTrigger,
   Accordion,
   AccordionItem,
   AccordionContent,
-} from "../ui/accordion";
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 
 export const Sentinel = () => {
   const chain = useChain();
@@ -167,9 +169,27 @@ export const Sentinel = () => {
     });
   };
 
+  const toggleAlchemistUnderlyingToken = ({
+    address,
+    alchemist,
+    enabled,
+  }: {
+    address: `0x${string}`;
+    alchemist: `0x${string}`;
+    enabled: boolean;
+  }) => {
+    writeContract({
+      address: alchemist,
+      abi: alchemistV2Abi,
+      chainId: chain.id,
+      functionName: "setUnderlyingTokenEnabled",
+      args: [address, !enabled],
+    });
+  };
+
   return (
-    <div className="relative rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-      <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
+    <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative rounded-sm border">
+      <div className="bg-grey10inverse dark:bg-grey10 px-6 py-4">
         <h5 className="text-sm">Alchemix Control Panel</h5>
       </div>
       {isPending && <LoadingBar />}
@@ -177,7 +197,7 @@ export const Sentinel = () => {
         <div className="space-y-4 p-4">
           <Accordion type="single" collapsible>
             <AccordionItem value="alTokens" className="border-b-0">
-              <AccordionTrigger className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
+              <AccordionTrigger className="bg-grey10inverse dark:bg-grey10 px-6 py-4">
                 <h5 className="text-sm">Alchemists</h5>
               </AccordionTrigger>
               <AccordionContent className="p-2">
@@ -208,8 +228,8 @@ export const Sentinel = () => {
                           )}
                         </p>
                       </div>
-                      <button
-                        className="rounded-sm border border-red1 bg-red5 px-4 py-2 transition-all hover:bg-red3"
+                      <Button
+                        className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
                         onClick={() =>
                           toggleAlTokenState({
                             pause: !alToken.paused,
@@ -219,13 +239,74 @@ export const Sentinel = () => {
                         }
                       >
                         {alToken.paused ? "Unpause" : "Pause"}
-                      </button>
+                      </Button>
                     </div>
                   ))}
               </AccordionContent>
             </AccordionItem>
+            <AccordionItem
+              value="enabled-underlying-tokens"
+              className="border-b-0"
+            >
+              <AccordionTrigger className="bg-grey10inverse dark:bg-grey10 px-6 py-4">
+                <h5 className="text-sm">
+                  Enabled Underlying Alchemists Tokens
+                </h5>
+              </AccordionTrigger>
+              <AccordionContent className="p-2">
+                {alchemists?.map((alchemist) => (
+                  <div
+                    key={alchemist.address}
+                    className="space-y-2 rounded-sm p-2"
+                  >
+                    <h5 className="text-lg">Alchemist {alchemist.synthType}</h5>
+                    {alchemist.underlyingTokens.map((token) => (
+                      <div
+                        key={token.address}
+                        className="flex items-center justify-between"
+                      >
+                        <div>
+                          <a
+                            className="font-alcxMono text-lg hover:underline"
+                            href={`${chain.blockExplorers.default.url}/address/${token.address}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {token.address}
+                          </a>
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="text-sm">Status</p>
+                          <p>
+                            {!token.underlyingTokenParams.enabled ? (
+                              <span className="text-red3">Paused</span>
+                            ) : (
+                              <span className="text-green1">Active</span>
+                            )}
+                          </p>
+                        </div>
+                        <Button
+                          className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
+                          onClick={() =>
+                            toggleAlchemistUnderlyingToken({
+                              enabled: token.underlyingTokenParams.enabled,
+                              address: token.address,
+                              alchemist: token.alchemist.address,
+                            })
+                          }
+                        >
+                          {token.underlyingTokenParams.enabled
+                            ? "Pause"
+                            : "Unpause"}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
             <AccordionItem value="transmuters" className="border-b-0">
-              <AccordionTrigger className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
+              <AccordionTrigger className="bg-grey10inverse dark:bg-grey10 px-6 py-4">
                 <h5 className="text-sm">Transmuters</h5>
               </AccordionTrigger>
               <AccordionContent className="p-2">
@@ -260,8 +341,8 @@ export const Sentinel = () => {
                           {transmuter.address}
                         </a>
                       </div>
-                      <button
-                        className="rounded-sm border border-red1 bg-red5 px-4 py-2 transition-all hover:bg-red3"
+                      <Button
+                        className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
                         onClick={() =>
                           toggleTransmuterState({
                             pause: !transmuter.isPaused,
@@ -270,13 +351,13 @@ export const Sentinel = () => {
                         }
                       >
                         {transmuter.isPaused ? "Unpause" : "Pause"}
-                      </button>
+                      </Button>
                     </div>
                   ))}
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="vaults" className="border-b-0">
-              <AccordionTrigger className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
+              <AccordionTrigger className="bg-grey10inverse dark:bg-grey10 px-6 py-4">
                 <h5 className="text-sm">Vaults</h5>
               </AccordionTrigger>
               <AccordionContent className="p-2">
@@ -311,8 +392,8 @@ export const Sentinel = () => {
                           {vault.address}
                         </a>
                       </div>
-                      <button
-                        className="rounded-sm border border-red1 bg-red5 px-4 py-2 transition-all hover:bg-red3"
+                      <Button
+                        className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
                         onClick={() =>
                           toggleVaultState({
                             unpause: !vault.yieldTokenParams.enabled,
@@ -322,7 +403,7 @@ export const Sentinel = () => {
                         }
                       >
                         {vault.yieldTokenParams.enabled ? "Pause" : "Unpause"}
-                      </button>
+                      </Button>
                     </div>
                   ))}
               </AccordionContent>

@@ -25,18 +25,6 @@ export const useVaults = () => {
     queryFn: async () => {
       if (!alchemists) throw new Error("Alchemists not loaded");
 
-      const underlyingTokensCalls = alchemists.flatMap((alchemist) =>
-        alchemist.underlyingTokens.map(
-          (underlyingToken) =>
-            ({
-              abi: alchemistV2Abi,
-              address: alchemist.address,
-              functionName: "getUnderlyingTokenParameters",
-              args: [underlyingToken],
-            }) as const,
-        ),
-      );
-
       const yieldTokensCalls = alchemists.flatMap((alchemist) =>
         alchemist.yieldTokens.flatMap(
           (yieldToken) =>
@@ -69,29 +57,9 @@ export const useVaults = () => {
         ),
       );
 
-      const underlyingTokensResults = await publicClient.multicall({
-        allowFailure: false,
-        contracts: underlyingTokensCalls,
-      });
-
       const yieldTokensResults = await publicClient.multicall({
         allowFailure: false,
         contracts: yieldTokensCalls,
-      });
-
-      const underlyingTokens = alchemists.flatMap((alchemist) => {
-        const underlyingTokenResult = underlyingTokensResults.splice(
-          0,
-          alchemist.underlyingTokens.length,
-        );
-        return alchemist.underlyingTokens.map((underlyingToken, i) => {
-          const [underlyingTokenParams] = underlyingTokenResult.slice(i);
-          return {
-            address: underlyingToken,
-            alchemist,
-            underlyingTokenParams,
-          };
-        });
       });
 
       const vaults = alchemists.flatMap((alchemist) => {
@@ -112,7 +80,7 @@ export const useVaults = () => {
             bigint,
           ];
 
-          const underlyingToken = underlyingTokens.find(
+          const underlyingToken = alchemist.underlyingTokens.find(
             (underlyingToken) =>
               underlyingToken.address.toLowerCase() ===
               yieldTokenParams.underlyingToken.toLowerCase(),
