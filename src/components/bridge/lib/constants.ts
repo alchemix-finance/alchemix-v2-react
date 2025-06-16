@@ -18,10 +18,12 @@ import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 export const bridgeChains = [mainnet, optimism, arbitrum, linea, metis];
 export type SupportedBridgeChainIds = (typeof bridgeChains)[number]["id"];
 
-export const chainIdToWormholeChainIdMapping = {
-  [mainnet.id]: 2,
-  [optimism.id]: 24,
-  [arbitrum.id]: 23,
+export const chainIdToLayerZeroEidMapping = {
+  [mainnet.id]: 30101,
+  [optimism.id]: 30111,
+  [arbitrum.id]: 30110,
+  [linea.id]: 30183,
+  [metis.id]: 30151,
 } as const;
 
 export const getInitialOriginChainId = (originChainId: SupportedChainId) =>
@@ -138,38 +140,40 @@ export const getInitialOriginTokenAddress = (chainId: SupportedChainId) => {
 
 /* TARGETS */
 
-type WormholeTargetMapping = Record<
+type TargetMapping = Record<
   SupportedBridgeChainIds,
   Record<`0x${string}`, `0x${string}`>
 >;
 type LockboxMapping = Record<`0x${string}`, `0x${string}`>;
 
-export const wormholeTargetMapping: WormholeTargetMapping = {
+export const targetMapping: TargetMapping = {
   [mainnet.id]: {
-    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]:
-      "0xA9e28396B4259B51444af21B2B80897920917360",
-    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]:
-      "0x862A205494516e57D33b7F5182fC305E2B17Bc45",
-    [SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]]:
-      "0xA9e28396B4259B51444af21B2B80897920917360",
-    [SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]]:
-      "0x862A205494516e57D33b7F5182fC305E2B17Bc45",
+    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]: "0x",
+    [SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]: "0x",
+    [SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH]]: "0x",
+    [SYNTHS_TO_XERC20_MAPPING[SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD]]: "0x",
+    [ALCX_MAINNET_ADDRESS]: "0x",
   },
   [optimism.id]: {
-    [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]:
-      "0xa4158f90Cd65e6E5916BDCa9e3BfE70F511e36E1",
-    [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]:
-      "0x9B08D4d6c6a257a5aa2eb0c022B193deedD81CA4",
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]: "0x",
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]: "0x",
+    [ALCX_OPTIMISM_ADDRESS]: "0x",
   },
   [arbitrum.id]: {
-    [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alETH]:
-      "0x07A4D78F8185354E58edcCf01cc0F6766ABD44DF",
-    [SYNTH_ASSETS_ADDRESSES[arbitrum.id].alUSD]:
-      "0x19bedE3d7Addf500eC6777384DD48A5715836c85",
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]: "0x",
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]: "0x",
+    [ALCX_ARBITRUM_ADDRESS]: "0x",
   },
-
-  [linea.id]: {},
-  [metis.id]: {},
+  [linea.id]: {
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]: "0x",
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]: "0x",
+    [ALCX_LINEA_ADDRESS]: "0x",
+  },
+  [metis.id]: {
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alETH]: "0x",
+    [SYNTH_ASSETS_ADDRESSES[optimism.id].alUSD]: "0x",
+    [ALCX_METIS_ADDRESS]: "0x",
+  },
 };
 
 export const lockboxMapping: LockboxMapping = {
@@ -179,9 +183,9 @@ export const lockboxMapping: LockboxMapping = {
     "0x2930CDA830B206c84ae8d4CA3F77ec0eAA77a14b",
 };
 
-/* QUOTES */
+/* QUOTE */
 
-interface WormholeQuote {
+export interface Quote {
   amountOut: string;
   fee: string;
   tx: {
@@ -190,10 +194,10 @@ interface WormholeQuote {
     chainId: SupportedBridgeChainIds;
     value: bigint;
   };
-  provider: "Wormhole";
+  provider: "LayerZero";
   isLimitExceeded: boolean;
-  bridgeCost: string;
+  isOriginSizeExceeded: boolean;
+  bridgeLimit: string;
+  bridgeCost: { nativeFee: bigint; lzTokenFee: bigint };
   isWrapNeeded: boolean;
 }
-
-export type BridgeQuote = WormholeQuote;
