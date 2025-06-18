@@ -185,14 +185,14 @@ function calculateTotalDebt(
   if (!alchemists) return 0;
   let debt = 0;
   const set = new Set(
-    alchemists.map((alchemist) => alchemist.underlyingTokens[0]),
+    alchemists.map((alchemist) => alchemist.underlyingTokensAddresses[0]),
   );
   const priceMap = new Map(
     debtTokensPrices.map((price, i) => [[...set.values()][i], price.data]),
   );
   for (let i = 0; i < alchemists.length; i++) {
     const alchemist = alchemists[i];
-    const debtTokenPrice = priceMap.get(alchemist.underlyingTokens[0]);
+    const debtTokenPrice = priceMap.get(alchemist.underlyingTokensAddresses[0]);
 
     const rawDebt = alchemist.position.debt;
 
@@ -213,7 +213,7 @@ function calculateAvailableCredit(
   if (!alchemists) return 0;
 
   const set = new Set(
-    alchemists.map((alchemist) => alchemist.underlyingTokens[0]),
+    alchemists.map((alchemist) => alchemist.underlyingTokensAddresses[0]),
   );
   const priceMap = new Map(
     debtTokensPrices.map((price, i) => [[...set.values()][i], price.data]),
@@ -222,7 +222,7 @@ function calculateAvailableCredit(
   for (let i = 0; i < alchemists.length; i++) {
     const alchemist = alchemists[i];
     const totalValue = alchemist.totalValue;
-    const tokenPrice = priceMap.get(alchemist.underlyingTokens[0]);
+    const tokenPrice = priceMap.get(alchemist.underlyingTokensAddresses[0]);
 
     if (!tokenPrice) {
       continue;
