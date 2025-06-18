@@ -52,7 +52,7 @@
     "wagmi": "^2.15.6"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.7",
+    "@tailwindcss/postcss": "^4.1.10",
     "@tanstack/eslint-plugin-query": "^5.74.7",
     "@tanstack/router-devtools": "^1.104.1",
     "@tanstack/router-plugin": "^1.85.3",
