@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "@layerzerolabs/lz-v2-utilities": "^3.0.102",
-    "@rainbow-me/rainbowkit": "^2.2.6",
+    "@rainbow-me/rainbowkit": "^2.2.8",
     "@rive-app/react-canvas": "^4.21.3",
-    "@tailwindcss/vite": "^4.1.5",
-    "@tanstack/react-query": "^5.75.4",
+    "@tailwindcss/vite": "^4.1.10",
+    "@tanstack/react-query": "^5.80.7",
     "@tanstack/react-query-devtools": "^5.75.4",
     "@tanstack/react-router": "^1.116.0",
     "@visx/annotation": "^3.12.0",
@@ -49,11 +49,11 @@
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.4",
-    "viem": "^2.31.0",
+    "viem": "^2.31.3",
     "wagmi": "^2.15.6"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.7",
+    "@tailwindcss/postcss": "^4.1.10",
     "@tanstack/eslint-plugin-query": "^5.74.7",
     "@tanstack/router-devtools": "^1.104.1",
     "@tanstack/router-plugin": "^1.85.3",
