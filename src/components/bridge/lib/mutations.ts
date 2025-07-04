@@ -7,13 +7,14 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { zeroAddress } from "viem";
 
-import { BridgeQuote } from "./constants";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { useAllowance } from "@/hooks/useAllowance";
 import { Token } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
 import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
+
+import { Quote } from "./constants";
 
 export const useWriteBridge = ({
   quote,
@@ -23,7 +24,7 @@ export const useWriteBridge = ({
   amount,
   updateBridgeTxHash,
 }: {
-  quote: BridgeQuote | undefined;
+  quote: Quote | undefined;
   originTokenAddress: `0x${string}`;
   originChainId: SupportedChainId;
   token: Token | undefined;
