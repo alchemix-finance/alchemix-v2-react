@@ -15,7 +15,7 @@
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.8",
     "@rive-app/react-canvas": "^4.21.4",
-    "@tailwindcss/vite": "^4.1.10",
+    "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.80.7",
     "@tanstack/react-query-devtools": "^5.80.7",
     "@tanstack/react-router": "^1.116.0",
@@ -46,9 +46,9 @@
     "react-dom": "^18.3.1",
     "react-use-measure": "^2.1.7",
     "sonner": "^2.0.5",
-    "tailwind-merge": "^3.3.0",
+    "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.4",
-    "viem": "^2.31.6",
+    "viem": "^2.31.7",
     "wagmi": "^2.15.6"
   },
   "devDependencies": {
@@ -68,18 +68,13 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "husky": "^9.1.7",
-    "lint-staged": "^15.4.3",
-    "prettier": "^3.5.3",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.13",
     "typescript": "^5.7.2",
     "vite": "^6.3.4",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.2.4"
-  },
-  "pnpm": {
-    "overrides": {
-      "brace-expansion": "2.0.2"
-    }
   },
   "lint-staged": {
     "**/*.(ts|tsx|js)": [
