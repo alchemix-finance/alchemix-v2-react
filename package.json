@@ -76,11 +76,6 @@
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.2.4"
   },
-  "pnpm": {
-    "overrides": {
-      "brace-expansion": "2.0.2"
-    }
-  },
   "lint-staged": {
     "**/*.(ts|tsx|js)": [
       "bash -c tsc --noEmit",
