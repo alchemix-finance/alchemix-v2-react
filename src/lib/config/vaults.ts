@@ -577,7 +577,7 @@ export const VAULTS: VaultsConfig = {
         {
           type: "warning",
           message:
-            "Jones USDC vault is temporarily disabled untill further notice.",
+            "Jones USDC vault deposits are temporarily disabled untill further notice.",
         },
         {
           type: "info",
