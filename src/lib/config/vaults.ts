@@ -575,6 +575,11 @@ export const VAULTS: VaultsConfig = {
       image: "jUSDC.webp",
       messages: [
         {
+          type: "warning",
+          message:
+            "Jones USDC vault is temporarily disabled untill further notice.",
+        },
+        {
           type: "info",
           message:
             "Only jUSDC deposit and withdraw are available. Get jUSDC from Jones.",
