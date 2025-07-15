@@ -378,7 +378,7 @@ export const Bridge = () => {
           </AnimatePresence>
           <m.div
             layout={isReducedMotion ? false : "position"}
-            transition={{ type: "easeInOut", duration: 0.25 }}
+            transition={{ ease: "easeInOut", duration: 0.25 }}
           >
             <CtaButton
               variant="outline"
