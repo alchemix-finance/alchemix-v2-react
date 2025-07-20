@@ -20,7 +20,6 @@ import { Switch } from "@/components/ui/switch";
 import { reducedMotionAccordionVariants } from "@/lib/motion/motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { BridgeWrapModal } from "@/components/modals/bridgeWrap/BridgeWrapModal";
 
 import {
   SupportedBridgeChainIds,
@@ -33,6 +32,7 @@ import {
 } from "./lib/constants";
 import { StatusBox } from "./StatusBox";
 import { BridgeQuoter } from "./BridgeQuoter";
+import { Recovery } from "./Recovery";
 import { useWriteBridge } from "./lib/mutations";
 import { useBridgeQuote } from "./lib/queries";
 
@@ -41,8 +41,6 @@ export const Bridge = () => {
 
   const chain = useChain();
   const { switchChain } = useSwitchChain();
-
-  const [isWrapModalOpen, setIsWrapModalOpen] = useState(false);
 
   const [bridgeTxHash, setBridgeTxHash] = useState<`0x${string}`>();
 
@@ -77,16 +75,17 @@ export const Bridge = () => {
     useState(false);
 
   const { address = zeroAddress } = useAccount();
-  const { data: overrideBalance } = useReadContract({
-    address: originTokenAddress,
-    abi: erc20Abi,
-    functionName: "balanceOf",
-    args: [address],
-    chainId: originChainId,
-    query: {
-      select: (balance) => formatEther(balance),
-    },
-  });
+  const { data: overrideBalance, refetch: refetchOriginTokenBalance } =
+    useReadContract({
+      address: originTokenAddress,
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      args: [address],
+      chainId: originChainId,
+      query: {
+        select: (balance) => formatEther(balance),
+      },
+    });
 
   const receipient =
     confirmedDifferentAddress && isAddress(receipientAddress)
@@ -178,27 +177,27 @@ export const Bridge = () => {
   const { isApprovalNeeded, isPending, writeApprove, writeBridge } =
     useWriteBridge({
       amount,
-      originTokenAddress,
       originChainId,
+      originTokenAddress,
       token,
       quote,
       updateBridgeTxHash,
+      refetchOriginTokenBalance,
     });
 
   const onCtaClick = () => {
-    if (originChainId !== chain.id) {
+    if (
+      !quote ||
+      quote.isDestinationBridgeLimitExceeded ||
+      quote.isToMainnetLockboxBalanceExceeded
+    ) {
+      return;
+    }
+
+    if (quote.tx.chainId !== chain.id) {
       switchChain({
-        chainId: originChainId,
+        chainId: quote.tx.chainId,
       });
-      return;
-    }
-
-    if (!quote) {
-      return;
-    }
-
-    if (quote.isWrapNeeded) {
-      setIsWrapModalOpen(true);
       return;
     }
 
@@ -376,6 +375,7 @@ export const Bridge = () => {
               </m.div>
             )}
           </AnimatePresence>
+          <Recovery />
           <m.div
             layout={isReducedMotion ? false : "position"}
             transition={{ ease: "easeInOut", duration: 0.25 }}
@@ -385,6 +385,8 @@ export const Bridge = () => {
               width="full"
               disabled={
                 !quote ||
+                quote.isDestinationBridgeLimitExceeded ||
+                quote.isToMainnetLockboxBalanceExceeded ||
                 isInputZero(amount) ||
                 isPending ||
                 (isDifferentAddress && !isAddress(receipientAddress)) ||
@@ -394,13 +396,11 @@ export const Bridge = () => {
             >
               {chain.id !== originChainId
                 ? "Switch chain"
-                : quote?.isWrapNeeded
-                  ? "Bridge "
-                  : isPending
-                    ? "Preparing"
-                    : isApprovalNeeded === true
-                      ? "Approve"
-                      : "Bridge"}
+                : isPending
+                  ? "Preparing"
+                  : isApprovalNeeded === true
+                    ? "Approve"
+                    : "Bridge"}
             </CtaButton>
           </m.div>
         </m.div>
@@ -416,19 +416,6 @@ export const Bridge = () => {
           )}
         </AnimatePresence>
       </div>
-
-      <BridgeWrapModal
-        open={isWrapModalOpen}
-        onOpenChange={setIsWrapModalOpen}
-        amount={amount}
-        bridgeTxHash={bridgeTxHash}
-        updateBridgeTxHash={updateBridgeTxHash}
-        originChainId={originChainId}
-        destinationChainName={destinationChain?.name}
-        originTokenAddress={originTokenAddress}
-        originTokenSymbol={token?.symbol}
-        quote={quote}
-      />
     </>
   );
 };

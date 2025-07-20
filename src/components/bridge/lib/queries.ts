@@ -14,17 +14,17 @@ import { Options } from "@layerzerolabs/lz-v2-utilities";
 
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { oftAbi } from "@/abi/oft";
-import { SYNTHS_TO_XERC20_MAPPING } from "@/lib/config/synths";
 import { isInputZero } from "@/utils/inputNotZero";
-import { ONE_MINUTE_IN_MS } from "@/lib/constants";
+import { MAX_UINT256_BN, HALF_MINUTE_IN_MS } from "@/lib/constants";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
 
 import {
   Quote,
+  RecoveryQuote,
   SupportedBridgeChainIds,
   chainIdToLayerZeroEidMapping,
   lockboxMapping,
-  originToDestinationXTokenAddressMapping,
   originToDestinationAlAssetTokenAddressMapping,
   targetMapping,
 } from "./constants";
@@ -57,13 +57,13 @@ export const useBridgeQuote = ({
     queryKey: [
       QueryKeys.BridgeQuote,
       originChainId,
+      destinationChainId,
       originPublicClient,
       destinationPublicClient,
-      address,
-      receipient,
-      destinationChainId,
       originTokenAddress,
+      address,
       amount,
+      receipient,
     ],
     queryFn: async () => {
       if (originChainId === fantom.id) {
@@ -73,64 +73,70 @@ export const useBridgeQuote = ({
         throw new Error("Wallet not connected");
       }
 
-      const xErc20Address =
-        originToDestinationXTokenAddressMapping[originTokenAddress][
-          destinationChainId
-        ];
+      const destinationTokenAddress =
+        originToDestinationAlAssetTokenAddressMapping[originChainId][
+          originTokenAddress
+        ][destinationChainId];
 
-      const bridgeLimit = await destinationPublicClient.readContract({
-        address: xErc20Address,
-        abi: [
-          {
-            inputs: [
-              { internalType: "address", name: "adapter", type: "address" },
-            ],
-            name: "mintingCurrentLimitOf",
-            outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-            stateMutability: "view",
-            type: "function",
-          },
-        ],
-        functionName: "mintingCurrentLimitOf",
-        args: [targetMapping[destinationChainId][xErc20Address]],
-      });
-      const bridgeLimitFormatted = formatEther(bridgeLimit);
+      let isFromMainnetLockboxBalanceExceeded = false;
+      let isToMainnetLockboxBalanceExceeded = false;
+      let mainnetLockboxBalanceFormatted = "0";
+      let destinationBridgeLimit = MAX_UINT256_BN;
 
-      let isLimitExceeded = +bridgeLimitFormatted < +amount;
-      let isOriginSizeExceeded = false;
+      if (destinationChainId !== mainnet.id) {
+        destinationBridgeLimit = await destinationPublicClient.readContract({
+          address: destinationTokenAddress,
+          abi: [
+            {
+              inputs: [
+                { internalType: "address", name: "adapter", type: "address" },
+              ],
+              name: "mintingCurrentLimitOf",
+              outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+              stateMutability: "view",
+              type: "function",
+            },
+          ],
+          functionName: "mintingCurrentLimitOf",
+          args: [targetMapping[destinationChainId][destinationTokenAddress]],
+        });
+      }
+
+      const destinationBridgeLimitFormatted = formatEther(
+        destinationBridgeLimit,
+      );
+      const isDestinationBridgeLimitExceeded =
+        +destinationBridgeLimitFormatted < +amount;
 
       if (destinationChainId === mainnet.id) {
-        const destinationTokenAddress =
-          originToDestinationAlAssetTokenAddressMapping[originTokenAddress];
-
-        const destinationLockboxBalancePromise =
-          destinationPublicClient.readContract({
+        const destinationLockboxBalance =
+          await destinationPublicClient.readContract({
             address: destinationTokenAddress,
             abi: erc20Abi,
             functionName: "balanceOf",
             args: [lockboxMapping[destinationTokenAddress]],
           });
 
-        const originLockboxBalancePromise = originPublicClient.readContract({
+        const destinationLockboxBalanceFormatted = formatEther(
+          destinationLockboxBalance,
+        );
+
+        mainnetLockboxBalanceFormatted = destinationLockboxBalanceFormatted;
+        isToMainnetLockboxBalanceExceeded =
+          +destinationLockboxBalanceFormatted < +amount;
+      }
+
+      if (originChainId === mainnet.id) {
+        const originLockboxBalance = await originPublicClient.readContract({
           address: originTokenAddress,
           abi: erc20Abi,
           functionName: "balanceOf",
           args: [lockboxMapping[originTokenAddress]],
         });
-
-        const [destinationLockboxBalance, originLockboxBalance] =
-          await Promise.all([
-            destinationLockboxBalancePromise,
-            originLockboxBalancePromise,
-          ]);
-
-        const destinationLockboxBalanceFormatted = formatEther(
-          destinationLockboxBalance,
-        );
         const originLockboxBalanceFormatted = formatEther(originLockboxBalance);
 
-        isLimitExceeded = +destinationLockboxBalanceFormatted < +amount;
-        isOriginSizeExceeded = +originLockboxBalanceFormatted < +amount;
+        isFromMainnetLockboxBalanceExceeded =
+          +originLockboxBalanceFormatted < +amount;
       }
 
       const spender = targetMapping[originChainId][originTokenAddress];
@@ -139,7 +145,7 @@ export const useBridgeQuote = ({
         chainIdToLayerZeroEidMapping[destinationChainId];
 
       const options = Options.newOptions()
-        .addExecutorLzReceiveOption(65000, 0)
+        .addExecutorLzReceiveOption(200000, 0)
         .toBytes();
 
       const bridgeParams = {
@@ -164,10 +170,6 @@ export const useBridgeQuote = ({
 
       const amountOut = amount;
 
-      const isWrapNeeded = Object.keys(SYNTHS_TO_XERC20_MAPPING).includes(
-        originTokenAddress,
-      );
-
       const data = encodeFunctionData({
         abi: oftAbi,
         functionName: "send",
@@ -187,15 +189,128 @@ export const useBridgeQuote = ({
         provider: "LayerZero",
         bridgeCost,
         tx,
-        isWrapNeeded,
-        isLimitExceeded,
-        bridgeLimit: bridgeLimitFormatted,
-        isOriginSizeExceeded,
+        isFromMainnetLockboxBalanceExceeded,
+        isDestinationBridgeLimitExceeded,
+        isToMainnetLockboxBalanceExceeded,
+        destinationBridgeLimit: destinationBridgeLimitFormatted,
+        toMainnetLockboxBalance: mainnetLockboxBalanceFormatted,
       } as const satisfies Quote;
 
       return quote;
     },
-    refetchInterval: ONE_MINUTE_IN_MS,
+    refetchInterval: HALF_MINUTE_IN_MS,
     enabled: !isInputZero(amount) && originChainId !== fantom.id && !!address,
+  });
+};
+
+export const useExchangeQuote = () => {
+  const { address } = useAccount();
+
+  const originPublicClient = usePublicClient<typeof wagmiConfig>({
+    chainId: mainnet.id,
+  });
+
+  return useQuery({
+    queryKey: [QueryKeys.ExchangeQuote, originPublicClient, address],
+    queryFn: async () => {
+      if (!address) {
+        throw new Error("Wallet not connected");
+      }
+
+      const alUsdTokenAddress = SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD;
+      const alEthTokenAddress = SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH;
+
+      const toAlUsd = targetMapping[mainnet.id][alUsdTokenAddress];
+      const toAlEth = targetMapping[mainnet.id][alEthTokenAddress];
+
+      const xAlUsdBalancePromise = originPublicClient.readContract({
+        address: toAlUsd,
+        abi: erc20Abi,
+        functionName: "balanceOf",
+        args: [address],
+      });
+      const alUsdLockboxLiquidityPromise = originPublicClient.readContract({
+        address: alUsdTokenAddress,
+        abi: erc20Abi,
+        functionName: "balanceOf",
+        args: [toAlUsd],
+      });
+
+      const xAlEthBalancePromise = originPublicClient.readContract({
+        address: toAlEth,
+        abi: erc20Abi,
+        functionName: "balanceOf",
+        args: [address],
+      });
+      const alEthLockboxLiquidityPromise = originPublicClient.readContract({
+        address: alEthTokenAddress,
+        abi: erc20Abi,
+        functionName: "balanceOf",
+        args: [toAlEth],
+      });
+
+      const [
+        xAlUsdBalance,
+        alUsdLockboxLiquidity,
+        xAlEthBalance,
+        alEthLockboxLiquidity,
+      ] = await Promise.all([
+        xAlUsdBalancePromise,
+        alUsdLockboxLiquidityPromise,
+        xAlEthBalancePromise,
+        alEthLockboxLiquidityPromise,
+      ]);
+
+      const xAlUsdBalanceFormatted = formatEther(xAlUsdBalance);
+      const alUsdLockboxLiquidityFormatted = formatEther(alUsdLockboxLiquidity);
+
+      const xAlEthBalanceFormatted = formatEther(xAlEthBalance);
+      const alEthLockboxLiquidityFormatted = formatEther(alEthLockboxLiquidity);
+
+      const exchangeAlUsdCalldata = encodeFunctionData({
+        abi: oftAbi,
+        functionName: "exchange",
+        args: [xAlUsdBalance],
+      });
+
+      const exchangeAlEthCalldata = encodeFunctionData({
+        abi: oftAbi,
+        functionName: "exchange",
+        args: [xAlEthBalance],
+      });
+
+      const alUsdTx = {
+        data: exchangeAlUsdCalldata,
+        to: toAlUsd,
+        chainId: mainnet.id,
+      };
+
+      const alEthTx = {
+        data: exchangeAlEthCalldata,
+        to: toAlEth,
+        chainId: mainnet.id,
+      };
+
+      const alUSD = {
+        xAlAssetBalance: xAlUsdBalance,
+        xAlAssetBalanceFormatted: xAlUsdBalanceFormatted,
+        alAssetLockboxLiquidity: alUsdLockboxLiquidity,
+        alAssetLockboxLiquidityFormatted: alUsdLockboxLiquidityFormatted,
+        tx: alUsdTx,
+      } as const satisfies RecoveryQuote;
+      const alETH = {
+        xAlAssetBalance: xAlEthBalance,
+        xAlAssetBalanceFormatted: xAlEthBalanceFormatted,
+        alAssetLockboxLiquidity: alEthLockboxLiquidity,
+        alAssetLockboxLiquidityFormatted: alEthLockboxLiquidityFormatted,
+        tx: alEthTx,
+      } as const satisfies RecoveryQuote;
+
+      return {
+        alUSD,
+        alETH,
+      } as const;
+    },
+    enabled: !!address,
   });
 };

@@ -40,6 +40,10 @@ export const StatusBox = ({
         `https://scan.layerzero-api.com/v1/messages/tx/${transactionHash}`,
       );
 
+      if (response.status === 404) {
+        throw new Error("Transaction not found");
+      }
+
       if (!response.ok) {
         throw new Error("Failed to fetch transaction status");
       }
@@ -53,6 +57,10 @@ export const StatusBox = ({
     refetchInterval: (data) => {
       // Refetch every 10 seconds if the status is still INFLIGHT or CONFIRMING
       return data.state.data !== "DELIVERED" ? 10000 : false;
+    },
+    retry: (failureCount, error) => {
+      if (error.message.includes("Transaction not found")) return true;
+      return failureCount < 3;
     },
   });
 

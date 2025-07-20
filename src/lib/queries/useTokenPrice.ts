@@ -1,5 +1,13 @@
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
-import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
+import {
+  arbitrum,
+  base,
+  fantom,
+  linea,
+  mainnet,
+  metis,
+  optimism,
+} from "viem/chains";
 
 import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
 import { useChain } from "@/hooks/useChain";
@@ -24,12 +32,14 @@ const chainIdToLlamaChainNameMapping = {
   [optimism.id]: "optimism",
   [linea.id]: "linea",
   [metis.id]: "metis",
+  [base.id]: "base",
 };
 
 const wethMapping = {
   [mainnet.id]: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
   [arbitrum.id]: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
   [optimism.id]: "0x4200000000000000000000000000000000000006",
+  [base.id]: "0x4200000000000000000000000000000000000006",
   [linea.id]: "0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f",
 };
 
