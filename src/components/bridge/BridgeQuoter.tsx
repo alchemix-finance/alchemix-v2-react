@@ -1,12 +1,13 @@
 import { forwardRef } from "react";
-import { UseQueryResult } from "@tanstack/react-query";
 import { m, useReducedMotion } from "framer-motion";
+import { metis } from "viem/chains";
 
-import { BridgeQuote } from "./lib/constants";
-import { LoadingBar } from "../common/LoadingBar";
 import { formatNumber } from "@/utils/number";
 import { cn } from "@/utils/cn";
 import { useEthPrice } from "@/lib/queries/useTokenPrice";
+import { LoadingBar } from "@/components/common/LoadingBar";
+
+import { Quote } from "./lib/constants";
 
 const variants = {
   hidden: {
@@ -42,19 +43,14 @@ export const BridgeQuoter = forwardRef<
   HTMLDivElement,
   {
     originTokenSymbol: string | undefined;
-    selectedQuoteProvider: string | undefined;
-    updateQuote: (quote: BridgeQuote | undefined) => void;
-    quotes: UseQueryResult<BridgeQuote>[];
+    quote: Quote | undefined;
+    isLoading: boolean;
+    isError: boolean;
   }
->(({ selectedQuoteProvider, originTokenSymbol, updateQuote, quotes }, ref) => {
+>(({ originTokenSymbol, quote, isLoading, isError }, ref) => {
   const isReducedMotion = useReducedMotion();
   const { data: ethPrice } = useEthPrice();
-  const costs = quotes.map((quote) => {
-    if (quote.data?.provider === "Wormhole" && ethPrice) {
-      return +quote.data.fee * ethPrice;
-    }
-    return 0;
-  });
+  const cost = ethPrice && quote ? +quote.fee * ethPrice : 0;
   return (
     <m.div
       ref={ref}
@@ -63,62 +59,60 @@ export const BridgeQuoter = forwardRef<
       animate="visible"
       exit="exit"
       transition={{ ease: [0.165, 0.84, 0.44, 1], duration: 0.3 }}
-      className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative max-h-[392px] min-w-60 space-y-4 rounded-md border p-5"
+      className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative max-h-[392px] w-60 space-y-4 rounded-md border p-5"
     >
-      <h1>Select a bridge quote</h1>
-      {quotes.length === 0 && <p>No quotes available.</p>}
-      {quotes.length > 0 &&
-        quotes.map(({ data, isLoading }, i) => (
-          <m.div
-            role="button"
-            tabIndex={0}
-            aria-label="Select quote"
-            key={`${data?.provider}-${i}`}
-            className={cn(
-              "bg-grey10inverse dark:bg-grey10 flex min-h-32 flex-col justify-center rounded-md px-6 py-4 hover:cursor-pointer",
-              "shadow-[0px_0px_0px_1px_rgba(9,9,11,0.1),0px_1px_2px_-1px_rgba(9,9,11,0.08),0px_2px_4px_0px_rgba(9,9,11,0.04)]",
-              "dark:shadow-[0px_0px_0px_1px_rgba(100,100,100,0.1),0px_1px_2px_-1px_rgba(100,100,100,0.1),0px_2px_4px_0px_rgba(100,100,100,0.08)]",
-              "focus-within:bg-grey15inverse hover:bg-grey15inverse dark:focus-within:bg-grey15 dark:hover:bg-grey15 transition-colors",
-              isLoading && "items-center",
-              selectedQuoteProvider === data?.provider &&
-                "bg-grey15inverse dark:bg-grey15",
-            )}
-            whileTap={{ scale: 0.95, transition: { ease: "linear" } }}
-            onClick={() => updateQuote(data)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                updateQuote(data);
-              }
-            }}
-          >
-            {isLoading && <LoadingBar />}
-            {/* 
-                NOTE: Connext takes cost in bridging token.
-                Wormhole takes cost always in ETH (not deployed on Metis).
-                useEthPrice doesn't adhere to currency setting (1ETH = 1ETH).
-              */}
-            {!isLoading && (
-              <>
-                <p>{data?.provider}</p>
-                <p className="font-medium">
-                  {formatNumber(data?.amountOut, {
-                    decimals: 6,
-                  })}{" "}
-                  {originTokenSymbol}
-                </p>
-                <p className="text-sm">
-                  Cost{" "}
-                  {formatNumber(data?.fee, {
-                    decimals: 4,
-                  })}{" "}
-                  ETH
-                </p>
-                <p className="text-xs">≈ ${formatNumber(costs[i])}</p>
-              </>
-            )}
-          </m.div>
-        ))}
+      <div
+        className={cn(
+          "bg-grey10inverse dark:bg-grey10 flex min-h-32 flex-col justify-center rounded-md px-6 py-4",
+          isLoading && "items-center",
+        )}
+      >
+        {isLoading && <LoadingBar />}
+        {isError && <p>Couldn&apos;t fetch a quote.</p>}
+        {quote &&
+          !quote.isDestinationBridgeLimitExceeded &&
+          !quote.isToMainnetLockboxBalanceExceeded && (
+            <>
+              <p className="font-medium">
+                {formatNumber(quote.amountOut, {
+                  decimals: 6,
+                })}{" "}
+                {originTokenSymbol}
+              </p>
+              <p className="text-sm">
+                Cost{" "}
+                {formatNumber(quote.fee, {
+                  decimals: 4,
+                })}{" "}
+                {quote.tx.chainId === metis.id ? "METIS" : "ETH"}
+              </p>
+              {quote.tx.chainId !== metis.id && (
+                <p className="text-xs">≈ ${formatNumber(cost)}</p>
+              )}
+            </>
+          )}
+        {quote && quote.isDestinationBridgeLimitExceeded && (
+          <p className="text-red-500">
+            Amount exceeds the current limit for this bridge. Current limit is{" "}
+            {formatNumber(quote.destinationBridgeLimit)} {originTokenSymbol}.
+          </p>
+        )}
+        {quote && quote.isToMainnetLockboxBalanceExceeded && (
+          <p className="text-red-500">
+            Amount exceeds the current liquidity for this bridge. Current
+            liquidity is {formatNumber(quote.toMainnetLockboxBalance)}{" "}
+            {originTokenSymbol}.
+          </p>
+        )}
+        {quote &&
+          quote.isFromMainnetLockboxBalanceExceeded &&
+          !quote.isDestinationBridgeLimitExceeded && (
+            <p className="mt-4">
+              Your size is Size. There won&apos;t be enough liquidity to send
+              tokens back after Your bridge.
+            </p>
+          )}
+      </div>
     </m.div>
   );
 });

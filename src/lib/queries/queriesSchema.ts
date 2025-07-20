@@ -22,7 +22,9 @@ export const QueryKeys = {
   HistoricYield: "historicYield",
   VaultEarned: "vaultEarned",
   ExternalFarmsApr: "externalFarmsApr",
-  BridgeQuote: (p: string) => `bridgeQuote-${p}`,
+  BridgeQuote: "bridgeQuote",
+  ExchangeQuote: "exchangeQuote",
+  BridgeStatus: "bridgeStatus",
   SmartAccountUser: "smart-account-user",
 } as const;
 

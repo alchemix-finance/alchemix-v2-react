@@ -1,4 +1,12 @@
-import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
+import {
+  arbitrum,
+  base,
+  fantom,
+  linea,
+  mainnet,
+  metis,
+  optimism,
+} from "viem/chains";
 import type { TransmutersMetadata } from "@/lib/config/metadataTypes";
 import { SYNTH_ASSETS } from "@/lib/config/synths";
 
@@ -125,4 +133,5 @@ export const TRANSMUTERS = {
   ],
   [linea.id]: [],
   [metis.id]: [],
+  [base.id]: [],
 } as const satisfies TransmutersMetadata;

@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import {
   usePrepareTransactionRequest,
   useSendTransaction,
@@ -7,13 +8,13 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { zeroAddress } from "viem";
 
-import { BridgeQuote } from "./constants";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { useAllowance } from "@/hooks/useAllowance";
 import { Token } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
-import { SupportedChainId } from "@/lib/wagmi/wagmiConfig";
+
+import { Quote, RecoveryQuote, SupportedBridgeChainIds } from "./constants";
 
 export const useWriteBridge = ({
   quote,
@@ -22,13 +23,15 @@ export const useWriteBridge = ({
   token,
   amount,
   updateBridgeTxHash,
+  refetchOriginTokenBalance,
 }: {
-  quote: BridgeQuote | undefined;
+  quote: Quote | undefined;
   originTokenAddress: `0x${string}`;
-  originChainId: SupportedChainId;
+  originChainId: SupportedBridgeChainIds;
   token: Token | undefined;
   amount: string;
   updateBridgeTxHash: (hash: `0x${string}`) => void;
+  refetchOriginTokenBalance: () => void;
 }) => {
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
@@ -44,7 +47,8 @@ export const useWriteBridge = ({
     amount,
     decimals: token?.decimals,
     spender: quote?.tx.to ?? zeroAddress,
-    enabled: chain.id === originChainId,
+    enabled:
+      !!quote && chain.id === originChainId && chain.id === quote.tx.chainId,
   });
 
   const {
@@ -76,9 +80,10 @@ export const useWriteBridge = ({
   useEffect(() => {
     if (receipt) {
       updateBridgeTxHash(receipt.transactionHash);
+      refetchOriginTokenBalance();
       resetBridge();
     }
-  }, [receipt, resetBridge, updateBridgeTxHash]);
+  }, [receipt, refetchOriginTokenBalance, resetBridge, updateBridgeTxHash]);
 
   const writeApprove = () => {
     approveConfig?.request && approve(approveConfig.request);
@@ -110,8 +115,8 @@ export const useWriteBridge = ({
 
   const isPending = (() => {
     if (!amount) return;
-    if (originChainId !== chain.id) return;
-    if (!quote || quote.isWrapNeeded) return;
+    if (!quote) return;
+    if (quote.tx.chainId !== chain.id) return;
 
     if (isApprovalNeeded === false) {
       return isBridgeConfigPending;
@@ -123,5 +128,93 @@ export const useWriteBridge = ({
     writeApprove,
     isApprovalNeeded,
     isPending,
+  };
+};
+
+export const useExchangeXAlAsset = ({
+  quote,
+}: {
+  quote: RecoveryQuote | undefined;
+}) => {
+  const chain = useChain();
+  const mutationCallback = useWriteContractMutationCallback();
+  const queryClient = useQueryClient();
+
+  const {
+    data: exchangeConfig,
+    error: exchangeError,
+    isPending: isExchangeConfigPending,
+  } = usePrepareTransactionRequest({
+    ...(quote ? quote.tx : {}),
+    query: {
+      enabled:
+        !!quote && quote.xAlAssetBalance > 0n && quote.tx.chainId === chain.id,
+    },
+  });
+
+  const {
+    sendTransaction: exchange,
+    data: exchangeTxHash,
+    reset: resetExchange,
+  } = useSendTransaction({
+    mutation: mutationCallback({
+      action: "Exchange",
+    }),
+  });
+
+  const { data: receipt } = useWaitForTransactionReceipt({
+    hash: exchangeTxHash,
+    chainId: chain.id,
+  });
+
+  useEffect(() => {
+    if (receipt) {
+      resetExchange();
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          !!query.queryKey[1] &&
+          typeof query.queryKey[1] === "object" &&
+          "functionName" in query.queryKey[1] &&
+          query.queryKey[1].functionName === "balanceOf",
+      });
+    }
+  }, [queryClient, receipt, resetExchange]);
+
+  const writeExchange = () => {
+    if (exchangeError) {
+      toast.error("Exchange failed", {
+        description:
+          "cause" in exchangeError &&
+          exchangeError.cause &&
+          typeof exchangeError.cause === "object" &&
+          "message" in exchangeError.cause &&
+          exchangeError.cause.message &&
+          typeof exchangeError.cause.message === "string"
+            ? exchangeError.cause.message
+            : exchangeError.message,
+      });
+      return;
+    }
+    if (exchangeConfig) {
+      exchange(exchangeConfig);
+    } else {
+      toast.error("Exchange failed", {
+        description: "Exchange unknown error. Please notify Alchemix team.",
+      });
+    }
+  };
+
+  const isPending = (() => {
+    if (!quote) return;
+    if (quote.tx.chainId !== chain.id) return;
+    if (!quote.xAlAssetBalance) return;
+    if (quote.alAssetLockboxLiquidity < quote.xAlAssetBalance) return;
+
+    return isExchangeConfigPending;
+  })();
+
+  return {
+    writeExchange,
+    isPendingExchange: isPending,
   };
 };

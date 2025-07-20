@@ -1,4 +1,12 @@
-import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
+import {
+  arbitrum,
+  base,
+  fantom,
+  linea,
+  mainnet,
+  metis,
+  optimism,
+} from "viem/chains";
 
 export const STAKING_POOL_ADDRESSES = {
   [mainnet.id]: "0xAB8e74017a8Cc7c15FFcCd726603790d26d7DeCa",
@@ -423,4 +431,5 @@ export const STATIC_EXTERNAL_FARMS = {
   [fantom.id]: [],
   [linea.id]: [],
   [metis.id]: [],
+  [base.id]: [],
 } as const;

@@ -1,5 +1,13 @@
 import { zeroAddress } from "viem";
-import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
+import {
+  arbitrum,
+  base,
+  fantom,
+  linea,
+  mainnet,
+  metis,
+  optimism,
+} from "viem/chains";
 
 import { GAS_ADDRESS, WETH_MAINNET_ADDRESS } from "@/lib/constants";
 
@@ -633,6 +641,7 @@ export const VAULTS: VaultsConfig = {
   },
   [linea.id]: {},
   [metis.id]: {},
+  [base.id]: {},
 };
 
 export const MAX_LOSS_CHECKER_ADDRESSES = {
@@ -642,4 +651,5 @@ export const MAX_LOSS_CHECKER_ADDRESSES = {
   [fantom.id]: zeroAddress,
   [linea.id]: zeroAddress,
   [metis.id]: zeroAddress,
+  [base.id]: zeroAddress,
 } as const;

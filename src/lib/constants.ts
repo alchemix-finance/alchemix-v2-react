@@ -2,6 +2,7 @@
 export const GAS_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 // Time constants
+export const HALF_MINUTE_IN_MS = 30 * 1000;
 export const ONE_MINUTE_IN_MS = 60 * 1000;
 export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 export const FIVE_MIN_IN_MS = 300000;

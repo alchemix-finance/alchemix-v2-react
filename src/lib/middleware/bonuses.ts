@@ -1,4 +1,4 @@
-import { fantom, linea, mainnet, metis, optimism } from "viem/chains";
+import { base, fantom, linea, mainnet, metis, optimism } from "viem/chains";
 import { formatEther, formatUnits } from "viem";
 import { rewardRouterAbi } from "@/abi/rewardRouter";
 import {
@@ -99,7 +99,8 @@ export const getMeltedRewardsBonusData: BonusFn = async ({
     chainId === fantom.id ||
     chainId === mainnet.id ||
     chainId === linea.id ||
-    chainId === metis.id
+    chainId === metis.id ||
+    chainId === base.id
   )
     throw new Error(
       "Melted Rewards not supported on Fantom, Mainnet, Linea or Metis",
