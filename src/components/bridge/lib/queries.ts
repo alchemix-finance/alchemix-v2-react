@@ -28,6 +28,7 @@ import {
   originToDestinationAlAssetTokenAddressMapping,
   targetMapping,
 } from "./constants";
+import { sanitizeNumber } from "@/utils/number";
 
 const PAY_IN_LZ_TOKEN = false;
 
@@ -150,7 +151,7 @@ export const useBridgeQuote = ({
 
       const bridgeParams = {
         amountLD: parseEther(amount),
-        minAmountLD: parseEther((Math.floor(+amount * 1e6) / 1e6).toString()),
+        minAmountLD: parseEther(sanitizeNumber(amount, 6)),
         dstEid: destinationEndpointId,
         to: pad(receipient),
         extraOptions: bytesToHex(options),
