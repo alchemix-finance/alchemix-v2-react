@@ -300,6 +300,7 @@ export const Bridge = () => {
               tokenAddress={token?.address ?? zeroAddress}
               tokenSymbol={token?.symbol ?? ""}
               tokenDecimals={18}
+              overrideSanitizeDecimals={6}
               overrideBalance={overrideBalance ?? "0"}
             />
           </m.div>
