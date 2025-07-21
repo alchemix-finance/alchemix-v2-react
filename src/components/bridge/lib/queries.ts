@@ -150,7 +150,7 @@ export const useBridgeQuote = ({
 
       const bridgeParams = {
         amountLD: parseEther(amount),
-        minAmountLD: parseEther(amount),
+        minAmountLD: parseEther((Math.floor(+amount * 1e6) / 1e6).toString()),
         dstEid: destinationEndpointId,
         to: pad(receipient),
         extraOptions: bytesToHex(options),
