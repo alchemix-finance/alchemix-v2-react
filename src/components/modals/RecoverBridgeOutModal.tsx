@@ -44,6 +44,11 @@ interface RecoverBridgeOutModalProps {
 
 const destinationSelection = bridgeChains.filter((c) => c.id !== mainnet.id);
 
+const variants = {
+  collapsed: { opacity: 0, y: -10 },
+  open: { opacity: 1, y: 0 },
+};
+
 export const RecoverBridgeOutModal = ({
   open,
   onOpenChange,
@@ -129,11 +134,7 @@ export const RecoverBridgeOutModal = ({
   };
 
   const onCtaClick = () => {
-    if (
-      !quote ||
-      quote.isDestinationBridgeLimitExceeded ||
-      quote.isToMainnetLockboxBalanceExceeded
-    ) {
+    if (!quote || quote.isDestinationBridgeLimitExceeded) {
       return;
     }
 
@@ -197,6 +198,24 @@ export const RecoverBridgeOutModal = ({
           </label>
         </div>
         <AnimatePresence initial={false} mode="popLayout">
+          {quote?.isDestinationBridgeLimitExceeded && (
+            <m.div
+              key="quote-isDestinationBridgeLimitExceeded-recover-bridge-out-modal"
+              initial="collapsed"
+              animate="open"
+              exit="collapsed"
+              variants={
+                isReducedMotion ? reducedMotionAccordionVariants : variants
+              }
+              transition={{ type: "spring", duration: 0.2, bounce: 0 }}
+            >
+              <p className="text-sm text-red-500">
+                Amount exceeds the current limit for this destination chain.
+                Current limit is {formatNumber(quote.destinationBridgeLimit)}{" "}
+                {originTokenSymbol}.
+              </p>
+            </m.div>
+          )}
           {isDifferentAddress && (
             <m.div
               key="differentAddressInput-recover-bridge-out-modal"
@@ -204,12 +223,7 @@ export const RecoverBridgeOutModal = ({
               animate="open"
               exit="collapsed"
               variants={
-                isReducedMotion
-                  ? reducedMotionAccordionVariants
-                  : {
-                      collapsed: { opacity: 0, y: -10 },
-                      open: { opacity: 1, y: 0 },
-                    }
+                isReducedMotion ? reducedMotionAccordionVariants : variants
               }
               transition={{ type: "spring", duration: 0.35, bounce: 0 }}
               className="space-y-4"
@@ -256,10 +270,7 @@ export const RecoverBridgeOutModal = ({
                       variants={
                         isReducedMotion
                           ? reducedMotionAccordionVariants
-                          : {
-                              collapsed: { opacity: 0, y: -10 },
-                              open: { opacity: 1, y: 0 },
-                            }
+                          : variants
                       }
                       transition={{
                         type: "spring",
