@@ -11,7 +11,6 @@ import { zeroAddress } from "viem";
 import { useChain } from "@/hooks/useChain";
 import { useWriteContractMutationCallback } from "@/hooks/useWriteContractMutationCallback";
 import { useAllowance } from "@/hooks/useAllowance";
-import { Token } from "@/lib/types";
 import { isInputZero } from "@/utils/inputNotZero";
 
 import { Quote, RecoveryQuote, SupportedBridgeChainIds } from "./constants";
@@ -20,18 +19,14 @@ export const useWriteBridge = ({
   quote,
   originTokenAddress,
   originChainId,
-  token,
   amount,
-  updateBridgeTxHash,
-  refetchOriginTokenBalance,
+  onBridgeReceipt,
 }: {
   quote: Quote | undefined;
   originTokenAddress: `0x${string}`;
   originChainId: SupportedBridgeChainIds;
-  token: Token | undefined;
   amount: string;
-  updateBridgeTxHash: (hash: `0x${string}`) => void;
-  refetchOriginTokenBalance: () => void;
+  onBridgeReceipt: (hash: `0x${string}`) => void;
 }) => {
   const chain = useChain();
   const mutationCallback = useWriteContractMutationCallback();
@@ -45,7 +40,7 @@ export const useWriteBridge = ({
   } = useAllowance({
     tokenAddress: originTokenAddress,
     amount,
-    decimals: token?.decimals,
+    decimals: 18,
     spender: quote?.tx.to ?? zeroAddress,
     enabled:
       !!quote && chain.id === originChainId && chain.id === quote.tx.chainId,
@@ -79,11 +74,10 @@ export const useWriteBridge = ({
 
   useEffect(() => {
     if (receipt) {
-      updateBridgeTxHash(receipt.transactionHash);
-      refetchOriginTokenBalance();
+      onBridgeReceipt(receipt.transactionHash);
       resetBridge();
     }
-  }, [receipt, refetchOriginTokenBalance, resetBridge, updateBridgeTxHash]);
+  }, [onBridgeReceipt, receipt, resetBridge]);
 
   const writeApprove = () => {
     approveConfig?.request && approve(approveConfig.request);
