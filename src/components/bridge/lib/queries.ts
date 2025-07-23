@@ -37,12 +37,14 @@ export const useBridgeQuote = ({
   originTokenAddress,
   amount,
   receipient,
+  isRecovery = false,
 }: {
   originChainId: SupportedChainId;
   destinationChainId: SupportedBridgeChainIds;
   originTokenAddress: `0x${string}`;
   amount: string;
   receipient: `0x${string}`;
+  isRecovery?: boolean;
 }) => {
   const { address } = useAccount();
 
@@ -56,6 +58,7 @@ export const useBridgeQuote = ({
   return useQuery({
     queryKey: [
       QueryKeys.BridgeQuote,
+      isRecovery,
       originChainId,
       destinationChainId,
       originPublicClient,
@@ -172,7 +175,7 @@ export const useBridgeQuote = ({
 
       const data = encodeFunctionData({
         abi: oftAbi,
-        functionName: "send",
+        functionName: !isRecovery ? "send" : "burnSend",
         args: [bridgeParams, bridgeCost, address],
       });
 

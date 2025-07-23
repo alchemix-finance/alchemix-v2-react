@@ -103,11 +103,6 @@ export const Bridge = () => {
     receipient,
   });
 
-  const updateBridgeTxHash = useCallback((hash: `0x${string}`) => {
-    setBridgeTxHash(hash);
-    setAmount("");
-  }, []);
-
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
       setAmount("");
@@ -174,15 +169,22 @@ export const Bridge = () => {
     setConfirmedDifferentAddress((prev) => !prev);
   };
 
+  const onBridgeReceipt = useCallback(
+    (hash: `0x${string}`) => {
+      setBridgeTxHash(hash);
+      setAmount("");
+      refetchOriginTokenBalance();
+    },
+    [refetchOriginTokenBalance],
+  );
+
   const { isApprovalNeeded, isPending, writeApprove, writeBridge } =
     useWriteBridge({
       amount,
       originChainId,
       originTokenAddress,
-      token,
       quote,
-      updateBridgeTxHash,
-      refetchOriginTokenBalance,
+      onBridgeReceipt,
     });
 
   const onCtaClick = () => {
@@ -376,7 +378,7 @@ export const Bridge = () => {
               </m.div>
             )}
           </AnimatePresence>
-          <Recovery />
+          <Recovery onBridgeReceipt={onBridgeReceipt} />
           <m.div
             layout={isReducedMotion ? false : "position"}
             transition={{ ease: "easeInOut", duration: 0.25 }}

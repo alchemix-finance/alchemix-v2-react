@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import { useSwitchChain } from "wagmi";
 import {
   AnimatePresence,
@@ -5,26 +6,45 @@ import {
   m,
   useReducedMotion,
 } from "framer-motion";
+import { mainnet } from "viem/chains";
 
 import { reducedMotionAccordionVariants } from "@/lib/motion/motion";
+import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
 import { formatNumber } from "@/utils/number";
 import { CtaButton } from "@/components/common/CtaButton";
+import { RecoverBridgeOutModal } from "@/components/modals/RecoverBridgeOutModal";
 import { useChain } from "@/hooks/useChain";
 
 import { useExchangeXAlAsset } from "./lib/mutations";
 import { useExchangeQuote } from "./lib/queries";
+import { targetMapping } from "./lib/constants";
 
 const accordionVariant = {
   collapsed: { opacity: 0, y: -10 },
   open: { opacity: 1, y: 0 },
 };
 
-export const Recovery = () => {
+const X_AL_USD_ADDRESS =
+  targetMapping[mainnet.id][SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD];
+const X_AL_ETH_ADDRESS =
+  targetMapping[mainnet.id][SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH];
+
+export const Recovery = ({
+  onBridgeReceipt: outer_onBridgeReceipt,
+}: {
+  onBridgeReceipt: (hash: `0x${string}`) => void;
+}) => {
   const isReducedMotion = useReducedMotion();
   const { switchChain } = useSwitchChain();
   const chain = useChain();
 
-  const { data: exchangeQuote } = useExchangeQuote();
+  const [openRecoverBridgeOutXAlUsd, setOpenRecoverBridgeOutXAlUsd] =
+    useState(false);
+  const [openRecoverBridgeOutXAlEth, setOpenRecoverBridgeOutXAlEth] =
+    useState(false);
+
+  const { data: exchangeQuote, refetch: refetchExchangeQuote } =
+    useExchangeQuote();
 
   const {
     isPendingExchange: isPendingExchangeAlUsd,
@@ -38,6 +58,16 @@ export const Recovery = () => {
   } = useExchangeXAlAsset({
     quote: exchangeQuote?.alETH,
   });
+
+  const onBridgeReceipt = useCallback(
+    (hash: `0x${string}`) => {
+      outer_onBridgeReceipt(hash);
+      refetchExchangeQuote();
+      setOpenRecoverBridgeOutXAlUsd(false);
+      setOpenRecoverBridgeOutXAlEth(false);
+    },
+    [outer_onBridgeReceipt, refetchExchangeQuote],
+  );
 
   const onWriteExchangeAlUsdClick = () => {
     if (!exchangeQuote) {
@@ -93,8 +123,8 @@ export const Recovery = () => {
                 Current liquidity is{" "}
                 {formatNumber(
                   exchangeQuote.alUSD.alAssetLockboxLiquidityFormatted,
-                )}
-                .
+                )}{" "}
+                alUSD.
               </p>
             </div>
             <CtaButton
@@ -114,6 +144,22 @@ export const Recovery = () => {
                   ? "Preparing"
                   : "Exchange xalUSD"}
             </CtaButton>
+            <CtaButton
+              variant="secondary"
+              width="full"
+              onClick={() => setOpenRecoverBridgeOutXAlUsd(true)}
+            >
+              Bridge back
+            </CtaButton>
+            <RecoverBridgeOutModal
+              amount={exchangeQuote.alUSD.xAlAssetBalanceFormatted}
+              open={openRecoverBridgeOutXAlUsd}
+              onOpenChange={setOpenRecoverBridgeOutXAlUsd}
+              xAlAssetAddress={X_AL_USD_ADDRESS}
+              alAssetAddress={SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD}
+              originTokenSymbol="xalUSD"
+              onBridgeReceipt={onBridgeReceipt}
+            />
           </m.div>
         )}
         {!!exchangeQuote && exchangeQuote.alETH.xAlAssetBalance > 0n && (
@@ -139,8 +185,8 @@ export const Recovery = () => {
                 Current liquidity is{" "}
                 {formatNumber(
                   exchangeQuote.alETH.alAssetLockboxLiquidityFormatted,
-                )}
-                .
+                )}{" "}
+                alETH.
               </p>
             </div>
             <CtaButton
@@ -160,6 +206,22 @@ export const Recovery = () => {
                   ? "Preparing"
                   : "Exchange xalETH"}
             </CtaButton>
+            <CtaButton
+              variant="secondary"
+              width="full"
+              onClick={() => setOpenRecoverBridgeOutXAlEth(true)}
+            >
+              Bridge back
+            </CtaButton>
+            <RecoverBridgeOutModal
+              amount={exchangeQuote.alETH.xAlAssetBalanceFormatted}
+              open={openRecoverBridgeOutXAlEth}
+              onOpenChange={setOpenRecoverBridgeOutXAlEth}
+              xAlAssetAddress={X_AL_ETH_ADDRESS}
+              alAssetAddress={SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH}
+              originTokenSymbol="xalETH"
+              onBridgeReceipt={onBridgeReceipt}
+            />
           </m.div>
         )}
       </AnimatePresence>
