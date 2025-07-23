@@ -89,6 +89,7 @@ export const RecoverBridgeOutModal = ({
     originTokenAddress: alAssetAddress,
     amount,
     receipient,
+    isRecovery: true,
   });
 
   const { isApprovalNeeded, isPending, writeApprove, writeBridge } =
