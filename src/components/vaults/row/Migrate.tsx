@@ -15,6 +15,14 @@ import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { useMigrate } from "@/lib/mutations/useMigrate";
 import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
+import { VaultMessage } from "./VaultMessage";
+
+const TEMPORARY_MIGRATION_MESSAGE = {
+  message:
+    "Migration tools are currently offline. We are working on it and they will be back online soon.",
+  type: "warning",
+} as const;
+const TEMPORARY_DISABLED = true;
 
 export const Migrate = ({
   vault,
@@ -76,8 +84,10 @@ export const Migrate = ({
 
   return (
     <div className="space-y-4">
+      <VaultMessage message={TEMPORARY_MIGRATION_MESSAGE} />
+
       <div className="flex items-center gap-4">
-        <p className="text-sm text-lightgrey10">Target Vault</p>
+        <p className="text-lightgrey10 text-sm">Target Vault</p>
         <Select
           value={selectedVaultAddress}
           onValueChange={(value) =>
@@ -108,8 +118,8 @@ export const Migrate = ({
           </SelectContent>
         </Select>
       </div>
-      <div className="flex rounded-sm border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
-        <div className="flex items-center py-4 pl-4 pr-2">
+      <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
+        <div className="flex items-center py-4 pr-2 pl-4">
           <img
             src="/images/token-icons/Shares.svg"
             alt="Shares icon"
@@ -123,7 +133,7 @@ export const Migrate = ({
         />
       </div>
       <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-      <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
+      <p className="text-lightgrey10inverse dark:text-lightgrey10 text-sm">
         If you have no available credit in the respective Alchemist, trying to
         migrate will likely result in a failed transaction. Your current LTV for
         this Alchemist is {formatNumber(ltv)}%
@@ -131,7 +141,7 @@ export const Migrate = ({
       <CtaButton
         variant="outline"
         width="full"
-        disabled={isPending || isInputZero(amount)}
+        disabled={isPending || isInputZero(amount) || TEMPORARY_DISABLED}
         onClick={onCtaClick}
       >
         {isPending
