@@ -14,6 +14,7 @@ import {
   ALCX_MAINNET_ADDRESS,
   ALCX_METIS_ADDRESS,
   ALCX_OPTIMISM_ADDRESS,
+  ALCX_BASE_ADDRESS,
   GAS_ADDRESS,
   G_ALCX_MAINNET_ADDRESS,
   ONE_DAY_IN_MS,
@@ -75,6 +76,7 @@ export const useTokensQuery = (overrideChainId?: SupportedChainId) => {
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[metis.id].alETH);
       }
       if (chain.id === base.id) {
+        tokensAddresses.push(ALCX_BASE_ADDRESS);
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[base.id].alUSD);
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[base.id].alETH);
       }
