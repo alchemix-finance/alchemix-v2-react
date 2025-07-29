@@ -14,6 +14,7 @@ import {
   ALCX_MAINNET_ADDRESS,
   ALCX_METIS_ADDRESS,
   ALCX_OPTIMISM_ADDRESS,
+  ALCX_BASE_ADDRESS,
   GAS_ADDRESS,
   G_ALCX_MAINNET_ADDRESS,
   ONE_DAY_IN_MS,
@@ -65,18 +66,19 @@ export const useTokensQuery = (overrideChainId?: SupportedChainId) => {
         tokensAddresses.push(ALCX_OPTIMISM_ADDRESS);
       }
       if (chain.id === linea.id) {
-        tokensAddresses.push(ALCX_LINEA_ADDRESS);
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[linea.id].alUSD);
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[linea.id].alETH);
+        tokensAddresses.push(ALCX_LINEA_ADDRESS);
       }
       if (chain.id === metis.id) {
-        tokensAddresses.push(ALCX_METIS_ADDRESS);
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[metis.id].alUSD);
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[metis.id].alETH);
+        tokensAddresses.push(ALCX_METIS_ADDRESS);
       }
       if (chain.id === base.id) {
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[base.id].alUSD);
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[base.id].alETH);
+        tokensAddresses.push(ALCX_BASE_ADDRESS);
       }
 
       const calls = tokensAddresses.flatMap(
