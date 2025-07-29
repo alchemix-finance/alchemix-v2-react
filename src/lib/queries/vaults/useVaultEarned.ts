@@ -1,7 +1,7 @@
 import { useAccount } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { gql, request } from "graphql-request";
-import { fantom, linea, metis } from "viem/chains";
+import { base, fantom, linea, metis } from "viem/chains";
 
 import { Vault } from "@/lib/types";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
@@ -21,7 +21,8 @@ export const useVaultEarned = ({ vault }: { vault: Vault }) => {
       if (
         chain.id === fantom.id ||
         chain.id === linea.id ||
-        chain.id === metis.id
+        chain.id === metis.id ||
+        chain.id === base.id
       )
         throw new Error("Generated earned is not supported on this chain");
 
@@ -63,7 +64,8 @@ export const useVaultEarned = ({ vault }: { vault: Vault }) => {
       !!address &&
       chain.id !== fantom.id &&
       chain.id !== linea.id &&
-      chain.id !== metis.id,
+      chain.id !== metis.id &&
+      chain.id !== base.id,
     staleTime: ONE_DAY_IN_MS,
   });
 };

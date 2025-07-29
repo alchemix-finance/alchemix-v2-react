@@ -3,7 +3,15 @@
  * If the app is running on the production url, we use infura rpcs.
  */
 
-import { arbitrum, mainnet, optimism, fantom, linea, metis } from "viem/chains";
+import {
+  arbitrum,
+  mainnet,
+  optimism,
+  fantom,
+  linea,
+  metis,
+  base,
+} from "viem/chains";
 import type { Chain } from "@rainbow-me/rainbowkit";
 
 const IS_VERCEL_PRODUCTION = __VERCEL_ENV__ === "production";
@@ -25,11 +33,11 @@ const mainnetRpcs = IS_VERCEL_PRODUCTION
 const optimismRpcs = IS_VERCEL_PRODUCTION
   ? [OPTIMISM_BLAST_RPC, "https://optimism-rpc.publicnode.com"]
   : [
-      "https://optimism.blockpi.network/v1/rpc/public",
       "https://1rpc.io/op",
       "https://optimism-rpc.publicnode.com",
       "https://optimism-mainnet.public.blastapi.io",
       "https://rpc.ankr.com/optimism",
+      "https://optimism.blockpi.network/v1/rpc/public",
     ];
 
 const arbitrumRpcs = IS_VERCEL_PRODUCTION
@@ -60,6 +68,8 @@ const metisRpcs = [
   "https://metis-rpc.publicnode.com",
 ];
 
+const baseRpcs = ["https://1rpc.io/base", "https://base-rpc.publicnode.com"];
+
 export const RPCS = {
   [mainnet.id]: mainnetRpcs,
   [optimism.id]: optimismRpcs,
@@ -67,6 +77,7 @@ export const RPCS = {
   [fantom.id]: fantomRpcs,
   [linea.id]: lineaRpcs,
   [metis.id]: metisRpcs,
+  [base.id]: baseRpcs,
 } as const;
 
 export const fantomWithIcon = {
@@ -80,5 +91,6 @@ export const chains = [
   arbitrum,
   fantomWithIcon,
   linea,
+  base,
   metis,
 ] as const;

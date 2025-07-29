@@ -6,7 +6,7 @@ import { useChain } from "@/hooks/useChain";
 import { lsService } from "@/lib/localStorage";
 import { useAlchemists } from "./useAlchemists";
 import { VAULTS } from "@/lib/config/vaults";
-import { arbitrum, linea, mainnet, metis, optimism } from "viem/chains";
+import { arbitrum, base, linea, mainnet, metis, optimism } from "viem/chains";
 import { Token } from "@/lib/types";
 import {
   ALCX_ARBITRUM_ADDRESS,
@@ -20,10 +20,7 @@ import {
 } from "@/lib/constants";
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { QueryKeys } from "./queriesSchema";
-import {
-  SYNTHS_TO_XERC20_MAPPING,
-  SYNTH_ASSETS_ADDRESSES,
-} from "../config/synths";
+import { SYNTH_ASSETS_ADDRESSES } from "../config/synths";
 
 export const useTokensQuery = (overrideChainId?: SupportedChainId) => {
   const overrideChain = wagmiConfig.chains.find(
@@ -60,8 +57,6 @@ export const useTokensQuery = (overrideChainId?: SupportedChainId) => {
       if (chain.id === mainnet.id) {
         tokensAddresses.push(G_ALCX_MAINNET_ADDRESS);
         tokensAddresses.push(ALCX_MAINNET_ADDRESS);
-        const xAlAssets = Object.values(SYNTHS_TO_XERC20_MAPPING);
-        tokensAddresses.push(...xAlAssets);
       }
       if (chain.id === arbitrum.id) {
         tokensAddresses.push(ALCX_ARBITRUM_ADDRESS);
@@ -78,6 +73,10 @@ export const useTokensQuery = (overrideChainId?: SupportedChainId) => {
         tokensAddresses.push(ALCX_METIS_ADDRESS);
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[metis.id].alUSD);
         tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[metis.id].alETH);
+      }
+      if (chain.id === base.id) {
+        tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[base.id].alUSD);
+        tokensAddresses.push(SYNTH_ASSETS_ADDRESSES[base.id].alETH);
       }
 
       const calls = tokensAddresses.flatMap(

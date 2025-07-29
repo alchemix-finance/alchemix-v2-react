@@ -20,6 +20,7 @@ export const TokenInput = ({
   overrideBalance,
   externalMaximumAmount,
   dustToZero,
+  overrideSanitizeDecimals,
 }: {
   amount: string;
   setAmount: (amount: string) => void;
@@ -30,6 +31,7 @@ export const TokenInput = ({
   overrideBalance?: string;
   externalMaximumAmount?: string;
   dustToZero?: boolean;
+  overrideSanitizeDecimals?: number;
 }) => {
   const chain = useChain();
   const { address } = useAccount();
@@ -65,7 +67,10 @@ export const TokenInput = ({
   });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitized = sanitizeNumber(e.target.value, tokenDecimals);
+    const sanitized = sanitizeNumber(
+      e.target.value,
+      overrideSanitizeDecimals ?? tokenDecimals,
+    );
     setAmount(sanitized);
   };
 
@@ -79,7 +84,11 @@ export const TokenInput = ({
       return setAmount(externalMaximumAmount);
     }
     if (overrideBalance) {
-      return setAmount(overrideBalance);
+      return setAmount(
+        overrideSanitizeDecimals
+          ? sanitizeNumber(overrideBalance, overrideSanitizeDecimals)
+          : overrideBalance,
+      );
     }
     if (tokenAddress === GAS_ADDRESS && gasBalance) {
       return setAmount(gasBalance);

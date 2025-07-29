@@ -1,4 +1,12 @@
-import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
+import {
+  arbitrum,
+  base,
+  fantom,
+  linea,
+  mainnet,
+  metis,
+  optimism,
+} from "viem/chains";
 import { gql, request } from "graphql-request";
 
 import { AprFn } from "@/lib/config/metadataTypes";
@@ -119,7 +127,12 @@ interface AaveReserve {
 }
 
 export const getAaveReserves = async (chainId: SupportedChainId) => {
-  if (chainId === fantom.id || chainId === linea.id || chainId === metis.id)
+  if (
+    chainId === fantom.id ||
+    chainId === linea.id ||
+    chainId === metis.id ||
+    chainId === base.id
+  )
     throw new Error("Chain not suppored in Aave Api");
 
   const { url, query } = aaveApiParams[chainId];

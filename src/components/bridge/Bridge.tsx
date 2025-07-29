@@ -4,16 +4,6 @@ import { useAccount, useReadContract, useSwitchChain } from "wagmi";
 import { erc20Abi, formatEther, isAddress, zeroAddress } from "viem";
 import { toast } from "sonner";
 
-import {
-  BridgeQuote,
-  SupportedBridgeChainIds,
-  bridgeChains,
-  chainToAvailableTokensMapping,
-  getInitialOriginTokenAddress,
-  getInitialOriginTokenAddresses,
-  getInitialDestinationChainId,
-  getInitialOriginChainId,
-} from "./lib/constants";
 import { useChain } from "@/hooks/useChain";
 import {
   Select,
@@ -23,19 +13,28 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { TokenInput } from "@/components/common/input/TokenInput";
-import { WormholeWrapModal } from "@/components/modals/wormholeWrap/WormholeWrapModal";
 import { useTokensQuery } from "@/lib/queries/useTokensQuery";
-import { StatusBox } from "./StatusBox";
-import { CtaButton } from "../common/CtaButton";
-import { BridgeQuoter } from "./BridgeQuoter";
-import { SlippageInput } from "../common/input/SlippageInput";
+import { CtaButton } from "@/components/common/CtaButton";
 import { isInputZero } from "@/utils/inputNotZero";
-import { useWriteBridge } from "./lib/mutations";
-import { useBridgeQuotes } from "./lib/queries";
-import { Switch } from "../ui/switch";
+import { Switch } from "@/components/ui/switch";
 import { reducedMotionAccordionVariants } from "@/lib/motion/motion";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import {
+  SupportedBridgeChainIds,
+  bridgeChains,
+  chainToAvailableTokensMapping,
+  getInitialOriginTokenAddress,
+  getInitialOriginTokenAddresses,
+  getInitialDestinationChainId,
+  getInitialOriginChainId,
+} from "./lib/constants";
+import { StatusBox } from "./StatusBox";
+import { BridgeQuoter } from "./BridgeQuoter";
+import { Recovery } from "./Recovery";
+import { useWriteBridge } from "./lib/mutations";
+import { useBridgeQuote } from "./lib/queries";
 
 export const Bridge = () => {
   const isReducedMotion = useReducedMotion();
@@ -43,11 +42,7 @@ export const Bridge = () => {
   const chain = useChain();
   const { switchChain } = useSwitchChain();
 
-  const [isWormholeWrapModalOpen, setIsWormholeWrapModalOpen] = useState(false);
-
   const [bridgeTxHash, setBridgeTxHash] = useState<`0x${string}`>();
-  const [bridgeTxProvider, setBridgeTxProvider] =
-    useState<BridgeQuote["provider"]>();
 
   const [originChainId, setOriginChainId] = useState(() =>
     getInitialOriginChainId(chain.id),
@@ -73,7 +68,6 @@ export const Bridge = () => {
   );
 
   const [amount, setAmount] = useState("");
-  const [slippage, setSlippage] = useState("0.5");
 
   const [isDifferentAddress, setIsDifferentAddress] = useState(false);
   const [receipientAddress, setReceipientAddress] = useState("");
@@ -81,51 +75,33 @@ export const Bridge = () => {
     useState(false);
 
   const { address = zeroAddress } = useAccount();
-  const { data: overrideBalance } = useReadContract({
-    address: originTokenAddress,
-    abi: erc20Abi,
-    functionName: "balanceOf",
-    args: [address],
-    chainId: originChainId,
-    query: {
-      select: (balance) => formatEther(balance),
-    },
-  });
+  const { data: overrideBalance, refetch: refetchOriginTokenBalance } =
+    useReadContract({
+      address: originTokenAddress,
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      args: [address],
+      chainId: originChainId,
+      query: {
+        select: (balance) => formatEther(balance),
+      },
+    });
 
   const receipient =
     confirmedDifferentAddress && isAddress(receipientAddress)
       ? receipientAddress
       : address;
   const {
-    quotes,
-    quote,
-    setSelectedQuoteProvider,
-    showQuotes,
-    selectedQuoteProvider,
-  } = useBridgeQuotes({
+    data: quote,
+    isLoading,
+    isError,
+  } = useBridgeQuote({
     originChainId,
     destinationChainId,
     originTokenAddress,
     amount,
-    slippage,
     receipient,
   });
-
-  const updateBridgeTxHash = useCallback(
-    (hash: `0x${string}`) => {
-      setBridgeTxHash(hash);
-      setBridgeTxProvider(selectedQuoteProvider);
-      setAmount("");
-    },
-    [selectedQuoteProvider],
-  );
-
-  const updateQuote = useCallback(
-    (quote: BridgeQuote | undefined) => {
-      setSelectedQuoteProvider(quote?.provider);
-    },
-    [setSelectedQuoteProvider],
-  );
 
   const handleOriginChainSelect = useCallback(
     (chainId: string) => {
@@ -193,30 +169,37 @@ export const Bridge = () => {
     setConfirmedDifferentAddress((prev) => !prev);
   };
 
+  const onBridgeReceipt = useCallback(
+    (hash: `0x${string}`) => {
+      setBridgeTxHash(hash);
+      setAmount("");
+      refetchOriginTokenBalance();
+    },
+    [refetchOriginTokenBalance],
+  );
+
   const { isApprovalNeeded, isPending, writeApprove, writeBridge } =
     useWriteBridge({
       amount,
-      originTokenAddress,
       originChainId,
-      token,
+      originTokenAddress,
       quote,
-      updateBridgeTxHash,
+      onBridgeReceipt,
     });
 
   const onCtaClick = () => {
-    if (originChainId !== chain.id) {
+    if (
+      !quote ||
+      quote.isDestinationBridgeLimitExceeded ||
+      quote.isToMainnetLockboxBalanceExceeded
+    ) {
+      return;
+    }
+
+    if (quote.tx.chainId !== chain.id) {
       switchChain({
-        chainId: originChainId,
+        chainId: quote.tx.chainId,
       });
-      return;
-    }
-
-    if (!quote) {
-      return;
-    }
-
-    if (quote.isWrapNeeded) {
-      setIsWormholeWrapModalOpen(true);
       return;
     }
 
@@ -319,6 +302,7 @@ export const Bridge = () => {
               tokenAddress={token?.address ?? zeroAddress}
               tokenSymbol={token?.symbol ?? ""}
               tokenDecimals={18}
+              overrideSanitizeDecimals={6}
               overrideBalance={overrideBalance ?? "0"}
             />
           </m.div>
@@ -326,11 +310,7 @@ export const Bridge = () => {
             layout={!isReducedMotion}
             className="flex w-full flex-col gap-2"
           >
-            <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-            <StatusBox
-              transactionHash={bridgeTxHash}
-              bridgeProvider={bridgeTxProvider}
-            />
+            <StatusBox transactionHash={bridgeTxHash} />
           </m.div>
           <m.div layout={!isReducedMotion} className="flex items-center">
             <Switch
@@ -398,6 +378,7 @@ export const Bridge = () => {
               </m.div>
             )}
           </AnimatePresence>
+          <Recovery onBridgeReceipt={onBridgeReceipt} />
           <m.div
             layout={isReducedMotion ? false : "position"}
             transition={{ ease: "easeInOut", duration: 0.25 }}
@@ -407,6 +388,8 @@ export const Bridge = () => {
               width="full"
               disabled={
                 !quote ||
+                quote.isDestinationBridgeLimitExceeded ||
+                quote.isToMainnetLockboxBalanceExceeded ||
                 isInputZero(amount) ||
                 isPending ||
                 (isDifferentAddress && !isAddress(receipientAddress)) ||
@@ -416,44 +399,26 @@ export const Bridge = () => {
             >
               {chain.id !== originChainId
                 ? "Switch chain"
-                : quote?.isWrapNeeded
-                  ? "Bridge "
-                  : isPending
-                    ? "Preparing"
-                    : isApprovalNeeded === true
-                      ? "Approve"
-                      : "Bridge"}
+                : isPending
+                  ? "Preparing"
+                  : isApprovalNeeded === true
+                    ? "Approve"
+                    : "Bridge"}
             </CtaButton>
           </m.div>
         </m.div>
         <AnimatePresence initial={false} mode="popLayout">
-          {showQuotes && (
+          {(!!quote || isLoading || isError) && (
             <BridgeQuoter
               key="BridgeQuoter"
-              selectedQuoteProvider={quote?.provider}
-              quotes={quotes}
+              quote={quote}
+              isLoading={isLoading}
+              isError={isError}
               originTokenSymbol={token?.symbol}
-              updateQuote={updateQuote}
             />
           )}
         </AnimatePresence>
       </div>
-
-      {quote?.provider === "Wormhole" && (
-        <WormholeWrapModal
-          open={isWormholeWrapModalOpen}
-          onOpenChange={setIsWormholeWrapModalOpen}
-          amount={amount}
-          bridgeTxHash={bridgeTxHash}
-          updateBridgeTxHash={updateBridgeTxHash}
-          originChainId={originChainId}
-          destinationChainId={destinationChainId}
-          destinationChainName={destinationChain?.name}
-          originTokenAddress={originTokenAddress}
-          originTokenSymbol={token?.symbol}
-          bridgeCost={quote.bridgeCost}
-        />
-      )}
     </>
   );
 };

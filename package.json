@@ -13,6 +13,7 @@
     "pre-commit": "lint-staged"
   },
   "dependencies": {
+    "@layerzerolabs/lz-v2-utilities": "^3.0.102",
     "@rainbow-me/rainbowkit": "^2.2.8",
     "@rive-app/react-canvas": "^4.21.4",
     "@tailwindcss/vite": "^4.1.11",
@@ -29,7 +30,7 @@
     "@visx/scale": "^3.12.0",
     "@visx/shape": "^3.12.0",
     "@visx/tooltip": "^3.12.0",
-    "@wagmi/core": "^2.17.3",
+    "@wagmi/core": "^2.18.0",
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -48,8 +49,8 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
-    "viem": "^2.31.7",
-    "wagmi": "^2.15.6"
+    "viem": "^2.33.0",
+    "wagmi": "^2.16.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",
@@ -61,7 +62,7 @@
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
-    "@vitejs/plugin-react": "^4.6.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-compiler": "19.0.0-beta-714736e-20250131",
@@ -72,7 +73,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "typescript": "^5.7.2",
-    "vite": "^6.3.4",
+    "vite": "^7.0.5",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.2.4"
   },
