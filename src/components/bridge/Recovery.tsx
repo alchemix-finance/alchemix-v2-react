@@ -14,6 +14,7 @@ import { formatNumber } from "@/utils/number";
 import { CtaButton } from "@/components/common/CtaButton";
 import { RecoverBridgeOutModal } from "@/components/modals/RecoverBridgeOutModal";
 import { useChain } from "@/hooks/useChain";
+import { ALCX_MAINNET_ADDRESS } from "@/lib/constants";
 
 import { useExchangeXAlAsset } from "./lib/mutations";
 import { useExchangeQuote } from "./lib/queries";
@@ -28,6 +29,7 @@ const X_AL_USD_ADDRESS =
   targetMapping[mainnet.id][SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD];
 const X_AL_ETH_ADDRESS =
   targetMapping[mainnet.id][SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH];
+const X_ALCX_ADDRESS = targetMapping[mainnet.id][ALCX_MAINNET_ADDRESS];
 
 export const Recovery = ({
   onBridgeReceipt: outer_onBridgeReceipt,
@@ -41,6 +43,8 @@ export const Recovery = ({
   const [openRecoverBridgeOutXAlUsd, setOpenRecoverBridgeOutXAlUsd] =
     useState(false);
   const [openRecoverBridgeOutXAlEth, setOpenRecoverBridgeOutXAlEth] =
+    useState(false);
+  const [openRecoverBridgeOutXAlcx, setOpenRecoverBridgeOutXAlcx] =
     useState(false);
 
   const { data: exchangeQuote, refetch: refetchExchangeQuote } =
@@ -58,6 +62,12 @@ export const Recovery = ({
   } = useExchangeXAlAsset({
     quote: exchangeQuote?.alETH,
   });
+  const {
+    isPendingExchange: isPendingExchangeAlcx,
+    writeExchange: writeExchangeAlcx,
+  } = useExchangeXAlAsset({
+    quote: exchangeQuote?.ALCX,
+  });
 
   const onBridgeReceipt = useCallback(
     (hash: `0x${string}`) => {
@@ -65,6 +75,7 @@ export const Recovery = ({
       refetchExchangeQuote();
       setOpenRecoverBridgeOutXAlUsd(false);
       setOpenRecoverBridgeOutXAlEth(false);
+      setOpenRecoverBridgeOutXAlcx(false);
     },
     [outer_onBridgeReceipt, refetchExchangeQuote],
   );
@@ -95,6 +106,20 @@ export const Recovery = ({
     }
 
     writeExchangeAlEth();
+  };
+
+  const onWriteExchangeAlcx = () => {
+    if (!exchangeQuote) {
+      return;
+    }
+    if (exchangeQuote.ALCX.tx.chainId !== chain.id) {
+      switchChain({
+        chainId: exchangeQuote.ALCX.tx.chainId,
+      });
+      return;
+    }
+
+    writeExchangeAlcx();
   };
 
   return (
@@ -220,6 +245,68 @@ export const Recovery = ({
               xAlAssetAddress={X_AL_ETH_ADDRESS}
               alAssetAddress={SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH}
               originTokenSymbol="xalETH"
+              onBridgeReceipt={onBridgeReceipt}
+            />
+          </m.div>
+        )}
+        {!!exchangeQuote && exchangeQuote.ALCX.xAlAssetBalance > 0n && (
+          <m.div
+            layout={!isReducedMotion}
+            key="exchangeXAlcx"
+            initial="collapsed"
+            animate="open"
+            exit="collapsed"
+            variants={
+              isReducedMotion
+                ? reducedMotionAccordionVariants
+                : accordionVariant
+            }
+            className="space-y-4"
+          >
+            <div>
+              <p>
+                We have noticed{" "}
+                {formatNumber(exchangeQuote.ALCX.xAlAssetBalanceFormatted)}{" "}
+                xALCX in your wallet. This is an xAsset, which can be exchanged
+                for the native asset when liquidity is available. Current
+                liquidity is{" "}
+                {formatNumber(
+                  exchangeQuote.ALCX.alAssetLockboxLiquidityFormatted,
+                )}{" "}
+                ALCX.
+              </p>
+            </div>
+            <CtaButton
+              variant="secondary"
+              width="full"
+              disabled={
+                isPendingExchangeAlcx ||
+                !exchangeQuote.ALCX.xAlAssetBalance ||
+                exchangeQuote.ALCX.alAssetLockboxLiquidity <
+                  exchangeQuote.ALCX.xAlAssetBalance
+              }
+              onClick={onWriteExchangeAlcx}
+            >
+              {chain.id !== exchangeQuote.ALCX.tx.chainId
+                ? "Switch chain"
+                : isPendingExchangeAlcx
+                  ? "Preparing"
+                  : "Exchange xALCX"}
+            </CtaButton>
+            <CtaButton
+              variant="secondary"
+              width="full"
+              onClick={() => setOpenRecoverBridgeOutXAlcx(true)}
+            >
+              Bridge back
+            </CtaButton>
+            <RecoverBridgeOutModal
+              amount={exchangeQuote.ALCX.xAlAssetBalanceFormatted}
+              open={openRecoverBridgeOutXAlcx}
+              onOpenChange={setOpenRecoverBridgeOutXAlcx}
+              xAlAssetAddress={X_ALCX_ADDRESS}
+              alAssetAddress={ALCX_MAINNET_ADDRESS}
+              originTokenSymbol="xALCX"
               onBridgeReceipt={onBridgeReceipt}
             />
           </m.div>
