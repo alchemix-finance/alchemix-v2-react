@@ -15,7 +15,11 @@ import { Options } from "@layerzerolabs/lz-v2-utilities";
 import { SupportedChainId, wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { oftAbi } from "@/abi/oft";
 import { isInputZero } from "@/utils/inputNotZero";
-import { MAX_UINT256_BN, HALF_MINUTE_IN_MS } from "@/lib/constants";
+import {
+  MAX_UINT256_BN,
+  HALF_MINUTE_IN_MS,
+  ALCX_MAINNET_ADDRESS,
+} from "@/lib/constants";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
 
@@ -222,9 +226,11 @@ export const useExchangeQuote = () => {
 
       const alUsdTokenAddress = SYNTH_ASSETS_ADDRESSES[mainnet.id].alUSD;
       const alEthTokenAddress = SYNTH_ASSETS_ADDRESSES[mainnet.id].alETH;
+      const alcxTokenAddress = ALCX_MAINNET_ADDRESS;
 
       const toAlUsd = targetMapping[mainnet.id][alUsdTokenAddress];
       const toAlEth = targetMapping[mainnet.id][alEthTokenAddress];
+      const toAlcx = targetMapping[mainnet.id][alcxTokenAddress];
 
       const xAlUsdBalancePromise = originPublicClient.readContract({
         address: toAlUsd,
@@ -252,16 +258,33 @@ export const useExchangeQuote = () => {
         args: [toAlEth],
       });
 
+      const xAlcxBalancePromise = originPublicClient.readContract({
+        address: toAlcx,
+        abi: erc20Abi,
+        functionName: "balanceOf",
+        args: [address],
+      });
+      const alcxLockboxLiquidityPromise = originPublicClient.readContract({
+        address: alcxTokenAddress,
+        abi: erc20Abi,
+        functionName: "balanceOf",
+        args: [toAlcx],
+      });
+
       const [
         xAlUsdBalance,
         alUsdLockboxLiquidity,
         xAlEthBalance,
         alEthLockboxLiquidity,
+        xAlcxBalance,
+        alcxLockboxLiquidity,
       ] = await Promise.all([
         xAlUsdBalancePromise,
         alUsdLockboxLiquidityPromise,
         xAlEthBalancePromise,
         alEthLockboxLiquidityPromise,
+        xAlcxBalancePromise,
+        alcxLockboxLiquidityPromise,
       ]);
 
       const xAlUsdBalanceFormatted = formatEther(xAlUsdBalance);
@@ -269,6 +292,9 @@ export const useExchangeQuote = () => {
 
       const xAlEthBalanceFormatted = formatEther(xAlEthBalance);
       const alEthLockboxLiquidityFormatted = formatEther(alEthLockboxLiquidity);
+
+      const xAlcxBalanceFormatted = formatEther(xAlcxBalance);
+      const alcxLockboxLiquidityFormatted = formatEther(alcxLockboxLiquidity);
 
       const exchangeAlUsdCalldata = encodeFunctionData({
         abi: oftAbi,
@@ -282,6 +308,12 @@ export const useExchangeQuote = () => {
         args: [xAlEthBalance],
       });
 
+      const exchangeAlcxCalldata = encodeFunctionData({
+        abi: oftAbi,
+        functionName: "exchange",
+        args: [xAlcxBalance],
+      });
+
       const alUsdTx = {
         data: exchangeAlUsdCalldata,
         to: toAlUsd,
@@ -291,6 +323,12 @@ export const useExchangeQuote = () => {
       const alEthTx = {
         data: exchangeAlEthCalldata,
         to: toAlEth,
+        chainId: mainnet.id,
+      };
+
+      const alcxTx = {
+        data: exchangeAlcxCalldata,
+        to: toAlcx,
         chainId: mainnet.id,
       };
 
@@ -308,10 +346,18 @@ export const useExchangeQuote = () => {
         alAssetLockboxLiquidityFormatted: alEthLockboxLiquidityFormatted,
         tx: alEthTx,
       } as const satisfies RecoveryQuote;
+      const ALCX = {
+        xAlAssetBalance: xAlcxBalance,
+        xAlAssetBalanceFormatted: xAlcxBalanceFormatted,
+        alAssetLockboxLiquidity: alcxLockboxLiquidity,
+        alAssetLockboxLiquidityFormatted: alcxLockboxLiquidityFormatted,
+        tx: alcxTx,
+      } as const satisfies RecoveryQuote;
 
       return {
         alUSD,
         alETH,
+        ALCX,
       } as const;
     },
     enabled: !!address,
