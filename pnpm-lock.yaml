@@ -15,8 +15,8 @@ importers:
         specifier: ^2.2.8
         version: 2.2.8(@tanstack/react-query@5.80.7(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)(viem@2.33.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@2.16.0(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.2(@babel/core@7.28.0)(@babel/preset-env@7.24.7(@babel/core@7.28.0))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(@tanstack/query-core@5.80.7)(@tanstack/react-query@5.80.7(react@18.3.1))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.33.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(zod@3.24.2))
       '@rive-app/react-canvas':
-        specifier: ^4.21.4
-        version: 4.21.4(react@18.3.1)
+        specifier: ^4.23.1
+        version: 4.23.1(react@18.3.1)
       '@tailwindcss/vite':
         specifier: ^4.1.11
         version: 4.1.11(vite@7.0.5(@types/node@24.3.0)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.1))
@@ -2451,11 +2451,11 @@ packages:
   '@reown/appkit@1.7.8':
     resolution: {integrity: sha512-51kTleozhA618T1UvMghkhKfaPcc9JlKwLJ5uV+riHyvSoWPKPRIa5A6M1Wano5puNyW0s3fwywhyqTHSilkaA==}
 
-  '@rive-app/canvas@2.30.1':
-    resolution: {integrity: sha512-ZbEUoAGsqZWtDVCSHQ25KWHcu6sSuJxnLG1bAr0mrt40F+lZcB6pgVg5kgJBmtNqfFkJAqRykIfwHI/CvluuJQ==}
+  '@rive-app/canvas@2.31.2':
+    resolution: {integrity: sha512-luOos9IW14vsS0M//rvBjIg9UIjQS3vwGlqzP2ceCvqa7ms70vgtTpa6cSiibWUVVWAJwnmJMI8WZYgoJ6V5ug==}
 
-  '@rive-app/react-canvas@4.21.4':
-    resolution: {integrity: sha512-DNs06qHkXERg9i+Z5YxxF6BzcT7yZNDDk7aiBWUm55qHe0XSYKr8a3vAlUokCtIKn+VBsD4ILj1TmErcgmSHAg==}
+  '@rive-app/react-canvas@4.23.1':
+    resolution: {integrity: sha512-ApnGXtnUkv3LslO8KloBwDQ9QEzhgjPBx6+jml5Caeeiu3svi5bkgiQaK9oqk8WU548vL+k09yVNIcqUWs1QNA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
 
@@ -10554,11 +10554,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@rive-app/canvas@2.30.1': {}
+  '@rive-app/canvas@2.31.2': {}
 
-  '@rive-app/react-canvas@4.21.4(react@18.3.1)':
+  '@rive-app/react-canvas@4.23.1(react@18.3.1)':
     dependencies:
-      '@rive-app/canvas': 2.30.1
+      '@rive-app/canvas': 2.31.2
       react: 18.3.1
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
