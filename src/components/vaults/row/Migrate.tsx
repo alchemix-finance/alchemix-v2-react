@@ -15,14 +15,6 @@ import { SlippageInput } from "@/components/common/input/SlippageInput";
 import { useMigrate } from "@/lib/mutations/useMigrate";
 import { isInputZero } from "@/utils/inputNotZero";
 import { formatNumber } from "@/utils/number";
-import { VaultMessage } from "./VaultMessage";
-
-const TEMPORARY_MIGRATION_MESSAGE = {
-  message:
-    "Migration tools are currently offline. We are working on it and they will be back online soon.",
-  type: "warning",
-} as const;
-const TEMPORARY_DISABLED = true;
 
 export const Migrate = ({
   vault,
@@ -84,8 +76,6 @@ export const Migrate = ({
 
   return (
     <div className="space-y-4">
-      <VaultMessage message={TEMPORARY_MIGRATION_MESSAGE} />
-
       <div className="flex items-center gap-4">
         <p className="text-lightgrey10 text-sm">Target Vault</p>
         <Select
@@ -141,7 +131,7 @@ export const Migrate = ({
       <CtaButton
         variant="outline"
         width="full"
-        disabled={isPending || isInputZero(amount) || TEMPORARY_DISABLED}
+        disabled={isPending || isInputZero(amount)}
         onClick={onCtaClick}
       >
         {isPending
