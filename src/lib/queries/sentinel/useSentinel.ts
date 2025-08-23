@@ -1,36 +1,77 @@
-import { useAccount, useReadContracts } from "wagmi";
+import { useAccount, usePublicClient } from "wagmi";
+import { useQuery } from "@tanstack/react-query";
+import { zeroAddress } from "viem";
+import { base, fantom, linea, metis } from "viem/chains";
+
 import { alchemistV2Abi } from "@/abi/alchemistV2";
 import { useChain } from "@/hooks/useChain";
-import { zeroAddress } from "viem";
 import { ALCHEMISTS_METADATA } from "@/lib/config/alchemists";
 import { ONE_DAY_IN_MS } from "@/lib/constants";
+import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
+import { QueryKeys } from "@/lib/queries/queriesSchema";
+import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
+import { alTokenAbi } from "@/abi/alToken";
+
+const SENTINEL_ROLE =
+  "0xd3eedd6d69d410e954f4c622838ecc3acae9fdcd83cad412075c85b092770656";
 
 export const useSentinel = () => {
   const chain = useChain();
+  const publicClient = usePublicClient<typeof wagmiConfig>({
+    chainId: chain.id,
+  });
 
   const { address = zeroAddress } = useAccount();
 
-  const alchemistsMetadata = ALCHEMISTS_METADATA[chain.id];
-  const alchemistWithoutZero = [
-    alchemistsMetadata.alETH,
-    alchemistsMetadata.alUSD,
-  ].filter((al) => al !== zeroAddress);
+  return useQuery({
+    queryKey: [QueryKeys.Sentinels, chain.id, address],
+    queryFn: async () => {
+      const alchemistsMetadata = ALCHEMISTS_METADATA[chain.id];
+      const alchemistWithoutZero = [
+        alchemistsMetadata.alETH,
+        alchemistsMetadata.alUSD,
+      ].filter((al) => al !== zeroAddress);
 
-  return useReadContracts({
-    allowFailure: false,
-    contracts: alchemistWithoutZero.map(
-      (alchemist) =>
-        ({
-          address: alchemist,
-          abi: alchemistV2Abi,
-          chainId: chain.id,
-          functionName: "sentinels",
-          args: [address],
-        }) as const,
-    ),
-    query: {
-      select: (isSentinels) => isSentinels.some((isSentinel) => !!isSentinel),
-      staleTime: ONE_DAY_IN_MS,
+      let alAssets: `0x${string}`[] = [];
+
+      if (
+        chain.id !== linea.id &&
+        chain.id !== metis.id &&
+        chain.id !== base.id &&
+        chain.id !== fantom.id
+      ) {
+        alAssets = [
+          SYNTH_ASSETS_ADDRESSES[chain.id].alUSD,
+          SYNTH_ASSETS_ADDRESSES[chain.id].alETH,
+        ];
+      }
+
+      const isSentinels = await publicClient.multicall({
+        allowFailure: false,
+        contracts: [
+          ...alchemistWithoutZero.map(
+            (alchemist) =>
+              ({
+                address: alchemist,
+                abi: alchemistV2Abi,
+                functionName: "sentinels",
+                args: [address],
+              }) as const,
+          ),
+          ...alAssets.map(
+            (alAsset) =>
+              ({
+                address: alAsset,
+                abi: alTokenAbi,
+                functionName: "hasRole",
+                args: [SENTINEL_ROLE, address],
+              }) as const,
+          ),
+        ],
+      });
+
+      return isSentinels.some((isSentinel) => isSentinel === true);
     },
+    staleTime: ONE_DAY_IN_MS,
   });
 };

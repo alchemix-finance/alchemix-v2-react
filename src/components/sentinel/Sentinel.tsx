@@ -41,13 +41,13 @@ export const Sentinel = () => {
   } = useReadContracts({
     allowFailure: false,
     contracts: alchemists?.map(
-      ({ debtToken }) =>
+      ({ debtToken, address }) =>
         ({
           address: debtToken,
           abi: alTokenAbi,
           chainId: chain.id,
           functionName: "paused",
-          args: [debtToken],
+          args: [address],
         }) as const,
     ),
     query: {
