@@ -233,6 +233,7 @@ export const Sentinel = () => {
                       </div>
                       <Button
                         className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
+                        disabled={!sentinel.isAlTokenSentinel}
                         onClick={() =>
                           toggleAlTokenState({
                             pause: !alToken.paused,
@@ -293,6 +294,7 @@ export const Sentinel = () => {
                         </div>
                         <Button
                           className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
+                          disabled={!sentinel.isAlchemistSentinel}
                           onClick={() =>
                             toggleAlchemistUnderlyingToken({
                               enabled: token.underlyingTokenParams.enabled,
@@ -352,6 +354,7 @@ export const Sentinel = () => {
                       </div>
                       <Button
                         className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
+                        disabled={!sentinel.isTransmuterSentinel}
                         onClick={() =>
                           toggleTransmuterState({
                             pause: !transmuter.isPaused,
@@ -406,6 +409,7 @@ export const Sentinel = () => {
                       </div>
                       <Button
                         className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
+                        disabled={!sentinel.isAlchemistSentinel}
                         onClick={() =>
                           toggleVaultState({
                             unpause: !vault.yieldTokenParams.enabled,
