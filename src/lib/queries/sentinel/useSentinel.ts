@@ -11,6 +11,7 @@ import { SYNTH_ASSETS_ADDRESSES } from "@/lib/config/synths";
 import { QueryKeys } from "@/lib/queries/queriesSchema";
 import { wagmiConfig } from "@/lib/wagmi/wagmiConfig";
 import { alTokenAbi } from "@/abi/alToken";
+import { TRANSMUTERS } from "@/lib/config/transmuters";
 
 const SENTINEL_ROLE =
   "0xd3eedd6d69d410e954f4c622838ecc3acae9fdcd83cad412075c85b092770656";
@@ -33,6 +34,7 @@ export const useSentinel = () => {
       ].filter((al) => al !== zeroAddress);
 
       let alAssets: `0x${string}`[] = [];
+      let transmuters: `0x${string}`[] = [];
 
       if (
         chain.id !== linea.id &&
@@ -46,31 +48,82 @@ export const useSentinel = () => {
         ];
       }
 
-      const isSentinels = await publicClient.multicall({
+      if (
+        chain.id !== linea.id &&
+        chain.id !== metis.id &&
+        chain.id !== base.id &&
+        chain.id !== fantom.id
+      ) {
+        transmuters = TRANSMUTERS[chain.id].map(
+          (transmuter) => transmuter.address,
+        );
+      }
+
+      const alchemistSentinelsPromise = publicClient.multicall({
         allowFailure: false,
-        contracts: [
-          ...alchemistWithoutZero.map(
-            (alchemist) =>
-              ({
-                address: alchemist,
-                abi: alchemistV2Abi,
-                functionName: "sentinels",
-                args: [address],
-              }) as const,
-          ),
-          ...alAssets.map(
-            (alAsset) =>
-              ({
-                address: alAsset,
-                abi: alTokenAbi,
-                functionName: "hasRole",
-                args: [SENTINEL_ROLE, address],
-              }) as const,
-          ),
-        ],
+        contracts: alchemistWithoutZero.map(
+          (alchemist) =>
+            ({
+              address: alchemist,
+              abi: alchemistV2Abi,
+              functionName: "sentinels",
+              args: [address],
+            }) as const,
+        ),
       });
 
-      return isSentinels.some((isSentinel) => isSentinel === true);
+      const alTokenSentinelsPromise = publicClient.multicall({
+        allowFailure: false,
+        contracts: alAssets.map(
+          (alAsset) =>
+            ({
+              address: alAsset,
+              abi: alTokenAbi,
+              functionName: "hasRole",
+              args: [SENTINEL_ROLE, address],
+            }) as const,
+        ),
+      });
+
+      const transmuterSentinelsPromise = publicClient.multicall({
+        allowFailure: false,
+        contracts: transmuters.map(
+          (transmuter) =>
+            ({
+              address: transmuter,
+              abi: alTokenAbi,
+              functionName: "hasRole",
+              args: [SENTINEL_ROLE, address],
+            }) as const,
+        ),
+      });
+
+      const [alchemistSentinels, alTokenSentinels, transmuterSentinels] =
+        await Promise.all([
+          alchemistSentinelsPromise,
+          alTokenSentinelsPromise,
+          transmuterSentinelsPromise,
+        ]);
+
+      const isAlchemistSentinel = alchemistSentinels.some(
+        (isSentinel) => isSentinel === true,
+      );
+
+      const isAlTokenSentinel = alTokenSentinels.some(
+        (isSentinel) => isSentinel === true,
+      );
+
+      const isTransmuterSentinel = transmuterSentinels.some(
+        (isSentinel) => isSentinel === true,
+      );
+
+      return {
+        isSentinel:
+          isAlchemistSentinel || isAlTokenSentinel || isTransmuterSentinel,
+        isAlTokenSentinel,
+        isAlchemistSentinel,
+        isTransmuterSentinel,
+      };
     },
     staleTime: ONE_DAY_IN_MS,
   });

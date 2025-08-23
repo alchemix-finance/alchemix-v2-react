@@ -11,7 +11,7 @@ import { useSentinel } from "@/lib/queries/sentinel/useSentinel";
 export function LeftNav() {
   const matchRoute = useMatchRoute();
   const isReducedMotion = useReducedMotion();
-  const { data: isSentinel } = useSentinel();
+  const { data: sentinel } = useSentinel();
   return (
     <nav className="space-y-5">
       <p className="my-4 text-xs font-medium tracking-wider uppercase opacity-30">
@@ -57,7 +57,7 @@ export function LeftNav() {
           ) : null}
         </Link>
       ))}
-      {isSentinel && (
+      {sentinel?.isSentinel && (
         <Link
           to="/sentinel"
           className={cn(
