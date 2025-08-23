@@ -9,9 +9,9 @@ import { useSentinel } from "@/lib/queries/sentinel/useSentinel";
 
 export const MobileNav = () => {
   const matchRoute = useMatchRoute();
-  const { data: isSentinel } = useSentinel();
+  const { data: sentinel } = useSentinel();
   return (
-    <div className="fixed bottom-0 z-10 flex w-full justify-between space-x-4 bg-grey30inverse p-4 dark:bg-grey30 lg:hidden">
+    <div className="bg-grey30inverse dark:bg-grey30 fixed bottom-0 z-10 flex w-full justify-between space-x-4 p-4 lg:hidden">
       {Object.keys(routeTitleToPathMapping).map((item) => (
         <Link
           key={item}
@@ -22,7 +22,7 @@ export const MobileNav = () => {
               to: routeTitleToPathMapping[item as RouteTitle].to,
               fuzzy: true,
             })
-              ? "bg-grey10inverse opacity-100 dark:bg-grey10"
+              ? "bg-grey10inverse dark:bg-grey10 opacity-100"
               : "opacity-40",
           )}
         >
@@ -33,7 +33,7 @@ export const MobileNav = () => {
           />
         </Link>
       ))}
-      {isSentinel && (
+      {sentinel?.isSentinel && (
         <Link
           to="/sentinel"
           className={cn(
@@ -42,7 +42,7 @@ export const MobileNav = () => {
               to: "/sentinel",
               fuzzy: true,
             })
-              ? "bg-grey10inverse opacity-100 dark:bg-grey10"
+              ? "bg-grey10inverse dark:bg-grey10 opacity-100"
               : "opacity-40",
           )}
         >

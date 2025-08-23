@@ -4,6 +4,7 @@
  * We can use this for consistent query invalidation.
  */
 export const QueryKeys = {
+  Sentinels: "sentinels",
   Alchemists: "achemists",
   Vaults: "vaults",
   Bonus: "bonus",
