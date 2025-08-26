@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@layerzerolabs/lz-v2-utilities':
-        specifier: ^3.0.102
-        version: 3.0.102
+        specifier: 3.0.125
+        version: 3.0.125
       '@rainbow-me/rainbowkit':
         specifier: ^2.2.8
         version: 2.2.8(@tanstack/react-query@5.80.7(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@2.16.3(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.2(@babel/core@7.28.0)(@babel/preset-env@7.24.7(@babel/core@7.28.0))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(@tanstack/query-core@5.80.7)(@tanstack/react-query@5.80.7(react@18.3.1))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(zod@3.24.2))
@@ -1482,8 +1482,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@layerzerolabs/lz-v2-utilities@3.0.102':
-    resolution: {integrity: sha512-xMhOMakcZGHm6cl3tJX3Cll58Tn4RWwLkLE1gcpP8TOnneCl+6v53Z719ci1SAXRtiegeU5eS702oD/+8CgnEA==}
+  '@layerzerolabs/lz-v2-utilities@3.0.125':
+    resolution: {integrity: sha512-dyHiy+tKl8l3F2xxM3rhME24Y5YXo3wG1tCL9OumQVdwIq4dALD0zWDs9oz6+WQEs1JL3Nq/alxAU2oxCRZFYQ==}
 
   '@lit-labs/ssr-dom-shim@1.4.0':
     resolution: {integrity: sha512-ficsEARKnmmW5njugNYKipTm4SFnbik7CXtoencDZzmzo/dQ+2Q0bgkzJuoJP20Aj0F+izzJjOqsnkd6F/o1bw==}
@@ -9012,7 +9012,7 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
     optional: true
 
-  '@layerzerolabs/lz-v2-utilities@3.0.102':
+  '@layerzerolabs/lz-v2-utilities@3.0.125':
     dependencies:
       '@ethersproject/abi': 5.8.0
       '@ethersproject/address': 5.8.0
