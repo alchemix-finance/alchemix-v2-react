@@ -15,12 +15,12 @@ import {
 import type { Chain } from "@rainbow-me/rainbowkit";
 
 const IS_VERCEL_PRODUCTION = __VERCEL_ENV__ === "production";
-const MAINNET_BLAST_RPC = import.meta.env.VITE_BLAST_MAINNET_API_KEY;
-const OPTIMISM_BLAST_RPC = import.meta.env.VITE_BLAST_OPTIMISM_API_KEY;
-const ARBITRUM_BLAST_RPC = import.meta.env.VITE_BLAST_ARBITRUM_API_KEY;
+const MAINNET_DRPC_RPC = import.meta.env.VITE_DRPC_MAINNET_API_KEY;
+const OPTIMISM_DRPC_RPC = import.meta.env.VITE_DRPC_OPTIMISM_API_KEY;
+const ARBITRUM_DRPC_RPC = import.meta.env.VITE_DRPC_ARBITRUM_API_KEY;
 
 const mainnetRpcs = IS_VERCEL_PRODUCTION
-  ? [MAINNET_BLAST_RPC, "https://ethereum-rpc.publicnode.com"]
+  ? [MAINNET_DRPC_RPC, "https://ethereum-rpc.publicnode.com"]
   : [
       "https://1rpc.io/eth",
       "https://ethereum-rpc.publicnode.com",
@@ -31,7 +31,7 @@ const mainnetRpcs = IS_VERCEL_PRODUCTION
     ];
 
 const optimismRpcs = IS_VERCEL_PRODUCTION
-  ? [OPTIMISM_BLAST_RPC, "https://optimism-rpc.publicnode.com"]
+  ? [OPTIMISM_DRPC_RPC, "https://optimism-rpc.publicnode.com"]
   : [
       "https://1rpc.io/op",
       "https://optimism-rpc.publicnode.com",
@@ -41,7 +41,7 @@ const optimismRpcs = IS_VERCEL_PRODUCTION
     ];
 
 const arbitrumRpcs = IS_VERCEL_PRODUCTION
-  ? [ARBITRUM_BLAST_RPC, "https://arbitrum-one-rpc.publicnode.com"]
+  ? [ARBITRUM_DRPC_RPC, "https://arbitrum-one-rpc.publicnode.com"]
   : [
       "https://arb1.arbitrum.io/rpc",
       "https://1rpc.io/arb",
