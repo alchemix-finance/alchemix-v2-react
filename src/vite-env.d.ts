@@ -3,9 +3,9 @@
 interface ImportMetaEnv {
   readonly VITE_WC_PROJECT_ID: string;
   readonly VITE_SUBGRAPH_API_KEY: string;
-  readonly VITE_BLAST_MAINNET_API_KEY: string;
-  readonly VITE_BLAST_OPTIMISM_API_KEY: string;
-  readonly VITE_BLAST_ARBITRUM_API_KEY: string;
+  readonly VITE_DRPC_MAINNET_API_KEY: string;
+  readonly VITE_DRPC_OPTIMISM_API_KEY: string;
+  readonly VITE_DRPC_ARBITRUM_API_KEY: string;
   readonly VITE_PINATA_KEY: string;
   // more env variables...
 }
