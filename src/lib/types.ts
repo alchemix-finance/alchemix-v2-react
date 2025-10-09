@@ -107,3 +107,23 @@ interface SushiFarm extends BaseFarm {
   masterChefAddress: `0x${string}`;
 }
 export type Farm = InternalFarm | SushiFarm | CurveFarm;
+
+// Airdrop types
+export interface MerkleDistributorArtifacts {
+  token: string;
+  decimals: number;
+  merkleRoot: string;
+  total: string;
+  claims: Record<string, Claim>;
+}
+
+export interface Claim {
+  index: number;
+  amount: string;
+  proof: string[];
+}
+
+export interface DeploymentAddresses {
+  chainId: number;
+  distributor: string;
+}

@@ -21,6 +21,7 @@ import {
   accordionVariants,
   reducedMotionAccordionVariants,
 } from "@/lib/motion/motion";
+import { Airdrop } from "@/components/common/Airdrop";
 
 export type SynthFilter = "all" | SynthAsset;
 type UsedFilter = "all" | "used" | "unused";
@@ -96,6 +97,8 @@ export const Vaults = () => {
       {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
       {isSuccess && (
         <div className="space-y-8">
+            {/* Airdrop Component - shows for all connected users on Arbitrum */}
+            <Airdrop className="w-full" />
           <div className="top-0 z-10 space-y-8 pt-4 drop-shadow-xl backdrop-blur-sm backdrop-filter md:sticky">
             <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
               <Tabs value={synthTab} onValueChange={handleSynthTabChange}>

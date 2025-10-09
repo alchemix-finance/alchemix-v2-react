@@ -1,0 +1,14 @@
+{
+  "csv": "airdrop.csv",
+  "csvPath": "/Users/troopy/jusdcdrop/usdc-airdrop-monorepo/tools/airdrop-builder/input/airdrop.csv",
+  "chainId": 42161,
+  "distributor": "0xcc0C79175b369a6300CA9130E38a158E0b1b3175",
+  "deploymentHash": "0xa7acd48adfa6a52541a1811769880ba752c6d003d88a9ec4440e111a69942905",
+  "token": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+  "merkleRoot": "0xfe3eaa2ebc95adfc15f8625e63b500e1f3f83b8f5fd522aaada7332fee12f2e3",
+  "total": "9979550878",
+  "funded": "0",
+  "deployOnly": true,
+  "timestamp": "2025-10-09T11:10:29.104Z",
+  "verified": true
+}

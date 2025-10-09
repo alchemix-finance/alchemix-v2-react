@@ -5,6 +5,7 @@ import { SlideBox } from "./SlideBox";
 import { Tokens } from "./Tokens";
 import { EcosystemGrid } from "./EcosystemGrid";
 import { RiveSection } from "./RiveSection";
+import { Airdrop } from "@/components/common/Airdrop";
 
 export const Landing = () => {
   return (
@@ -33,6 +34,11 @@ export const Landing = () => {
             Get a Self-Repaying Loan
           </LandingCtaButton>
           <VideoModal delay={0.2} />
+        </div>
+
+        {/* Airdrop Component - only shows for eligible users */}
+        <div className="mt-8 max-w-md w-full">
+          <Airdrop className="mx-auto" />
         </div>
         <div className="absolute top-3/4 left-1/2 -z-10 hidden size-full -translate-x-1/2 bg-[url('/images/landing-page/stars.svg')] bg-contain dark:block" />
       </div>
