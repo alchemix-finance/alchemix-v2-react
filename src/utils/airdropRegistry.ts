@@ -20,7 +20,7 @@ export interface AirdropCampaign {
 export const AIRDROP_REGISTRY: Record<string, AirdropCampaign> = {
   '': {  // Use empty string as ID since files are at /airdrop/ root
     id: '',
-    name: 'USDC Airdrop Campaign',
+    name: 'jUSDC Recompensation',
     description: 'USDC token distribution via MerkleDistributor',
     merkleRoot: '0xfe3eaa2ebc95adfc15f8625e63b500e1f3f83b8f5fd522aaada7332fee12f2e3',
     tokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
