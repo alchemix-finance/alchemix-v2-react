@@ -99,17 +99,17 @@ export const JUsdcDistributionClaim = () => {
 
   if (isClaimed) {
     return (
-      <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 w-max rounded-sm border p-6">
-        <h2 className="text-xl font-bold">jUSDC Recompensation</h2>
+      <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 w-max space-y-2 rounded-sm border p-6">
+        <h2 className="text-center text-2xl">jUSDC Recompensation</h2>
 
         <div className="text-center">
-          <div className="text-green4 text-3xl font-bold">Claimed</div>
-          <p className="text-lightgrey1">Distribution successfully claimed!</p>
+          <div className="text-green4">Claimed</div>
+          <p className="text-lightgrey10">Distribution successfully claimed!</p>
         </div>
 
-        <div className="text-lightgrey10 text-center text-xs">
-          <p className="text-green4">Contract: {DISTRIBUTOR}</p>
-        </div>
+        <p className="text-lightgrey10 text-center text-xs">
+          Contract: {DISTRIBUTOR}
+        </p>
       </div>
     );
   }
