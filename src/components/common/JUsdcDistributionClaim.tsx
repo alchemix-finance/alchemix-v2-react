@@ -5,8 +5,10 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
   useSimulateContract,
+  useSwitchChain,
 } from "wagmi";
-import { parseUnits } from "viem";
+import { formatUnits } from "viem";
+import { arbitrum } from "viem/chains";
 import { toast } from "sonner";
 
 import { distributorAbi } from "@/abi/distributor";
@@ -17,7 +19,8 @@ import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
 import { CtaButton } from "./CtaButton";
 
 export const JUsdcDistributionClaim = () => {
-  const { address } = useAccount();
+  const { address, chainId: connectedChainId } = useAccount();
+  const { switchChain } = useSwitchChain();
 
   const userClaim = CLAIMS.find(
     ({ address: userAddress }) =>
@@ -27,6 +30,7 @@ export const JUsdcDistributionClaim = () => {
   const { data: isClaimed, refetch: refetchIsClaimed } = useReadContract({
     address: DISTRIBUTOR,
     abi: distributorAbi,
+    chainId: arbitrum.id,
     functionName: "isClaimed",
     args: [BigInt(userClaim?.index ?? 0)],
     query: {
@@ -41,11 +45,12 @@ export const JUsdcDistributionClaim = () => {
   } = useSimulateContract({
     address: DISTRIBUTOR,
     abi: distributorAbi,
+    chainId: arbitrum.id,
     functionName: "claim",
     args: [
       BigInt(userClaim?.index ?? 0),
       address!,
-      parseUnits(userClaim?.amount ?? "0", 6),
+      BigInt(userClaim?.amount ?? 0),
       userClaim?.proof ?? [],
     ],
     query: {
@@ -67,6 +72,12 @@ export const JUsdcDistributionClaim = () => {
   }, [claimReceipt, refetchIsClaimed]);
 
   const onCtaClick = () => {
+    if (connectedChainId !== arbitrum.id) {
+      switchChain({
+        chainId: arbitrum.id,
+      });
+    }
+
     if (claimConfigError) {
       toast.error("Claim failed", {
         description: getToastErrorMessage({ error: claimConfigError }),
@@ -88,19 +99,15 @@ export const JUsdcDistributionClaim = () => {
 
   if (isClaimed) {
     return (
-      <div className="bg-grey10inverse dark:bg-grey10 border-bronze3 w-full rounded-lg border p-6">
-        <div className="mb-6 text-center">
-          <h2 className="text-bronze1 mb-2 text-xl font-bold">
-            jUSDC Recompensation
-          </h2>
-        </div>
+      <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 w-max rounded-sm border p-6">
+        <h2 className="text-xl font-bold">jUSDC Recompensation</h2>
 
-        <div className="mb-6 text-center">
-          <div className="text-green4 mb-2 text-3xl font-bold">✅ Claimed</div>
+        <div className="text-center">
+          <div className="text-green4 text-3xl font-bold">Claimed</div>
           <p className="text-lightgrey1">Distribution successfully claimed!</p>
         </div>
 
-        <div className="text-lightgrey10 mt-4 text-center text-xs">
+        <div className="text-lightgrey10 text-center text-xs">
           <p className="text-green4">Contract: {DISTRIBUTOR}</p>
         </div>
       </div>
@@ -108,22 +115,19 @@ export const JUsdcDistributionClaim = () => {
   }
 
   return (
-    <div className="bg-grey10inverse dark:bg-grey10 border-bronze3 w-full rounded-lg border p-6">
-      <div className="mb-6 text-center">
-        <h2 className="text-bronze1 mb-2 text-xl font-bold">
-          jUSDC Recompensation
-        </h2>
-      </div>
+    <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 w-max space-y-2 rounded-sm border p-6">
+      <h2 className="text-center text-2xl">jUSDC Recompensation</h2>
 
-      <div className="mb-6 text-center">
-        <p className="text-lightgrey1">Your allocation</p>
-        <div className="text-bronze2 mb-2 text-3xl font-bold">
-          {formatNumber(userClaim.amount)} USDC
-        </div>
+      <div className="flex items-center justify-center gap-2 text-center">
+        <p className="text-bronze3">Your allocation</p>
+        <p className="font-medium">
+          {formatNumber(formatUnits(BigInt(userClaim.amount), 6))} USDC
+        </p>
       </div>
 
       <CtaButton
         variant="outline"
+        width="full"
         onClick={onCtaClick}
         disabled={isPendingClaimConfig || isClaimProcessing}
       >
