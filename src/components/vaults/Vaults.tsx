@@ -13,14 +13,15 @@ import { VaultAccordionRow } from "@/components/vaults/row/VaultAccordionRow";
 import { Borrow } from "@/components/vaults/common_actions/Borrow";
 import { Liquidate } from "@/components/vaults/common_actions/Liquidate";
 import { Repay } from "@/components/vaults/common_actions/Repay";
-import { LoadingBar } from "../common/LoadingBar";
-import { Button } from "../ui/button";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { LoadingBar } from "@/components/common/LoadingBar";
+import { Button } from "@/components/ui/button";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   accordionTransition,
   accordionVariants,
   reducedMotionAccordionVariants,
 } from "@/lib/motion/motion";
+import { JUsdcDistributionClaim } from "@/components/common/JUsdcDistributionClaim";
 
 export type SynthFilter = "all" | SynthAsset;
 type UsedFilter = "all" | "used" | "unused";
@@ -84,8 +85,8 @@ export const Vaults = () => {
   return (
     <>
       {isPending ? (
-        <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-          <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
+        <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 rounded-sm border">
+          <div className="bg-grey10inverse dark:bg-grey10 flex space-x-4 px-6 py-4">
             <p className="inline-block self-center">Fetching data</p>
           </div>
           <div className="my-4 flex justify-center">
@@ -96,8 +97,9 @@ export const Vaults = () => {
       {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
       {isSuccess && (
         <div className="space-y-8">
+          <JUsdcDistributionClaim />
           <div className="top-0 z-10 space-y-8 pt-4 drop-shadow-xl backdrop-blur-sm backdrop-filter md:sticky">
-            <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
+            <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 rounded-sm border">
               <Tabs value={synthTab} onValueChange={handleSynthTabChange}>
                 <TabsList>
                   <TabsTrigger value="all" className="space-x-4">
@@ -132,8 +134,8 @@ export const Vaults = () => {
                 filteredVaults={filteredVaults}
                 selectedSynth={synthTab}
               />
-              <div className="rounded-sm border border-grey3inverse dark:border-grey3">
-                <div className="flex space-x-4 bg-grey10inverse p-4 dark:bg-grey10">
+              <div className="border-grey3inverse dark:border-grey3 rounded-sm border">
+                <div className="bg-grey10inverse dark:bg-grey10 flex space-x-4 p-4">
                   <div className="flex grow flex-col gap-4 sm:flex-row">
                     {(
                       [
@@ -208,8 +210,8 @@ export const Vaults = () => {
               </div>
             </div>
           </div>
-          <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-            <div className="bg-grey10inverse px-6 py-4 dark:bg-grey10">
+          <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 rounded-sm border">
+            <div className="bg-grey10inverse dark:bg-grey10 px-6 py-4">
               <Tabs
                 value={usedTab}
                 onValueChange={handleUsedTabChange}
