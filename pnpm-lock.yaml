@@ -93,8 +93,8 @@ importers:
         specifier: ^7.1.2
         version: 7.2.0(graphql@16.11.0)
       lucide-react:
-        specifier: ^0.541.0
-        version: 0.541.0(react@18.3.1)
+        specifier: ^0.546.0
+        version: 0.546.0(react@18.3.1)
       radix-ui:
         specifier: ^1.4.1
         version: 1.4.2(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5377,8 +5377,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@0.541.0:
-    resolution: {integrity: sha512-s0Vircsu5WaGv2KoJZ5+SoxiAJ3UXV5KqEM3eIFDHaHkcLIFdIWgXtZ412+Gh02UsdS7Was+jvEpBvPCWQISlg==}
+  lucide-react@0.546.0:
+    resolution: {integrity: sha512-Z94u6fKT43lKeYHiVyvyR8fT7pwCzDu7RyMPpTvh054+xahSgj4HFQ+NmflvzdXsoAjYGdCguGaFKYuvq0ThCQ==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -9352,7 +9352,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
       '@types/debug': 4.1.12
-      debug: 4.4.3
+      debug: 4.3.4
       pony-cause: 2.1.11
       semver: 7.7.3
       uuid: 9.0.1
@@ -14525,7 +14525,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@0.541.0(react@18.3.1):
+  lucide-react@0.546.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
