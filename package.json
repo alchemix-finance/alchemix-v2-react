@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@layerzerolabs/lz-v2-utilities": "3.0.125",
-    "@rainbow-me/rainbowkit": "^2.2.8",
-    "@rive-app/react-canvas": "^4.23.1",
+    "@rainbow-me/rainbowkit": "^2.2.9",
+    "@rive-app/react-canvas": "^4.23.4",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.80.7",
     "@tanstack/react-query-devtools": "^5.80.7",
@@ -30,12 +30,12 @@
     "@visx/scale": "^3.12.0",
     "@visx/shape": "^3.12.0",
     "@visx/tooltip": "^3.12.0",
-    "@wagmi/core": "^2.21.2",
+    "@wagmi/core": "^2.22.1",
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "d3-array": "^3.2.4",
-    "dayjs": "^1.11.12",
+    "dayjs": "^1.11.18",
     "dnum": "^2.14.0",
     "dompurify": "^3.2.5",
     "framer-motion": "^12.23.12",
@@ -48,12 +48,12 @@
     "react-use-measure": "^2.1.7",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.11",
-    "viem": "^2.37.8",
-    "wagmi": "^2.17.5"
+    "tailwindcss": "^4.1.14",
+    "viem": "^2.38.3",
+    "wagmi": "^2.18.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/postcss": "^4.1.14",
     "@tanstack/eslint-plugin-query": "^5.83.1",
     "@tanstack/router-devtools": "^1.104.1",
     "@tanstack/router-plugin": "^1.85.3",
@@ -71,11 +71,11 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.14",
+    "prettier-plugin-tailwindcss": "^0.7.1",
     "typescript": "^5.7.2",
-    "vite": "^7.0.5",
-    "vite-plugin-svgr": "^4.3.0",
-    "vitest": "^3.2.4"
+    "vite": "^7.1.12",
+    "vite-plugin-svgr": "^4.5.0",
+    "vitest": "^4.0.4"
   },
   "lint-staged": {
     "**/*.(ts|tsx|js)": [
@@ -85,5 +85,10 @@
     "**/*.json": [
       "pnpm prettier --write"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "hono": "^4.10.3"
+    }
   }
 }
