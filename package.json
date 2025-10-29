@@ -73,9 +73,9 @@
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "typescript": "^5.7.2",
-    "vite": "^7.0.5",
-    "vite-plugin-svgr": "^4.3.0",
-    "vitest": "^3.2.4"
+    "vite": "^7.1.12",
+    "vite-plugin-svgr": "^4.5.0",
+    "vitest": "^4.0.4"
   },
   "lint-staged": {
     "**/*.(ts|tsx|js)": [
@@ -85,5 +85,10 @@
     "**/*.json": [
       "pnpm prettier --write"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "hono": "^4.10.3"
+    }
   }
 }
