@@ -1,4 +1,4 @@
-export const DISTRIBUTOR = "0xcc0C79175b369a6300CA9130E38a158E0b1b3175";
+export const DISTRIBUTOR = "0x125fe1b43db5Aa401613960d6732eD49daa1a6Ef";
 
 export const MERKLE_ROOT =
   "0xfe3eaa2ebc95adfc15f8625e63b500e1f3f83b8f5fd522aaada7332fee12f2e3";
