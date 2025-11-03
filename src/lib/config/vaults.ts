@@ -342,7 +342,13 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "WETH",
       yieldSymbol: "apxETH",
       image: "apxETH.png",
-      messages: [],
+      messages: [
+        {
+          type: "warning",
+          message:
+            "Withdrawals to WETH/ETH might experience high slippage. Consider withdrawing apxETH directly and waiting for better market conditions to exit.",
+        },
+      ],
       wethGateway: "0xAe8E5EDD84800e77F80Efff9c95d9c283e21a881",
       api: {
         apr: getDineroApr,
