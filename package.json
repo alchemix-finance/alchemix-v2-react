@@ -49,8 +49,8 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.14",
-    "viem": "^2.38.3",
-    "wagmi": "^2.18.1"
+    "viem": "^2.38.6",
+    "wagmi": "^2.19.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.14",
