@@ -282,7 +282,7 @@ export const VAULTS: VaultsConfig = {
         bonus: getNoBonus,
       },
       disabledDepositTokens: [GAS_ADDRESS, WETH_MAINNET_ADDRESS],
-      disabledWithdrawTokens: [],
+      disabledWithdrawTokens: [GAS_ADDRESS, WETH_MAINNET_ADDRESS],
     },
     "0x61134511187a9a2DF38D10DBe07Ba2e8E5563967": {
       label: "AAVE aWETH",
