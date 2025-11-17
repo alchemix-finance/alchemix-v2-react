@@ -13,7 +13,7 @@
     "pre-commit": "lint-staged"
   },
   "dependencies": {
-    "@layerzerolabs/lz-v2-utilities": "3.0.125",
+    "@layerzerolabs/lz-v2-utilities": "3.0.146",
     "@rainbow-me/rainbowkit": "^2.2.9",
     "@rive-app/react-canvas": "^4.23.4",
     "@tailwindcss/vite": "^4.1.11",
