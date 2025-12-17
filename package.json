@@ -85,5 +85,12 @@
     "**/*.json": [
       "pnpm prettier --write"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "node-forge": "1.3.2",
+      "js-yaml": "4.1.1",
+      "tar": "7.5.2"
+    }
   }
 }
