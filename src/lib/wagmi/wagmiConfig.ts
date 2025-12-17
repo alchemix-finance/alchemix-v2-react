@@ -21,7 +21,9 @@ if (!window.Buffer) {
 }
 
 // Alchemix v2 doesn't support contract wallets
-coinbaseWallet.preference = "eoaOnly";
+coinbaseWallet.preference = {
+  options: "eoaOnly",
+};
 
 const connectors = connectorsForWallets(
   [
