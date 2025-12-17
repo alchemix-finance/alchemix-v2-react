@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@layerzerolabs/lz-v2-utilities": "3.0.125",
-    "@rainbow-me/rainbowkit": "^2.2.9",
+    "@rainbow-me/rainbowkit": "^2.2.10",
     "@rive-app/react-canvas": "^4.23.4",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.80.7",
@@ -30,7 +30,7 @@
     "@visx/scale": "^3.12.0",
     "@visx/shape": "^3.12.0",
     "@visx/tooltip": "^3.12.0",
-    "@wagmi/core": "^2.22.1",
+    "@wagmi/core": "^3.0.0",
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -49,8 +49,8 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.14",
-    "viem": "^2.38.6",
-    "wagmi": "^2.19.2"
+    "viem": "^2.43.1",
+    "wagmi": "^3.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.14",
@@ -85,10 +85,5 @@
     "**/*.json": [
       "pnpm prettier --write"
     ]
-  },
-  "pnpm": {
-    "overrides": {
-      "hono": "^4.10.3"
-    }
   }
 }
