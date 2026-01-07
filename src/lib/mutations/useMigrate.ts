@@ -7,7 +7,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { parseUnits } from "viem";
-import { arbitrum, fantom, linea, metis } from "viem/chains";
+import { base, fantom, linea, metis } from "viem/chains";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -23,6 +23,7 @@ import { isInputZero } from "@/utils/inputNotZero";
 import { invalidateWagmiUseQueryPredicate } from "@/utils/helpers/invalidateWagmiUseQueryPredicate";
 import { calculateMinimumOut } from "@/utils/helpers/minAmountWithSlippage";
 import { getToastErrorMessage } from "@/utils/helpers/getToastErrorMessage";
+import { MAX_UINT256_BN } from "@/lib/constants";
 
 export const useMigrate = ({
   currentVault,
@@ -43,13 +44,11 @@ export const useMigrate = ({
 
   if (
     chain.id === fantom.id ||
-    chain.id === arbitrum.id ||
     chain.id === linea.id ||
-    chain.id === metis.id
+    chain.id === metis.id ||
+    chain.id === base.id
   ) {
-    throw new Error(
-      "Migrate is not supported on Fantom, Arbitrum, Linea or Metis",
-    );
+    throw new Error("Migrate is not supported on Fantom, Linea or Metis");
   }
 
   const { data: underlyingTokens } = useReadContract({
@@ -103,10 +102,20 @@ export const useMigrate = ({
   const [doesMigrationSucceed, reason, , newShares, newUnderlying] =
     migrationParams ?? [];
 
-  const minSharesForSlippage = calculateMinimumOut(
-    newShares,
-    parseUnits(slippage, 2),
-  );
+  const { data: minYieldForSlippage } = useReadContract({
+    address: currentVault.alchemist.address,
+    abi: alchemistV2Abi,
+    chainId: chain.id,
+    functionName: "convertSharesToYieldTokens",
+    args: [currentVault.yieldToken, newShares ?? MAX_UINT256_BN],
+    query: {
+      enabled: !!newShares,
+      select: (amountInYield) => {
+        return calculateMinimumOut(amountInYield, parseUnits(slippage, 2));
+      },
+    },
+  });
+
   const minUnderlyingForSlippage = calculateMinimumOut(
     newUnderlying,
     parseUnits(slippage, 2),
@@ -241,7 +250,7 @@ export const useMigrate = ({
       currentVault.address,
       selectedVault.address,
       parseUnits(amount, currentVault.yieldTokenParams.decimals),
-      minSharesForSlippage,
+      minYieldForSlippage ?? MAX_UINT256_BN,
       minUnderlyingForSlippage,
     ],
     query: {

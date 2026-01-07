@@ -31,7 +31,7 @@ export const Sentinel = () => {
   const queryClient = useQueryClient();
   const mutationCallback = useWriteContractMutationCallback();
 
-  const { data: isSentinel, isPending: isPendingSentinel } = useSentinel();
+  const { data: sentinel, isPending: isPendingSentinel } = useSentinel();
 
   const { data: alchemists } = useAlchemists();
   const {
@@ -41,13 +41,13 @@ export const Sentinel = () => {
   } = useReadContracts({
     allowFailure: false,
     contracts: alchemists?.map(
-      ({ debtToken }) =>
+      ({ debtToken, address }) =>
         ({
           address: debtToken,
           abi: alTokenAbi,
           chainId: chain.id,
           functionName: "paused",
-          args: [debtToken],
+          args: [address],
         }) as const,
     ),
     query: {
@@ -193,12 +193,15 @@ export const Sentinel = () => {
         <h5 className="text-sm">Alchemix Control Panel</h5>
       </div>
       {isPending && <LoadingBar />}
-      {!isPending && isSentinel && (
+      {!isPending && sentinel?.isSentinel && (
         <div className="space-y-4 p-4">
           <Accordion type="single" collapsible>
             <AccordionItem value="alTokens" className="border-b-0">
               <AccordionTrigger className="bg-grey10inverse dark:bg-grey10 px-6 py-4">
                 <h5 className="text-sm">Alchemists</h5>
+                {!sentinel.isAlTokenSentinel && (
+                  <p>You do not have rights for al tokens.</p>
+                )}
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 {!!alTokens &&
@@ -230,6 +233,7 @@ export const Sentinel = () => {
                       </div>
                       <Button
                         className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
+                        disabled={!sentinel.isAlTokenSentinel}
                         onClick={() =>
                           toggleAlTokenState({
                             pause: !alToken.paused,
@@ -252,6 +256,9 @@ export const Sentinel = () => {
                 <h5 className="text-sm">
                   Enabled Underlying Alchemists Tokens
                 </h5>
+                {!sentinel.isAlchemistSentinel && (
+                  <p>You do not have rights for alchemists.</p>
+                )}
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 {alchemists?.map((alchemist) => (
@@ -287,6 +294,7 @@ export const Sentinel = () => {
                         </div>
                         <Button
                           className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
+                          disabled={!sentinel.isAlchemistSentinel}
                           onClick={() =>
                             toggleAlchemistUnderlyingToken({
                               enabled: token.underlyingTokenParams.enabled,
@@ -308,6 +316,9 @@ export const Sentinel = () => {
             <AccordionItem value="transmuters" className="border-b-0">
               <AccordionTrigger className="bg-grey10inverse dark:bg-grey10 px-6 py-4">
                 <h5 className="text-sm">Transmuters</h5>
+                {!sentinel.isTransmuterSentinel && (
+                  <p>You do not have rights for transmuters.</p>
+                )}
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 {transmutersWithTokenLabel &&
@@ -343,6 +354,7 @@ export const Sentinel = () => {
                       </div>
                       <Button
                         className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
+                        disabled={!sentinel.isTransmuterSentinel}
                         onClick={() =>
                           toggleTransmuterState({
                             pause: !transmuter.isPaused,
@@ -359,6 +371,9 @@ export const Sentinel = () => {
             <AccordionItem value="vaults" className="border-b-0">
               <AccordionTrigger className="bg-grey10inverse dark:bg-grey10 px-6 py-4">
                 <h5 className="text-sm">Vaults</h5>
+                {!sentinel.isAlchemistSentinel && (
+                  <p>You do not have rights for vaults.</p>
+                )}
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 {filteredVaults &&
@@ -394,6 +409,7 @@ export const Sentinel = () => {
                       </div>
                       <Button
                         className="bg-blue-500 hover:bg-blue-400 dark:bg-blue-300 dark:hover:bg-blue-200"
+                        disabled={!sentinel.isAlchemistSentinel}
                         onClick={() =>
                           toggleVaultState({
                             unpause: !vault.yieldTokenParams.enabled,
@@ -411,7 +427,9 @@ export const Sentinel = () => {
           </Accordion>
         </div>
       )}
-      {!isPending && !isSentinel && <p>You are not the one.</p>}
+      {!isPending && sentinel?.isSentinel === false && (
+        <p>You are not the one.</p>
+      )}
     </div>
   );
 };

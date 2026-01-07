@@ -228,6 +228,11 @@
     border-color: var(--color-gray-200, currentColor);
   }
 
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+
   body {
     @apply bodyGradient text-white2inverse dark:bodyGradientInverse dark:text-white2 bg-fixed;
   }

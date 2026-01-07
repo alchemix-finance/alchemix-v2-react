@@ -4,6 +4,7 @@
  * We can use this for consistent query invalidation.
  */
 export const QueryKeys = {
+  Sentinels: "sentinels",
   Alchemists: "achemists",
   Vaults: "vaults",
   Bonus: "bonus",
@@ -22,7 +23,9 @@ export const QueryKeys = {
   HistoricYield: "historicYield",
   VaultEarned: "vaultEarned",
   ExternalFarmsApr: "externalFarmsApr",
-  BridgeQuote: (p: string) => `bridgeQuote-${p}`,
+  BridgeQuote: "bridgeQuote",
+  ExchangeQuote: "exchangeQuote",
+  BridgeStatus: "bridgeStatus",
   SmartAccountUser: "smart-account-user",
 } as const;
 

@@ -77,7 +77,7 @@ export const Migrate = ({
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4">
-        <p className="text-sm text-lightgrey10">Target Vault</p>
+        <p className="text-lightgrey10 text-sm">Target Vault</p>
         <Select
           value={selectedVaultAddress}
           onValueChange={(value) =>
@@ -108,8 +108,8 @@ export const Migrate = ({
           </SelectContent>
         </Select>
       </div>
-      <div className="flex rounded-sm border border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3">
-        <div className="flex items-center py-4 pl-4 pr-2">
+      <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex rounded-sm border">
+        <div className="flex items-center py-4 pr-2 pl-4">
           <img
             src="/images/token-icons/Shares.svg"
             alt="Shares icon"
@@ -123,7 +123,7 @@ export const Migrate = ({
         />
       </div>
       <SlippageInput slippage={slippage} setSlippage={setSlippage} />
-      <p className="text-sm text-lightgrey10inverse dark:text-lightgrey10">
+      <p className="text-lightgrey10inverse dark:text-lightgrey10 text-sm">
         If you have no available credit in the respective Alchemist, trying to
         migrate will likely result in a failed transaction. Your current LTV for
         this Alchemist is {formatNumber(ltv)}%

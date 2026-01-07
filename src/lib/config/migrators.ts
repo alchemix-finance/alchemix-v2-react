@@ -1,12 +1,14 @@
-import { mainnet, optimism } from "viem/chains";
+import { mainnet, optimism, arbitrum } from "viem/chains";
 
 export const MIGRATORS = {
   eth: {
-    [mainnet.id]: "0xF0D5dCC4c1c23B26cd450b302374758b93Ef7203",
-    [optimism.id]: "0x477165C1064918E0CE08b370047DbcdFa4fe968e",
+    [mainnet.id]: "0x2BEFD8E66dC83523DC25732ea558E878819CaB6F",
+    [optimism.id]: "0x9687cD7F685Df154475a5235d9d8ded36d0D7c54",
+    [arbitrum.id]: "0x81B1D4318c7950Cf8f1583c74afe3c8FFA1705e8",
   },
   usd: {
-    [mainnet.id]: "0xAEff0D3f487F0431318d923f691fF9C484C7564E",
-    [optimism.id]: "0x48697Fe7E60DD288946f3Af97F6dDba00Af9ef74",
+    [mainnet.id]: "0x0d4289008e9e566836EFFEA7664eeb60F2ee6fa9",
+    [optimism.id]: "0xB0D682E60a08895146fC07b7042A6424328447a5",
+    [arbitrum.id]: "0xEcEcc1bbd5A239a8502368a4D98bB104A9f146A9",
   },
 } as const;

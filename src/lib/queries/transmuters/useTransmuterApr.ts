@@ -1,5 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
+import {
+  arbitrum,
+  base,
+  fantom,
+  linea,
+  mainnet,
+  metis,
+  optimism,
+} from "viem/chains";
 
 import { QueryKeys } from "../queriesSchema";
 import { Transmuter } from "@/lib/types";
@@ -34,7 +42,8 @@ export const useTransmuterApr = ({
       if (
         chain.id === fantom.id ||
         chain.id === linea.id ||
-        chain.id === metis.id
+        chain.id === metis.id ||
+        chain.id === base.id
       ) {
         throw new Error(
           "Transmuter APR is not available on Fantom, Linea or Metis.",
@@ -65,7 +74,8 @@ export const useTransmuterApr = ({
       !!transmuter.metadata.aprSelector &&
       chain.id !== fantom.id &&
       chain.id !== linea.id &&
-      chain.id !== metis.id,
+      chain.id !== metis.id &&
+      chain.id !== base.id,
     staleTime: ONE_DAY_IN_MS,
     retry: false,
   });

@@ -1,5 +1,13 @@
 import { zeroAddress } from "viem";
-import { arbitrum, fantom, linea, mainnet, metis, optimism } from "viem/chains";
+import {
+  arbitrum,
+  base,
+  fantom,
+  linea,
+  mainnet,
+  metis,
+  optimism,
+} from "viem/chains";
 
 import { GAS_ADDRESS, WETH_MAINNET_ADDRESS } from "@/lib/constants";
 
@@ -17,8 +25,7 @@ import {
   getNoBonus,
 } from "@/lib/middleware/bonuses";
 import { getGearboxApy } from "@/lib/middleware/gearbox";
-import { getJonesApy } from "@/lib/middleware/jones";
-import { getDineroApr } from "../middleware/dinero";
+import { getDineroApr } from "@/lib/middleware/dinero";
 
 // @dev some vaults are broken so we need to ignore them from processing
 export const IGNORED_VAULTS: `0x${string}`[] = [
@@ -275,7 +282,7 @@ export const VAULTS: VaultsConfig = {
         bonus: getNoBonus,
       },
       disabledDepositTokens: [GAS_ADDRESS, WETH_MAINNET_ADDRESS],
-      disabledWithdrawTokens: [],
+      disabledWithdrawTokens: [GAS_ADDRESS, WETH_MAINNET_ADDRESS],
     },
     "0x61134511187a9a2DF38D10DBe07Ba2e8E5563967": {
       label: "AAVE aWETH",
@@ -335,7 +342,13 @@ export const VAULTS: VaultsConfig = {
       underlyingSymbol: "WETH",
       yieldSymbol: "apxETH",
       image: "apxETH.png",
-      messages: [],
+      messages: [
+        {
+          type: "warning",
+          message:
+            "Withdrawals to WETH/ETH might experience high slippage. Consider withdrawing apxETH directly and waiting for better market conditions to exit.",
+        },
+      ],
       wethGateway: "0xAe8E5EDD84800e77F80Efff9c95d9c283e21a881",
       api: {
         apr: getDineroApr,
@@ -567,30 +580,6 @@ export const VAULTS: VaultsConfig = {
       disabledDepositTokens: [],
       disabledWithdrawTokens: [],
     },
-    "0xB0BDE111812EAC913b392D80D51966eC977bE3A2": {
-      label: "Jones jUSDC",
-      synthAssetType: SYNTH_ASSETS.ALUSD,
-      underlyingSymbol: "USDC",
-      yieldSymbol: "jUSDC",
-      image: "jUSDC.webp",
-      messages: [
-        {
-          type: "info",
-          message:
-            "Only jUSDC deposit and withdraw are available. Get jUSDC from Jones.",
-          linkHref: "https://app.jonesdao.io/vaults/leveraged/usdc",
-          linkLabel: "Get jUSDC.",
-        },
-      ],
-      api: {
-        apr: getJonesApy,
-        yieldType: "APY",
-        provider: "jones",
-        bonus: getMeltedRewardsBonusData,
-      },
-      disabledDepositTokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831"], // Jones have geo-blocking, so we disable deposit of USDC -> let folks go to Jones directly
-      disabledWithdrawTokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831"], // Jones have a withdrawal queue to withdraw fron jUSDC -> let folks go to Jones directly
-    },
     //alETH
     "0x5979D7b546E38E414F7E9822514be443A4800529": {
       label: "Lido wstETH",
@@ -628,6 +617,7 @@ export const VAULTS: VaultsConfig = {
   },
   [linea.id]: {},
   [metis.id]: {},
+  [base.id]: {},
 };
 
 export const MAX_LOSS_CHECKER_ADDRESSES = {
@@ -637,4 +627,5 @@ export const MAX_LOSS_CHECKER_ADDRESSES = {
   [fantom.id]: zeroAddress,
   [linea.id]: zeroAddress,
   [metis.id]: zeroAddress,
+  [base.id]: zeroAddress,
 } as const;
