@@ -1,4 +1,4 @@
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 import { useMemo } from "react";
 import {
   useReactTable,
@@ -7,6 +7,7 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
+
 import { Button } from "@/components/ui/button";
 import { formatNumber } from "@/utils/number";
 import {
@@ -16,11 +17,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../common/table";
+} from "@/components/common/table";
 
 interface LeaderboardEntry {
   address: string;
-  points: number;
+  mana: number;
 }
 
 interface PointsLeaderboardTableProps {
@@ -39,8 +40,8 @@ const columns = [
     header: "Address",
     cell: (info) => <span className="text-sm">{info.getValue()}</span>,
   }),
-  columnHelper.accessor("points", {
-    header: "Points",
+  columnHelper.accessor("mana", {
+    header: "Mana",
     cell: (info) => formatNumber(info.getValue()),
   }),
 ];
@@ -48,7 +49,7 @@ const columns = [
 export const PointsLeaderboardTable = ({
   data,
 }: PointsLeaderboardTableProps) => {
-  const { address } = useAccount();
+  const { address } = useConnection();
 
   const userRowIdx = useMemo(() => {
     return data?.findIndex(
