@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { ExternalLink, Sparkles, Clock } from "lucide-react";
 import { useConnection } from "wagmi";
-import { useUserPoints, getPointsBreakdown } from "../points/usePoints";
+
+import { useUserPoints } from "@/components/points/usePoints";
 import { formatNumber } from "@/utils/number";
 
 interface TimeLeft {
@@ -66,7 +67,6 @@ export const MigrationBanner = () => {
 
   const { address } = useConnection();
   const { data: userPointsData } = useUserPoints(address);
-  const userPoints = getPointsBreakdown(userPointsData);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -148,7 +148,7 @@ export const MigrationBanner = () => {
             Your Mana
           </span>
           <span className="text-bronze1inverse dark:text-bronze1 text-4xl font-medium">
-            {formatNumber(userPoints.totalPoints)}
+            {formatNumber(userPointsData?.totalPoints)}
           </span>
         </Link>
 

@@ -17,8 +17,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../common/table";
-import { LeaderboardEntry } from "./usePoints";
+} from "@/components/common/table";
+
+interface LeaderboardEntry {
+  address: string;
+  mana: number;
+}
 
 interface PointsLeaderboardTableProps {
   data: LeaderboardEntry[];
@@ -54,7 +58,7 @@ export const PointsLeaderboardTable = ({
   }, [address, data]);
 
   const table = useReactTable({
-    data: data ?? [],
+    data,
     columns,
     state: {
       rowPinning: {

@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { FIVE_MIN_IN_MS } from "@/lib/constants";
+import { QueryKeys } from "@/lib/queries/queriesSchema";
+
 /** Types **/
 
 export interface UserPoints {
@@ -11,90 +14,49 @@ export interface UserPoints {
   last_updated: number;
 }
 
-export interface LeaderboardEntry {
-  address: string;
-  mana: number;
-}
-
-export interface PointsBreakdown {
-  depositPoints: number;
-  migrationPoints: number;
-  lpPoints: number;
-  totalPoints: number;
-}
-
-/** Constants **/
-
 const POINTS_API_BASE =
   import.meta.env.VITE_POINTS_API_URL ?? "http://localhost:3000";
 
-const MS_PER_SECOND = 1000;
-const SECONDS_PER_MINUTE = 60;
-const STALE_TIME_MINUTES = 5;
-const STALE_TIME_MS = MS_PER_SECOND * SECONDS_PER_MINUTE * STALE_TIME_MINUTES;
-
-const DEFAULT_POINTS_BREAKDOWN: PointsBreakdown = {
-  depositPoints: 0,
-  migrationPoints: 0,
-  lpPoints: 0,
-  totalPoints: 0,
-};
-
-/** Utility Functions **/
-
-const parsePoints = (value: string | undefined) => parseFloat(value || "0");
-
 export const calculateTotalPoints = (entry: UserPoints) =>
-  parsePoints(entry.v2_deposits_points) +
-  parsePoints(entry.v3_deposits_points) +
-  parsePoints(entry.lp_points);
-
-export const getPointsBreakdown = (entry: UserPoints | undefined) => {
-  if (!entry) {
-    return DEFAULT_POINTS_BREAKDOWN;
-  }
-
-  const depositPoints = parsePoints(entry.v2_deposits_points);
-  const migrationPoints = parsePoints(entry.v3_deposits_points);
-  const lpPoints = parsePoints(entry.lp_points);
-
-  return {
-    depositPoints,
-    migrationPoints,
-    lpPoints,
-    totalPoints: depositPoints + migrationPoints + lpPoints,
-  };
-};
+  Number(entry.v2_deposits_points) +
+  Number(entry.v3_deposits_points) +
+  Number(entry.lp_points);
 
 /** API Functions **/
 
-const fetchUserPoints = (address: string) =>
-  fetch(`${POINTS_API_BASE}/points/${address.toLowerCase()}`).then((res) => {
-    if (!res.ok) throw new Error(`Failed to fetch points for ${address}`);
-    return res.json() as Promise<UserPoints>;
-  });
+const fetchUserPoints = async (address: `0x${string}` | undefined) => {
+  if (!address) throw new Error("Address is required to fetch user points");
+  const req = await fetch(`${POINTS_API_BASE}/points/${address.toLowerCase()}`);
+  const res = (await req.json()) as UserPoints;
+  return res;
+};
 
-const fetchAllPoints = () =>
-  fetch(`${POINTS_API_BASE}/points`).then((res) => {
-    if (!res.ok) throw new Error("Failed to fetch leaderboard");
-    return res.json() as Promise<UserPoints[]>;
-  });
+const fetchAllPoints = async () => {
+  const req = await fetch(`${POINTS_API_BASE}/points`);
+  const res = (await req.json()) as UserPoints[];
+  return res;
+};
 
 /** Hooks **/
 
-export const useUserPoints = (address: string | undefined) =>
-  useQuery({
-    queryKey: ["points", "user", address],
+export const useUserPoints = (address: `0x${string}` | undefined) => {
+  return useQuery({
+    queryKey: [QueryKeys.UserPoints, address],
     queryFn: () => fetchUserPoints(address!),
     enabled: !!address,
-    staleTime: STALE_TIME_MS,
+    staleTime: FIVE_MIN_IN_MS,
+    select: (data) => ({
+      ...data,
+      totalPoints: calculateTotalPoints(data),
+    }),
   });
+};
 
 export const useLeaderboard = () =>
   useQuery({
-    queryKey: ["points", "leaderboard"],
+    queryKey: [QueryKeys.Points],
     queryFn: fetchAllPoints,
-    staleTime: STALE_TIME_MS,
+    staleTime: FIVE_MIN_IN_MS,
     select: (data) =>
       data
         .map((entry) => ({

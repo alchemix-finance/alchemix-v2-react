@@ -1,33 +1,33 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useConnection } from "wagmi";
-import { Button } from "../ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+
+import { Button } from "@/components/ui/button";
 import {
   accordionTransition,
   accordionVariants,
   reducedMotionAccordionVariants,
 } from "@/lib/motion/motion";
+import { formatNumber } from "@/utils/number";
+import { LoadingBar } from "@/components/common/LoadingBar";
 
 import { PointsLeaderboardTable } from "./PointsLeaderboardTable";
-import { useUserPoints, useLeaderboard, getPointsBreakdown } from "./usePoints";
-import { formatNumber } from "@/utils/number";
-import { LoadingBar } from "../common/LoadingBar";
+import { useUserPoints, useLeaderboard } from "./usePoints";
 
 export const Points = () => {
-  const [open, setOpen] = useState(false);
   const isReducedMotion = useReducedMotion();
+
+  const [open, setOpen] = useState(false);
+
   const { address } = useConnection();
 
-  const { data: userPointsData, isLoading: isUserLoading } =
+  const { data: userPointsData, isPending: isUserPointsDataPending } =
     useUserPoints(address);
 
-  const { data: leaderboardData, isLoading: isLeaderboardLoading } =
+  const { data: leaderboardData, isPending: isLeaderboardDataPending } =
     useLeaderboard();
-
-  const userPoints = getPointsBreakdown(userPointsData);
-  const leaderboard = leaderboardData ?? [];
 
   const handleOpen = () => {
     setOpen((prev) => !prev);
@@ -39,37 +39,41 @@ export const Points = () => {
         <div className="bg-grey10inverse dark:bg-grey10 flex h-20 w-full flex-col gap-2 px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
           <p className="text-sm">My Mana</p>
         </div>
-        {isUserLoading ? (
+        {!!address && isUserPointsDataPending ? (
           <div className="my-4 flex justify-center">
             <LoadingBar />
           </div>
         ) : (
-          <div key="migrationPoints">
-            <div className="flex w-full flex-col gap-8 p-4 lg:flex-row">
-              <div className="flex w-full flex-col items-center justify-between gap-8 p-4 lg:w-[25%]">
+          <div>
+            <div className="flex w-full flex-col gap-8 p-4 md:flex-row">
+              <div className="flex w-full flex-col items-center justify-between gap-8 p-4 lg:w-1/3">
                 <h2 className="text-2xl font-semibold">Total Mana</h2>
                 <p className="text-5xl font-medium">
-                  {formatNumber(userPoints.totalPoints)}
+                  {formatNumber(userPointsData?.totalPoints)}
                 </p>
-                <div className="text-l flex flex-wrap justify-center gap-4 font-light sm:gap-8">
+                <div className="flex justify-center gap-4 font-light">
                   <div className="flex items-center gap-2">
                     <div className="bg-grey2 size-3 rounded-full" />
-                    <span>DM - {formatNumber(userPoints.depositPoints)}</span>
+                    <span>
+                      DM - {formatNumber(userPointsData?.v2_deposits_points)}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="bg-bronze2 size-3 rounded-full" />
-                    <span>MM - {formatNumber(userPoints.migrationPoints)}</span>
+                    <span>
+                      MM - {formatNumber(userPointsData?.v2_deposits_points)}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="bg-bronze2inverse size-3 rounded-full" />
-                    <span>LM - {formatNumber(userPoints.lpPoints)}</span>
+                    <span>LM - {formatNumber(userPointsData?.lp_points)}</span>
                   </div>
                 </div>
               </div>
-              <div className="flex w-full flex-col gap-4 lg:w-[75%]">
+              <div className="flex w-full flex-col gap-4 lg:w-2/3">
                 <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex flex-col gap-4 rounded-sm border p-4">
                   <h2 className="text-xl font-semibold">How to Earn?</h2>
-                  <p>
+                  <p className="font-light">
                     Deposit Mana is earned by depositors having assets in
                     Alchemix vaults. Deposit Mana is temporary and leveled-up to
                     Migration Mana for users that remain deposited in Alchemix
@@ -84,10 +88,10 @@ export const Points = () => {
                   </p>
                 </div>
                 <div className="flex flex-col gap-4 sm:flex-row">
-                  <Button className="w-full sm:flex-1">
+                  <Button variant="outline" className="w-full sm:flex-1">
                     <Link to="/vaults">Deposit in Vaults</Link>
                   </Button>
-                  <Button className="w-full sm:flex-1">
+                  <Button variant="outline" className="w-full sm:flex-1">
                     <Link to="/farms">Provide Liquidity</Link>
                   </Button>
                 </div>
@@ -124,12 +128,12 @@ export const Points = () => {
               }
               transition={accordionTransition}
             >
-              {isLeaderboardLoading ? (
+              {isLeaderboardDataPending ? (
                 <div className="my-4 flex justify-center">
                   <LoadingBar />
                 </div>
               ) : (
-                <PointsLeaderboardTable data={leaderboard} />
+                <PointsLeaderboardTable data={leaderboardData ?? []} />
               )}
             </m.div>
           )}
