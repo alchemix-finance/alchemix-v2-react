@@ -45,13 +45,13 @@ export const Points = () => {
           </div>
         ) : (
           <div key="migrationPoints">
-            <div className="flex w-full gap-8 space-y-4 p-4">
-              <div className="flex w-[25%] flex-col items-center justify-between gap-8 p-4">
+            <div className="flex w-full flex-col gap-8 p-4 lg:flex-row">
+              <div className="flex w-full flex-col items-center justify-between gap-8 p-4 lg:w-[25%]">
                 <h2 className="text-2xl font-semibold">Total Mana</h2>
                 <p className="text-5xl font-medium">
                   {formatNumber(userPoints.totalPoints)}
                 </p>
-                <div className="text-l flex justify-center gap-8 font-light">
+                <div className="text-l flex flex-wrap justify-center gap-4 font-light sm:gap-8">
                   <div className="flex items-center gap-2">
                     <div className="bg-grey2 size-3 rounded-full" />
                     <span>DM - {formatNumber(userPoints.depositPoints)}</span>
@@ -66,7 +66,7 @@ export const Points = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex w-[75%] flex-col gap-4">
+              <div className="flex w-full flex-col gap-4 lg:w-[75%]">
                 <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex flex-col gap-4 rounded-sm border p-4">
                   <h2 className="text-xl font-semibold">How to Earn?</h2>
                   <p>
@@ -83,11 +83,11 @@ export const Points = () => {
                     alAsset pools.
                   </p>
                 </div>
-                <div className="flex gap-4">
-                  <Button className="flex-1">
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  <Button className="w-full sm:flex-1">
                     <Link to="/vaults">Deposit in Vaults</Link>
                   </Button>
-                  <Button className="flex-1">
+                  <Button className="w-full sm:flex-1">
                     <Link to="/farms">Provide Liquidity</Link>
                   </Button>
                 </div>
