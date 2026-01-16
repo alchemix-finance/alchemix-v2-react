@@ -7,6 +7,7 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
+
 import { Button } from "@/components/ui/button";
 import { formatNumber } from "@/utils/number";
 import {
@@ -35,8 +36,8 @@ const columns = [
     header: "Address",
     cell: (info) => <span className="text-sm">{info.getValue()}</span>,
   }),
-  columnHelper.accessor("points", {
-    header: "Points",
+  columnHelper.accessor("mana", {
+    header: "Mana",
     cell: (info) => formatNumber(info.getValue()),
   }),
 ];

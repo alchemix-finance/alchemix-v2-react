@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { ToOptions } from "@tanstack/react-router";
+
 import { IS_TENDERLY_FORK } from "@/lib/wagmi/tenderly";
 
 export const routeTitleToPathMapping = {
@@ -10,7 +11,7 @@ export const routeTitleToPathMapping = {
   Farms: { to: "/farms", icon: "/images/icons/farm_med.svg" },
   Governance: { to: "/governance", icon: "/images/icons/alcx_med.svg" },
   Utilities: { to: "/utilities", icon: "/images/icons/utilities_med.svg" },
-  Points: { to: "/points", icon: "/images/icons/points_thick.svg" },
+  Mana: { to: "/mana", icon: "/images/icons/points_thick.svg" },
 } as const satisfies Record<string, { to: ToOptions["to"]; icon: string }>;
 
 export type RouteTitle = keyof typeof routeTitleToPathMapping;

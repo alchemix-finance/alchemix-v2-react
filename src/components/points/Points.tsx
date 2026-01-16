@@ -9,6 +9,7 @@ import {
   accordionVariants,
   reducedMotionAccordionVariants,
 } from "@/lib/motion/motion";
+
 import { PointsLeaderboardTable } from "./PointsLeaderboardTable";
 import { useUserPoints, useLeaderboard, getPointsBreakdown } from "./usePoints";
 import { formatNumber } from "@/utils/number";
@@ -36,7 +37,7 @@ export const Points = () => {
     <div className="flex flex-col gap-8">
       <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative w-full rounded-sm border">
         <div className="bg-grey10inverse dark:bg-grey10 flex h-20 w-full flex-col gap-2 px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
-          <p className="text-sm">My Points</p>
+          <p className="text-sm">My Mana</p>
         </div>
         {isUserLoading ? (
           <div className="my-4 flex justify-center">
