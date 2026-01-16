@@ -20,7 +20,6 @@ import { Route as TransmutersImport } from './routes/transmuters'
 
 const UtilitiesLazyImport = createFileRoute('/utilities')()
 const SentinelLazyImport = createFileRoute('/sentinel')()
-const ManaLazyImport = createFileRoute('/mana')()
 const GovernanceLazyImport = createFileRoute('/governance')()
 const FarmsLazyImport = createFileRoute('/farms')()
 const DebugLazyImport = createFileRoute('/debug')()
@@ -40,12 +39,6 @@ const SentinelLazyRoute = SentinelLazyImport.update({
   path: '/sentinel',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/sentinel.lazy').then((d) => d.Route))
-
-const ManaLazyRoute = ManaLazyImport.update({
-  id: '/mana',
-  path: '/mana',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/mana.lazy').then((d) => d.Route))
 
 const GovernanceLazyRoute = GovernanceLazyImport.update({
   id: '/governance',
@@ -142,13 +135,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GovernanceLazyImport
       parentRoute: typeof rootRoute
     }
-    '/mana': {
-      id: '/mana'
-      path: '/mana'
-      fullPath: '/mana'
-      preLoaderRoute: typeof ManaLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/sentinel': {
       id: '/sentinel'
       path: '/sentinel'
@@ -176,7 +162,6 @@ export interface FileRoutesByFullPath {
   '/debug': typeof DebugLazyRoute
   '/farms': typeof FarmsLazyRoute
   '/governance': typeof GovernanceLazyRoute
-  '/mana': typeof ManaLazyRoute
   '/sentinel': typeof SentinelLazyRoute
   '/utilities': typeof UtilitiesLazyRoute
 }
@@ -189,7 +174,6 @@ export interface FileRoutesByTo {
   '/debug': typeof DebugLazyRoute
   '/farms': typeof FarmsLazyRoute
   '/governance': typeof GovernanceLazyRoute
-  '/mana': typeof ManaLazyRoute
   '/sentinel': typeof SentinelLazyRoute
   '/utilities': typeof UtilitiesLazyRoute
 }
@@ -203,7 +187,6 @@ export interface FileRoutesById {
   '/debug': typeof DebugLazyRoute
   '/farms': typeof FarmsLazyRoute
   '/governance': typeof GovernanceLazyRoute
-  '/mana': typeof ManaLazyRoute
   '/sentinel': typeof SentinelLazyRoute
   '/utilities': typeof UtilitiesLazyRoute
 }
@@ -218,7 +201,6 @@ export interface FileRouteTypes {
     | '/debug'
     | '/farms'
     | '/governance'
-    | '/mana'
     | '/sentinel'
     | '/utilities'
   fileRoutesByTo: FileRoutesByTo
@@ -230,7 +212,6 @@ export interface FileRouteTypes {
     | '/debug'
     | '/farms'
     | '/governance'
-    | '/mana'
     | '/sentinel'
     | '/utilities'
   id:
@@ -242,7 +223,6 @@ export interface FileRouteTypes {
     | '/debug'
     | '/farms'
     | '/governance'
-    | '/mana'
     | '/sentinel'
     | '/utilities'
   fileRoutesById: FileRoutesById
@@ -256,7 +236,6 @@ export interface RootRouteChildren {
   DebugLazyRoute: typeof DebugLazyRoute
   FarmsLazyRoute: typeof FarmsLazyRoute
   GovernanceLazyRoute: typeof GovernanceLazyRoute
-  ManaLazyRoute: typeof ManaLazyRoute
   SentinelLazyRoute: typeof SentinelLazyRoute
   UtilitiesLazyRoute: typeof UtilitiesLazyRoute
 }
@@ -269,7 +248,6 @@ const rootRouteChildren: RootRouteChildren = {
   DebugLazyRoute: DebugLazyRoute,
   FarmsLazyRoute: FarmsLazyRoute,
   GovernanceLazyRoute: GovernanceLazyRoute,
-  ManaLazyRoute: ManaLazyRoute,
   SentinelLazyRoute: SentinelLazyRoute,
   UtilitiesLazyRoute: UtilitiesLazyRoute,
 }
@@ -291,7 +269,6 @@ export const routeTree = rootRoute
         "/debug",
         "/farms",
         "/governance",
-        "/mana",
         "/sentinel",
         "/utilities"
       ]
@@ -316,9 +293,6 @@ export const routeTree = rootRoute
     },
     "/governance": {
       "filePath": "governance.lazy.tsx"
-    },
-    "/mana": {
-      "filePath": "mana.lazy.tsx"
     },
     "/sentinel": {
       "filePath": "sentinel.lazy.tsx"
