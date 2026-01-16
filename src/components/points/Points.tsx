@@ -36,7 +36,7 @@ export const Points = () => {
   return (
     <div className="flex flex-col gap-8">
       <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative w-full rounded-sm border">
-        <div className="bg-grey10inverse dark:bg-grey10 flex h-20 w-full flex-col gap-2 px-6 py-4 text-sm lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+        <div className="bg-grey10inverse dark:bg-grey10 h-20 w-full px-6 py-4">
           <p className="text-sm">My Mana</p>
         </div>
         {!!address && isUserPointsDataPending ? (
@@ -59,18 +59,12 @@ export const Points = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="bg-bronze2 size-3 rounded-full" />
-                    <span>
-                      MM - {formatNumber(userPointsData?.v2_deposits_points)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
                     <div className="bg-bronze2inverse size-3 rounded-full" />
                     <span>LM - {formatNumber(userPointsData?.lp_points)}</span>
                   </div>
                 </div>
               </div>
-              <div className="flex w-full flex-col gap-4 lg:w-2/3">
+              <div className="flex w-full flex-col gap-4 md:w-2/3">
                 <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex flex-col gap-4 rounded-sm border p-4">
                   <h2 className="text-xl font-semibold">How to Earn?</h2>
                   <p className="font-light">
