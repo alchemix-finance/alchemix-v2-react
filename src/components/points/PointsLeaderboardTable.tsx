@@ -30,6 +30,9 @@ interface PointsLeaderboardTableProps {
 
 const columnHelper = createColumnHelper<LeaderboardEntry>();
 
+const truncateAddress = (address: string) =>
+  `${address.slice(0, 6)}...${address.slice(-6)}`;
+
 const columns = [
   columnHelper.display({
     id: "rank",
@@ -38,7 +41,9 @@ const columns = [
   }),
   columnHelper.accessor("address", {
     header: "Address",
-    cell: (info) => <span className="text-sm">{info.getValue()}</span>,
+    cell: (info) => (
+      <span className="text-sm">{truncateAddress(info.getValue())}</span>
+    ),
   }),
   columnHelper.accessor("mana", {
     header: "Mana",
@@ -132,7 +137,7 @@ export const PointsLeaderboardTable = ({
           <div className="flex items-center justify-end gap-4">
             <div className="flex items-center gap-2">
               <Button
-                variant="secondary"
+                variant="action"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
                 className="px-2"
@@ -140,7 +145,7 @@ export const PointsLeaderboardTable = ({
                 Prev
               </Button>
               <Button
-                variant="secondary"
+                variant="action"
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
                 className="px-2"
