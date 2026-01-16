@@ -13,7 +13,7 @@ export interface UserPoints {
 
 export interface LeaderboardEntry {
   address: string;
-  points: number;
+  mana: number;
 }
 
 export interface PointsBreakdown {
@@ -99,7 +99,7 @@ export const useLeaderboard = () =>
       data
         .map((entry) => ({
           address: entry.address,
-          points: calculateTotalPoints(entry),
+          mana: calculateTotalPoints(entry),
         }))
-        .sort((a, b) => b.points - a.points),
+        .sort((a, b) => b.mana - a.mana),
   });
