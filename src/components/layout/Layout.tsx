@@ -4,11 +4,14 @@ import { LeftBlock } from "@/components/layout/LeftBlock";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "./Footer";
 import { cn } from "@/utils/cn";
+import { MigrationBanner } from "../landing/MigrationBanner";
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   const isLanding = useLocation().pathname === "/";
   return (
     <div>
+      <MigrationBanner />
+
       <div className="relative flex min-h-dvh flex-col overflow-x-clip">
         <Header />
         <div className="flex grow">
