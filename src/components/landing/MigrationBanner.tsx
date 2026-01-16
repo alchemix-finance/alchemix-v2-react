@@ -145,7 +145,7 @@ export const MigrationBanner = () => {
           className="flex flex-col items-center gap-4 transition-opacity hover:opacity-80 sm:w-1/3"
         >
           <span className="text-bronze1inverse dark:text-bronze3 text-xs font-medium tracking-wider uppercase">
-            Your Points
+            Your Mana
           </span>
           <span className="text-bronze1inverse dark:text-bronze1 text-4xl font-medium">
             {formatNumber(userPoints.totalPoints)}

@@ -47,41 +47,48 @@ export const Points = () => {
           <div key="migrationPoints">
             <div className="flex w-full gap-8 space-y-4 p-4">
               <div className="flex w-[25%] flex-col items-center justify-between gap-8 p-4">
-                <h2 className="text-2xl font-semibold">Total Points</h2>
-                <p className="text-4xl font-bold">
+                <h2 className="text-2xl font-semibold">Total Mana</h2>
+                <p className="text-5xl font-medium">
                   {formatNumber(userPoints.totalPoints)}
                 </p>
                 <div className="text-l flex justify-center gap-8 font-light">
                   <div className="flex items-center gap-2">
                     <div className="bg-grey2 size-3 rounded-full" />
-                    <span>DP - {formatNumber(userPoints.depositPoints)}</span>
+                    <span>DM - {formatNumber(userPoints.depositPoints)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="bg-bronze2 size-3 rounded-full" />
-                    <span>MP - {formatNumber(userPoints.migrationPoints)}</span>
+                    <span>MM - {formatNumber(userPoints.migrationPoints)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="bg-bronze2inverse size-3 rounded-full" />
-                    <span>LP - {formatNumber(userPoints.lpPoints)}</span>
+                    <span>LM - {formatNumber(userPoints.lpPoints)}</span>
                   </div>
                 </div>
               </div>
-              <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex w-[75%] items-center gap-4 rounded-sm border">
-                <div className="flex w-full flex-col gap-4 rounded-sm p-4">
+              <div className="flex w-[75%] flex-col gap-4">
+                <div className="border-grey3inverse bg-grey3inverse dark:border-grey3 dark:bg-grey3 flex flex-col gap-4 rounded-sm border p-4">
                   <h2 className="text-xl font-semibold">How to Earn?</h2>
                   <p>
-                    Deposit points reflect points already earned by depositors
-                    into Alchemix vaults. Deposit Points are temporary and
-                    converted to migration points for users that remain
-                    deposited in Alchemix during the migration period. New users
-                    can also earn migration points by depositing into Alchemix
-                    vaults prior to V3 and allowing their positions to be
-                    migrated. Users should only participate if they wish to use
-                    Alchemix V3. Those that leave immediately after migrating
-                    are at risk of losing their points.
+                    Deposit Mana is earned by depositors having assets in
+                    Alchemix vaults. Deposit Mana is temporary and leveled-up to
+                    Migration Mana for users that remain deposited in Alchemix
+                    during the migration period. New users can also earn Deposit
+                    and Migration Mana by depositing into Alchemix V2 vaults at
+                    any point prior to the V3 launch and allowing their
+                    positions to be migrated. Users should only participate if
+                    they wish to use Alchemix V3. Those that leave immediately
+                    after migrating are at risk of losing their Deposit Mana.
+                    Liquidity Mana can be earned by liquidity providers for
+                    alAsset pools.
                   </p>
-                  <Button>
+                </div>
+                <div className="flex gap-4">
+                  <Button className="flex-1">
                     <Link to="/vaults">Deposit in Vaults</Link>
+                  </Button>
+                  <Button className="flex-1">
+                    <Link to="/farms">Provide Liquidity</Link>
                   </Button>
                 </div>
               </div>
