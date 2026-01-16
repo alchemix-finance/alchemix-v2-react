@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
+import { Link } from "@tanstack/react-router";
 import { ExternalLink, Sparkles, Clock } from "lucide-react";
+import { useConnection } from "wagmi";
+import { useUserPoints, getPointsBreakdown } from "../points/usePoints";
+import { formatNumber } from "@/utils/number";
 
 interface TimeLeft {
   days: number;
@@ -41,17 +45,17 @@ const calculateTimeLeft = () => {
 
 const TimeBlock = ({ value, label }: { value: number; label: string }) => (
   <div className="flex flex-col items-center">
-    <div className="border-bronze3 bg-bronze4inverse text-bronze1inverse dark:bg-bronze4 dark:text-bronze1 flex h-14 w-16 items-center justify-center rounded-md border-2 font-mono text-3xl font-bold tabular-nums sm:h-20 sm:w-24 sm:text-5xl">
+    <div className="border-bronze3 bg-bronze4inverse text-bronze1inverse dark:bg-bronze4 dark:text-bronze1 flex h-10 w-12 items-center justify-center rounded-md border-2 font-mono text-2xl font-bold tabular-nums sm:h-12 sm:w-14 sm:text-3xl">
       {value.toString().padStart(2, "0")}
     </div>
-    <span className="text-bronze1inverse dark:text-bronze3 mt-2 text-xs font-medium tracking-wider uppercase sm:text-sm">
+    <span className="text-bronze1inverse dark:text-bronze3 mt-1 text-xs font-medium tracking-wider uppercase">
       {label}
     </span>
   </div>
 );
 
 const Separator = () => (
-  <span className="text-bronze1inverse dark:text-bronze3 mx-1 self-start pt-3 text-3xl font-bold sm:mx-2 sm:pt-5 sm:text-5xl">
+  <span className="text-bronze1inverse dark:text-bronze3 mx-1 self-start pt-1 text-2xl font-bold sm:pt-2 sm:text-3xl">
     :
   </span>
 );
@@ -59,6 +63,10 @@ const Separator = () => (
 export const MigrationBanner = () => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft);
   const [isExpired, setIsExpired] = useState(false);
+
+  const { address } = useConnection();
+  const { data: userPointsData } = useUserPoints(address);
+  const userPoints = getPointsBreakdown(userPointsData);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -89,62 +97,72 @@ export const MigrationBanner = () => {
       <div className="from-bronze3/20 pointer-events-none absolute top-0 left-0 h-full w-48 bg-gradient-to-r to-transparent" />
       <div className="from-bronze3/20 pointer-events-none absolute top-0 right-0 h-full w-48 bg-gradient-to-l to-transparent" />
 
-      <div className="relative flex flex-col items-center gap-6 px-4 py-6 sm:flex-row sm:justify-between sm:gap-8 sm:px-8 lg:px-16 xl:px-24">
+      <div className="relative flex flex-col items-center gap-4 px-4 py-4 sm:flex-row sm:gap-6 sm:px-8 lg:px-16 xl:px-24">
         {/* Announcement text */}
-        <div className="flex flex-1 flex-col items-center gap-4 sm:items-start">
+        <div className="flex flex-col items-center gap-2 sm:w-1/3 sm:items-start">
           <div className="flex items-center gap-2">
-            <Sparkles className="text-bronze1inverse dark:text-bronze1 h-5 w-5 animate-pulse" />
-            <span className="bg-bronze1inverse/20 text-bronze1inverse dark:bg-bronze1/20 dark:text-bronze1 rounded-full px-3 py-1 text-xs font-semibold tracking-wider uppercase">
+            <Sparkles className="text-bronze1inverse dark:text-bronze1 h-4 w-4 animate-pulse" />
+            <span className="bg-bronze1inverse/20 text-bronze1inverse dark:bg-bronze1/20 dark:text-bronze1 rounded-full px-2 py-0.5 text-xs font-semibold tracking-wider uppercase">
               Important Update
             </span>
           </div>
 
           <div className="text-center sm:text-left">
-            <h3 className="font-alcxTitles text-bronze1inverse dark:text-bronze1 text-2xl font-bold sm:text-3xl lg:text-4xl">
+            <h3 className="font-alcxTitles text-bronze1inverse dark:text-bronze1 text-xl font-bold sm:text-2xl">
               Alchemix V3 Migration & MANA Program
             </h3>
-            <p className="text-bronze1inverse/80 dark:text-bronze3 mt-2 max-w-xl text-sm leading-relaxed sm:text-base">
-              We&apos;re upgrading to V3! Deposits into V2 vaults will be
-              automatically migrated into V3 vaults. Depositors in V2 are now
-              accruing MANA to earn a share of future rewards, and become the
-              first depositors in the V3 system.
+            <p className="text-bronze1inverse/80 dark:text-bronze3 mt-1 max-w-xl text-sm leading-snug">
+              Deposits into V2 vaults will be automatically migrated into V3.
+              Depositors are now accruing MANA to earn future rewards.
             </p>
           </div>
 
-          {/* Links */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
             <a
-              href="https://snapshot.box/#/s:alchemixstakers.eth/proposal/0xa3228100b34d6063dc03d35132c044a93ea1fbcce10a960bd43fb5a8454ec4b9" // TODO - Replace with migration plan article
+              href="https://snapshot.box/#/s:alchemixstakers.eth/proposal/0xa3228100b34d6063dc03d35132c044a93ea1fbcce10a960bd43fb5a8454ec4b9"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-bronze1inverse/10 text-bronze1inverse hover:bg-bronze1inverse/20 dark:bg-bronze1/10 dark:text-bronze1 dark:hover:bg-bronze1/20 flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors"
+              className="bg-bronze1inverse/10 text-bronze1inverse hover:bg-bronze1inverse/20 dark:bg-bronze1/10 dark:text-bronze1 dark:hover:bg-bronze1/20 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors"
             >
-              <ExternalLink className="h-3.5 w-3.5" />
-              Learn About The Migration
+              <ExternalLink className="h-3 w-3" />
+              Migration Info
             </a>
             <a
               href="https://alchemixfi.medium.com/introducing-alchemix-v3-d55f86d35b49"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-bronze1inverse/10 text-bronze1inverse hover:bg-bronze1inverse/20 dark:bg-bronze1/10 dark:text-bronze1 dark:hover:bg-bronze1/20 flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors"
+              className="bg-bronze1inverse/10 text-bronze1inverse hover:bg-bronze1inverse/20 dark:bg-bronze1/10 dark:text-bronze1 dark:hover:bg-bronze1/20 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors"
             >
-              <ExternalLink className="h-3.5 w-3.5" />
-              Learn About V3
+              <ExternalLink className="h-3 w-3" />
+              About V3
             </a>
           </div>
         </div>
 
+        {/* User Points */}
+        <Link
+          to="/points"
+          className="flex flex-col items-center gap-4 transition-opacity hover:opacity-80 sm:w-1/3"
+        >
+          <span className="text-bronze1inverse dark:text-bronze3 text-xs font-medium tracking-wider uppercase">
+            Your Points
+          </span>
+          <span className="text-bronze1inverse dark:text-bronze1 text-4xl font-medium">
+            {formatNumber(userPoints.totalPoints)}
+          </span>
+        </Link>
+
         {/* Countdown Timer */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="text-bronze1inverse dark:text-bronze3 flex items-center gap-2 text-sm font-medium tracking-wider uppercase">
-            <Clock className="h-4 w-4" />
-            {isExpired ? "Migration is Complete!" : "Migration Is Live"}
+        <div className="flex flex-col items-center gap-2 sm:w-1/3">
+          <div className="text-bronze1inverse dark:text-bronze3 flex items-center gap-2 text-xs font-medium tracking-wider uppercase">
+            <Clock className="h-3 w-3" />
+            {isExpired ? "Migration Complete!" : "Migration Live"}
           </div>
 
           <div className="flex items-center">
             <TimeBlock value={timeLeft.days} label="Days" />
             <Separator />
-            <TimeBlock value={timeLeft.hours} label="Hours" />
+            <TimeBlock value={timeLeft.hours} label="Hrs" />
             <Separator />
             <TimeBlock value={timeLeft.minutes} label="Min" />
             <Separator />

@@ -1,4 +1,4 @@
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 import { useMemo } from "react";
 import {
   useReactTable,
@@ -17,11 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "../common/table";
-
-interface LeaderboardEntry {
-  address: string;
-  points: number;
-}
+import { LeaderboardEntry } from "./usePoints";
 
 interface PointsLeaderboardTableProps {
   data: LeaderboardEntry[];
@@ -48,7 +44,7 @@ const columns = [
 export const PointsLeaderboardTable = ({
   data,
 }: PointsLeaderboardTableProps) => {
-  const { address } = useAccount();
+  const { address } = useConnection();
 
   const userRowIdx = useMemo(() => {
     return data?.findIndex(
