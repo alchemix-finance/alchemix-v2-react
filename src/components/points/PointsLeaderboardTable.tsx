@@ -106,7 +106,7 @@ export const PointsLeaderboardTable = ({
                   <TableCell>
                     <span className="text-sm">{row.getValue("address")}</span>
                   </TableCell>
-                  <TableCell>{formatNumber(row.getValue("points"))}</TableCell>
+                  <TableCell>{formatNumber(row.getValue("mana"))}</TableCell>
                 </TableRow>
               ))}
               {table.getRowModel().rows.length ? (
