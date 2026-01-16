@@ -30,6 +30,9 @@ interface PointsLeaderboardTableProps {
 
 const columnHelper = createColumnHelper<LeaderboardEntry>();
 
+const truncateAddress = (address: string) =>
+  `${address.slice(0, 6)}...${address.slice(-6)}`;
+
 const columns = [
   columnHelper.display({
     id: "rank",
@@ -38,7 +41,9 @@ const columns = [
   }),
   columnHelper.accessor("address", {
     header: "Address",
-    cell: (info) => <span className="text-sm">{info.getValue()}</span>,
+    cell: (info) => (
+      <span className="text-sm">{truncateAddress(info.getValue())}</span>
+    ),
   }),
   columnHelper.accessor("mana", {
     header: "Mana",
