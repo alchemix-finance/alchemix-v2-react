@@ -14,7 +14,7 @@ export const QueryKeys = {
   Delegate: "delegate",
   TokenPrice: "tokenPrice",
   Transmuters: "transmuters",
-  TransmuterApr: "transmuter-apr",
+  TransmuterApr: "transmuterApr",
   Apr: "apr",
   Migration: (v: string) => `migrate-${v}`,
   VotesForAddress: "votesForAddress",
@@ -26,7 +26,9 @@ export const QueryKeys = {
   BridgeQuote: "bridgeQuote",
   ExchangeQuote: "exchangeQuote",
   BridgeStatus: "bridgeStatus",
-  SmartAccountUser: "smart-account-user",
+  SmartAccountUser: "smartAccountUser",
+  Points: "points",
+  UserPoints: "userPoints",
 } as const;
 
 /**
