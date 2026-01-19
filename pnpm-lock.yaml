@@ -16,19 +16,19 @@ importers:
         version: 3.0.125
       '@rainbow-me/rainbowkit':
         specifier: ^2.2.10
-        version: 2.2.10(@tanstack/react-query@5.80.7(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@3.1.3)
+        version: 2.2.10(@tanstack/react-query@5.90.19(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@3.1.3)
       '@rive-app/react-canvas':
         specifier: ^4.23.4
         version: 4.23.4(react@18.3.1)
       '@tailwindcss/vite':
         specifier: ^4.1.17
-        version: 4.1.17(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2))
+        version: 4.1.17(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2))
       '@tanstack/react-query':
-        specifier: ^5.80.7
-        version: 5.80.7(react@18.3.1)
+        specifier: ^5.90.19
+        version: 5.90.19(react@18.3.1)
       '@tanstack/react-query-devtools':
         specifier: ^5.80.7
-        version: 5.80.7(@tanstack/react-query@5.80.7(react@18.3.1))(react@18.3.1)
+        version: 5.80.7(@tanstack/react-query@5.90.19(react@18.3.1))(react@18.3.1)
       '@tanstack/react-router':
         specifier: ^1.131.27
         version: 1.131.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -67,7 +67,7 @@ importers:
         version: 3.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@wagmi/core':
         specifier: ^3.0.1
-        version: 3.0.1(@tanstack/query-core@5.80.7)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))
+        version: 3.0.1(@tanstack/query-core@5.90.19)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
@@ -127,7 +127,7 @@ importers:
         version: 2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)
       wagmi:
         specifier: ^3.1.3
-        version: 3.1.3(9460544f38370b2d3bdb5e00e27fcc23)
+        version: 3.1.3(59d60a44f006beb50e4b049c68058bb7)
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.1.14
@@ -140,7 +140,7 @@ importers:
         version: 1.120.13(@tanstack/react-router@1.131.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@tanstack/router-core@1.131.27)(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)
       '@tanstack/router-plugin':
         specifier: ^1.85.3
-        version: 1.120.13(@tanstack/react-router@1.131.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2))
+        version: 1.120.13(@tanstack/react-router@1.131.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2))
       '@types/d3-array':
         specifier: ^3.2.1
         version: 3.2.1
@@ -158,7 +158,7 @@ importers:
         version: 7.18.0(eslint@8.57.1)(typescript@5.8.3)
       '@vitejs/plugin-react':
         specifier: ^5.1.2
-        version: 5.1.2(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2))
+        version: 5.1.2(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2))
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -191,13 +191,13 @@ importers:
         version: 5.8.3
       vite:
         specifier: ^7.1.12
-        version: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2)
+        version: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2)
       vite-plugin-svgr:
         specifier: ^4.5.0
-        version: 4.5.0(rollup@4.45.1)(typescript@5.8.3)(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2))
+        version: 4.5.0(rollup@4.45.1)(typescript@5.8.3)(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2))
       vitest:
         specifier: ^4.0.4
-        version: 4.0.4(@types/debug@4.1.12)(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2)
+        version: 4.0.4(@types/debug@4.1.12)(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2)
 
 packages:
 
@@ -3278,8 +3278,8 @@ packages:
     resolution: {integrity: sha512-cs1WKawpXIe+vSTeiZUuSBy8JFjEuDgdMKZFRLKwQysKo8y2q6Q1HvS74Yw+m5IhOW1nTZooa6rlgdfXcgFAaw==}
     engines: {node: '>=12'}
 
-  '@tanstack/query-core@5.80.7':
-    resolution: {integrity: sha512-s09l5zeUKC8q7DCCCIkVSns8zZrK4ZDT6ryEjxNBFi68G4z2EBobBS7rdOY3r6W1WbUDpc1fe5oY+YO/+2UVUg==}
+  '@tanstack/query-core@5.90.19':
+    resolution: {integrity: sha512-GLW5sjPVIvH491VV1ufddnfldyVB+teCnpPIvweEfkpRx7CfUmUGhoh9cdcUKBh/KwVxk22aNEDxeTsvmyB/WA==}
 
   '@tanstack/query-devtools@5.80.0':
     resolution: {integrity: sha512-D6gH4asyjaoXrCOt5vG5Og/YSj0D/TxwNQgtLJIgWbhbWCC/emu2E92EFoVHh4ppVWg1qT2gKHvKyQBEFZhCuA==}
@@ -3290,8 +3290,8 @@ packages:
       '@tanstack/react-query': ^5.80.7
       react: ^18 || ^19
 
-  '@tanstack/react-query@5.80.7':
-    resolution: {integrity: sha512-u2F0VK6+anItoEvB3+rfvTO9GEh2vb00Je05OwlUe/A0lkJBgW1HckiY3f9YZa+jx6IOe4dHPh10dyp9aY3iRQ==}
+  '@tanstack/react-query@5.90.19':
+    resolution: {integrity: sha512-qTZRZ4QyTzQc+M0IzrbKHxSeISUmRB3RPGmao5bT+sI6ayxSRhn0FXEnT5Hg3as8SBFcRosrXXRFB+yAcxVxJQ==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -3816,6 +3816,7 @@ packages:
 
   '@walletconnect/ethereum-provider@2.21.1':
     resolution: {integrity: sha512-SSlIG6QEVxClgl1s0LMk4xr2wg4eT3Zn/Hb81IocyqNSGfXpjtawWxKxiC5/9Z95f1INyBD6MctJbL/R1oBwIw==}
+    deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
 
   '@walletconnect/events@1.0.1':
     resolution: {integrity: sha512-NPTqaoi0oPBVNuLv7qPaJazmGHs5JGyO8eEAk5VGKmJzDR7AHzD4k6ilox5kxk1iwiOnFopBOOMLs86Oa76HpQ==}
@@ -3860,9 +3861,11 @@ packages:
 
   '@walletconnect/sign-client@2.21.0':
     resolution: {integrity: sha512-z7h+PeLa5Au2R591d/8ZlziE0stJvdzP9jNFzFolf2RG/OiXulgFKum8PrIyXy+Rg2q95U9nRVUF9fWcn78yBA==}
+    deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
 
   '@walletconnect/sign-client@2.21.1':
     resolution: {integrity: sha512-QaXzmPsMnKGV6tc4UcdnQVNOz4zyXgarvdIQibJ4L3EmLat73r5ZVl4c0cCOcoaV7rgM9Wbphgu5E/7jNcd3Zg==}
+    deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
 
   '@walletconnect/time@1.0.2':
     resolution: {integrity: sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==}
@@ -3875,9 +3878,11 @@ packages:
 
   '@walletconnect/universal-provider@2.21.0':
     resolution: {integrity: sha512-mtUQvewt+X0VBQay/xOJBvxsB3Xsm1lTwFjZ6WUwSOTR1X+FNb71hSApnV5kbsdDIpYPXeQUbGt2se1n5E5UBg==}
+    deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
 
   '@walletconnect/universal-provider@2.21.1':
     resolution: {integrity: sha512-Wjx9G8gUHVMnYfxtasC9poGm8QMiPCpXpbbLFT+iPoQskDDly8BwueWnqKs4Mx2SdIAWAwuXeZ5ojk5qQOxJJg==}
+    deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
 
   '@walletconnect/utils@2.21.0':
     resolution: {integrity: sha512-zfHLiUoBrQ8rP57HTPXW7rQMnYxYI4gT9yTACxVW6LhIFROTF6/ytm5SKNoIvi4a5nX5dfXG4D9XwQUCu8Ilig==}
@@ -5057,8 +5062,8 @@ packages:
   flow-enums-runtime@0.0.6:
     resolution: {integrity: sha512-3PYnM29RFXwvAN6Pc/scUfkI7RwhQ/xqyLUyPNlXUp9S40zI8nup9tUSrTLSVnWGBN38FNiGWbwZOB6uR4OGdw==}
 
-  flow-parser@0.296.1:
-    resolution: {integrity: sha512-dASEzkw6jlgYx1poIqbf8f21OiyD5f0ebEbvwZVohEixE7agpGb+HbAL35BrzAUyb390nfRfFOsG+alNx1Sqww==}
+  flow-parser@0.297.0:
+    resolution: {integrity: sha512-51kjVLwebsDNCrBrm+VLBJ1rEZffrWzsEPjfbdhf/0lxQkX01zFoiojwEW7l6902p1ZQI/ju/QmLGowwne23lg==}
     engines: {node: '>=0.4.0'}
 
   follow-redirects@1.15.11:
@@ -6139,8 +6144,8 @@ packages:
       encoding:
         optional: true
 
-  node-forge@1.3.2:
-    resolution: {integrity: sha512-6xKiQ+cph9KImrRh0VsjH2d8/GXA4FIMlgU4B757iI1ApvcyA9VlouP0yZJha01V+huImO+kKMU7ih+2+E14fw==}
+  node-forge@1.3.3:
+    resolution: {integrity: sha512-rLvcdSyRCyouf6jcOIPe/BgwG/d7hKjzMKOas33/pHEr6gbq18IK9zV7DiPvzsz0oBJPme6qr6H6kGZuI9/DZg==}
     engines: {node: '>= 6.13.0'}
 
   node-gyp-build@4.8.4:
@@ -7167,6 +7172,7 @@ packages:
   tar@7.5.2:
     resolution: {integrity: sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
@@ -7176,8 +7182,8 @@ packages:
     resolution: {integrity: sha512-s0ZZzd0BzYv5tLSptZooSjK8oj6C+c19p7Vqta9+6NPOf7r+fxq0cJe6/oN4LTC79sy5NY8ucOJNgwsKCSbfqg==}
     engines: {node: '>=6.0.0'}
 
-  terser@5.45.0:
-    resolution: {integrity: sha512-hQ9c+JZEnMug8eqzuU48sCeq95f00lLDAaJ5gWhRkFXsfy3+SUkZXiF/Z66ZO6EomSmgqXnkhVrWXKaQ8K41Ug==}
+  terser@5.46.0:
+    resolution: {integrity: sha512-jTwoImyr/QbOWFFso3YoU3ik0jBBDJ6JTOQiy/J2YxVJdZCc+5u7skhNwiOR3FQIygFqVUPHl7qbbxtjW2K3Qg==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -10626,9 +10632,9 @@ snapshots:
 
   '@radix-ui/rect@1.1.1': {}
 
-  '@rainbow-me/rainbowkit@2.2.10(@tanstack/react-query@5.80.7(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@3.1.3)':
+  '@rainbow-me/rainbowkit@2.2.10(@tanstack/react-query@5.90.19(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@3.1.3)':
     dependencies:
-      '@tanstack/react-query': 5.80.7(react@18.3.1)
+      '@tanstack/react-query': 5.90.19(react@18.3.1)
       '@vanilla-extract/css': 1.17.3
       '@vanilla-extract/dynamic': 2.1.4
       '@vanilla-extract/sprinkles': 1.6.4(@vanilla-extract/css@1.17.3)
@@ -10639,7 +10645,7 @@ snapshots:
       react-remove-scroll: 2.6.2(@types/react@18.3.23)(react@18.3.1)
       ua-parser-js: 1.0.41
       viem: 2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)
-      wagmi: 3.1.3(9460544f38370b2d3bdb5e00e27fcc23)
+      wagmi: 3.1.3(59d60a44f006beb50e4b049c68058bb7)
     transitivePeerDependencies:
       - '@types/react'
       - babel-plugin-macros
@@ -12150,12 +12156,12 @@ snapshots:
       postcss: 8.5.6
       tailwindcss: 4.1.14
 
-  '@tailwindcss/vite@4.1.17(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2))':
+  '@tailwindcss/vite@4.1.17(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2))':
     dependencies:
       '@tailwindcss/node': 4.1.17
       '@tailwindcss/oxide': 4.1.17
       tailwindcss: 4.1.17
-      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2)
+      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2)
 
   '@tanstack/eslint-plugin-query@5.83.1(eslint@8.57.1)(typescript@5.8.3)':
     dependencies:
@@ -12169,19 +12175,19 @@ snapshots:
 
   '@tanstack/history@1.131.2': {}
 
-  '@tanstack/query-core@5.80.7': {}
+  '@tanstack/query-core@5.90.19': {}
 
   '@tanstack/query-devtools@5.80.0': {}
 
-  '@tanstack/react-query-devtools@5.80.7(@tanstack/react-query@5.80.7(react@18.3.1))(react@18.3.1)':
+  '@tanstack/react-query-devtools@5.80.7(@tanstack/react-query@5.90.19(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/query-devtools': 5.80.0
-      '@tanstack/react-query': 5.80.7(react@18.3.1)
+      '@tanstack/react-query': 5.90.19(react@18.3.1)
       react: 18.3.1
 
-  '@tanstack/react-query@5.80.7(react@18.3.1)':
+  '@tanstack/react-query@5.90.19(react@18.3.1)':
     dependencies:
-      '@tanstack/query-core': 5.80.7
+      '@tanstack/query-core': 5.90.19
       react: 18.3.1
 
   '@tanstack/react-router-devtools@1.120.13(@tanstack/react-router@1.131.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@tanstack/router-core@1.131.27)(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tiny-invariant@1.3.3)':
@@ -12269,7 +12275,7 @@ snapshots:
     optionalDependencies:
       '@tanstack/react-router': 1.131.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
-  '@tanstack/router-plugin@1.120.13(@tanstack/react-router@1.131.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2))':
+  '@tanstack/router-plugin@1.120.13(@tanstack/react-router@1.131.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.27.4
       '@babel/plugin-syntax-jsx': 7.25.9(@babel/core@7.27.4)
@@ -12290,7 +12296,7 @@ snapshots:
       zod: 3.25.48
     optionalDependencies:
       '@tanstack/react-router': 1.131.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2)
+      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -12776,7 +12782,7 @@ snapshots:
       d3-time-format: 4.1.0
       internmap: 2.0.3
 
-  '@vitejs/plugin-react@5.1.2(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2))':
+  '@vitejs/plugin-react@5.1.2(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.28.6
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.6)
@@ -12784,7 +12790,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.53
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2)
+      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -12797,13 +12803,13 @@ snapshots:
       chai: 6.2.0
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.4(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2))':
+  '@vitest/mocker@4.0.4(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2))':
     dependencies:
       '@vitest/spy': 4.0.4
       estree-walker: 3.0.3
       magic-string: 0.30.19
     optionalDependencies:
-      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2)
+      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2)
 
   '@vitest/pretty-format@4.0.4':
     dependencies:
@@ -12827,9 +12833,9 @@ snapshots:
       '@vitest/pretty-format': 4.0.4
       tinyrainbow: 3.0.3
 
-  '@wagmi/connectors@7.0.5(08218c8cada4d03f627f5483809c6d67)':
+  '@wagmi/connectors@7.0.5(ffb30f20030cd66b83d7918ab7c722c0)':
     dependencies:
-      '@wagmi/core': 3.0.1(@tanstack/query-core@5.80.7)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))
+      '@wagmi/core': 3.0.1(@tanstack/query-core@5.90.19)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))
       viem: 2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)
     optionalDependencies:
       '@base-org/account': 2.4.0(@types/react@18.3.23)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(utf-8-validate@5.0.10)(zod@3.24.2)
@@ -12839,17 +12845,17 @@ snapshots:
       '@safe-global/safe-apps-provider': 0.18.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)
       '@safe-global/safe-apps-sdk': 9.1.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)
       '@walletconnect/ethereum-provider': 2.21.1(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.2(@babel/core@7.28.6)(@babel/preset-env@7.24.7(@babel/core@7.28.6))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)
-      porto: 0.2.35(@tanstack/react-query@5.80.7(react@18.3.1))(@types/react@18.3.23)(@wagmi/core@3.0.1(@tanstack/query-core@5.80.7)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)))(react-native@0.74.2(@babel/core@7.28.6)(@babel/preset-env@7.24.7(@babel/core@7.28.6))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@3.1.3)
+      porto: 0.2.35(@tanstack/react-query@5.90.19(react@18.3.1))(@types/react@18.3.23)(@wagmi/core@3.0.1(@tanstack/query-core@5.90.19)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)))(react-native@0.74.2(@babel/core@7.28.6)(@babel/preset-env@7.24.7(@babel/core@7.28.6))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@3.1.3)
       typescript: 5.8.3
 
-  '@wagmi/core@3.0.1(@tanstack/query-core@5.80.7)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))':
+  '@wagmi/core@3.0.1(@tanstack/query-core@5.90.19)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))':
     dependencies:
       eventemitter3: 5.0.1
       mipd: 0.0.7(typescript@5.8.3)
       viem: 2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)
       zustand: 5.0.0(@types/react@18.3.23)(react@18.3.1)(use-sync-external-store@1.4.0(react@18.3.1))
     optionalDependencies:
-      '@tanstack/query-core': 5.80.7
+      '@tanstack/query-core': 5.90.19
       typescript: 5.8.3
     transitivePeerDependencies:
       - '@types/react'
@@ -12857,14 +12863,14 @@ snapshots:
       - react
       - use-sync-external-store
 
-  '@wagmi/core@3.0.1(@tanstack/query-core@5.80.7)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))':
+  '@wagmi/core@3.0.1(@tanstack/query-core@5.90.19)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))':
     dependencies:
       eventemitter3: 5.0.1
       mipd: 0.0.7(typescript@5.8.3)
       viem: 2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)
       zustand: 5.0.0(@types/react@18.3.23)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     optionalDependencies:
-      '@tanstack/query-core': 5.80.7
+      '@tanstack/query-core': 5.90.19
       typescript: 5.8.3
     transitivePeerDependencies:
       - '@types/react'
@@ -14871,7 +14877,7 @@ snapshots:
   flow-enums-runtime@0.0.6:
     optional: true
 
-  flow-parser@0.296.1:
+  flow-parser@0.297.0:
     optional: true
 
   follow-redirects@1.15.11:
@@ -15504,7 +15510,7 @@ snapshots:
       '@babel/register': 7.28.6(@babel/core@7.28.6)
       babel-core: 7.0.0-bridge.0(@babel/core@7.28.6)
       chalk: 4.1.2
-      flow-parser: 0.296.1
+      flow-parser: 0.297.0
       graceful-fs: 4.2.11
       micromatch: 4.0.8
       neo-async: 2.6.2
@@ -15893,7 +15899,7 @@ snapshots:
   metro-minify-terser@0.80.12:
     dependencies:
       flow-enums-runtime: 0.0.6
-      terser: 5.45.0
+      terser: 5.46.0
     optional: true
 
   metro-resolver@0.80.12:
@@ -16138,7 +16144,7 @@ snapshots:
       whatwg-url: 5.0.0
     optional: true
 
-  node-forge@1.3.2:
+  node-forge@1.3.3:
     optional: true
 
   node-gyp-build@4.8.4:
@@ -16517,9 +16523,9 @@ snapshots:
   pony-cause@2.1.11:
     optional: true
 
-  porto@0.2.35(@tanstack/react-query@5.80.7(react@18.3.1))(@types/react@18.3.23)(@wagmi/core@3.0.1(@tanstack/query-core@5.80.7)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)))(react-native@0.74.2(@babel/core@7.28.6)(@babel/preset-env@7.24.7(@babel/core@7.28.6))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@3.1.3):
+  porto@0.2.35(@tanstack/react-query@5.90.19(react@18.3.1))(@types/react@18.3.23)(@wagmi/core@3.0.1(@tanstack/query-core@5.90.19)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)))(react-native@0.74.2(@babel/core@7.28.6)(@babel/preset-env@7.24.7(@babel/core@7.28.6))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))(wagmi@3.1.3):
     dependencies:
-      '@wagmi/core': 3.0.1(@tanstack/query-core@5.80.7)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))
+      '@wagmi/core': 3.0.1(@tanstack/query-core@5.90.19)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.6.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))
       hono: 4.11.4
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.8.3)
@@ -16528,11 +16534,11 @@ snapshots:
       zod: 4.1.12
       zustand: 5.0.10(@types/react@18.3.23)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     optionalDependencies:
-      '@tanstack/react-query': 5.80.7(react@18.3.1)
+      '@tanstack/react-query': 5.90.19(react@18.3.1)
       react: 18.3.1
       react-native: 0.74.2(@babel/core@7.28.6)(@babel/preset-env@7.24.7(@babel/core@7.28.6))(@types/react@18.3.23)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)
       typescript: 5.8.3
-      wagmi: 3.1.3(9460544f38370b2d3bdb5e00e27fcc23)
+      wagmi: 3.1.3(59d60a44f006beb50e4b049c68058bb7)
     transitivePeerDependencies:
       - '@types/react'
       - immer
@@ -17078,7 +17084,7 @@ snapshots:
   selfsigned@2.4.1:
     dependencies:
       '@types/node-forge': 1.3.14
-      node-forge: 1.3.2
+      node-forge: 1.3.3
     optional: true
 
   semver@5.7.2:
@@ -17464,7 +17470,7 @@ snapshots:
       rimraf: 2.6.3
     optional: true
 
-  terser@5.45.0:
+  terser@5.46.0:
     dependencies:
       '@jridgewell/source-map': 0.3.11
       acorn: 8.15.0
@@ -17834,18 +17840,18 @@ snapshots:
       - zod
     optional: true
 
-  vite-plugin-svgr@4.5.0(rollup@4.45.1)(typescript@5.8.3)(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2)):
+  vite-plugin-svgr@4.5.0(rollup@4.45.1)(typescript@5.8.3)(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2)):
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.45.1)
       '@svgr/core': 8.1.0(typescript@5.8.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.8.3))
-      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2)
+      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2)
     transitivePeerDependencies:
       - rollup
       - supports-color
       - typescript
 
-  vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2):
+  vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2):
     dependencies:
       esbuild: 0.25.8
       fdir: 6.5.0(picomatch@4.0.3)
@@ -17858,14 +17864,14 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.2
-      terser: 5.45.0
+      terser: 5.46.0
       tsx: 4.19.4
       yaml: 2.8.2
 
-  vitest@4.0.4(@types/debug@4.1.12)(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2):
+  vitest@4.0.4(@types/debug@4.1.12)(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2):
     dependencies:
       '@vitest/expect': 4.0.4
-      '@vitest/mocker': 4.0.4(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2))
+      '@vitest/mocker': 4.0.4(vite@7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2))
       '@vitest/pretty-format': 4.0.4
       '@vitest/runner': 4.0.4
       '@vitest/snapshot': 4.0.4
@@ -17882,7 +17888,7 @@ snapshots:
       tinyexec: 0.3.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.45.0)(tsx@4.19.4)(yaml@2.8.2)
+      vite: 7.1.12(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.19.4)(yaml@2.8.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/debug': 4.1.12
@@ -17904,11 +17910,11 @@ snapshots:
   vlq@1.0.1:
     optional: true
 
-  wagmi@3.1.3(9460544f38370b2d3bdb5e00e27fcc23):
+  wagmi@3.1.3(59d60a44f006beb50e4b049c68058bb7):
     dependencies:
-      '@tanstack/react-query': 5.80.7(react@18.3.1)
-      '@wagmi/connectors': 7.0.5(08218c8cada4d03f627f5483809c6d67)
-      '@wagmi/core': 3.0.1(@tanstack/query-core@5.80.7)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))
+      '@tanstack/react-query': 5.90.19(react@18.3.1)
+      '@wagmi/connectors': 7.0.5(ffb30f20030cd66b83d7918ab7c722c0)
+      '@wagmi/core': 3.0.1(@tanstack/query-core@5.90.19)(@types/react@18.3.23)(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2))
       react: 18.3.1
       use-sync-external-store: 1.4.0(react@18.3.1)
       viem: 2.43.3(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.2)
