@@ -52,16 +52,21 @@ export const useUserPoints = (address: `0x${string}` | undefined) => {
   });
 };
 
-export const useLeaderboard = () =>
+export const usePoints = () =>
   useQuery({
     queryKey: [QueryKeys.Points],
     queryFn: fetchAllPoints,
     staleTime: FIVE_MIN_IN_MS,
-    select: (data) =>
-      data
+    select: (data) => ({
+      sorted: data
         .map((entry) => ({
           address: entry.address,
           mana: calculateTotalPoints(entry),
         }))
         .sort((a, b) => b.mana - a.mana),
+      totalPoints: data.reduce(
+        (acc, entry) => acc + calculateTotalPoints(entry),
+        0,
+      ),
+    }),
   });
