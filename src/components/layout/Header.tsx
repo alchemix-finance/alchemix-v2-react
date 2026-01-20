@@ -37,7 +37,7 @@ export function Header() {
         <ConnectButton
           accountStatus="address"
           chainStatus="icon"
-          showBalance={{ smallScreen: false, largeScreen: true }}
+          showBalance={false}
         />
       </div>
     </header>
