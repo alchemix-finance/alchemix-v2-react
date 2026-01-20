@@ -17,7 +17,7 @@ export const useEthArbExternalFarmsAprs = () => {
     queryFn: async () => {
       if (chain.id === mainnet.id) {
         const auraUrl = "https://data.aura.finance/graphql";
-        const query = gql`
+        const queryV2 = gql`
           {
             pool(chainId: 1, id: "74") {
               aprs {
@@ -30,20 +30,47 @@ export const useEthArbExternalFarmsAprs = () => {
             }
           }
         `;
+        const queryV3 = gql`
+          {
+            pool(chainId: 1, id: "277") {
+              aprs {
+                total
+                breakdown {
+                  value
+                  name
+                }
+              }
+            }
+          }
+        `;
 
-        const responseAura = await request<{
-          pool: {
-            aprs: {
-              total: number;
-              breakdown: {
-                value: number;
-                name: string;
-              }[];
+        const [responseAuraV2, responseAuraV3] = await Promise.all([
+          request<{
+            pool: {
+              aprs: {
+                total: number;
+                breakdown: {
+                  value: number;
+                  name: string;
+                }[];
+              };
             };
-          };
-        }>(auraUrl, query);
+          }>(auraUrl, queryV2),
+          request<{
+            pool: {
+              aprs: {
+                total: number;
+                breakdown: {
+                  value: number;
+                  name: string;
+                }[];
+              };
+            };
+          }>(auraUrl, queryV3),
+        ]);
 
-        const auraApr = responseAura.pool.aprs.total;
+        const auraAprV2 = responseAuraV2.pool.aprs.total;
+        const auraAprV3 = responseAuraV3.pool.aprs.total;
 
         const requestConvex = await fetch(
           "https://www.convexfinance.com/api/curve-apys",
@@ -58,7 +85,8 @@ export const useEthArbExternalFarmsAprs = () => {
         };
 
         return {
-          "AURA x Balancer ALCX-WETH": auraApr,
+          "AURA x Balancer ALCX-WETH": auraAprV2,
+          "AURA x Balancer v3 ALCX-WETH": auraAprV3,
           "Curve x Convex alUSD-3CRV":
             responseConvex.apys["37"].baseApy +
             responseConvex.apys["37"].crvApy,
