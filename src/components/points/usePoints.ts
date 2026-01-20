@@ -65,3 +65,12 @@ export const useLeaderboard = () =>
         }))
         .sort((a, b) => b.mana - a.mana),
   });
+
+export const useTotalPoints = () =>
+  useQuery({
+    queryKey: [QueryKeys.Points],
+    queryFn: fetchAllPoints,
+    staleTime: FIVE_MIN_IN_MS,
+    select: (data) =>
+      data.reduce((acc, entry) => acc + calculateTotalPoints(entry), 0),
+  });
