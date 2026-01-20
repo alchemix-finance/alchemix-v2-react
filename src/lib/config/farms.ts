@@ -118,6 +118,24 @@ export const STATIC_EXTERNAL_FARMS = {
       ],
     },
     {
+      icon: "balancer.svg",
+      collabicon: "aura.webp",
+      name: "AURA x Balancer v3",
+      symbol: "ALCX-WETH",
+      subtitle:
+        "Deposit liquidity on Balancer v3, and then stake your received BPT to earn AURA in addition to Balancer's native rewards",
+      actions: [
+        {
+          label: "Deposit",
+          url: "https://balancer.fi/pools/ethereum/v3/0x1535d7ca00323aa32bd62aeddf7ca651e4b95966/add-liquidity",
+        },
+        {
+          label: "Stake",
+          url: "https://app.aura.finance/#/1/pool/277",
+        },
+      ],
+    },
+    {
       icon: "crv.svg",
       collabicon: "convex.svg",
       name: "Curve x Convex",
