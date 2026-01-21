@@ -29,6 +29,7 @@ export const QueryKeys = {
   SmartAccountUser: "smartAccountUser",
   Points: "points",
   UserPoints: "userPoints",
+  UserLpData: "userLpData",
 } as const;
 
 /**
