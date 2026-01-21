@@ -37,6 +37,13 @@ const fetchAllPoints = async () => {
   return res;
 };
 
+const fetchUserLpData = async (address: `0x${string}` | undefined) => {
+  if (!address) throw new Error("Address is required to fetch LP data");
+  const req = await fetch(`${POINTS_API_BASE}/lp_data/${address.toLowerCase()}`);
+  const res = (await req.json()) as string[];
+  return res;
+};
+
 /** Hooks **/
 
 export const useUserPoints = (address: `0x${string}` | undefined) => {
@@ -69,4 +76,12 @@ export const usePoints = () =>
         0,
       ),
     }),
+  });
+
+export const useUserLpData = (address: `0x${string}` | undefined) =>
+  useQuery({
+    queryKey: [QueryKeys.UserLpData, address],
+    queryFn: () => fetchUserLpData(address),
+    enabled: !!address,
+    staleTime: FIVE_MIN_IN_MS,
   });

@@ -16,11 +16,13 @@ import { cn } from "@/utils/cn";
 
 import { PointsLeaderboardTable } from "./PointsLeaderboardTable";
 import { useUserPoints, usePoints } from "./usePoints";
+import { LpPositions } from "./LpPositions";
 
 export const Points = () => {
   const isReducedMotion = useReducedMotion();
 
   const [open, setOpen] = useState(false);
+  const [lpsOpen, setLpsOpen] = useState(false);
 
   const { address } = useConnection();
 
@@ -36,6 +38,9 @@ export const Points = () => {
 
   const handleOpen = () => {
     setOpen((prev) => !prev);
+  };
+  const handleLpsOpen = () => {
+    setLpsOpen((prev) => !prev);
   };
 
   return (
@@ -125,7 +130,7 @@ export const Points = () => {
                         ({formatNumber(userPercentage)}%)
                       </span>
                     </div>
-                    <p className="text-grey5 text-sm">
+                    <p className="text-lightgrey10 text-sm">
                       Connect wallet to view your mana
                     </p>
                   </>
@@ -197,6 +202,39 @@ export const Points = () => {
               ) : (
                 <PointsLeaderboardTable data={pointsData?.sorted ?? []} />
               )}
+            </m.div>
+          )}
+        </AnimatePresence>
+      </div>
+      <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 relative w-full rounded-sm border">
+        <div
+          className="bg-grey10inverse dark:bg-grey10 flex items-center justify-between px-6 py-4 text-sm select-none hover:cursor-pointer"
+          onClick={handleLpsOpen}
+        >
+          <p className="text-sm">LP Positions</p>
+          <Button variant="action" className="hidden sm:inline-flex">
+            {lpsOpen ? (
+              <EyeOffIcon className="h-6 w-6" />
+            ) : (
+              <EyeIcon className="h-6 w-6" />
+            )}
+          </Button>
+        </div>
+        <AnimatePresence initial={false}>
+          {lpsOpen && (
+            <m.div
+              key="pointsLeaderboard"
+              initial="collapsed"
+              animate="open"
+              exit="collapsed"
+              variants={
+                isReducedMotion
+                  ? reducedMotionAccordionVariants
+                  : accordionVariants
+              }
+              transition={accordionTransition}
+            >
+              <LpPositions />
             </m.div>
           )}
         </AnimatePresence>
