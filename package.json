@@ -89,7 +89,9 @@
   },
   "pnpm": {
     "overrides": {
-      "diff": "8.0.3"
+      "diff": "8.0.3",
+      "lodash": "4.17.23",
+      "seroval": "1.4.1"
     }
   }
 }
