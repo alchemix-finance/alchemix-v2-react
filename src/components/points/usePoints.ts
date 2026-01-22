@@ -39,12 +39,15 @@ const fetchAllPoints = async () => {
 
 const fetchUserLpData = async (address: `0x${string}` | undefined) => {
   if (!address) throw new Error("Address is required to fetch LP data");
-  const req = await fetch(`${POINTS_API_BASE}/lp_data/${address.toLowerCase()}`);
+  const req = await fetch(
+    `${POINTS_API_BASE}/lp_data/${address.toLowerCase()}`,
+  );
   const res = (await req.json()) as string[];
   return res;
 };
 
 /** Hooks **/
+export const MINIMUM_POINTS_THRESHOLD = 1.337;
 
 export const useUserPoints = (address: `0x${string}` | undefined) => {
   return useQuery({
@@ -52,10 +55,14 @@ export const useUserPoints = (address: `0x${string}` | undefined) => {
     queryFn: () => fetchUserPoints(address!),
     enabled: !!address,
     staleTime: FIVE_MIN_IN_MS,
-    select: (data) => ({
-      ...data,
-      totalPoints: calculateTotalPoints(data),
-    }),
+    select: (data) => {
+      const totalPoints = calculateTotalPoints(data);
+      return {
+        ...data,
+        totalPoints,
+        isBelowThreshold: totalPoints < MINIMUM_POINTS_THRESHOLD,
+      };
+    },
   });
 };
 
