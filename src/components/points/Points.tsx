@@ -15,7 +15,11 @@ import { LoadingBar } from "@/components/common/LoadingBar";
 import { cn } from "@/utils/cn";
 
 import { PointsLeaderboardTable } from "./PointsLeaderboardTable";
-import { useUserPoints, usePoints } from "./usePoints";
+import {
+  useUserPoints,
+  usePoints,
+  MINIMUM_POINTS_THRESHOLD,
+} from "./usePoints";
 import { LpPositions } from "./LpPositions";
 
 export const Points = () => {
@@ -85,20 +89,30 @@ export const Points = () => {
                       >
                         {formatNumber(userPointsData?.totalPoints)}
                       </p>
-                      <span
-                        className={cn(
-                          "text-bronze2inverse dark:text-bronze2 text-lg",
-                          (isPointsDataPending || isUserPointsDataPending) &&
-                            "animate-pulse blur-xs",
-                        )}
-                      >
-                        (
-                        {formatNumber(userPercentage, {
-                          decimals: userPercentage < 0.01 ? 4 : 2,
-                        })}
-                        %)
-                      </span>
+                      {!userPointsData?.isBelowThreshold && (
+                        <span
+                          className={cn(
+                            "text-bronze2inverse dark:text-bronze2 text-lg",
+                            (isPointsDataPending || isUserPointsDataPending) &&
+                              "animate-pulse blur-xs",
+                          )}
+                        >
+                          (
+                          {formatNumber(userPercentage, {
+                            decimals: userPercentage < 0.01 ? 4 : 2,
+                          })}
+                          %)
+                        </span>
+                      )}
                     </div>
+                    {userPointsData?.isBelowThreshold && (
+                      <div>
+                        <p className="text-lightgrey10inverse dark:text-lightgrey10 text-sm">
+                          You are currently below the minimum mana threshold of{" "}
+                          {MINIMUM_POINTS_THRESHOLD}.
+                        </p>
+                      </div>
+                    )}
                     <div
                       className={cn(
                         "mt-2 flex justify-center gap-4 text-sm font-light",
@@ -130,7 +144,7 @@ export const Points = () => {
                         ({formatNumber(userPercentage)}%)
                       </span>
                     </div>
-                    <p className="text-lightgrey10 text-sm">
+                    <p className="text-lightgrey10inverse dark:text-lightgrey10 text-sm">
                       Connect wallet to view your mana
                     </p>
                   </>
