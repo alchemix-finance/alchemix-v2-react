@@ -19,13 +19,18 @@ export const LpPositions = () => {
         </div>
       ) : (
         <div className="my-4">
-          {data && data.length > 0 ? (
+          {data && (data.lpNames.length > 0 || data.hasClHistory) ? (
             <ul className="list-inside list-disc">
-              {data.map((lp) => (
+              {data.lpNames.map((lp) => (
                 <li key={lp} className="mb-2">
                   {lp}
                 </li>
               ))}
+              {data.hasClHistory && (
+                <li key="cl-history" className="mb-2">
+                  Concentrated Liquidity Positions
+                </li>
+              )}
             </ul>
           ) : (
             <p>No liquidity positions found.</p>
