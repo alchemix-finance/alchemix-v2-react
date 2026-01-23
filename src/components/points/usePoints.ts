@@ -42,7 +42,10 @@ const fetchUserLpData = async (address: `0x${string}` | undefined) => {
   const req = await fetch(
     `${POINTS_API_BASE}/lp_data/${address.toLowerCase()}`,
   );
-  const res = (await req.json()) as string[];
+  const res = (await req.json()) as {
+    lpNames: string[];
+    hasClHistory: boolean;
+  };
   return res;
 };
 
