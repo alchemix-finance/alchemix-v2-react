@@ -9,7 +9,6 @@ import { useInternalFarms } from "@/lib/queries/farms/useInternalFarms";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion } from "@/components/ui/accordion";
 import { FarmsAccordionRow } from "./row/FarmsAccordionRow";
-import { LiquidityMigration } from "./LiquidityMigration";
 import { GAlcsWrapper } from "./GAlcxWrapper";
 import { LoadingBar } from "../common/LoadingBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
@@ -92,11 +91,10 @@ const MainnetFarms = () => {
     <div className="space-y-5">
       <GAlcsWrapper />
       <StaticExternalFarms />
-      <LiquidityMigration />
       <div>
         {isPending ? (
-          <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-            <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
+          <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 rounded-sm border">
+            <div className="bg-grey10inverse dark:bg-grey10 flex space-x-4 px-6 py-4">
               <p className="inline-block self-center">Fetching data</p>
             </div>
             <div className="my-4 flex justify-center">
@@ -106,8 +104,8 @@ const MainnetFarms = () => {
         ) : null}
         {isError && <div>Error. Unexpected. Contact Alchemix team.</div>}
         {filteredFarms && (
-          <div className="rounded-sm border border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15">
-            <div className="flex space-x-4 bg-grey10inverse px-6 py-4 dark:bg-grey10">
+          <div className="border-grey10inverse bg-grey15inverse dark:border-grey10 dark:bg-grey15 rounded-sm border">
+            <div className="bg-grey10inverse dark:bg-grey10 flex space-x-4 px-6 py-4">
               <Tabs
                 value={filter}
                 onValueChange={onFilterChain}
