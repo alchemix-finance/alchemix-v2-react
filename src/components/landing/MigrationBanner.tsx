@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
-import { ExternalLink, Sparkles, Clock } from "lucide-react";
+import { useAnimate } from "framer-motion";
+import { ExternalLink, AlertTriangle, Clock } from "lucide-react";
 import { useConnection } from "wagmi";
 
 import { useUserPoints } from "@/components/points/usePoints";
@@ -22,7 +23,38 @@ const MILLISECONDS_PER_MINUTE = MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE;
 const MILLISECONDS_PER_HOUR = MILLISECONDS_PER_MINUTE * MINUTES_PER_HOUR;
 const MILLISECONDS_PER_DAY = MILLISECONDS_PER_HOUR * HOURS_PER_DAY;
 
-const TARGET_DATE = new Date("2026-02-06T11:00:00-05:00"); // Feb 6, 11:00 AM EST
+const TARGET_DATE = new Date("2026-02-17T11:00:00-05:00"); // Feb 17, 11:00 AM EST
+
+const GLITCH_VALUES = [
+  "NaN",
+  "??",
+  "∞",
+  "-1",
+  "null",
+  "ERR",
+  "█▓",
+  "--",
+  "##",
+] as const;
+
+const NORMAL_HOLD = 2000; // how long normal value stays visible between glitches
+const GLITCH_HOLD = 3000; // how long glitched value stays visible
+const CHROMATIC_DURATION = 0.4; // chromatic animation duration in seconds
+
+const GLITCH_SEQUENCE_DURATION = CHROMATIC_DURATION * 2 * 1000 + GLITCH_HOLD;
+const GLITCH_INTERVAL = GLITCH_SEQUENCE_DURATION + NORMAL_HOLD;
+
+const chromaticKeyframes = {
+  textShadow: [
+    "none",
+    "-2px 0 #ff0000, 2px 0 #00ffff",
+    "2px 0 #ff0000, -2px 0 #00ffff",
+    "-1px 0 #ff0000, 1px 0 #00ffff",
+    "none",
+  ],
+};
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const calculateTimeLeft = () => {
   const now = new Date();
@@ -44,10 +76,21 @@ const calculateTimeLeft = () => {
   };
 };
 
-const TimeBlock = ({ value, label }: { value: number; label: string }) => (
+const TimeBlock = ({
+  value,
+  label,
+  glitchValue,
+}: {
+  value: number;
+  label: string;
+  glitchValue: string | undefined;
+}) => (
   <div className="flex flex-col items-center">
-    <div className="border-bronze3 bg-bronze4inverse text-bronze1inverse dark:bg-bronze4 dark:text-bronze1 flex h-10 w-12 items-center justify-center rounded-md border-2 font-mono text-2xl font-bold tabular-nums sm:h-12 sm:w-14 sm:text-3xl">
-      {value.toString().padStart(2, "0")}
+    <div
+      data-timeblock
+      className="border-bronze3 bg-bronze4inverse text-bronze1inverse dark:bg-bronze4 dark:text-bronze1 flex h-10 w-12 items-center justify-center rounded-md border-2 font-mono text-lg font-bold tabular-nums sm:h-12 sm:w-14 sm:text-xl"
+    >
+      {glitchValue ?? value.toString().padStart(2, "0")}
     </div>
     <span className="text-bronze1inverse dark:text-bronze3 mt-1 text-xs font-medium tracking-wider uppercase">
       {label}
@@ -64,6 +107,9 @@ const Separator = () => (
 export const MigrationBanner = () => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft);
   const [isExpired, setIsExpired] = useState(false);
+  const [glitchValue, setGlitchValue] = useState<string>();
+
+  const [scope, animate] = useAnimate();
 
   const { address } = useConnection();
   const { data: userPointsData } = useUserPoints(address);
@@ -88,32 +134,65 @@ export const MigrationBanner = () => {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    if (isExpired) return;
+
+    const runGlitchSequence = async () => {
+      const value =
+        GLITCH_VALUES[Math.floor(Math.random() * GLITCH_VALUES.length)];
+
+      // Chromatic in (glitched value appears midway)
+      const entryAnimation = animate("[data-timeblock]", chromaticKeyframes, {
+        duration: CHROMATIC_DURATION,
+        ease: "easeInOut",
+      });
+      await sleep(CHROMATIC_DURATION * 500);
+      setGlitchValue(value);
+      await entryAnimation;
+
+      // Hold glitched value
+      await sleep(GLITCH_HOLD);
+
+      // Chromatic out (value clears midway)
+      const exitAnimation = animate("[data-timeblock]", chromaticKeyframes, {
+        duration: CHROMATIC_DURATION,
+        ease: "easeInOut",
+      });
+      await sleep(CHROMATIC_DURATION * 500);
+      setGlitchValue(undefined);
+      await exitAnimation;
+    };
+
+    const glitchTimer = setInterval(runGlitchSequence, GLITCH_INTERVAL);
+    return () => clearInterval(glitchTimer);
+  }, [isExpired, animate]);
+
   return (
-    <div className="border-bronze3/50 from-bronze4inverse to-bronze4inverse dark:from-bronze4 dark:to-bronze4 relative overflow-hidden border-b-2 bg-gradient-to-r via-[#d4d0c8] dark:via-[#4a433d]">
+    <div className="border-bronze3/50 from-bronze4inverse to-bronze4inverse dark:from-bronze4 dark:to-bronze4 relative overflow-hidden border-b-2 bg-linear-to-r via-[#d4d0c8] dark:via-[#4a433d]">
       {/* Background shimmer */}
-      <div className="animate-shimmer via-bronze1/10 absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent to-transparent" />
+      <div className="animate-shimmer via-bronze1/10 absolute inset-0 -translate-x-full bg-linear-to-r from-transparent to-transparent" />
 
       {/* Background gradient */}
-      <div className="from-bronze3/20 pointer-events-none absolute top-0 left-0 h-full w-48 bg-gradient-to-r to-transparent" />
-      <div className="from-bronze3/20 pointer-events-none absolute top-0 right-0 h-full w-48 bg-gradient-to-l to-transparent" />
+      <div className="from-bronze3/20 pointer-events-none absolute top-0 left-0 h-full w-48 bg-linear-to-r to-transparent" />
+      <div className="from-bronze3/20 pointer-events-none absolute top-0 right-0 h-full w-48 bg-linear-to-l to-transparent" />
 
       <div className="relative flex flex-col items-center gap-4 px-4 py-4 sm:flex-row sm:gap-6 sm:px-8 lg:px-16 xl:px-24">
         {/* Announcement text */}
         <div className="flex flex-col items-center gap-2 sm:w-1/3 sm:items-start">
           <div className="flex items-center gap-2">
-            <Sparkles className="text-bronze1inverse dark:text-bronze1 h-4 w-4 animate-pulse" />
-            <span className="bg-bronze1inverse/20 text-bronze1inverse dark:bg-bronze1/20 dark:text-bronze1 rounded-full px-2 py-0.5 text-xs font-semibold tracking-wider uppercase">
-              Important Update
+            <AlertTriangle className="h-4 w-4 animate-pulse text-orange-500 dark:text-orange-400" />
+            <span className="rounded-full bg-orange-500/20 px-2 py-0.5 text-xs font-semibold tracking-wider text-orange-700 uppercase dark:bg-orange-400/20 dark:text-orange-300">
+              Migration In Progress
             </span>
           </div>
 
           <div className="text-center sm:text-left">
             <h3 className="font-alcxTitles text-bronze1inverse dark:text-bronze1 text-xl font-bold sm:text-2xl">
-              Alchemix V3 Migration & MANA Program
+              V3 Migration Underway
             </h3>
             <p className="text-bronze1inverse/80 dark:text-bronze3 mt-1 max-w-xl text-sm leading-snug">
-              Deposits into V2 vaults will be automatically migrated into V3.
-              Depositors are now accruing MANA to earn future rewards.
+              Vault functions are temporarily disabled during migration.
+              Deposits, withdrawals, and liquidations will resume once complete.
             </p>
           </div>
 
@@ -153,20 +232,36 @@ export const MigrationBanner = () => {
         </Link>
 
         {/* Countdown Timer */}
-        <div className="flex flex-col items-center gap-2 sm:w-1/3">
+        <div ref={scope} className="flex flex-col items-center gap-2 sm:w-1/3">
           <div className="text-bronze1inverse dark:text-bronze3 flex items-center gap-2 text-xs font-medium tracking-wider uppercase">
             <Clock className="h-3 w-3" />
-            {isExpired ? "Migration Complete!" : "Migration Live"}
+            {isExpired ? "Migration Complete!" : "Est. Completion: Feb 17"}
           </div>
 
           <div className="flex items-center">
-            <TimeBlock value={timeLeft.days} label="Days" />
+            <TimeBlock
+              value={timeLeft.days}
+              label="Days"
+              glitchValue={glitchValue}
+            />
             <Separator />
-            <TimeBlock value={timeLeft.hours} label="Hrs" />
+            <TimeBlock
+              value={timeLeft.hours}
+              label="Hrs"
+              glitchValue={glitchValue}
+            />
             <Separator />
-            <TimeBlock value={timeLeft.minutes} label="Min" />
+            <TimeBlock
+              value={timeLeft.minutes}
+              label="Min"
+              glitchValue={glitchValue}
+            />
             <Separator />
-            <TimeBlock value={timeLeft.seconds} label="Sec" />
+            <TimeBlock
+              value={timeLeft.seconds}
+              label="Sec"
+              glitchValue={glitchValue}
+            />
           </div>
         </div>
       </div>
