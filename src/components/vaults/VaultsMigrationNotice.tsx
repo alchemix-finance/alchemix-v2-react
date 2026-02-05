@@ -33,18 +33,20 @@ export const VaultsMigrationNotice = () => {
             href="https://snapshot.box/#/s:alchemixstakers.eth/proposal/0xa3228100b34d6063dc03d35132c044a93ea1fbcce10a960bd43fb5a8454ec4b9"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Migration Details (opens in new tab)"
             className="bg-grey10inverse hover:bg-grey5inverse dark:bg-grey10 dark:hover:bg-grey5 flex items-center gap-2 rounded-sm px-4 py-2 text-sm font-medium transition-colors"
           >
-            <ExternalLink className="h-4 w-4" />
+            <ExternalLink className="h-4 w-4" aria-hidden="true" />
             Migration Details
           </a>
           <a
             href="https://alchemixfi.medium.com/introducing-alchemix-v3-d55f86d35b49"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="About V3 (opens in new tab)"
             className="bg-grey10inverse hover:bg-grey5inverse dark:bg-grey10 dark:hover:bg-grey5 flex items-center gap-2 rounded-sm px-4 py-2 text-sm font-medium transition-colors"
           >
-            <ExternalLink className="h-4 w-4" />
+            <ExternalLink className="h-4 w-4" aria-hidden="true" />
             About V3
           </a>
         </div>

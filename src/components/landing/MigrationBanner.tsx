@@ -119,11 +119,9 @@ export const MigrationBanner = () => {
       const newTimeLeft = calculateTimeLeft();
       setTimeLeft(newTimeLeft);
 
-      const isCountdownComplete =
-        newTimeLeft.days === 0 &&
-        newTimeLeft.hours === 0 &&
-        newTimeLeft.minutes === 0 &&
-        newTimeLeft.seconds === 0;
+      const isCountdownComplete = Object.values(newTimeLeft).every(
+        (v) => v === 0,
+      );
 
       if (isCountdownComplete) {
         setIsExpired(true);
@@ -201,18 +199,20 @@ export const MigrationBanner = () => {
               href="https://snapshot.box/#/s:alchemixstakers.eth/proposal/0xa3228100b34d6063dc03d35132c044a93ea1fbcce10a960bd43fb5a8454ec4b9"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Migration Info (opens in new tab)"
               className="bg-bronze1inverse/10 text-bronze1inverse hover:bg-bronze1inverse/20 dark:bg-bronze1/10 dark:text-bronze1 dark:hover:bg-bronze1/20 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors"
             >
-              <ExternalLink className="h-3 w-3" />
+              <ExternalLink className="h-3 w-3" aria-hidden="true" />
               Migration Info
             </a>
             <a
               href="https://alchemixfi.medium.com/introducing-alchemix-v3-d55f86d35b49"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="About V3 (opens in new tab)"
               className="bg-bronze1inverse/10 text-bronze1inverse hover:bg-bronze1inverse/20 dark:bg-bronze1/10 dark:text-bronze1 dark:hover:bg-bronze1/20 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors"
             >
-              <ExternalLink className="h-3 w-3" />
+              <ExternalLink className="h-3 w-3" aria-hidden="true" />
               About V3
             </a>
           </div>
