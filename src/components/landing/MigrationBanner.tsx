@@ -263,6 +263,11 @@ export const MigrationBanner = () => {
               glitchValue={glitchValue}
             />
           </div>
+          {!isExpired && (
+            <span className="text-bronze1inverse/60 dark:text-bronze3/60 text-xs italic">
+              Exact date TBD
+            </span>
+          )}
         </div>
       </div>
 
