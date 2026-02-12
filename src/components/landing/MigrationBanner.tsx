@@ -22,7 +22,7 @@ const MILLISECONDS_PER_MINUTE = MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE;
 const MILLISECONDS_PER_HOUR = MILLISECONDS_PER_MINUTE * MINUTES_PER_HOUR;
 const MILLISECONDS_PER_DAY = MILLISECONDS_PER_HOUR * HOURS_PER_DAY;
 
-const TARGET_DATE = new Date("2026-02-12T11:00:00-05:00"); // Feb 12, 11:00 AM EST
+const TARGET_DATE = new Date("2026-03-26T11:00:00-04:00"); // Mar 26, 11:00 AM EDT (estimated)
 
 const calculateTimeLeft = () => {
   const now = new Date();
@@ -112,8 +112,9 @@ export const MigrationBanner = () => {
               Alchemix V3 Migration & MANA Program
             </h3>
             <p className="text-bronze1inverse/80 dark:text-bronze3 mt-1 max-w-xl text-sm leading-snug">
-              Deposits into V2 vaults will be automatically migrated into V3.
-              Depositors are now accruing MANA to earn future rewards.
+              Migration has been rescheduled to March. Deposits into V2 vaults
+              will be automatically migrated into V3. Depositors continue
+              accruing MANA to earn future rewards.
             </p>
           </div>
 
@@ -156,7 +157,7 @@ export const MigrationBanner = () => {
         <div className="flex flex-col items-center gap-2 sm:w-1/3">
           <div className="text-bronze1inverse dark:text-bronze3 flex items-center gap-2 text-xs font-medium tracking-wider uppercase">
             <Clock className="h-3 w-3" />
-            {isExpired ? "Migration Complete!" : "Migration Live"}
+            {isExpired ? "Migration Live" : "Estimated Migration Date"}
           </div>
 
           <div className="flex items-center">
@@ -168,6 +169,11 @@ export const MigrationBanner = () => {
             <Separator />
             <TimeBlock value={timeLeft.seconds} label="Sec" />
           </div>
+          {!isExpired && (
+            <span className="text-bronze1inverse/60 dark:text-bronze3/60 text-xs italic">
+              Exact date TBD
+            </span>
+          )}
         </div>
       </div>
 
