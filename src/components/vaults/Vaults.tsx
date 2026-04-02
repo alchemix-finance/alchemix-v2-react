@@ -22,6 +22,9 @@ import {
   reducedMotionAccordionVariants,
 } from "@/lib/motion/motion";
 import { JUsdcDistributionClaim } from "@/components/common/JUsdcDistributionClaim";
+import { VaultsMigrationNotice } from "@/components/vaults/VaultsMigrationNotice";
+
+const IS_MIGRATION_IN_PROGRESS = true;
 
 export type SynthFilter = "all" | SynthAsset;
 type UsedFilter = "all" | "used" | "unused";
@@ -81,6 +84,10 @@ export const Vaults = () => {
     if (usedTab === "unused")
       return synthFiltered?.filter((vault) => vault.position.shares === 0n);
   }, [chain.id, synthTab, usedTab, vaults]);
+
+  if (IS_MIGRATION_IN_PROGRESS) {
+    return <VaultsMigrationNotice />;
+  }
 
   return (
     <>
