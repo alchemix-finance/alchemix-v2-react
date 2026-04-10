@@ -23,7 +23,7 @@ const MILLISECONDS_PER_MINUTE = MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE;
 const MILLISECONDS_PER_HOUR = MILLISECONDS_PER_MINUTE * MINUTES_PER_HOUR;
 const MILLISECONDS_PER_DAY = MILLISECONDS_PER_HOUR * HOURS_PER_DAY;
 
-const TARGET_DATE = new Date("2026-04-13T11:00:00-05:00"); // Apr 13, 11:00 AM EST
+const TARGET_DATE = new Date("2026-04-15T11:00:00-05:00"); // Apr 15, 11:00 AM EST
 
 const GLITCH_VALUES = [
   "NaN",
@@ -235,7 +235,7 @@ export const MigrationBanner = () => {
         <div ref={scope} className="flex flex-col items-center gap-2 sm:w-1/3">
           <div className="text-bronze1inverse dark:text-bronze3 flex items-center gap-2 text-xs font-medium tracking-wider uppercase">
             <Clock className="h-3 w-3" />
-            {isExpired ? "Migration Complete!" : "Est. Completion: Apr 13"}
+            {isExpired ? "Migration Complete!" : "Est. Completion: Apr 15"}
           </div>
 
           <div className="flex items-center">
