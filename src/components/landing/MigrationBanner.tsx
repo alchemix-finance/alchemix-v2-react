@@ -235,7 +235,7 @@ export const MigrationBanner = () => {
         <div ref={scope} className="flex flex-col items-center gap-2 sm:w-1/3">
           <div className="text-bronze1inverse dark:text-bronze3 flex items-center gap-2 text-xs font-medium tracking-wider uppercase">
             <Clock className="h-3 w-3" />
-            {isExpired ? "Migration Complete!" : "Est. Completion: Apr 15"}
+            {isExpired ? "Migration Finalizing..." : "Est. Completion: Apr 15"}
           </div>
 
           <div className="flex items-center">
