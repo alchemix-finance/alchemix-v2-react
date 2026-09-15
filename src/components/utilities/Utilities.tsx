@@ -13,12 +13,6 @@ const utilities = [
     image: "alchemix_stats.png",
   },
   {
-    label: "Self-Repaying-ENS",
-    author: "Wary",
-    url: "https://ens.alchemix.fi/",
-    image: "srens.png",
-  },
-  {
     label: "AMO Harvest Tool",
     author: "Amrit & TBD",
     url: "https://alchemix-multisig.netlify.app/",
